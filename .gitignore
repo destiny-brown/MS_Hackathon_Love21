@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+*.db
+*.sqlite
+*.sqlite3
+.pytest_cache/
+
+# Node / Next
+node_modules/
+.next/
+out/
+npm-debug.log*
+.npm-cache/
+.DS_Store
+
+# Local data
+backend/hackkit.db
+backend/*.db
