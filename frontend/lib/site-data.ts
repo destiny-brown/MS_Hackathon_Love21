@@ -1,22 +1,24 @@
 export type NavItem = { label: string; href: string };
 
 export const mainNav: NavItem[] = [
-  { label: "Our Story", href: "/our-story" },
-  { label: "Our Programmes", href: "/our-programmes" },
-  { label: "Our Volunteers", href: "/our-volunteer" },
-  { label: "Media", href: "/media" },
-  { label: "Donate", href: "/donate" },
-  { label: "Contact Us", href: "/contact-us" },
+  { label: "Learn", href: "/learn-play" },
+  { label: "Get Involved", href: "/get-involved" },
+  { label: "Impact", href: "/impact-dashboard" },
+  { label: "Stories", href: "/stories-media" },
+  { label: "Events", href: "/events-campaigns" },
+  { label: "About Us", href: "/about-governance" },
 ];
 
 export const footerNav: NavItem[] = [
-  { label: "Join Us", href: "/join-us" },
-  { label: "Our Reports", href: "/our-finance" },
-  { label: "Newsletter", href: "/newsletter" },
+  { label: "Families (Member Registration)", href: "/members" },
+  { label: "Volunteers", href: "/our-volunteer" },
+  { label: "Donate", href: "/donate" },
+  { label: "Wishlist", href: "/shop" },
+  { label: "Annual Reports", href: "/our-finance" },
   { label: "Board of Directors", href: "/board-of-directors" },
   { label: "Staff", href: "/staff" },
-  { label: "Shop", href: "/shop" },
-  { label: "Members", href: "/members" },
+  { label: "Contact Us", href: "/contact-us" },
+  { label: "Newsletter", href: "/newsletter" },
 ];
 
 export const stats = [
@@ -89,7 +91,11 @@ export const boardMembers: BoardMember[] = [
   {
     slug: "carol-chan",
     name: "Carol Chan",
-    bio: "Carol has a passion for sports and healthy lifestyle, and embraces a mission in developing the young and promoting healthy family functioning. Professionally, Carol is experienced in nonprofit governance as a seasoned administrator serving one of the leading local NGOs supporting children and youth in Hong Kong.",
+    bio: `Carol has a passion for sports and healthy lifestyle, and embraces a mission in developing the young and promoting healthy family functioning. Professionally, Carol is experienced in nonprofit governance as a seasoned administrator serving one of the leading local NGOs supporting children and youth in Hong Kong. Prior to joining the NGO sector, Carol has worked in the Proctor & Gamble Hong Kong and in Asia Market, the largest Asian food suppliers in Ireland.
+
+With 20 years of netball experience, Carol has been a national player, a certified coach and is one of the top umpires in HK who has umpired in multiple international tournaments and has groomed many umpires before giving birth to her 1-year-old son. Carol has served as Council Member of the Hong Kong Netball Association till 2017 and was the founding Chairman of the Hantang Netball Club (2016-2020), the only non-profit local community netball club that has reached out to the underprivileged children in addition to nurturing elite youth player. With the passion to sharing healthy lifestyle and eating well to the wider community, Carol provides support and advice to a healthy food company distributing healthy food imported from Taiwan.
+
+Carol has earned her Master of Philosophy in Psychology (specialised in child development and parenting) from the Chinese University of Hong Kong and the Bachelor of Economics and Finance from the University of Hong Kong. She has also completed the Professional Diploma for Company Secretaries by the HKMA, and is an alumni of the HK Young Leaders Programme by the Global Institute for Tomorrow and was one of the presenters for the proposal on a Community Sports Hub Project in the public forum.`,
   },
   {
     slug: "dan-maley",
