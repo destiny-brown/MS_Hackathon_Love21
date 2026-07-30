@@ -4,23 +4,74 @@
 
 @layer base {
   :root {
-    --background: 40 33% 98%;
-    --foreground: 222 47% 11%;
+    --background: 46 46% 96%;
+    --foreground: 209 42% 17%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
+    --card-foreground: 209 42% 17%;
+    --primary: 11 82% 56%;
     --primary-foreground: 210 40% 98%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 46 34% 92%;
+    --muted-foreground: 210 14% 45%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
-    --radius: 0.75rem;
+    --border: 40 33% 82%;
+    --input: 40 33% 82%;
+    --ring: 11 82% 56%;
+    --radius: 0.95rem;
+
+    --brand-cream: 46 46% 96%;
+    --brand-ink: 209 42% 17%;
+    --brand-sea: 191 49% 37%;
+    --brand-coral: 11 82% 56%;
+    --brand-sand: 40 33% 82%;
   }
 
   * { @apply border-border; }
-  body { @apply bg-background text-foreground antialiased; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
   :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
+}
+
+@layer utilities {
+  .font-serif-display {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+  }
+
+  .bg-brand-cream {
+    background-color: hsl(var(--brand-cream));
+  }
+
+  .bg-brand-ink {
+    background-color: hsl(var(--brand-ink));
+  }
+
+  .bg-brand-sea {
+    background-color: hsl(var(--brand-sea));
+  }
+
+  .bg-brand-coral {
+    background-color: hsl(var(--brand-coral));
+  }
+
+  .text-brand-cream {
+    color: hsl(var(--brand-cream));
+  }
+
+  .text-brand-ink {
+    color: hsl(var(--brand-ink));
+  }
+
+  .text-brand-sea {
+    color: hsl(var(--brand-sea));
+  }
+
+  .text-brand-coral {
+    color: hsl(var(--brand-coral));
+  }
+
+  .border-brand-sand {
+    border-color: hsl(var(--brand-sand));
+  }
 }
