@@ -26,7 +26,11 @@ export default async function BoardMemberPage({ params }: { params: Promise<{ sl
       </section>
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <p className="text-lg leading-relaxed text-brand-ink/80">{member.bio}</p>
+          <div className="space-y-6 text-lg leading-relaxed text-brand-ink/80">
+            {member.bio.split("\n\n").map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </div>
       </section>
     </SiteLayout>
