@@ -7,7 +7,7 @@ const resources = [
   {
     title: "Short Videos",
     description: "Neurodiversity education clips for families, volunteers, and community partners.",
-    href: "/media",
+    href: "/learn-play/short-videos",
   },
   {
     title: "Quizzes",
