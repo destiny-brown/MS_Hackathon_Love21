@@ -4,6 +4,14 @@ const TOKEN_KEY = "hackkit_token";
 export type User = { id: number; email: string; role: string; created_at: string };
 export type Item = { id: number; title: string; description: string | null; owner_id: number; created_at: string };
 export type AuthResponse = { access_token: string; token_type: "bearer"; user: User };
+export type YouTubeVideo = {
+  video_id: string;
+  title: string;
+  channel_title: string;
+  published_at: string;
+  thumbnail_url: string | null;
+};
+export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -55,4 +63,8 @@ export const api = {
   updateItem: (id: number, payload: Partial<Pick<Item, "title" | "description">>) =>
     request<Item>(`/items/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteItem: (id: number) => request<void>(`/items/${id}`, { method: "DELETE" }),
+  searchYouTube: (query: string, maxResults = 20, maxDurationMinutes = 5) =>
+    request<YouTubeSearchResponse>(
+      `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
+    ),
 };

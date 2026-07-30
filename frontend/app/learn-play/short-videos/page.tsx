@@ -1,38 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { Input } from "@/components/ui/input";
+import { api, type YouTubeVideo } from "@/lib/api";
 
-const shortVideos = [
-  {
-    title: "Why Autism is a Difference, not a Deficit",
-    videoUrl: "https://www.youtube.com/watch?v=We2fJz866NU",
-    channelName: "Ambitious about Autism",
-    topics: ["autism", "neurodiversity", "difference", "awareness", "inclusion"],
-  },
-  {
-    title: "What is Autism? Neurodiversity Affirming Video for Students",
-    videoUrl: "https://www.youtube.com/watch?v=bRL7M5oGT6Q",
-    channelName: "The Neurodivergent Teacher",
-    topics: ["autism", "students", "school", "education", "neurodiversity"],
-  },
-  {
-    title: "Things Autistic People Are Tired Of Hearing",
-    videoUrl: "https://www.youtube.com/watch?v=PJ2UquTTzjA",
-    channelName: "BBC Three",
-    topics: ["autism", "stigma", "communication", "respect", "society"],
-  },
-  {
-    title: "Living with Down syndrome",
-    videoUrl: "https://www.youtube.com/watch?v=O19hQ_1meR0",
-    channelName: "National Health Service (NHS)",
-    topics: ["down syndrome", "health", "support", "daily life", "families"],
-  },
-];
+const DEFAULT_TOPIC_QUERY = "autism OR down syndrome OR neurodivergence inclusive education";
 
 function getYouTubeThumbnail(url: string): string {
   const match = url.match(/(?:v=|youtu\.be\/)([\w-]{11})/);
@@ -44,22 +20,58 @@ function getYouTubeThumbnail(url: string): string {
 
 export default function ShortVideosPage() {
   const [query, setQuery] = useState("");
+  const [remoteVideos, setRemoteVideos] = useState<YouTubeVideo[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorText, setErrorText] = useState<string | null>(null);
+
+  useEffect(() => {
+    const trimmed = query.trim();
+    const effectiveQuery = trimmed || DEFAULT_TOPIC_QUERY;
+
+    const timer = setTimeout(async () => {
+      setIsLoading(true);
+      setErrorText(null);
+      try {
+        const response = await api.searchYouTube(effectiveQuery, 20, 5);
+        if (!response.enabled) {
+          setRemoteVideos([]);
+          setErrorText(response.error || "YouTube search is currently unavailable.");
+          return;
+        }
+        setRemoteVideos(response.items);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unable to search YouTube right now.";
+        setRemoteVideos([]);
+        setErrorText(message);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [query]);
 
   const rankedVideos = useMemo(() => {
+    const baseVideos = remoteVideos.map((video) => ({
+      title: video.title,
+      channelTitle: video.channel_title,
+      videoUrl: `https://www.youtube.com/watch?v=${video.video_id}`,
+      score: 0,
+    }));
+
     const tokens = query
       .toLowerCase()
       .split(/\s+/)
       .filter(Boolean);
 
-    return shortVideos
+    return baseVideos
       .map((video) => {
         if (tokens.length === 0) {
           return { video, score: 0 };
         }
 
-        const haystack = `${video.title} ${video.channelName} ${video.topics.join(" ")}`.toLowerCase();
+        const haystack = `${video.title} ${video.channelTitle}`.toLowerCase();
         const score = tokens.reduce((sum, token) => {
-          if (video.topics.some((topic) => topic.includes(token))) return sum + 3;
           if (video.title.toLowerCase().includes(token)) return sum + 2;
           if (haystack.includes(token)) return sum + 1;
           return sum;
@@ -68,7 +80,7 @@ export default function ShortVideosPage() {
         return { video, score };
       })
       .sort((a, b) => b.score - a.score || a.video.title.localeCompare(b.video.title));
-  }, [query]);
+  }, [query, remoteVideos]);
 
   const hasQuery = query.trim().length > 0;
 
@@ -97,9 +109,15 @@ export default function ShortVideosPage() {
               placeholder="Try: autism in school, down syndrome support, inclusive communication"
             />
             <p className="mt-2 text-xs text-brand-ink/65">
-              Recommendations appear first. The rest of the catalog is ordered by relevance.
+              Showing top 20 YouTube videos up to 5 minutes on autism, Down syndrome, and neurodivergence.
             </p>
           </div>
+
+          {isLoading ? <p className="mb-4 text-sm text-brand-ink/70">Searching YouTube videos...</p> : null}
+          {errorText ? <p className="mb-4 text-sm text-brand-coral">{errorText}</p> : null}
+          {!isLoading && !errorText && rankedVideos.length === 0 ? (
+            <p className="mb-4 text-sm text-brand-ink/70">No videos found for this search yet.</p>
+          ) : null}
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {rankedVideos.map(({ video, score }) => (
@@ -122,7 +140,7 @@ export default function ShortVideosPage() {
                     </span>
                   ) : null}
                   <p className="line-clamp-2 text-sm font-semibold text-brand-ink">{video.title}</p>
-                  <p className="mt-1 text-xs text-brand-ink/65">{video.channelName}</p>
+                  <p className="mt-1 text-xs text-brand-ink/65">{video.channelTitle}</p>
                 </div>
               </a>
             ))}
