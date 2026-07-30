@@ -1,0 +1,12 @@
+import { SiteFooter } from "@/components/site/site-footer";
+import { SiteHeader } from "@/components/site/site-header";
+
+export function SiteLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-brand-cream text-brand-ink">
+      <SiteHeader />
+      {children}
+      <SiteFooter />
+    </div>
+  );
+}
