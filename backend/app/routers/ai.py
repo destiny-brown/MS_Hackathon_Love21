@@ -1,8 +1,15 @@
+from __future__ import annotations
+
 import json
 import re
+import ssl
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from time import time
 from urllib.parse import urlencode
 from urllib.request import urlopen
+
+import certifi
 
 from pydantic import BaseModel
 from fastapi import APIRouter
@@ -10,6 +17,40 @@ from fastapi import APIRouter
 from app.core.config import get_settings
 
 router = APIRouter(prefix="/ai", tags=["ai"])
+
+YOUTUBE_CACHE_TTL_SECONDS = 60 * 60
+_YOUTUBE_CACHE: dict[tuple[str, int, int], tuple[float, YouTubeSearchResponse]] = {}
+
+
+def _cache_key(q: str, max_results: int, max_duration_minutes: int) -> tuple[str, int, int]:
+    return (normalize_text(q), max_results, max_duration_minutes)
+
+
+def _get_cached_youtube_response(q: str, max_results: int, max_duration_minutes: int) -> YouTubeSearchResponse | None:
+    key = _cache_key(q, max_results, max_duration_minutes)
+    cached_entry = _YOUTUBE_CACHE.get(key)
+    if not cached_entry:
+        return None
+
+    cached_at, cached_response = cached_entry
+    if time() - cached_at < YOUTUBE_CACHE_TTL_SECONDS:
+        return cached_response
+
+    _YOUTUBE_CACHE.pop(key, None)
+    return None
+
+
+def _should_cache_youtube_response(response: YouTubeSearchResponse) -> bool:
+    if response.error and "429" in response.error:
+        return False
+    return True
+
+
+def _store_youtube_response(q: str, max_results: int, max_duration_minutes: int, response: YouTubeSearchResponse) -> None:
+    if not _should_cache_youtube_response(response):
+        return
+    key = _cache_key(q, max_results, max_duration_minutes)
+    _YOUTUBE_CACHE[key] = (time(), response)
 
 # Trusted channels chosen for child/family-safe neurodiversity education content.
 TRUSTED_CHANNEL_TITLES = {
@@ -86,6 +127,18 @@ class YouTubeSearchResponse(BaseModel):
     enabled: bool
     items: list[YouTubeVideo]
     error: str | None = None
+
+
+def build_ssl_context() -> ssl.SSLContext:
+    context = ssl.create_default_context(cafile=certifi.where())
+    context.check_hostname = True
+    context.verify_mode = ssl.CERT_REQUIRED
+    return context
+
+
+def fetch_json_from_url(url: str, timeout: int = 10) -> dict:
+    with urlopen(url, timeout=timeout, context=build_ssl_context()) as response:
+        return json.loads(response.read().decode("utf-8"))
 
 
 def parse_iso8601_duration_to_seconds(duration: str) -> int:
@@ -187,6 +240,11 @@ def youtube_search(
         )
 
     safe_max_results = min(max(max_results, 1), 25)
+    cache_key = _cache_key(q, safe_max_results, max_duration_minutes)
+    cached_response = _get_cached_youtube_response(q, safe_max_results, max_duration_minutes)
+    if cached_response is not None:
+        return cached_response
+
     # Fetch a broader candidate set so strict safety filtering still yields enough videos.
     upstream_max_results = min(max(safe_max_results * 3, 25), 50)
     params = urlencode(
@@ -207,10 +265,11 @@ def youtube_search(
     url = f"https://www.googleapis.com/youtube/v3/search?{params}"
 
     try:
-        with urlopen(url, timeout=10) as response:
-            payload = json.loads(response.read().decode("utf-8"))
+        payload = fetch_json_from_url(url, timeout=10)
     except Exception as exc:
-        return YouTubeSearchResponse(enabled=False, items=[], error=f"YouTube request failed: {exc}")
+        response = YouTubeSearchResponse(enabled=False, items=[], error=f"YouTube request failed: {exc}")
+        _store_youtube_response(q, safe_max_results, max_duration_minutes, response)
+        return response
 
     raw_items = payload.get("items", [])
     video_ids = [item.get("id", {}).get("videoId") for item in raw_items if item.get("id", {}).get("videoId")]
@@ -227,8 +286,7 @@ def youtube_search(
         )
         details_url = f"https://www.googleapis.com/youtube/v3/videos?{details_params}"
         try:
-            with urlopen(details_url, timeout=10) as details_response:
-                details_payload = json.loads(details_response.read().decode("utf-8"))
+            details_payload = fetch_json_from_url(details_url, timeout=10)
             for detail in details_payload.get("items", []):
                 detail_id = detail.get("id")
                 if not detail_id:
@@ -332,7 +390,9 @@ def youtube_search(
     ]
 
     if len(tier1) >= safe_max_results:
-        return YouTubeSearchResponse(enabled=True, items=tier1[:safe_max_results])
+        response = YouTubeSearchResponse(enabled=True, items=tier1[:safe_max_results])
+        _store_youtube_response(q, safe_max_results, max_duration_minutes, response)
+        return response
 
     tier2_extra = [
         video
@@ -345,7 +405,9 @@ def youtube_search(
 
     combined = tier1 + tier2_extra
     if len(combined) >= safe_max_results:
-        return YouTubeSearchResponse(enabled=True, items=combined[:safe_max_results])
+        response = YouTubeSearchResponse(enabled=True, items=combined[:safe_max_results])
+        _store_youtube_response(q, safe_max_results, max_duration_minutes, response)
+        return response
 
     tier3_extra = [
         video
@@ -358,17 +420,23 @@ def youtube_search(
 
     combined += tier3_extra
     if combined:
-        return YouTubeSearchResponse(enabled=True, items=combined[:safe_max_results])
+        response = YouTubeSearchResponse(enabled=True, items=combined[:safe_max_results])
+        _store_youtube_response(q, safe_max_results, max_duration_minutes, response)
+        return response
 
     if not videos:
-        return YouTubeSearchResponse(
+        response = YouTubeSearchResponse(
             enabled=True,
             items=[],
             error="No suitable videos found right now. Try a different search phrase.",
         )
+        _store_youtube_response(q, safe_max_results, max_duration_minutes, response)
+        return response
 
-    return YouTubeSearchResponse(
+    response = YouTubeSearchResponse(
         enabled=True,
         items=[],
         error="No suitable videos passed safety checks. Try a broader search phrase.",
     )
+    _store_youtube_response(q, safe_max_results, max_duration_minutes, response)
+    return response
