@@ -362,14 +362,37 @@ const faqs = [
 
 // ---- AI match logic (kept for when the AI Match section is re-enabled) ----
 
-type Interest = "hands-on" | "food" | "people" | "skills";
+type Interest = "hands-on" | "food" | "people" | "skills" | "events" | "creative";
 type Availability = "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
+type Commitment = "one-off" | "weekly" | "long-term";
+type GroupSize = "solo" | "friend" | "team";
 
-const interestOptions: { key: Interest; label: string; blurb: string; category: Category }[] = [
+// `category` maps an interest directly onto one of the four programme
+// pillars. `keywords` is for interests that cut across pillars — matched
+// against the role's title/description/id instead.
+const interestOptions: {
+  key: Interest;
+  label: string;
+  blurb: string;
+  category?: Category;
+  keywords?: string[];
+}[] = [
   { key: "hands-on", label: "Hands-on & active", blurb: "Sport, coaching, being on the move", category: "sport" },
   { key: "food", label: "Food & wellbeing", blurb: "Cooking, nutrition, health check-ins", category: "nutrition" },
   { key: "people", label: "People & connection", blurb: "Counselling support, mentorship, events", category: "family" },
   { key: "skills", label: "My professional skills", blurb: "Design, marketing, legal, corporate days", category: "csr" },
+  {
+    key: "events",
+    label: "Events & logistics",
+    blurb: "Dinners, trips, corporate days — making things run smoothly",
+    keywords: ["dinner", "trip", "corporate", "book a date", "outing", "community"],
+  },
+  {
+    key: "creative",
+    label: "Creative & media",
+    blurb: "Design, recipes, storytelling, hands-on making",
+    keywords: ["design", "marketing", "cooking", "recipe", "workshop"],
+  },
 ];
 
 const availabilityOptions: { key: Availability; label: string; matchWhen: string[] }[] = [
@@ -379,15 +402,64 @@ const availabilityOptions: { key: Availability; label: string; matchWhen: string
   { key: "flexible", label: "Flexible — it varies", matchWhen: ["flexible", "varies", "one sunday a month", "occasional", "weekly, your schedule"] },
 ];
 
-function scoreRosterItem(item: RosterItem, interest: Interest, availability: Availability) {
+const commitmentOptions: { key: Commitment; label: string; blurb: string; matchWhen: string[] }[] = [
+  {
+    key: "one-off",
+    label: "One-off or occasional",
+    blurb: "A single date, not a standing slot",
+    matchWhen: ["one sunday a month", "occasional", "book a date for your team"],
+  },
+  {
+    key: "weekly",
+    label: "A regular weekly slot",
+    blurb: "Same day, most weeks",
+    matchWhen: ["saturday mornings", "sunday mornings", "wednesday evenings", "weekday mornings", "weekday afternoons"],
+  },
+  {
+    key: "long-term",
+    label: "Flexible & ongoing",
+    blurb: "I'll show up on my own schedule, long-term",
+    matchWhen: ["flexible", "weekly, your schedule", "varies"],
+  },
+];
+
+const groupSizeOptions: { key: GroupSize; label: string; blurb: string; keywords: string[] }[] = [
+  { key: "solo", label: "Just me", blurb: "Happy to go it alone", keywords: [] },
+  {
+    key: "friend",
+    label: "With a friend",
+    blurb: "Roles that welcome pairs or small groups",
+    keywords: ["buddy", "crew", "dinners", "trips", "mentorship"],
+  },
+  {
+    key: "team",
+    label: "As a team / corporate group",
+    blurb: "Bring colleagues along",
+    keywords: ["corporate", "team"],
+  },
+];
+
+function scoreRosterItem(
+  item: RosterItem,
+  interest: Interest,
+  availability: Availability,
+  commitment: Commitment,
+  groupSize: GroupSize,
+) {
   let score = 52;
   const reasons: string[] = [];
   const interestMeta = interestOptions.find((o) => o.key === interest)!;
   const availMeta = availabilityOptions.find((o) => o.key === availability)!;
+  const commitmentMeta = commitmentOptions.find((o) => o.key === commitment)!;
+  const groupMeta = groupSizeOptions.find((o) => o.key === groupSize)!;
+  const haystack = `${item.title} ${item.desc} ${item.id}`.toLowerCase();
 
-  if (item.category === interestMeta.category) {
+  if (interestMeta.category && item.category === interestMeta.category) {
     score += 26;
     reasons.push(`You're drawn to "${interestMeta.label.toLowerCase()}" — this role sits right in that pillar.`);
+  } else if (interestMeta.keywords?.some((kw) => haystack.includes(kw))) {
+    score += 22;
+    reasons.push(`Your pull toward "${interestMeta.label.toLowerCase()}" shows up directly in this role's day-to-day.`);
   }
 
   const whenLower = item.when.toLowerCase();
@@ -402,6 +474,23 @@ function scoreRosterItem(item: RosterItem, interest: Interest, availability: Ava
       score += 6;
       reasons.push("Plenty of open spots — you'd start right away, no waitlist.");
     }
+  }
+
+  if (commitmentMeta.matchWhen.some((kw) => whenLower.includes(kw))) {
+    score += 14;
+    reasons.push(`It's ${commitmentMeta.label.toLowerCase()} — the pace you said works for you.`);
+  }
+
+  if (groupSize === "solo") {
+    score += 4;
+    reasons.push("A straightforward solo shift — no need to coordinate with anyone else.");
+  } else if (groupMeta.keywords.some((kw) => haystack.includes(kw))) {
+    score += 12;
+    reasons.push(
+      groupSize === "team"
+        ? "This one's built for a team — bring your colleagues along."
+        : "This role plays well with a friend or small group joining you.",
+    );
   }
 
   if (reasons.length === 0) {
@@ -597,17 +686,19 @@ function FaqAccordion() {
 function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => void }) {
   const [interest, setInterest] = useState<Interest | null>(null);
   const [availability, setAvailability] = useState<Availability | null>(null);
+  const [commitment, setCommitment] = useState<Commitment | null>(null);
+  const [groupSize, setGroupSize] = useState<GroupSize | null>(null);
   const [thinking, setThinking] = useState(false);
   const [results, setResults] = useState<{ item: RosterItem; score: number; reasons: string[] }[] | null>(null);
   const [resultIndex, setResultIndex] = useState(0);
 
   function findMatch() {
-    if (!interest || !availability) return;
+    if (!interest || !availability || !commitment || !groupSize) return;
     setThinking(true);
     setResults(null);
     window.setTimeout(() => {
       const scored = rosterItems
-        .map((item) => ({ item, ...scoreRosterItem(item, interest, availability) }))
+        .map((item) => ({ item, ...scoreRosterItem(item, interest, availability, commitment, groupSize) }))
         .sort((a, b) => b.score - a.score)
         .slice(0, 2);
       setResults(scored);
@@ -619,6 +710,8 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
   function reset() {
     setInterest(null);
     setAvailability(null);
+    setCommitment(null);
+    setGroupSize(null);
     setResults(null);
     setThinking(false);
   }
@@ -632,7 +725,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
           <IconSpark className="h-4 w-4" />
           New · Smart Matching
         </p>
-        {(interest || availability || results) && !thinking && (
+        {(interest || availability || commitment || groupSize || results) && !thinking && (
           <button onClick={reset} className="text-xs font-semibold text-white/50 hover:text-white">
             Start over
           </button>
@@ -643,8 +736,8 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
         Not sure where you fit? Let it find your shift.
       </h3>
       <p className="mt-3 max-w-xl text-sm text-white/65">
-        Two questions, and we'll match you against every open role the same way the member app
-        tracks engagement — by pillar, timing, and real capacity.
+        Four quick questions, and we'll match you against every open role the same way the member
+        app tracks engagement — by pillar, timing, commitment, and group size.
       </p>
 
       {!results && !thinking && (
@@ -684,9 +777,43 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
             </div>
           </div>
 
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">3. How often can you commit?</p>
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {commitmentOptions.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setCommitment(opt.key)}
+                  className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
+                    commitment === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">4. Coming alone, or bringing others?</p>
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {groupSizeOptions.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setGroupSize(opt.key)}
+                  className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
+                    groupSize === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             onClick={findMatch}
-            disabled={!interest || !availability}
+            disabled={!interest || !availability || !commitment || !groupSize}
             className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-coral disabled:hover:text-white"
           >
             Find my match →
@@ -701,7 +828,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.15s]" />
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral" />
           </span>
-          Weighing pillar fit, timing, and open capacity…
+          Weighing pillar fit, timing, commitment, and group size…
         </div>
       )}
 
@@ -1176,12 +1303,12 @@ function VolunteerContent() {
         </div>
       </section>
 
-      {/* ---------- AI VOLUNTEER MATCH ----------
+      {/*---------- AI VOLUNTEER MATCH ----------*/}
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-0 h-72 w-72 bg-brand-coral/15" />
         <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-coral/10" />
         <AiVolunteerMatch onSelectRole={selectRoleAndScroll} />
-      </section> */}
+      </section>
 
       {/* ---------- FINAL CTA ---------- */}
       <section className="relative overflow-hidden bg-[#F8F4EB] px-4 py-16 text-center sm:px-6 lg:px-8">
