@@ -41,6 +41,8 @@ export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; e
 export type VolunteerMatchRequest = {
   interest: "hands-on" | "food" | "people" | "skills";
   availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
+  commitment: "one-off" | "weekly" | "long-term";
+  group_size: "solo" | "friend" | "team";
 };
 export type VolunteerMatchItem = {
   role_id: string;

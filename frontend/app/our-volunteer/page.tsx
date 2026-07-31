@@ -13,7 +13,6 @@ import {
   commitmentOptions,
   groupSizeOptions,
   interestOptions,
-  refineMatchWithPreferences,
   rosterItems as fallbackRosterItems,
   type Availability,
   type Category,
@@ -461,9 +460,14 @@ function AiVolunteerMatch({
     setAiEnhanced(false);
 
     try {
-      const response = await api.matchVolunteer({ interest, availability });
+      const response = await api.matchVolunteer({
+        interest,
+        availability,
+        commitment,
+        group_size: groupSize,
+      });
       if (!response.enabled || response.matches.length === 0) {
-        setError(response.message || "No matches found right now. Try another combination.");
+        setError(response.message || "AI matching is unavailable right now. Try again in a moment.");
         return;
       }
 
@@ -471,8 +475,7 @@ function AiVolunteerMatch({
         .map((match) => {
           const item = rosterItems.find((role) => role.id === match.role_id);
           if (!item) return null;
-          const refined = refineMatchWithPreferences(item, match.score, match.reasons, commitment, groupSize);
-          return { item, score: refined.score, reasons: refined.reasons };
+          return { item, score: match.score, reasons: match.reasons };
         })
         .filter((match): match is MatchResult => match !== null)
         .sort((a, b) => b.score - a.score);
@@ -510,7 +513,7 @@ function AiVolunteerMatch({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
           <IconSpark className="h-4 w-4" />
-          New · Smart Matching
+          AI · Smart Matching
         </p>
         {(interest || availability || commitment || groupSize || results || error) && !thinking && (
           <button onClick={reset} className="text-xs font-semibold text-white/50 hover:text-white">
@@ -523,7 +526,7 @@ function AiVolunteerMatch({
         Not sure where you fit? Let it find your shift.
       </h3>
       <p className="mt-3 max-w-xl text-sm text-white/65">
-        Four quick questions, and we&apos;ll match you against every open role by pillar, timing, commitment, and group size.
+        Four quick questions, and our local AI (Ollama) will read every open role to find the best fit for your interests, timing, commitment, and group size.
       </p>
 
       {!results && !thinking && (
@@ -604,7 +607,7 @@ function AiVolunteerMatch({
             disabled={!interest || !availability || !commitment || !groupSize}
             className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-coral disabled:hover:text-white"
           >
-            Find my match →
+            Ask AI for my match →
           </button>
         </div>
       )}
@@ -616,7 +619,7 @@ function AiVolunteerMatch({
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.15s]" />
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral" />
           </span>
-          Weighing pillar fit, timing, commitment, and group size…
+          Ollama is reading every open role and weighing your answers…
         </div>
       )}
 
@@ -626,7 +629,7 @@ function AiVolunteerMatch({
             <span className="text-xs font-semibold uppercase tracking-wide text-white/50">Your best match</span>
             <div className="flex items-center gap-2">
               {aiEnhanced && (
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">AI polished</span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">AI matched</span>
               )}
               <span className="rounded-full bg-brand-coral/15 px-3 py-1 text-xs font-semibold text-brand-coral">
                 {active.score}% match
