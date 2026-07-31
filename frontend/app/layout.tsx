@@ -1,15 +1,26 @@
+// frontend/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
   title: "Love 21 Foundation",
-  description: "Empowering the Down syndrome and autistic community in Hong Kong through sport, nutrition, and holistic support.",
+  description:
+    "Supporting individuals with Down syndrome, autism, and other neurodiverse conditions.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Google Analytics Tracking */}
+        <GoogleAnalytics gaId="G-CCKKQD1ZMX" />
+      </body>
     </html>
   );
 }

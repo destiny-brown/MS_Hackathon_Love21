@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love 21 · Media & Programmes</title>
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Font: Titillium Web (matching original) -->
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Titillium Web', sans-serif;
+      background: #f5f3ee; /* soft off-white */
+      color: #1e1e1e;
+      padding: 2rem 1.2rem;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: rgba(255, 253, 248, 0.5);
+      backdrop-filter: blur(2px);
+      padding: 2rem 2rem 2.8rem;
+      border-radius: 40px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.02);
+    }
+
+    /* headings */
+    h1 {
+      font-weight: 700;
+      font-size: 2.8rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.2rem;
+      color: #1e2b2f;
+      border-left: 8px solid #d4a373;
+      padding-left: 1.4rem;
+    }
+
+    .subhead {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: #4a4a4a;
+      margin-bottom: 2.5rem;
+      padding-left: 2.2rem;
+      border-bottom: 1px solid #e2dbd1;
+      padding-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .subhead i {
+      color: #d4a373;
+      font-size: 1.2rem;
+    }
+
+    /* section title */
+    .section-title {
+      font-weight: 600;
+      font-size: 1.9rem;
+      margin: 2.8rem 0 1.2rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #1e2b2f;
+      letter-spacing: -0.3px;
+    }
+    .section-title i {
+      color: #d4a373;
+      font-size: 2.2rem;
+      width: 2.6rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, #d4a373, #e6dfd6);
+      margin-left: 0.75rem;
+    }
+
+    /* ---------- SOCIAL FEEDS: vertical blocks (one below the other) ---------- */
+    .social-block {
+      background: #ffffffec;
+      border-radius: 32px;
+      padding: 1.5rem 1.8rem 1.8rem;
+      margin-bottom: 2.5rem;
+      border: 1px solid #edebe7;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.01);
+      transition: 0.15s;
+    }
+    .social-block:hover {
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.04);
+    }
+
+    .social-block .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.2rem 0.6rem 0.2rem;
+      border-bottom: 1px solid #eee9e2;
+      margin-bottom: 1rem;
+    }
+    .social-block .feed-header span {
+      font-weight: 700;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #1e2b2f;
+    }
+    .social-block .feed-header i {
+      font-size: 1.8rem;
+    }
+    .social-block .feed-header small {
+      color: #7b7b7b;
+      font-weight: 300;
+      font-size: 0.85rem;
+    }
+
+    /* elfsight wrapper - full width */
+    .elfsight-wrapper {
+      min-height: 300px;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #faf8f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .elfsight-wrapper .elfsight-app-174d449a-45f4-407a-904d-43c1df129c77,
+    .elfsight-wrapper .elfsight-app-aacda520-0aaf-4df2-aab9-8cd974d52ca5 {
+      width: 100% !important;
+      min-height: 300px;
+    }
+
+    /* ---------- PROGRAMMES: left-right rows (one below the other) ---------- */
+    .programme-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin: 1.5rem 0 1rem;
+    }
+
+    .programme-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      background: #ffffffec;
+      border-radius: 32px;
+      border: 1px solid #efebe5;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.01);
+      transition: 0.15s;
+      overflow: hidden;
+    }
+    .programme-row:hover {
+      box-shadow: 0 12px 30px -8px rgba(0,0,0,0.04);
+    }
+
+    .programme-row .img-col {
+      flex: 0 0 200px;
+      max-width: 200px;
+      min-height: 180px;
+    }
+    .programme-row .img-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #d9d2c7;
+    }
+
+    .programme-row .text-col {
+      flex: 1;
+      padding: 1.5rem 1.8rem 1.5rem 1.8rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .programme-row .text-col h3 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #1e2b2f;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.3px;
+    }
+
+    .programme-row .text-col p {
+      font-weight: 300;
+      font-size: 0.98rem;
+      color: #2a2a2a;
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+    }
+
+    .programme-row .text-col .btn-outline {
+      display: inline-block;
+      border: 1.5px solid #d4a373;
+      color: #1e2b2f;
+      padding: 0.3rem 1.8rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: 0.15s;
+      background: transparent;
+      align-self: flex-start;
+      letter-spacing: 0.3px;
+    }
+    .programme-row .text-col .btn-outline i {
+      margin-left: 6px;
+      font-size: 0.7rem;
+    }
+    .programme-row .text-col .btn-outline:hover {
+      background: #d4a373;
+      color: white;
+      border-color: #d4a373;
+    }
+
+    /* ---------- responsive ---------- */
+    @media (max-width: 760px) {
+      .container {
+        padding: 1.2rem;
+      }
+      h1 {
+        font-size: 2.2rem;
+        padding-left: 0.8rem;
+        border-left-width: 6px;
+      }
+      .subhead {
+        padding-left: 1rem;
+        font-size: 1rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+      .social-block {
+        padding: 1rem 1rem 1.2rem;
+      }
+      .social-block .feed-header span {
+        font-size: 1.1rem;
+      }
+      .social-block .feed-header i {
+        font-size: 1.5rem;
+      }
+      .elfsight-wrapper {
+        min-height: 220px;
+      }
+      .programme-row {
+        flex-direction: column;
+      }
+      .programme-row .img-col {
+        flex: 0 0 auto;
+        max-width: 100%;
+        min-height: 160px;
+        width: 100%;
+      }
+      .programme-row .img-col img {
+        height: 180px;
+        width: 100%;
+      }
+      .programme-row .text-col {
+        padding: 1.2rem 1.2rem 1.5rem;
+      }
+      .programme-row .text-col h3 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 0.6rem;
+      }
+      .container {
+        padding: 0.8rem;
+        border-radius: 28px;
+      }
+      h1 {
+        font-size: 1.8rem;
+        padding-left: 0.6rem;
+        border-left-width: 5px;
+      }
+      .subhead {
+        padding-left: 0.6rem;
+        font-size: 0.9rem;
+      }
+      .section-title {
+        font-size: 1.3rem;
+        gap: 0.3rem;
+      }
+      .section-title i {
+        font-size: 1.5rem;
+        width: 1.8rem;
+      }
+      .social-block .feed-header span {
+        font-size: 1rem;
+      }
+      .elfsight-wrapper {
+        min-height: 180px;
+      }
+    }
+
+    /* footer / note */
+    .footnote {
+      margin-top: 3rem;
+      border-top: 1px solid #e0dad2;
+      padding-top: 1.8rem;
+      font-size: 0.9rem;
+      color: #5a5a5a;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .footnote a {
+      color: #1e2b2f;
+      text-decoration: none;
+      border-bottom: 1px dotted #cdc5ba;
+      margin: 0 4px;
+    }
+    .footnote a:hover {
+      border-bottom: 1px solid #1e2b2f;
+    }
+    .social-icons i {
+      font-size: 1.2rem;
+      margin: 0 5px;
+      color: #3a3a3a;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- header -->
+  <h1>Media &amp; Programmes</h1>
+  <div class="subhead">
+    <i class="fas fa-play-circle"></i> 
+    Stories, sports, nutrition &amp; community — all in one place
+  </div>
+
+  <!-- ========== SOCIAL FEEDS: vertical blocks ========== -->
+  <div class="section-title">
+    <i class="fab fa-instagram"></i> <span>Social feed</span>
+  </div>
+
+  <!-- Instagram block -->
+  <div class="social-block">
+    <div class="feed-header">
+      <span><i class="fab fa-instagram" style="color: #c32aa3;"></i> Instagram</span>
+      <small>@love21foundation</small>
+    </div>
+    <div class="elfsight-wrapper">
+      <!-- ELFSIGHT INSTAGRAM (exact code you provided) -->
+      <script src="https://elfsightcdn.com/platform.js" async></script>
+      <div class="elfsight-app-174d449a-45f4-407a-904d-43c1df129c77" data-elfsight-app-lazy></div>
+    </div>
+  </div>
+
+  <!-- YouTube block -->
+  <div class="social-block">
+    <div class="feed-header">
+      <span><i class="fab fa-youtube" style="color: #ff0000;"></i> YouTube</span>
+      <small>Love 21</small>
+    </div>
+    <div class="elfsight-wrapper">
+      <!-- ELFSIGHT YOUTUBE (exact code you provided) -->
+      <script src="https://elfsightcdn.com/platform.js" async></script>
+      <div class="elfsight-app-aacda520-0aaf-4df2-aab9-8cd974d52ca5" data-elfsight-app-lazy></div>
+    </div>
+  </div>
+
+  <!-- ========== OUR PROGRAMMES: left-right rows ========== -->
+  <div class="section-title">
+    <i class="fas fa-heartbeat"></i> <span>Our Programmes</span>
+  </div>
+
+  <div class="programme-list">
+
+    <!-- SPORTS -->
+    <div class="programme-row">
+      <div class="img-col">
+        <img src="https://love21foundation.com/wp-content/uploads/2020/04/WhatsApp-Image-2020-03-12-at-16.14.55.jpeg" alt="Sports programme">
+      </div>
+      <div class="text-col">
+        <h3>Sports</h3>
+        <p>Our sports programme is designed without limitations. We aim to give our beneficiaries the greatest opportunity to reach their full potential by offering a comprehensive range of activities while also striving for excellence in each sport.<br>In addition to sport classes, we also focus on strength training, coordination and mental health activities.</p>
+        <a href="#" class="btn-outline">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <!-- NUTRITION -->
+    <div class="programme-row">
+      <div class="img-col">
+        <img src="https://love21foundation.com/wp-content/uploads/2021/01/IMG_1431-1-scaled.jpeg" alt="Nutrition programme">
+      </div>
+      <div class="text-col">
+        <h3>Nutrition</h3>
+        <p>Sport classes alone are not enough to significantly extend the life expectancy of our beneficiaries. This is why we’ve developed a well thought out nutrition programme to help our community, giving them the support and guidance they need to make significant healthy lifestyle changes.<br>We also run regular cooking and food prep lessons to teach our families how to prepare these meals nutritiously and easily.</p>
+        <a href="#" class="btn-outline">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <!-- FAMILY -->
+    <div class="programme-row">
+      <div class="img-col">
+        <img src="https://love21foundation.com/wp-content/uploads/2020/04/IMG_4705-scaled.jpg" alt="Family programme">
+      </div>
+      <div class="text-col">
+        <h3>Family</h3>
+        <p>Love 21’s focus on family sets us apart. Our parent beneficiaries play a huge role in our classes and out. Family support and care for their kids is uplifting and as a charity we do all we can to support them as well as their children.<br>We offer specialty classes for parents only and also allow parental participation in a large number of our sport and healthy lifestyle classes.</p>
+        <a href="#" class="btn-outline">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <!-- CSR -->
+    <div class="programme-row">
+      <div class="img-col">
+        <img src="https://love21foundation.com/wp-content/uploads/2020/04/IMG_5025-scaled.jpg" alt="CSR programme">
+      </div>
+      <div class="text-col">
+        <h3>CSR</h3>
+        <p>Our Corporate Social Responsibility Programme is an extremely important one for Hong Kong. Reason being that our beneficiaries, the Down syndrome and autistic community, are rarely seen and often misunderstood.<br>Your employees will not only learn about our beneficiary’s amazing ability in sport, but also about their greatest ability in bringing the best out of people.</p>
+        <a href="#" class="btn-outline">Learn more <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- footer note -->
+  <div class="footnote">
+    <span><i class="fas fa-hand-holding-heart" style="color: #d4a373; margin-right: 6px;"></i> Love 21 Foundation – celebrating ability</span>
+    <span class="social-icons">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </span>
+  </div>
+
+</div>
+<!-- end container -->
+</body>
+</html>
