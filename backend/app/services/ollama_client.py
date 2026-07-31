@@ -7,7 +7,7 @@ from urllib.request import Request, urlopen
 from app.core.config import get_settings
 
 
-def chat_json(system: str, user: str, timeout_seconds: int | None = None) -> dict | None:
+def chat_json(system: str, user: str, timeout_seconds: int | None = None, num_predict: int = 180) -> dict | None:
     """Call a local Ollama model and parse a JSON object from the response."""
     settings = get_settings()
     if not settings.ollama_enabled:
@@ -25,7 +25,7 @@ def chat_json(system: str, user: str, timeout_seconds: int | None = None) -> dic
             {"role": "user", "content": user},
         ],
         "options": {
-            "num_predict": 120,
+            "num_predict": num_predict,
             "temperature": 0.2,
         },
     }

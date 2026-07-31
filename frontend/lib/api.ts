@@ -98,10 +98,15 @@ export type CaptainSiteLink = {
   href: string;
   description: string;
 };
+export type CaptainToolCall = {
+  name: string;
+  arguments: Record<string, string>;
+};
 export type CaptainChatMessage = {
   role: "user" | "assistant";
   content: string;
   links?: CaptainSiteLink[];
+  actionNote?: string;
 };
 export type CaptainChatRequest = {
   message: string;
@@ -112,6 +117,7 @@ export type CaptainChatResponse = {
   enabled: boolean;
   reply: string;
   links: CaptainSiteLink[];
+  tool_calls: CaptainToolCall[];
   sources: string[];
   message: string | null;
 };

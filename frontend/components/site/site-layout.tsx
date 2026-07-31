@@ -1,6 +1,7 @@
 "use client";
 
 import { CaptainChatWidget } from "@/components/learn/captain-chat-widget";
+import { CaptainToolsProvider } from "@/components/captain/captain-tools-provider";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { SitePreferencesProvider, useSitePreferences } from "@/components/site/site-preferences";
@@ -20,7 +21,9 @@ function SiteLayoutInner({ children }: { children: React.ReactNode }) {
       <SiteHeader />
       <main id="main-content">{children}</main>
       <SiteFooter />
-      <CaptainChatWidget />
+      <CaptainToolsProvider>
+        <CaptainChatWidget />
+      </CaptainToolsProvider>
     </div>
   );
 }

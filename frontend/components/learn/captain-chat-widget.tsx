@@ -6,6 +6,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CaptainMascot } from "@/components/learn/captain-mascot";
+import { useCaptainTools } from "@/components/captain/captain-tools-provider";
 import { useSitePreferences } from "@/components/site/site-preferences";
 import { api, type CaptainChatMessage } from "@/lib/api";
 import { useLearnUi } from "@/lib/i18n/translated-data";
@@ -48,6 +49,7 @@ export function CaptainChatWidget() {
   const ui = useLearnUi();
   const { t, i18n } = useTranslation("learn");
   const { speechLang, locale, a11y } = useSitePreferences();
+  const { runTools } = useCaptainTools();
   const dialogTitleId = useId();
   const inputId = useId();
   const liveRegionId = useId();
@@ -202,12 +204,15 @@ export function CaptainChatWidget() {
     try {
       const history = messages.filter((m) => m.role === "user" || m.role === "assistant").slice(-8);
       const response = await api.captainChat({ message: text, history, locale });
+      const actionNotes = runTools(response.tool_calls ?? []);
+      const actionNote = actionNotes.length > 0 ? actionNotes.join(" ") : undefined;
       setMessages([
         ...nextHistory,
         {
           role: "assistant",
           content: response.reply,
           links: response.links,
+          actionNote,
         },
       ]);
       if (response.message && !response.enabled) {
@@ -314,6 +319,9 @@ export function CaptainChatWidget() {
                 }`}
               >
                 <p>{message.content}</p>
+                {message.actionNote && (
+                  <p className="mt-1.5 text-xs font-medium text-brand-coral/90">{message.actionNote}</p>
+                )}
                 {message.links && message.links.length > 0 && (
                   <ul className="mt-2 space-y-2" aria-label={ui("captainSuggestedPages", "Suggested pages")}>
                     {message.links.map((link) => (
