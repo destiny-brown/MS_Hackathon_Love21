@@ -1176,12 +1176,12 @@ function VolunteerContent() {
         </div>
       </section>
 
-      {/* ---------- AI VOLUNTEER MATCH ----------
+      {/*---------- AI VOLUNTEER MATCH ----------*/}
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-0 h-72 w-72 bg-brand-coral/15" />
         <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-coral/10" />
         <AiVolunteerMatch onSelectRole={selectRoleAndScroll} />
-      </section> */}
+      </section>
 
       {/* ---------- FINAL CTA ---------- */}
       <section className="relative overflow-hidden bg-[#F8F4EB] px-4 py-16 text-center sm:px-6 lg:px-8">
