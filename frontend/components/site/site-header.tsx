@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import { SiteAccountNav } from "@/components/site/site-account-nav";
 import { Button } from "@/components/ui/button";
 import { mainNav } from "@/lib/site-data";
 
@@ -18,9 +19,12 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <Button asChild size="sm">
-          <Link href="/donate">Donate</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <SiteAccountNav />
+          <Button asChild size="sm">
+            <Link href="/donate">Donate</Link>
+          </Button>
+        </div>
       </div>
     </header>
   );

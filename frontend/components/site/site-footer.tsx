@@ -46,6 +46,9 @@ export function SiteFooter() {
           <Link href="/contact-us" className="transition hover:text-brand-ink">
             Contact
           </Link>
+          <Link href="/login?role=admin" className="text-brand-ink/45 transition hover:text-brand-ink">
+            Staff login
+          </Link>
         </div>
       </div>
     </footer>
