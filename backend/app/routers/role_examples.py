@@ -6,12 +6,6 @@ from app.models.user import Role, User
 router = APIRouter(tags=["role examples"])
 
 
-@router.get("/admin/metrics")
-def admin_metrics(_: User = Depends(require_roles(Role.ADMIN))) -> dict[str, int]:
-    # Template: protect admin-only dashboard data by requiring the admin role in the backend.
-    return {"active_members": 128, "monthly_recurring_donations": 42, "open_volunteer_roles": 7}
-
-
 @router.get("/donor/recurring-donation")
 def recurring_donation(
     current_user: User = Depends(require_roles(Role.DONOR, Role.VOLUNTEER, Role.MEMBER)),

@@ -16,79 +16,58 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { api, type AdminVolunteerProgram } from "@/lib/api";
 
 interface VolunteerProgram {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  category: "sport" | "nutrition" | "family" | "csr";
+  category: AdminVolunteerProgram["category"];
   when: string;
   where: string;
   filled: number;
   total: number;
-  status: "open" | "closing" | "filled";
+  status: AdminVolunteerProgram["status"];
   createdAt: string;
 }
 
-// Sample data
-const defaultPrograms: VolunteerProgram[] = [
-  {
-    id: "1",
-    title: "Football & Basketball Coach",
-    description:
-      "Help run our weekly ball-game sessions — no coaching certificate needed.",
-    category: "sport",
-    when: "Saturday mornings",
-    where: "San Po Kong centre",
-    filled: 3,
-    total: 5,
-    status: "open",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Swimming & Dragon Boat Buddy",
-    description:
-      "Support our water-based sessions — a splash of confidence, one paddle at a time.",
-    category: "sport",
-    when: "Sunday mornings",
-    where: "Victoria Park pool",
-    filled: 17,
-    total: 20,
-    status: "closing",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    title: "Cooking Workshop Helper",
-    description: "Assist our monthly healthy-cooking classes.",
-    category: "nutrition",
-    when: "One Sunday a month",
-    where: "San Po Kong kitchen",
-    filled: 1,
-    total: 6,
-    status: "open",
-    createdAt: new Date().toISOString(),
-  },
-];
-
-function loadPrograms(): VolunteerProgram[] {
-  if (typeof window === "undefined") return defaultPrograms;
-  const stored = localStorage.getItem("love21_volunteers");
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch {
-      return defaultPrograms;
-    }
-  }
-  return defaultPrograms;
+function mapProgram(record: AdminVolunteerProgram): VolunteerProgram {
+  return {
+    id: record.id,
+    title: record.title,
+    description: record.description,
+    category: record.category,
+    when: record.schedule,
+    where: record.location,
+    filled: record.filled,
+    total: record.total,
+    status: record.status,
+    createdAt: record.created_at,
+  };
 }
 
-function savePrograms(programs: VolunteerProgram[]): void {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("love21_volunteers", JSON.stringify(programs));
-  }
+function toPayload(
+  formData: {
+    title: string;
+    description: string;
+    category: VolunteerProgram["category"];
+    when: string;
+    where: string;
+    total: number;
+    status: VolunteerProgram["status"];
+  },
+  filled = 0,
+) {
+  return {
+    title: formData.title,
+    description: formData.description,
+    category: formData.category,
+    schedule: formData.when,
+    location: formData.where,
+    filled,
+    total: formData.total,
+    status: formData.status,
+  };
 }
 
 export default function AdminVolunteersPage() {
@@ -107,34 +86,32 @@ export default function AdminVolunteersPage() {
   });
 
   useEffect(() => {
-    setPrograms(loadPrograms());
+    api
+      .listAdminVolunteerPrograms()
+      .then((records) => setPrograms(records.map(mapProgram)))
+      .catch(() => setPrograms([]));
   }, []);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const newPrograms = [...programs];
-    if (editingProgram) {
-      const index = newPrograms.findIndex((pg) => pg.id === editingProgram.id);
-      if (index !== -1) {
-        newPrograms[index] = {
-          ...newPrograms[index],
-          ...formData,
-          filled: newPrograms[index].filled,
-        };
+    try {
+      if (editingProgram) {
+        const updated = await api.updateAdminVolunteerProgram(
+          editingProgram.id,
+          toPayload(formData, editingProgram.filled),
+        );
+        setPrograms((prev) =>
+          prev.map((pg) => (pg.id === editingProgram.id ? mapProgram(updated) : pg)),
+        );
+        setEditingProgram(null);
+      } else {
+        const created = await api.createAdminVolunteerProgram(toPayload(formData));
+        setPrograms((prev) => [mapProgram(created), ...prev]);
       }
-      setEditingProgram(null);
-    } else {
-      const newProgram: VolunteerProgram = {
-        id: Date.now().toString(),
-        ...formData,
-        filled: 0,
-        createdAt: new Date().toISOString(),
-      };
-      newPrograms.unshift(newProgram);
+      resetForm();
+    } catch {
+      // Admin auth required
     }
-    setPrograms(newPrograms);
-    savePrograms(newPrograms);
-    resetForm();
   };
 
   const resetForm = () => {
@@ -150,10 +127,13 @@ export default function AdminVolunteersPage() {
     setEditingProgram(null);
   };
 
-  const deleteProgram = (id: string) => {
-    const newPrograms = programs.filter((pg) => pg.id !== id);
-    setPrograms(newPrograms);
-    savePrograms(newPrograms);
+  const deleteProgram = async (id: number) => {
+    try {
+      await api.deleteAdminVolunteerProgram(id);
+      setPrograms((prev) => prev.filter((pg) => pg.id !== id));
+    } catch {
+      // ignore
+    }
   };
 
   const editProgram = (program: VolunteerProgram) => {

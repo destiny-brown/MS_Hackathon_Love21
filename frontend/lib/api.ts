@@ -121,6 +121,49 @@ export type CaptainChatResponse = {
   sources: string[];
   message: string | null;
 };
+export type AdminMetrics = {
+  active_members: number;
+  newsletter_subscribers: number;
+  upcoming_events: number;
+  open_volunteer_roles: number;
+  captain_chats_30d: number;
+  volunteer_matches_30d: number;
+  donate_cta_clicks_30d: number;
+  locale_changes_30d: number;
+};
+export type NewsletterSubscriber = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  status: "active" | "unsubscribed";
+  subscribed_at: string;
+};
+export type AdminEventRecord = {
+  id: number;
+  title: string;
+  description: string;
+  event_date: string;
+  location: string;
+  registrations: number;
+  max_capacity: number;
+  category: "fundraising" | "community" | "sports" | "nutrition" | "family";
+  status: "upcoming" | "ongoing" | "completed";
+  created_at: string;
+};
+export type AdminVolunteerProgram = {
+  id: number;
+  title: string;
+  description: string;
+  category: "sport" | "nutrition" | "family" | "csr";
+  schedule: string;
+  location: string;
+  filled: number;
+  total: number;
+  status: "open" | "closing" | "filled";
+  created_at: string;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -191,7 +234,7 @@ export const api = {
   updateItem: (id: number, payload: Partial<Pick<Item, "title" | "description">>) =>
     request<Item>(`/items/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteItem: (id: number) => request<void>(`/items/${id}`),
-  adminMetrics: () => request<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number }>("/admin/metrics"),
+  adminMetrics: () => request<AdminMetrics>("/admin/metrics"),
   recurringDonation: () => request<{ email: string; status: string }>("/donor/recurring-donation"),
   memberProfile: () => request<{ email: string; profile_status: string }>("/member/profile"),
   listSupportOpportunities: (kind?: OpportunityKind) =>
@@ -227,4 +270,44 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  subscribeNewsletter: (payload: {
+    first_name?: string;
+    last_name?: string;
+    email: string;
+    phone_number?: string;
+  }) =>
+    request<NewsletterSubscriber>("/newsletter/subscribe", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  listNewsletterSubscribers: () => request<NewsletterSubscriber[]>("/admin/newsletter"),
+  updateNewsletterSubscriber: (
+    id: number,
+    payload: Partial<Pick<NewsletterSubscriber, "first_name" | "last_name" | "email" | "phone_number" | "status">>,
+  ) =>
+    request<NewsletterSubscriber>(`/admin/newsletter/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteNewsletterSubscriber: (id: number) =>
+    request<void>(`/admin/newsletter/${id}`, { method: "DELETE" }),
+  listAdminEvents: () => request<AdminEventRecord[]>("/admin/events"),
+  createAdminEvent: (payload: Omit<AdminEventRecord, "id" | "created_at">) =>
+    request<AdminEventRecord>("/admin/events", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminEvent: (id: number, payload: Omit<AdminEventRecord, "id" | "created_at">) =>
+    request<AdminEventRecord>(`/admin/events/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+  deleteAdminEvent: (id: number) => request<void>(`/admin/events/${id}`, { method: "DELETE" }),
+  listAdminVolunteerPrograms: () => request<AdminVolunteerProgram[]>("/admin/volunteer-programs"),
+  createAdminVolunteerProgram: (payload: Omit<AdminVolunteerProgram, "id" | "created_at">) =>
+    request<AdminVolunteerProgram>("/admin/volunteer-programs", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateAdminVolunteerProgram: (id: number, payload: Omit<AdminVolunteerProgram, "id" | "created_at">) =>
+    request<AdminVolunteerProgram>(`/admin/volunteer-programs/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
+  deleteAdminVolunteerProgram: (id: number) =>
+    request<void>(`/admin/volunteer-programs/${id}`, { method: "DELETE" }),
 };

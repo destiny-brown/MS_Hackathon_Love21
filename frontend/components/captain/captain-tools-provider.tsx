@@ -6,6 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, type ReactN
 import { useSitePreferences } from "@/components/site/site-preferences";
 import { executeCaptainTool, type CaptainToolExecutorContext } from "@/lib/captain/execute-site-tool";
 import type { CaptainToolCall } from "@/lib/api";
+import { track } from "@/lib/analytics/track";
 import { registerWebMcpSiteTools } from "@/lib/webmcp/register-site-tools";
 
 type CaptainToolsContextValue = {
@@ -25,7 +26,14 @@ export function CaptainToolsProvider({ children }: { children: ReactNode }) {
   );
 
   const runTool = useCallback(
-    (call: CaptainToolCall) => executeCaptainTool(call, executorContext),
+    (call: CaptainToolCall) => {
+      const result = executeCaptainTool(call, executorContext);
+      track("captain_tool_executed", {
+        tool: call.name,
+        ...call.arguments,
+      });
+      return result;
+    },
     [executorContext],
   );
 

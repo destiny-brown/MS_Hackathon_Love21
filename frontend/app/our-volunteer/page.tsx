@@ -13,6 +13,7 @@ import { Reveal } from "@/components/brand/Reveal";
 import { TriMark } from "@/components/brand/TriMark";
 import { SiteLayout } from "@/components/site/site-layout";
 import { api, type VolunteerActivity } from "@/lib/api";
+import { track } from "@/lib/analytics/track";
 import {
   availabilityOptions,
   categoryMeta,
@@ -393,6 +394,13 @@ function AiVolunteerMatch({
       setResults(mapped);
       setAiEnhanced(response.ai_enhanced);
       setResultIndex(0);
+      track("volunteer_match_requested", {
+        interest,
+        availability,
+        commitment,
+        group_size: groupSize,
+        ai_enhanced: response.ai_enhanced,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Matching failed. Is the backend running on port 8000?");
     } finally {

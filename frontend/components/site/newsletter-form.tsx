@@ -4,17 +4,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
-
-interface Subscriber {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  subscribedAt: string;
-  status: "active";
-}
 
 export function NewsletterForm({ dark = false }: { dark?: boolean }) {
   const [formData, setFormData] = useState({
@@ -25,8 +16,9 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
   });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.email) {
@@ -34,26 +26,28 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
       return;
     }
 
-    const newSubscriber: Subscriber = {
-      id: Date.now().toString(),
-      ...formData,
-      subscribedAt: new Date().toISOString(),
-      status: "active",
-    };
-
-    const existing = localStorage.getItem("love21_newsletter");
-    let subscribers: Subscriber[] = existing ? JSON.parse(existing) : [];
-    subscribers.unshift(newSubscriber);
-    localStorage.setItem("love21_newsletter", JSON.stringify(subscribers));
-
-    setSubmitted(true);
+    setLoading(true);
     setError("");
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-    });
+
+    try {
+      await api.subscribeNewsletter({
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone_number: formData.phoneNumber,
+      });
+      setSubmitted(true);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not subscribe right now.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -172,8 +166,8 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
           )}
         />
       </div>
-      <Button type="submit" className="w-full">
-        Subscribe
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Subscribing…" : "Subscribe"}
       </Button>
       <p
         className={cn(

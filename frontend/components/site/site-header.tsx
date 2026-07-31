@@ -8,6 +8,7 @@ import { AccessibilityMenu } from "@/components/site/accessibility-menu";
 import { LanguageSwitcherInline } from "@/components/site/language-switcher-inline";
 import { Button } from "@/components/ui/button";
 import { navKeyByHref } from "@/lib/i18n/nav";
+import { track } from "@/lib/analytics/track";
 import { mainNav } from "@/lib/site-data";
 
 export function SiteHeader() {
@@ -61,7 +62,9 @@ export function SiteHeader() {
             Admin
           </Link>
           <Button asChild size="sm">
-            <Link href="/donate">{t("nav.donate")}</Link>
+            <Link href="/donate" onClick={() => track("donate_cta_click", { placement: "header" })}>
+              {t("nav.donate")}
+            </Link>
           </Button>
         </div>
       </div>

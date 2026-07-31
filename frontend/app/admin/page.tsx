@@ -21,6 +21,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { api } from "@/lib/api";
 
 interface AdminCard {
   title: string;
@@ -35,30 +36,23 @@ export default function AdminDashboardPage() {
   const [eventCount, setEventCount] = useState(0);
   const [programCount, setProgramCount] = useState(0);
   const [subscriberCount, setSubscriberCount] = useState(0);
+  const [captainChats, setCaptainChats] = useState(0);
+  const [volunteerMatches, setVolunteerMatches] = useState(0);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load counts from localStorage
-    if (typeof window !== "undefined") {
-      const events = localStorage.getItem("love21_events");
-      const programs = localStorage.getItem("love21_volunteers");
-      const subscribers = localStorage.getItem("love21_newsletter");
-
-      if (events) {
-        try {
-          setEventCount(JSON.parse(events).length);
-        } catch {}
-      }
-      if (programs) {
-        try {
-          setProgramCount(JSON.parse(programs).length);
-        } catch {}
-      }
-      if (subscribers) {
-        try {
-          setSubscriberCount(JSON.parse(subscribers).length);
-        } catch {}
-      }
-    }
+    api
+      .adminMetrics()
+      .then((metrics) => {
+        setEventCount(metrics.upcoming_events);
+        setProgramCount(metrics.open_volunteer_roles);
+        setSubscriberCount(metrics.newsletter_subscribers);
+        setCaptainChats(metrics.captain_chats_30d);
+        setVolunteerMatches(metrics.volunteer_matches_30d);
+      })
+      .catch((err) => {
+        setMetricsError(err instanceof Error ? err.message : "Sign in as admin to view metrics.");
+      });
   }, []);
 
   const adminCards: AdminCard[] = [
@@ -111,6 +105,9 @@ export default function AdminDashboardPage() {
               <p className="mt-1 text-sm text-muted-foreground">
                 Manage your Love 21 Foundation website content and analytics
               </p>
+              {metricsError && (
+                <p className="mt-2 text-sm text-amber-700">{metricsError}</p>
+              )}
             </div>
             <Link
               href="/"
@@ -175,8 +172,10 @@ export default function AdminDashboardPage() {
                     <BarChart3 className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Page Views</p>
-                    <p className="text-2xl font-bold">578</p>
+                    <p className="text-sm text-muted-foreground">
+                      Captain21 chats (30d)
+                    </p>
+                    <p className="text-2xl font-bold">{captainChats}</p>
                   </div>
                 </div>
               </CardContent>

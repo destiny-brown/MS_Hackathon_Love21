@@ -7,6 +7,7 @@ import { HandHeart, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { track } from "@/lib/analytics/track";
 
 function Modal({
   open,
@@ -110,6 +111,7 @@ export function ImpactCtaBar() {
           <Button
             className="h-12 bg-brand-red text-white hover:bg-brand-red/90"
             onClick={() => {
+              track("donate_cta_click", { placement: "impact_cta_bar" });
               setSubmitted(null);
               setDonateOpen(true);
             }}

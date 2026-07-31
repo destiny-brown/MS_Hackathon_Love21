@@ -16,77 +16,55 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { api, type AdminEventRecord } from "@/lib/api";
 
 interface Event {
-  id: string;
+  id: number;
   title: string;
   description: string;
   date: string;
   location: string;
   registrations: number;
   maxCapacity: number;
-  category: "fundraising" | "community" | "sports" | "nutrition" | "family";
-  status: "upcoming" | "ongoing" | "completed";
+  category: AdminEventRecord["category"];
+  status: AdminEventRecord["status"];
   createdAt: string;
 }
 
-// Sample data - stored in localStorage
-const defaultEvents: Event[] = [
-  {
-    id: "1",
-    title: "Beyond Limits Banquet",
-    description: "Signature fundraising event supporting community programmes.",
-    date: "2026-10-15",
-    location: "Grand Hyatt Hong Kong",
-    registrations: 45,
-    maxCapacity: 200,
-    category: "fundraising",
-    status: "upcoming",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    title: "Community Sports Day",
-    description: "Annual sports day for members and families.",
-    date: "2026-11-01",
-    location: "Victoria Park",
-    registrations: 78,
-    maxCapacity: 100,
-    category: "sports",
-    status: "upcoming",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    title: "Nutrition Workshop Series",
-    description: "Monthly nutrition workshops for families.",
-    date: "2026-10-05",
-    location: "San Po Kong Centre",
-    registrations: 12,
-    maxCapacity: 20,
-    category: "nutrition",
-    status: "ongoing",
-    createdAt: new Date().toISOString(),
-  },
-];
-
-function loadEvents(): Event[] {
-  if (typeof window === "undefined") return defaultEvents;
-  const stored = localStorage.getItem("love21_events");
-  if (stored) {
-    try {
-      return JSON.parse(stored);
-    } catch {
-      return defaultEvents;
-    }
-  }
-  return defaultEvents;
+function mapEvent(record: AdminEventRecord): Event {
+  return {
+    id: record.id,
+    title: record.title,
+    description: record.description,
+    date: record.event_date,
+    location: record.location,
+    registrations: record.registrations,
+    maxCapacity: record.max_capacity,
+    category: record.category,
+    status: record.status,
+    createdAt: record.created_at,
+  };
 }
 
-function saveEvents(events: Event[]): void {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("love21_events", JSON.stringify(events));
-  }
+function toPayload(formData: {
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  maxCapacity: number;
+  category: Event["category"];
+  status: Event["status"];
+}, registrations = 0) {
+  return {
+    title: formData.title,
+    description: formData.description,
+    event_date: formData.date,
+    location: formData.location,
+    registrations,
+    max_capacity: formData.maxCapacity,
+    category: formData.category,
+    status: formData.status,
+  };
 }
 
 export default function AdminEventsPage() {
@@ -103,34 +81,30 @@ export default function AdminEventsPage() {
   });
 
   useEffect(() => {
-    setEvents(loadEvents());
+    api
+      .listAdminEvents()
+      .then((records) => setEvents(records.map(mapEvent)))
+      .catch(() => setEvents([]));
   }, []);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const newEvents = [...events];
-    if (editingEvent) {
-      const index = newEvents.findIndex((ev) => ev.id === editingEvent.id);
-      if (index !== -1) {
-        newEvents[index] = {
-          ...newEvents[index],
-          ...formData,
-          registrations: newEvents[index].registrations,
-        };
+    try {
+      if (editingEvent) {
+        const updated = await api.updateAdminEvent(
+          editingEvent.id,
+          toPayload(formData, editingEvent.registrations),
+        );
+        setEvents((prev) => prev.map((ev) => (ev.id === editingEvent.id ? mapEvent(updated) : ev)));
+        setEditingEvent(null);
+      } else {
+        const created = await api.createAdminEvent(toPayload(formData));
+        setEvents((prev) => [mapEvent(created), ...prev]);
       }
-      setEditingEvent(null);
-    } else {
-      const newEvent: Event = {
-        id: Date.now().toString(),
-        ...formData,
-        registrations: 0,
-        createdAt: new Date().toISOString(),
-      };
-      newEvents.unshift(newEvent);
+      resetForm();
+    } catch {
+      // Admin auth required — login at /login as admin@love21.demo
     }
-    setEvents(newEvents);
-    saveEvents(newEvents);
-    resetForm();
   };
 
   const resetForm = () => {
@@ -146,10 +120,13 @@ export default function AdminEventsPage() {
     setEditingEvent(null);
   };
 
-  const deleteEvent = (id: string) => {
-    const newEvents = events.filter((ev) => ev.id !== id);
-    setEvents(newEvents);
-    saveEvents(newEvents);
+  const deleteEvent = async (id: number) => {
+    try {
+      await api.deleteAdminEvent(id);
+      setEvents((prev) => prev.filter((ev) => ev.id !== id));
+    } catch {
+      // ignore
+    }
   };
 
   const editEvent = (event: Event) => {

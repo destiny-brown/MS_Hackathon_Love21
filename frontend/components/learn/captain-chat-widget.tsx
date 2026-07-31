@@ -9,6 +9,7 @@ import { CaptainMascot } from "@/components/learn/captain-mascot";
 import { useCaptainTools } from "@/components/captain/captain-tools-provider";
 import { useSitePreferences } from "@/components/site/site-preferences";
 import { api, type CaptainChatMessage } from "@/lib/api";
+import { track } from "@/lib/analytics/track";
 import { useLearnUi } from "@/lib/i18n/translated-data";
 
 type SpeechRecognitionInstance = {
@@ -204,6 +205,7 @@ export function CaptainChatWidget() {
     try {
       const history = messages.filter((m) => m.role === "user" || m.role === "assistant").slice(-8);
       const response = await api.captainChat({ message: text, history, locale });
+      track("captain_chat_sent", { message_length: text.length }, { locale });
       const actionNotes = runTools(response.tool_calls ?? []);
       const actionNote = actionNotes.length > 0 ? actionNotes.join(" ") : undefined;
       setMessages([

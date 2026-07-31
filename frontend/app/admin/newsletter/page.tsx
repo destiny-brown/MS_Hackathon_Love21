@@ -15,75 +15,28 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api, type NewsletterSubscriber as ApiSubscriber } from "@/lib/api";
 
 interface NewsletterSubscriber {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
   phoneNumber: string;
   subscribedAt: string;
-  status: "active" | "unsubscribed";
+  status: ApiSubscriber["status"];
 }
 
-// Sample data
-const defaultSubscribers: NewsletterSubscriber[] = [
-  {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phoneNumber: "+852 9123 4567",
-    subscribedAt: "2026-07-15T10:30:00Z",
-    status: "active",
-  },
-  {
-    id: "2",
-    firstName: "Jane",
-    lastName: "Smith",
-    email: "jane.smith@example.com",
-    phoneNumber: "+852 9876 5432",
-    subscribedAt: "2026-07-20T14:45:00Z",
-    status: "active",
-  },
-  {
-    id: "3",
-    firstName: "Michael",
-    lastName: "Wong",
-    email: "michael.wong@example.com",
-    phoneNumber: "+852 8765 4321",
-    subscribedAt: "2026-07-25T09:15:00Z",
-    status: "active",
-  },
-];
-
-function loadSubscribers(): NewsletterSubscriber[] {
-  if (typeof window === "undefined") return defaultSubscribers;
-  const stored = localStorage.getItem("love21_newsletter");
-  if (stored) {
-    try {
-      const parsed: unknown[] = JSON.parse(stored);
-      // Type guard to ensure status is correctly typed
-      return parsed.map((item: any) => ({
-        id: item.id || Date.now().toString(),
-        firstName: item.firstName || "",
-        lastName: item.lastName || "",
-        email: item.email || "",
-        phoneNumber: item.phoneNumber || "",
-        subscribedAt: item.subscribedAt || new Date().toISOString(),
-        status: item.status === "unsubscribed" ? "unsubscribed" : "active",
-      })) as NewsletterSubscriber[];
-    } catch {
-      return defaultSubscribers;
-    }
-  }
-  return defaultSubscribers;
-}
-
-function saveSubscribers(subscribers: NewsletterSubscriber[]): void {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("love21_newsletter", JSON.stringify(subscribers));
-  }
+function mapSubscriber(record: ApiSubscriber): NewsletterSubscriber {
+  return {
+    id: record.id,
+    firstName: record.first_name,
+    lastName: record.last_name,
+    email: record.email,
+    phoneNumber: record.phone_number,
+    subscribedAt: record.subscribed_at,
+    status: record.status,
+  };
 }
 
 export default function AdminNewsletterPage() {
@@ -99,43 +52,39 @@ export default function AdminNewsletterPage() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    setSubscribers(loadSubscribers());
+    api
+      .listNewsletterSubscribers()
+      .then((records) => setSubscribers(records.map(mapSubscriber)))
+      .catch(() => setSubscribers([]));
   }, []);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    let newSubscribers: NewsletterSubscriber[] = [...subscribers];
-
-    if (editingSubscriber) {
-      const index = newSubscribers.findIndex(
-        (sub) => sub.id === editingSubscriber.id,
-      );
-      if (index !== -1) {
-        newSubscribers[index] = {
-          ...newSubscribers[index],
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+    try {
+      if (editingSubscriber) {
+        const updated = await api.updateNewsletterSubscriber(editingSubscriber.id, {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
           email: formData.email,
-          phoneNumber: formData.phoneNumber,
-        };
+          phone_number: formData.phoneNumber,
+        });
+        setSubscribers((prev) =>
+          prev.map((sub) => (sub.id === editingSubscriber.id ? mapSubscriber(updated) : sub)),
+        );
+        setEditingSubscriber(null);
+      } else {
+        const created = await api.subscribeNewsletter({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone_number: formData.phoneNumber,
+        });
+        setSubscribers((prev) => [mapSubscriber(created), ...prev]);
       }
-      setEditingSubscriber(null);
-    } else {
-      const newSubscriber: NewsletterSubscriber = {
-        id: Date.now().toString(),
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        subscribedAt: new Date().toISOString(),
-        status: "active",
-      };
-      newSubscribers = [newSubscriber, ...newSubscribers];
+      resetForm();
+    } catch {
+      // Admin auth required for edits; subscribe is public
     }
-
-    setSubscribers(newSubscribers);
-    saveSubscribers(newSubscribers);
-    resetForm();
   };
 
   const resetForm = () => {
@@ -148,23 +97,25 @@ export default function AdminNewsletterPage() {
     setEditingSubscriber(null);
   };
 
-  const deleteSubscriber = (id: string) => {
-    const newSubscribers = subscribers.filter((sub) => sub.id !== id);
-    setSubscribers(newSubscribers);
-    saveSubscribers(newSubscribers);
+  const deleteSubscriber = async (id: number) => {
+    try {
+      await api.deleteNewsletterSubscriber(id);
+      setSubscribers((prev) => prev.filter((sub) => sub.id !== id));
+    } catch {
+      // ignore
+    }
   };
 
-  const toggleStatus = (id: string) => {
-    const newSubscribers: NewsletterSubscriber[] = subscribers.map((sub) =>
-      sub.id === id
-        ? {
-            ...sub,
-            status: sub.status === "active" ? "unsubscribed" : "active",
-          }
-        : sub,
-    );
-    setSubscribers(newSubscribers);
-    saveSubscribers(newSubscribers);
+  const toggleStatus = async (id: number) => {
+    const subscriber = subscribers.find((sub) => sub.id === id);
+    if (!subscriber) return;
+    const nextStatus = subscriber.status === "active" ? "unsubscribed" : "active";
+    try {
+      const updated = await api.updateNewsletterSubscriber(id, { status: nextStatus });
+      setSubscribers((prev) => prev.map((sub) => (sub.id === id ? mapSubscriber(updated) : sub)));
+    } catch {
+      // ignore
+    }
   };
 
   const editSubscriber = (subscriber: NewsletterSubscriber) => {

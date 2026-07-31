@@ -13,6 +13,7 @@ import { I18nextProvider } from "react-i18next";
 
 import i18n from "@/lib/i18n/config";
 import { siteLocales, type SiteLocale } from "@/lib/i18n/locales";
+import { track } from "@/lib/analytics/track";
 
 export type FontScale = "normal" | "large" | "xl";
 
@@ -111,7 +112,14 @@ function SitePreferencesInner({ children }: { children: ReactNode }) {
     applyDocumentPreferences(locale, a11y);
   }, [a11y, locale, ready]);
 
-  const setLocale = useCallback((next: SiteLocale) => setLocaleState(next), []);
+  const setLocale = useCallback((next: SiteLocale) => {
+    setLocaleState((prev) => {
+      if (ready && prev !== next) {
+        track("locale_changed", { from: prev, to: next }, { locale: next });
+      }
+      return next;
+    });
+  }, [ready]);
 
   const setFontScale = useCallback((fontScale: FontScale) => {
     setA11y((prev) => ({ ...prev, fontScale }));
