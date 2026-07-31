@@ -10,10 +10,15 @@ import { api, type VolunteerActivity } from "@/lib/api";
 import {
   availabilityOptions,
   categoryMeta,
+  commitmentOptions,
+  groupSizeOptions,
   interestOptions,
+  refineMatchWithPreferences,
   rosterItems as fallbackRosterItems,
   type Availability,
   type Category,
+  type Commitment,
+  type GroupSize,
   type Interest,
   type RosterItem,
 } from "@/lib/volunteer-roster";
@@ -42,6 +47,10 @@ function Eyebrow({ children, className = "" }: { children: React.ReactNode; clas
       {children}
     </p>
   );
+}
+
+function DashedRule({ className = "" }: { className?: string }) {
+  return <span aria-hidden="true" className={`mt-2 block h-px w-16 border-t border-dashed border-brand-coral/40 ${className}`} />;
 }
 
 function Blob({ className = "" }: { className?: string }) {
@@ -160,6 +169,22 @@ function IconSpark({ className = "" }: { className?: string }) {
     <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M20 5c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9Z" />
       <path d="M31 27c.5 3 1.5 4 4.5 4.5-3 .5-4 1.5-4.5 4.5-.5-3-1.5-4-4.5-4.5 3-.5 4-1.5 4.5-4.5Z" />
+    </svg>
+  );
+}
+function IconFlag({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M11 6v28" />
+      <path d="M11 8c4-3 8 2 12-1 3-2 6 0 6 0v12s-3-2-6 0c-4 3-8-2-12 1V8Z" />
+    </svg>
+  );
+}
+function IconSearch({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
     </svg>
   );
 }
@@ -284,6 +309,55 @@ function generateCsrOnePager() {
 // Small components
 // ---------------------------------------------------------------------------
 
+function useCountUp(target: number, durationMs = 1400) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    let start: number | null = null;
+    let raf: number;
+
+    function step(ts: number) {
+      if (start === null) start = ts;
+      const progress = Math.min((ts - start) / durationMs, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(eased * target));
+      if (progress < 1) raf = requestAnimationFrame(step);
+    }
+
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, durationMs]);
+
+  return value;
+}
+
+// Live-stat card. Sits in normal page flow now (left column, under the hero
+// buttons) rather than floating over the photo. Swap the two target numbers
+// for a real Supabase count() query once that's wired up.
+function LiveActivityBadge() {
+  const volunteers = useCountUp(214, 1400);
+  const shiftsToday = useCountUp(6, 1000);
+
+  return (
+    <div className="mt-8 inline-flex w-full items-center gap-4 rounded-2xl border border-brand-sand bg-white p-4 shadow-sm shadow-black/5 sm:w-auto">
+      <span className="relative flex h-2.5 w-2.5 shrink-0">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-coral opacity-60" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-coral" />
+      </span>
+      <div>
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-serif-display text-2xl leading-none text-brand-ink">{volunteers}</span>
+          <span className="text-xs text-brand-ink/60">volunteers active this month</span>
+        </div>
+        <div className="mt-1.5 flex items-baseline gap-1.5 border-t border-dashed border-brand-ink/15 pt-1.5">
+          <span className="font-serif-display text-lg leading-none text-brand-ink">{shiftsToday}</span>
+          <span className="text-xs text-brand-ink/50">shifts running today</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function VolunteerStoryCarousel() {
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
@@ -371,6 +445,8 @@ function AiVolunteerMatch({
 }) {
   const [interest, setInterest] = useState<Interest | null>(null);
   const [availability, setAvailability] = useState<Availability | null>(null);
+  const [commitment, setCommitment] = useState<Commitment | null>(null);
+  const [groupSize, setGroupSize] = useState<GroupSize | null>(null);
   const [thinking, setThinking] = useState(false);
   const [results, setResults] = useState<MatchResult[] | null>(null);
   const [resultIndex, setResultIndex] = useState(0);
@@ -378,7 +454,7 @@ function AiVolunteerMatch({
   const [aiEnhanced, setAiEnhanced] = useState(false);
 
   async function findMatch() {
-    if (!interest || !availability) return;
+    if (!interest || !availability || !commitment || !groupSize) return;
     setThinking(true);
     setResults(null);
     setError(null);
@@ -395,9 +471,11 @@ function AiVolunteerMatch({
         .map((match) => {
           const item = rosterItems.find((role) => role.id === match.role_id);
           if (!item) return null;
-          return { item, score: match.score, reasons: match.reasons };
+          const refined = refineMatchWithPreferences(item, match.score, match.reasons, commitment, groupSize);
+          return { item, score: refined.score, reasons: refined.reasons };
         })
-        .filter((match): match is MatchResult => match !== null);
+        .filter((match): match is MatchResult => match !== null)
+        .sort((a, b) => b.score - a.score);
 
       if (mapped.length === 0) {
         setError("We couldn't map those matches to open roles. Please try again.");
@@ -417,6 +495,8 @@ function AiVolunteerMatch({
   function reset() {
     setInterest(null);
     setAvailability(null);
+    setCommitment(null);
+    setGroupSize(null);
     setResults(null);
     setThinking(false);
     setError(null);
@@ -432,7 +512,7 @@ function AiVolunteerMatch({
           <IconSpark className="h-4 w-4" />
           New · Smart Matching
         </p>
-        {(interest || availability || results || error) && !thinking && (
+        {(interest || availability || commitment || groupSize || results || error) && !thinking && (
           <button onClick={reset} className="text-xs font-semibold text-white/50 hover:text-white">
             Start over
           </button>
@@ -443,7 +523,7 @@ function AiVolunteerMatch({
         Not sure where you fit? Let it find your shift.
       </h3>
       <p className="mt-3 max-w-xl text-sm text-white/65">
-        Two questions, and we&apos;ll match you against every open role by pillar, timing, and real capacity.
+        Four quick questions, and we&apos;ll match you against every open role by pillar, timing, commitment, and group size.
       </p>
 
       {!results && !thinking && (
@@ -485,9 +565,43 @@ function AiVolunteerMatch({
 
           {error && <p className="text-sm text-red-300">{error}</p>}
 
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">3. How often can you commit?</p>
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {commitmentOptions.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setCommitment(opt.key)}
+                  className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
+                    commitment === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">4. Coming alone, or bringing others?</p>
+            <div className="mt-3 flex flex-wrap gap-2.5">
+              {groupSizeOptions.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setGroupSize(opt.key)}
+                  className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
+                    groupSize === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
             onClick={findMatch}
-            disabled={!interest || !availability}
+            disabled={!interest || !availability || !commitment || !groupSize}
             className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-coral disabled:hover:text-white"
           >
             Find my match →
@@ -502,7 +616,7 @@ function AiVolunteerMatch({
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.15s]" />
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral" />
           </span>
-          Weighing pillar fit, timing, and open capacity…
+          Weighing pillar fit, timing, commitment, and group size…
         </div>
       )}
 
@@ -581,6 +695,8 @@ export default function VolunteerPage() {
   );
 }
 
+const ROLES_PREVIEW_COUNT = 4;
+
 function VolunteerContent() {
   const searchParams = useSearchParams();
   const requestedCategory = searchParams.get("category");
@@ -588,6 +704,8 @@ function VolunteerContent() {
 
   const [rosterItems, setRosterItems] = useState<RosterItem[]>(fallbackRosterItems);
   const [filter, setFilter] = useState<Category | "all">(initialFilter);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showAllRoles, setShowAllRoles] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState<string>(fallbackRosterItems[0].title);
   const [submitted, setSubmitted] = useState(false);
 
@@ -607,10 +725,27 @@ function VolunteerContent() {
       });
   }, []);
 
-  const visibleItems = useMemo(
-    () => (filter === "all" ? rosterItems : rosterItems.filter((item) => item.category === filter)),
-    [filter, rosterItems],
-  );
+  const visibleItems = useMemo(() => {
+    let items = filter === "all" ? rosterItems : rosterItems.filter((item) => item.category === filter);
+    const q = searchQuery.trim().toLowerCase();
+    if (q) {
+      items = items.filter(
+        (item) =>
+          item.title.toLowerCase().includes(q) ||
+          item.desc.toLowerCase().includes(q) ||
+          item.when.toLowerCase().includes(q) ||
+          item.where.toLowerCase().includes(q),
+      );
+    }
+    return items;
+  }, [filter, rosterItems, searchQuery]);
+
+  useEffect(() => {
+    setShowAllRoles(false);
+  }, [filter, searchQuery]);
+
+  const displayedItems = showAllRoles ? visibleItems : visibleItems.slice(0, ROLES_PREVIEW_COUNT);
+  const hiddenCount = visibleItems.length - ROLES_PREVIEW_COUNT;
 
   const urgentItems = useMemo(
     () =>
@@ -635,7 +770,26 @@ function VolunteerContent() {
           <div>
             <Eyebrow>Get Involved · Volunteers</Eyebrow>
             <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-ink sm:text-5xl">
-              Come be part of a <span className="text-brand-coral">so much ability</span> community.
+              Come be part of a{" "}
+              <span className="relative text-brand-coral">
+                so much ability
+                <svg
+                  viewBox="0 0 200 14"
+                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-coral/50"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9c20-8 40-8 60 0s40 8 60 0 40-8 60 0 12 3 14 2"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeDasharray="1 8"
+                  />
+                </svg>
+              </span>{" "}
+              community.
             </h1>
             <p className="mt-5 max-w-lg text-brand-ink/75">
               No email chains, no waiting on the office. Pick an opening across sport, nutrition,
@@ -649,8 +803,8 @@ function VolunteerContent() {
                 Not sure where to start?
               </a>
             </div>
+            <LiveActivityBadge />
           </div>
-
           <div className="relative">
             <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-sand lg:aspect-[3/4]">
@@ -659,7 +813,7 @@ function VolunteerContent() {
             </div>
           </div>
         </div>
-
+{/* 
         <div className="relative mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             { value: "600+", label: "Families supported every month" },
@@ -672,6 +826,28 @@ function VolunteerContent() {
               <div className="mt-1 text-xs leading-snug text-brand-ink/70">{stat.label}</div>
             </div>
           ))}
+        </div> */}
+      </section>
+
+      {/* ---------- START YOUR OWN CAMPAIGN ---------- */}
+      <section className="border-y border-brand-sand bg-[#F8F4EB] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-coral/40 bg-white p-7">
+          <div className="flex items-start gap-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-sand">
+              <IconFlag className="h-5 w-5 text-brand-coral" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Another way to help</p>
+              <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-ink sm:text-2xl">
+                Can&apos;t commit to a shift? Start your own fundraising campaign instead.
+              </h3>
+              <p className="mt-2 max-w-md text-sm text-brand-ink/70">
+                Run a marathon, host a birthday fundraiser, or rally your friends — set up a
+                peer-to-peer page in minutes and raise funds on your own schedule.
+              </p>
+            </div>
+          </div>
+          <CtaButton href="/campaigns/new">Start a campaign</CtaButton>
         </div>
       </section>
 
@@ -695,7 +871,7 @@ function VolunteerContent() {
       {/* ---------- OPPORTUNITIES BOARD ---------- */}
       <section id="opportunities" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Eyebrow>The board</Eyebrow>
               <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Open opportunities</h2>
@@ -705,14 +881,34 @@ function VolunteerContent() {
             </p>
           </div>
 
+          <div className="relative mb-8">
+            <IconSearch className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-ink/40" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search roles — try “Saturday”, “cooking”, or “CSR”"
+              className="w-full rounded-full border border-dashed border-brand-ink/20 bg-white py-3 pl-11 pr-4 text-sm text-brand-ink placeholder:text-brand-ink/40 outline-none transition focus:border-solid focus:border-brand-coral"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                aria-label="Clear search"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-brand-ink/40 hover:text-brand-ink"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+
           <div className="grid gap-8 lg:grid-cols-[220px_1fr]">
             <div className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
               <button
                 onClick={() => setFilter("all")}
                 className={`whitespace-nowrap rounded-full px-4 py-2 text-left text-sm font-semibold transition lg:rounded-none lg:border-l-2 lg:px-0 lg:pl-4 ${
                   filter === "all"
-                    ? "bg-black text-white lg:bg-transparent lg:border-brand-coral lg:text-brand-ink"
-                    : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-transparent lg:text-brand-ink/60"
+                    ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-coral lg:text-brand-ink"
+                    : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
                 }`}
               >
                 All roles
@@ -723,8 +919,8 @@ function VolunteerContent() {
                   onClick={() => setFilter(key)}
                   className={`whitespace-nowrap rounded-full px-4 py-2 text-left text-sm font-semibold transition lg:rounded-none lg:border-l-2 lg:px-0 lg:pl-4 ${
                     filter === key
-                      ? "bg-black text-white lg:bg-transparent lg:border-brand-coral lg:text-brand-ink"
-                      : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-transparent lg:text-brand-ink/60"
+                      ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-coral lg:text-brand-ink"
+                      : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
                   }`}
                 >
                   {categoryMeta[key].label}
@@ -733,75 +929,89 @@ function VolunteerContent() {
               ))}
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              {visibleItems.map((item, i) => {
-                const pct = item.total && item.filled !== undefined ? Math.round((item.filled / item.total) * 100) : null;
-                return (
-                  <Reveal key={item.id} delay={i * 60}>
-                    <article className="h-full rounded-2xl border border-brand-sand p-6 transition hover:-translate-y-0.5 hover:shadow-md">
-                      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-sand text-lg">{item.icon}</div>
-                      <h3 className="text-xl text-brand-ink">{item.title}</h3>
-                      <p className="mt-2 text-sm text-brand-ink/70">{item.desc}</p>
-                      <div className="mt-4 flex flex-col gap-1 text-xs text-brand-ink/60">
-                        <span><b className="font-semibold text-brand-ink">When:</b> {item.when}</span>
-                        <span><b className="font-semibold text-brand-ink">Where:</b> {item.where}</span>
-                      </div>
-
-                      {pct !== null ? (
-                        <div className="mt-4 flex items-center gap-2">
-                          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-sand">
-                            <div className="h-full rounded-full bg-brand-coral" style={{ width: `${pct}%` }} />
+            <div>
+              {displayedItems.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-brand-ink/20 p-10 text-center">
+                  <p className="text-sm text-brand-ink/60">
+                    No roles match {searchQuery ? `“${searchQuery}”` : "this filter"} right now.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setFilter("all");
+                    }}
+                    className="mt-3 text-sm font-semibold text-brand-coral hover:underline"
+                  >
+                    Clear search & filters
+                  </button>
+                </div>
+              ) : (
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {displayedItems.map((item, i) => {
+                    const pct = item.total && item.filled !== undefined ? Math.round((item.filled / item.total) * 100) : null;
+                    return (
+                      <Reveal key={item.id} delay={i * 60}>
+                        <article className="h-full rounded-2xl border border-brand-sand p-6 transition hover:-translate-y-0.5 hover:shadow-md">
+                          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-sand text-lg">{item.icon}</div>
+                          <h3 className="text-xl text-brand-ink">{item.title}</h3>
+                          <p className="mt-2 text-sm text-brand-ink/70">{item.desc}</p>
+                          <div className="mt-4 flex flex-col gap-1 text-xs text-brand-ink/60">
+                            <span><b className="font-semibold text-brand-ink">When:</b> {item.when}</span>
+                            <span><b className="font-semibold text-brand-ink">Where:</b> {item.where}</span>
                           </div>
-                          <span className="whitespace-nowrap text-xs text-brand-ink/50">{item.filled} / {item.total} filled</span>
-                        </div>
-                      ) : (
-                        <div className="mt-4 text-xs text-brand-ink/50">{item.note}</div>
-                      )}
 
-                      <button
-                        onClick={() => selectRoleAndScroll(item.title)}
-                        className="mt-5 w-full rounded-full bg-brand-sand py-3 text-sm font-semibold text-brand-ink hover:bg-black hover:text-white"
-                      >
-                        {item.ctaLabel}
-                      </button>
+                          {pct !== null ? (
+                            <div className="mt-4 flex items-center gap-2">
+                              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-sand">
+                                <div className="h-full rounded-full bg-brand-coral" style={{ width: `${pct}%` }} />
+                              </div>
+                              <span className="whitespace-nowrap text-xs text-brand-ink/50">{item.filled} / {item.total} filled</span>
+                            </div>
+                          ) : (
+                            <div className="mt-4 text-xs text-brand-ink/50">{item.note}</div>
+                          )}
 
-                      {item.category === "csr" && item.id === "corporate-day" && (
-                        <button
-                          onClick={generateCsrOnePager}
-                          className="mt-2 w-full rounded-full border border-black/15 py-2.5 text-xs font-semibold text-brand-ink hover:border-black"
-                        >
-                          Generate a one-pager for your HR/CSR team
-                        </button>
-                      )}
-                    </article>
-                  </Reveal>
-                );
-              })}
+                          <button
+                            onClick={() => selectRoleAndScroll(item.title)}
+                            className="mt-5 w-full rounded-full bg-brand-sand py-3 text-sm font-semibold text-brand-ink hover:bg-black hover:text-white"
+                          >
+                            {item.ctaLabel}
+                          </button>
+
+                          {item.category === "csr" && item.id === "corporate-day" && (
+                            <button
+                              onClick={generateCsrOnePager}
+                              className="mt-2 w-full rounded-full border border-black/15 py-2.5 text-xs font-semibold text-brand-ink hover:border-black"
+                            >
+                              Generate a one-pager for your HR/CSR team
+                            </button>
+                          )}
+                        </article>
+                      </Reveal>
+                    );
+                  })}
+                </div>
+              )}
+
+              {hiddenCount > 0 && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={() => setShowAllRoles((v) => !v)}
+                    className="inline-flex items-center gap-2 rounded-full border border-dashed border-brand-ink/25 px-6 py-3 text-sm font-semibold text-brand-ink transition hover:border-black hover:border-solid"
+                  >
+                    {showAllRoles ? "Show fewer roles" : `View ${hiddenCount} more role${hiddenCount === 1 ? "" : "s"}`}
+                    <span aria-hidden="true" className={`inline-block transition-transform duration-300 ${showAllRoles ? "rotate-180" : ""}`}>
+                      ↓
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
       <WaveDivider color="#F8F4EB" />
-
-      {/* ---------- VOLUNTEER STORY SPOTLIGHT ---------- */}
-      <section className="relative overflow-hidden bg-[#F8F4EB] px-4 py-20 sm:px-6 lg:px-8">
-        <Blob className="-left-16 top-1/3 h-56 w-56 bg-[#F8DCDA] opacity-40" />
-        <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="relative aspect-square w-full overflow-hidden rounded-[45%_55%_60%_40%/50%_45%_55%_50%] bg-brand-sand">
-            {/* Replace with a real volunteer photo — mid-shift, genuine, not posed. */}
-            <Image src="/images/get-involved/story-spotlight.png" alt="A Love 21 volunteer during a shift" fill className="object-cover" />
-          </div>
-          <div>
-            <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
-              <IconTrophy className="h-4 w-4" /> Volunteer Spotlight
-            </p>
-            <div className="mt-3">
-              <VolunteerStoryCarousel />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ---------- GALLERY ---------- */}
       <section className="bg-[#F8F4EB] px-4 pb-20 sm:px-6 lg:px-8">
@@ -839,76 +1049,6 @@ function VolunteerContent() {
         </div>
       </section>
 
-      {/* ---------- SIGN UP ---------- */}
-      <section id="signup" className="bg-brand-sand px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-10 rounded-3xl bg-white p-8 sm:p-12 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <Eyebrow>One form, no waiting</Eyebrow>
-            <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">Sign up. You&apos;re confirmed.</h2>
-            <p className="mt-4 text-sm text-brand-ink/70">
-              This form replaces the old manual email process. Submit it and get an instant
-              confirmation — no staff follow-up required before you can show up.
-            </p>
-            <div className="mt-4 inline-block rounded-full bg-brand-sand px-4 py-2 text-xs font-semibold text-brand-ink">
-              Auto-confirmed · no approval queue
-            </div>
-          </div>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSubmitted(true);
-            }}
-            className="rounded-2xl border border-brand-sand p-6"
-          >
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-brand-ink/70">Full name</label>
-                <input required placeholder="Chan Tai Man" className="rounded-lg border border-brand-sand px-3 py-2.5 text-sm" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-brand-ink/70">Email</label>
-                <input required type="email" placeholder="you@email.com" className="rounded-lg border border-brand-sand px-3 py-2.5 text-sm" />
-              </div>
-            </div>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-brand-ink/70">Phone</label>
-                <input type="tel" placeholder="+852 0000 0000" className="rounded-lg border border-brand-sand px-3 py-2.5 text-sm" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-brand-ink/70">Opportunity</label>
-                <select
-                  value={selectedOpportunity}
-                  onChange={(e) => setSelectedOpportunity(e.target.value)}
-                  className="rounded-lg border border-brand-sand px-3 py-2.5 text-sm"
-                >
-                  {rosterItems.map((item) => (
-                    <option key={item.id} value={item.title}>{item.title}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mt-4 flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-brand-ink/70">Availability</label>
-              <textarea placeholder="e.g. Saturday mornings, or flexible weekday evenings" className="min-h-[70px] rounded-lg border border-brand-sand px-3 py-2.5 text-sm" />
-            </div>
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
-              <p className="max-w-[260px] text-xs text-brand-ink/50">
-                Signing up also starts your tracked hours toward recognition badges.
-              </p>
-              <button type="submit" className="rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white hover:bg-black">
-                Confirm my spot
-              </button>
-            </div>
-            {submitted && (
-              <div className="mt-4 rounded-lg bg-brand-sand p-4 text-sm text-brand-ink">
-                You&apos;re confirmed for <b>{selectedOpportunity}</b> — a calendar invite and a welcome note are on their way to your inbox.
-              </div>
-            )}
-          </form>
-        </div>
-      </section>
 
       {/* ---------- RECOGNITION ---------- */}
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
@@ -971,7 +1111,7 @@ function VolunteerContent() {
         </div>
       </section>
 
-      {/* ---------- AI VOLUNTEER MATCH ---------- */}
+      {/*---------- AI VOLUNTEER MATCH ----------*/}
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-0 h-72 w-72 bg-brand-coral/15" />
         <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-coral/10" />
@@ -985,7 +1125,7 @@ function VolunteerContent() {
           <TriMark className="mx-auto h-2.5 w-9 text-brand-coral" />
           <h2 className="mt-4 font-serif-display text-3xl text-brand-ink sm:text-4xl">Every shift starts with someone saying yes.</h2>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <CtaButton href="#opportunities">Browse open roles</CtaButton>
+            {/* <CtaButton href="#opportunities">Browse open roles</CtaButton> */}
             <CtaButton href="/donate" variant="outline">Prefer to give instead?</CtaButton>
           </div>
         </div>

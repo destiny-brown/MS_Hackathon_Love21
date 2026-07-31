@@ -5,31 +5,45 @@ from app.data.volunteer_activity_seed import VOLUNTEER_ACTIVITY_SEED
 from app.db import SessionLocal, create_db_and_tables
 from app.models.item import Item
 from app.models.support_opportunity import SupportOpportunity
-from app.models.user import User
+from app.models.user import Role, User
 from app.models.volunteer_activity import VolunteerActivity
 
-DEMO_EMAIL = "demo@demo.com"
 DEMO_PASSWORD = "demo1234"
+DEMO_USERS = [
+    ("admin@love21.demo", Role.ADMIN),
+    ("member@love21.demo", Role.MEMBER),
+    ("donor@love21.demo", Role.DONOR),
+    ("volunteer@love21.demo", Role.VOLUNTEER),
+]
 MOONCLERK_URL = "https://app.moonclerk.com/pay/2805gcehxjca"
 
 
 def run() -> None:
     create_db_and_tables()
     with SessionLocal() as db:
-        user = db.scalar(select(User).where(User.email == DEMO_EMAIL))
-        if user is None:
-            user = User(email=DEMO_EMAIL, hashed_password=hash_password(DEMO_PASSWORD), role="admin")
-            db.add(user)
-            db.commit()
-            db.refresh(user)
+        demo_accounts: list[User] = []
+        for email, role in DEMO_USERS:
+            user = db.scalar(select(User).where(User.email == email))
+            if user is None:
+                user = User(email=email, hashed_password=hash_password(DEMO_PASSWORD), role=role)
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+            else:
+                user.role = role
+                user.hashed_password = hash_password(DEMO_PASSWORD)
+                db.commit()
+                db.refresh(user)
+            demo_accounts.append(user)
 
-        existing_items = db.scalars(select(Item).where(Item.owner_id == user.id)).all()
+        admin_user = next(user for user in demo_accounts if user.role == Role.ADMIN)
+        existing_items = db.scalars(select(Item).where(Item.owner_id == admin_user.id)).all()
         if not existing_items:
             db.add_all(
                 [
-                    Item(title="Pitch deck", description="Draft the 5-slide demo story.", owner_id=user.id),
-                    Item(title="Judge flow", description="Practice login → create item → AI ask.", owner_id=user.id),
-                    Item(title="Stretch goal", description="Copy Item into the real feature.", owner_id=user.id),
+                    Item(title="Pitch deck", description="Draft the 5-slide demo story.", owner_id=admin_user.id),
+                    Item(title="Judge flow", description="Practice login → create item → AI ask.", owner_id=admin_user.id),
+                    Item(title="Stretch goal", description="Copy Item into the real feature.", owner_id=admin_user.id),
                 ]
             )
             db.commit()
@@ -150,7 +164,9 @@ def run() -> None:
             db.add_all([VolunteerActivity(**entry) for entry in VOLUNTEER_ACTIVITY_SEED])
             db.commit()
 
-    print(f"Seeded demo admin: {DEMO_EMAIL} / {DEMO_PASSWORD}")
+    print("Seeded demo users:")
+    for email, role in DEMO_USERS:
+        print(f"- {role.value}: {email} / {DEMO_PASSWORD}")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const TOKEN_KEY = "hackkit_token";
 
-export type User = { id: number; email: string; role: string; created_at: string };
+export type Role = "donor" | "volunteer" | "member" | "admin";
+export type User = { id: number; email: string; role: Role; created_at: string };
 export type Item = { id: number; title: string; description: string | null; owner_id: number; created_at: string };
 export type AuthResponse = { access_token: string; token_type: "bearer"; user: User };
 export type OpportunityKind = "campaign" | "cause" | "wishlist";
@@ -87,6 +88,20 @@ export function clearToken() {
   window.localStorage.removeItem(TOKEN_KEY);
 }
 
+export function landingPathForRole(role: Role) {
+  switch (role) {
+    case "admin":
+      return "/dashboard";
+    case "member":
+      return "/member/profile";
+    case "volunteer":
+      return "/volunteer/portal";
+    case "donor":
+    default:
+      return "/donor/portal";
+  }
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
   const headers = new Headers(options.headers);
@@ -110,9 +125,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+export async function getCurrentUserWithRole() {
+  if (!getToken()) return null;
+  return api.me();
+}
+
 export const api = {
-  register: (email: string, password: string) =>
-    request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify({ email, password }) }),
+  register: (email: string, password: string, role: Exclude<Role, "admin"> = "donor") =>
+    request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify({ email, password, role }) }),
   login: (email: string, password: string) =>
     request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
   me: () => request<User>("/auth/me"),
@@ -121,7 +141,10 @@ export const api = {
     request<Item>("/items", { method: "POST", body: JSON.stringify(payload) }),
   updateItem: (id: number, payload: Partial<Pick<Item, "title" | "description">>) =>
     request<Item>(`/items/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteItem: (id: number) => request<void>(`/items/${id}`, { method: "DELETE" }),
+  deleteItem: (id: number) => request<void>(`/items/${id}`),
+  adminMetrics: () => request<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number }>("/admin/metrics"),
+  recurringDonation: () => request<{ email: string; status: string }>("/donor/recurring-donation"),
+  memberProfile: () => request<{ email: string; profile_status: string }>("/member/profile"),
   listSupportOpportunities: (kind?: OpportunityKind) =>
     request<SupportOpportunity[]>(`/support-opportunities${kind ? `?kind=${kind}` : ""}`),
   listAdminSupportOpportunities: () => request<SupportOpportunity[]>("/support-opportunities/admin"),
