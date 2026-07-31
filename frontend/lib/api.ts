@@ -219,17 +219,20 @@ export function landingPathForRole(role: Role) {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+type ApiRequestInit = RequestInit & { redirectOnUnauthorized?: boolean };
+
+async function request<T>(path: string, options: ApiRequestInit = {}): Promise<T> {
+  const { redirectOnUnauthorized = true, ...requestOptions } = options;
   const token = getToken();
-  const headers = new Headers(options.headers);
+  const headers = new Headers(requestOptions.headers);
   headers.set("Content-Type", "application/json");
   if (token) headers.set("Authorization", `Bearer ${token}`);
 
-  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const response = await fetch(`${API_URL}${path}`, { ...requestOptions, headers });
 
   if (response.status === 401 && typeof window !== "undefined") {
     clearToken();
-    window.location.href = "/login";
+    if (redirectOnUnauthorized) window.location.href = "/login";
     throw new Error("Unauthorized");
   }
 
@@ -244,7 +247,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export async function getCurrentUserWithRole() {
   if (!getToken()) return null;
-  return api.me();
+  return api.currentUser();
 }
 
 export const api = {
@@ -253,6 +256,7 @@ export const api = {
   login: (email: string, password: string) =>
     request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
   me: () => request<User>("/auth/me"),
+  currentUser: () => request<User>("/auth/me", { redirectOnUnauthorized: false }),
   listItems: () => request<Item[]>("/items"),
   createItem: (payload: Pick<Item, "title" | "description">) =>
     request<Item>("/items", { method: "POST", body: JSON.stringify(payload) }),
