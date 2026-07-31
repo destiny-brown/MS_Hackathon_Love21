@@ -4,7 +4,6 @@ import { CaptainChatWidget } from "@/components/learn/captain-chat-widget";
 import { CaptainToolsProvider } from "@/components/captain/captain-tools-provider";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
-import { SitePreferencesProvider } from "@/components/site/site-preferences";
 import { useTranslation } from "react-i18next";
 
 function SiteLayoutInner({ children }: { children: React.ReactNode }) {
@@ -29,9 +28,5 @@ function SiteLayoutInner({ children }: { children: React.ReactNode }) {
 }
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SitePreferencesProvider>
-      <SiteLayoutInner>{children}</SiteLayoutInner>
-    </SitePreferencesProvider>
-  );
+  return <SiteLayoutInner>{children}</SiteLayoutInner>;
 }
