@@ -47,7 +47,7 @@ export function ImpactPillars() {
   return (
     <section
       ref={ref}
-      className="border-b border-brand-sand bg-brand-cream px-4 py-8 sm:px-6 lg:max-h-[100dvh] lg:overflow-hidden lg:px-8 lg:py-6"
+      className="border-b border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:max-h-[100dvh] lg:overflow-hidden lg:px-8 lg:py-6"
     >
       <div className="mx-auto flex max-w-6xl flex-col lg:h-[calc(100dvh-5.5rem)]">
         <motion.div
@@ -56,14 +56,14 @@ export function ImpactPillars() {
           transition={{ duration: 0.45 }}
           className="mb-4 shrink-0"
         >
-          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-coral">
+          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-red">
             <HeartHandshake className="h-3.5 w-3.5" />
             The Butterfly Metamorphosis
           </p>
-          <h2 className="mt-1.5 font-serif-display text-2xl text-brand-ink sm:text-3xl">
+          <h2 className="mt-1.5 font-serif-display text-2xl text-brand-dark sm:text-3xl">
             The 5 Pillars of Impact
           </h2>
-          <p className="mt-1.5 max-w-2xl text-sm text-brand-ink/70">
+          <p className="mt-1.5 max-w-2xl text-sm text-brand-dark/70">
             From nourishment to taking flight — each pillar marks a stage of
             growth for members and families.
           </p>
@@ -86,7 +86,7 @@ export function ImpactPillars() {
                     aria-current={selected ? "step" : undefined}
                     onClick={() => setIndex(i)}
                     className={cn(
-                      "relative z-10 w-16 shrink-0 bg-brand-cream px-1 transition duration-300 sm:w-20 lg:w-full lg:max-h-[18%]",
+                      "relative z-10 w-16 shrink-0 bg-brand-light px-1 transition duration-300 sm:w-20 lg:w-full lg:max-h-[18%]",
                       selected
                         ? "scale-105 opacity-100"
                         : "opacity-45 grayscale hover:opacity-100 hover:grayscale-0",
@@ -112,7 +112,7 @@ export function ImpactPillars() {
               size="sm"
               aria-label="Previous pillar"
               onClick={() => go(-1)}
-              className="absolute left-2 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-full border-white/20 bg-white/35 p-0 text-brand-ink/70 shadow-none backdrop-blur-[2px] hover:bg-white/55 hover:text-brand-ink sm:left-3"
+              className="absolute left-2 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-full border-white/20 bg-white/35 p-0 text-brand-dark/70 shadow-none backdrop-blur-[2px] hover:bg-white/55 hover:text-brand-dark sm:left-3"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -122,12 +122,12 @@ export function ImpactPillars() {
               size="sm"
               aria-label="Next pillar"
               onClick={() => go(1)}
-              className="absolute right-2 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-full border-white/20 bg-white/35 p-0 text-brand-ink/70 shadow-none backdrop-blur-[2px] hover:bg-white/55 hover:text-brand-ink sm:right-3"
+              className="absolute right-2 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-full border-white/20 bg-white/35 p-0 text-brand-dark/70 shadow-none backdrop-blur-[2px] hover:bg-white/55 hover:text-brand-dark sm:right-3"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
 
-            <div className="h-full w-full overflow-hidden rounded-2xl border border-brand-sand shadow-sm">
+            <div className="h-full w-full overflow-hidden rounded-2xl border border-brand-light shadow-sm">
               <AnimatePresence mode="wait">
                 <motion.article
                   key={active.id}
@@ -153,7 +153,7 @@ export function ImpactPillars() {
                       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-sm">
                         <ActiveIcon className="h-4 w-4" />
                       </span>
-                      <Badge className="bg-white/90 text-brand-ink hover:bg-white">
+                      <Badge className="bg-white/90 text-brand-dark hover:bg-white">
                         {active.sessions}
                       </Badge>
                     </div>

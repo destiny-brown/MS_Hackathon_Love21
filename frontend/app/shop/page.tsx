@@ -12,9 +12,9 @@ export default function ShopPage() {
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Practical support</p>
-            <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Help remove a barrier</h2>
-            <p className="mt-4 text-brand-ink/75">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">Practical support</p>
+            <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Help remove a barrier</h2>
+            <p className="mt-4 text-brand-dark/75">
               Purchase a requested item directly when a supplier link is available, or contribute any amount toward
               the goal. Love 21 updates each total as items and contributions are secured.
             </p>
