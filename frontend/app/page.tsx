@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { SiteLayout } from "@/components/site/site-layout";
 import { Button } from "@/components/ui/button";
@@ -66,12 +67,9 @@ export default function HomePage() {
       <section className="border-b border-brand-sand bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-10 font-serif-display text-4xl text-brand-ink sm:text-5xl">Latest Updates</h2>
-          <div className="grid gap-5 lg:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {mediaPosts.slice(0, 6).map((post) => (
-              <article key={post.title} className="rounded-2xl border border-brand-sand bg-brand-cream p-6">
-                <p className="text-xs uppercase tracking-[0.14em] text-brand-ink/55">{post.date}</p>
-                <h3 className="mt-2 text-xl font-semibold text-brand-ink">{post.title}</h3>
-              </article>
+              <MediaStoryCard key={post.slug} post={post} compact />
             ))}
           </div>
           <Link
