@@ -36,7 +36,7 @@ function Eyebrow({ children, className = "" }: { children: React.ReactNode; clas
 // ---------------------------------------------------------------------------
 // Decorative primitives — used sparingly, one or two per section, never as
 // wall-to-wall texture. Each one earns its place by softening a hard edge
-// (a black band, a straight section seam) rather than sitting on top of it.
+// rather than sitting on top of it.
 // ---------------------------------------------------------------------------
 
 function Blob({ className = "" }: { className?: string }) {
@@ -107,6 +107,62 @@ function IconHands({ className = "" }: { className?: string }) {
       <path d="M12 14l6 6" />
       <path d="M28 21l-8 9" />
     </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Floating CTA rail — a two-way rail (Donate + Volunteer) pinned to the edge
+// of the viewport. Collapsed to a circular icon by default; expands to
+// reveal its label on hover/focus. Swaps to a bottom bar on small screens.
+// ---------------------------------------------------------------------------
+
+function FloatingCta() {
+  return (
+    <>
+      {/* Desktop / tablet: vertical rail pinned to the right edge */}
+      <div className="pointer-events-none fixed inset-y-0 right-0 z-40 hidden items-center sm:flex">
+        <div className="pointer-events-auto flex flex-col gap-3 pr-3 lg:pr-4">
+          <Link
+            href="/donate"
+            className="group flex items-center rounded-full bg-brand-coral text-white shadow-lg shadow-black/20 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/25"
+          >
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center">
+              <IconHeart className="h-6 w-6" />
+            </span>
+            <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-all duration-300 group-hover:max-w-[110px]">
+              Donate
+            </span>
+          </Link>
+          <Link
+            href="/our-volunteer"
+            className="group flex items-center rounded-full border border-black/10 bg-white text-brand-ink shadow-lg shadow-black/10 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/15"
+          >
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center">
+              <IconHands className="h-6 w-6" />
+            </span>
+            <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-all duration-300 group-hover:max-w-[110px]">
+              Volunteer
+            </span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Mobile: fixed bottom bar instead of a side rail */}
+      <div className="fixed inset-x-0 bottom-0 z-40 flex gap-px border-t border-black/10 bg-white/95 backdrop-blur sm:hidden">
+        <Link
+          href="/donate"
+          className="flex flex-1 items-center justify-center gap-2 bg-brand-coral py-3.5 text-sm font-semibold text-white"
+        >
+          <IconHeart className="h-4 w-4" /> Donate
+        </Link>
+        <Link
+          href="/our-volunteer"
+          className="flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-semibold text-brand-ink"
+        >
+          <IconHands className="h-4 w-4" /> Volunteer
+        </Link>
+      </div>
+    </>
   );
 }
 
@@ -196,12 +252,6 @@ function CtaButton({
 // Data
 // ---------------------------------------------------------------------------
 
-const impactStats = [
-  { value: "600+", label: "families & members supported monthly" },
-  { value: "~1,000", label: "classes run every month" },
-  { value: "15%", label: "of neurodiverse adults are in competitive employment globally — we're changing that" },
-];
-
 const journeySteps = [
   {
     step: "01",
@@ -226,65 +276,9 @@ const journeySteps = [
   },
 ];
 
-type PersonaKey = "families" | "volunteers" | "donors" | "corporate" | "government";
-
-type Persona = {
-  label: string;
-  headline: string;
-  body: string;
-  primary: { label: string; href: string };
-  secondary?: { label: string; href: string };
-};
-
-const personas: Record<PersonaKey, Persona> = {
-  families: {
-    label: "Families",
-    headline: "Register your child for classes, support, and community.",
-    body: "Sign up through the Love 21 member app — our fair sign-up system, class calendar, and gamified progress tracking all live there. This page is your front door in.",
-    primary: { label: "Join as a family", href: "/members" },
-    secondary: { label: "See our programmes", href: "#programmes" },
-  },
-  volunteers: {
-    label: "Volunteers",
-    headline: "One form. No waiting for an email back.",
-    body: "Browse open roles by programme, pick your slot, and you're auto-confirmed — no manual approval queue. Your hours are tracked toward recognition badges from day one.",
-    primary: { label: "Browse volunteer roles", href: "/our-volunteer" },
-    secondary: { label: "See the impact your hours have", href: "#journey" },
-  },
-  donors: {
-    label: "Donors",
-    headline: "HKD 500 funds a class of 15. See exactly where it goes.",
-    body: "As a non-government-funded charity, recurring donations are what let us plan beyond one month at a time. Every donation tier is tied to a specific, real outcome.",
-    primary: { label: "Give one-time or monthly", href: "/donate" },
-    secondary: { label: "Explore our wishlist instead", href: "/shop" },
-  },
-  corporate: {
-    label: "Corporate",
-    headline: "CSR days that teach your team something, not just a photo op.",
-    body: "Bring your team on-site, sponsor a class outright, or offer skills-based pro bono support. Many of our best partners started with one employee volunteering solo.",
-    primary: { label: "Explore CSR partnerships", href: "/join-us" },
-    secondary: { label: "Book a corporate volunteer day", href: "/our-volunteer" },
-  },
-  government: {
-    label: "Government & Policy",
-    headline: "See the model. Help fix inclusive education in Hong Kong.",
-    body: "We're happy to host visits and share our data — class outcomes, employment stats, family reach — for anyone working on disability and education policy.",
-    primary: { label: "Request a visit", href: "/about-us" },
-    secondary: { label: "Read our impact data", href: "/impact-dashboard" },
-  },
-};
-
 // Replace with real, family-approved quotes and names before this goes live.
 const testimonials = [
   {
-    title: "Donate",
-    description: "Back campaigns and causes that create more opportunities for every ability to shine.",
-    href: "/donate",
-  },
-  {
-    title: "Wishlist",
-    description: "Fund or purchase practical tools that help members train, learn, and create.",
-    href: "/shop",
     quote: "Two years ago, [Name] couldn't finish a lap. This season, [she/he] led the warm-up.",
     name: "[Parent name], mother of a Saturday football member",
   },
@@ -304,13 +298,6 @@ const weeklyRhythm = [
   { day: "Wed", programme: "Nutrition & cooking club", time: "4:00–5:00pm" },
   { day: "Thu", programme: "Swim class", time: "5:00–6:00pm" },
   { day: "Sat", programme: "Family sports morning", time: "9:30–11:30am" },
-];
-
-const donationTiers = [
-  { amount: "HKD 200", impact: "Snacks and hydration for one class of 15" },
-  { amount: "HKD 500", impact: "Funds a full class session, coach included" },
-  { amount: "HKD 1,500", impact: "Covers one member's programme fees for a term" },
-  { amount: "HKD 5,000", impact: "Sponsors a full Saturday family sports morning" },
 ];
 
 const faqs = [
@@ -439,70 +426,16 @@ function FaqAccordion() {
   );
 }
 
-function NewsletterSignup() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-    // Wire this up to your actual mailing list provider — this just confirms client-side for now.
-    setSubmitted(true);
-  }
-
-  if (submitted) {
-    return (
-      <p className="font-serif-display text-xl text-brand-ink">
-        You're on the list. First update lands soon.
-      </p>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex max-w-md flex-wrap gap-3">
-      <input
-        type="email"
-        required
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="you@email.com"
-        className="min-w-0 flex-1 rounded-full border border-black/15 px-5 py-3 text-sm text-brand-ink outline-none focus:border-brand-coral"
-      />
-      <button
-        type="submit"
-        className="rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white transition hover:bg-black"
-      >
-        Get updates
-      </button>
-    </form>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 
 export default function GetInvolvedPage() {
-  const [persona, setPersona] = useState<PersonaKey>("volunteers");
-  const [displayedPersona, setDisplayedPersona] = useState<PersonaKey>("volunteers");
-  const [personaFade, setPersonaFade] = useState(true);
-
-  useEffect(() => {
-    setPersonaFade(false);
-    const t = setTimeout(() => {
-      setDisplayedPersona(persona);
-      setPersonaFade(true);
-    }, 150);
-    return () => clearTimeout(t);
-  }, [persona]);
-
-  const active = personas[displayedPersona];
   const cardAccents = ["bg-brand-coral", "bg-brand-ink", "bg-brand-sand"];
-  const cardTilts = ["-rotate-1", "rotate-0", "rotate-1"];
 
   return (
     <SiteLayout>
-      {/* Local keyframes for the marquee band and the faint dot texture. */}
+      {/* Local keyframes for the marquee band. */}
       <style>{`
         @keyframes l21-marquee {
           from { transform: translateX(0); }
@@ -516,16 +449,15 @@ export default function GetInvolvedPage() {
         @media (prefers-reduced-motion: reduce) {
           .l21-marquee-track { animation: none; }
         }
-        .l21-dots {
-          background-image: radial-gradient(currentColor 1px, transparent 1px);
-          background-size: 18px 18px;
-        }
       `}</style>
+
+      {/* Floating Donate / Volunteer rail — stays pinned across the whole page */}
+      <FloatingCta />
 
       {/* ---------- STORY HERO ---------- */}
       <section className="relative overflow-hidden bg-white px-4 pb-16 pt-14 sm:px-6 lg:px-8">
         <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pr-16">
           <div className="relative">
             <Eyebrow>Celebrating Ability</Eyebrow>
             <h1 className="mt-3 font-serif-display text-4xl leading-[1.05] text-brand-ink sm:text-5xl lg:text-6xl">
@@ -601,42 +533,6 @@ export default function GetInvolvedPage() {
         </div>
       </div>
 
-      {/* ---------- BY THE NUMBERS ---------- */}
-      <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <Blob className="left-1/2 top-0 h-96 w-96 -translate-x-1/2 bg-[#FBE3E3] opacity-40" />
-        <div className="relative mx-auto max-w-6xl">
-          <div className="relative text-center">
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 -top-6 select-none overflow-hidden whitespace-nowrap text-center font-serif-display text-[14vw] leading-none text-brand-ink/[0.05] sm:text-[90px]"
-            >
-              NUMBERS
-            </span>
-            <div className="relative z-10 pt-10 sm:pt-14">
-              <Eyebrow className="justify-center">By the numbers</Eyebrow>
-              <h2 className="mx-auto mt-3 max-w-xl font-serif-display text-4xl text-brand-ink sm:text-5xl">
-                Not just statistics. Real families.
-              </h2>
-            </div>
-          </div>
-
-          <div className="relative mt-14 grid gap-6 sm:grid-cols-3">
-            {impactStats.map((stat, i) => (
-              <Reveal key={stat.label} delay={i * 100}>
-                <div
-                  className={`h-full rounded-[32px] bg-gradient-to-br from-[#2A1414] to-[#160B0B] px-7 py-9 text-white shadow-lg shadow-red-900/10 transition-all duration-500 hover:-translate-y-2 hover:rotate-0 hover:shadow-xl ${cardTilts[i % cardTilts.length]}`}
-                >
-                  <div className="font-serif-display text-5xl">{stat.value}</div>
-                  <div className="mt-3 text-sm leading-snug text-white/70">{stat.label}</div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <WaveDivider color="#FFFFFF" />
-
       {/* ---------- WHAT WE DO + GALLERY (journey connector) ---------- */}
       <div className="relative overflow-hidden bg-[#F8F4EB]">
         <svg
@@ -658,7 +554,7 @@ export default function GetInvolvedPage() {
         <div className="pointer-events-none absolute left-[9%] top-[4%] hidden h-2.5 w-2.5 rounded-full bg-brand-coral shadow-md lg:block" />
         <div className="pointer-events-none absolute left-[89%] top-[76%] hidden h-2.5 w-2.5 rounded-full bg-brand-coral shadow-md lg:block" />
 
-        <section id="programmes" className="relative px-4 py-16 sm:px-6 lg:px-8">
+        <section id="programmes" className="relative px-4 py-16 sm:px-6 lg:px-8 lg:pr-24">
           <div className="mx-auto max-w-6xl">
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -681,13 +577,6 @@ export default function GetInvolvedPage() {
                     />
                     <h3 className="font-serif-display text-2xl text-brand-ink">{programme.title}</h3>
                     <p className="mt-3 text-sm text-brand-ink/75">{programme.description}</p>
-                    <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                      <Link href="/members" className="font-semibold text-brand-coral hover:underline">Join as Family</Link>
-                      <Link href="/our-volunteer" className="font-semibold text-brand-coral hover:underline">Volunteer</Link>
-                      <Link href="/join-us" className="font-semibold text-brand-coral hover:underline">Corporate CSR</Link>
-                      <Link href="/donate" className="font-semibold text-brand-coral hover:underline">Donate</Link>
-                      <Link href="/shop" className="font-semibold text-brand-coral hover:underline">Wishlist</Link>
-                    </div>
                   </article>
                 </Reveal>
               ))}
@@ -696,7 +585,7 @@ export default function GetInvolvedPage() {
         </section>
 
         {/* ---------- GALLERY STRIP ---------- */}
-        <section className="relative px-4 pb-16 sm:px-6 lg:px-8">
+        <section className="relative px-4 pb-16 sm:px-6 lg:px-8 lg:pr-24">
           <div className="mx-auto max-w-6xl">
             <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-ink/50">
               <IconHeart className="h-4 w-4" /> Life at Love 21, in between the numbers
@@ -793,71 +682,6 @@ export default function GetInvolvedPage() {
         </div>
       </section>
 
-      {/* ---------- WHERE YOUR GIFT GOES ---------- */}
-      <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <Blob className="right-0 top-0 h-56 w-56 translate-x-1/3 -translate-y-1/3 bg-[#FBE3E3] opacity-40" />
-        <div className="relative mx-auto max-w-6xl">
-          <Eyebrow>Donor transparency</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Where your gift goes</h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {donationTiers.map((tier, i) => (
-              <div
-                key={tier.amount}
-                className={`rounded-2xl border border-brand-sand bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${i % 2 === 0 ? "sm:-rotate-1" : "sm:rotate-1"}`}
-              >
-                <div className="font-serif-display text-2xl text-brand-coral">{tier.amount}</div>
-                <p className="mt-3 text-sm text-brand-ink/70">{tier.impact}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-8">
-            <CtaButton href="/donate">Choose your tier</CtaButton>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- PERSONA SWITCHER: CHOOSE YOUR PATHWAY ---------- */}
-      <section className="relative overflow-hidden bg-[#FBEAEA] px-4 py-20 sm:px-6 lg:px-8">
-        <Blob className="-top-14 right-10 h-52 w-52 bg-white/40" />
-        <div className="relative mx-auto max-w-6xl">
-          <Eyebrow>Get Involved</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Who are you here as?</h2>
-
-          <div className="mt-8 flex flex-wrap gap-2">
-            {(Object.keys(personas) as PersonaKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => setPersona(key)}
-                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${
-                  persona === key
-                    ? "bg-black text-white"
-                    : "bg-white text-brand-ink hover:bg-black/10"
-                }`}
-              >
-                {personas[key].label}
-              </button>
-            ))}
-          </div>
-
-          <div
-            className={`mt-8 rounded-3xl border border-black/10 bg-white p-8 transition-opacity duration-300 sm:p-10 ${
-              personaFade ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <h3 className="max-w-2xl font-serif-display text-2xl text-brand-ink sm:text-3xl">
-              {active.headline}
-            </h3>
-            <p className="mt-4 max-w-2xl text-brand-ink/75">{active.body}</p>
-            <div className="mt-6 flex flex-wrap gap-4">
-              <CtaButton href={active.primary.href}>{active.primary.label}</CtaButton>
-              {active.secondary && (
-                <CtaButton href={active.secondary.href} variant="outline">{active.secondary.label}</CtaButton>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ---------- STORY SPOTLIGHT (testimonial carousel) ---------- */}
       <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-1/3 h-64 w-64 bg-[#EAF6F2] opacity-60" />
@@ -892,65 +716,80 @@ export default function GetInvolvedPage() {
         <div className="relative mx-auto max-w-3xl">
           <Eyebrow>Before you reach out</Eyebrow>
           <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Questions people actually ask</h2>
-          <div className="mt-8 rounded-3xl bg-white px-6 sm:px-8">
+          <div className="mt-8 rounded-3xl bg-white px-6 shadow-sm sm:px-8">
             <FaqAccordion />
           </div>
         </div>
       </section>
 
-      {/* ---------- OTHER WAYS TO GIVE ---------- */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl grid gap-5 sm:grid-cols-2">
-          <div className="group relative overflow-hidden rounded-2xl border border-brand-sand p-8">
-            <IconHands className="absolute -right-2 -top-2 h-20 w-20 text-brand-ink/[0.06] transition-transform duration-500 group-hover:rotate-6" />
-            <h3 className="relative font-serif-display text-2xl text-brand-ink">Start your own campaign</h3>
-            <p className="relative mt-3 text-brand-ink/75">
-              Running a marathon, doing a birthday fundraiser, or leading a school drive? Set up a
-              peer-to-peer page in minutes and rally your own network.
-            </p>
-            <Link href="/campaigns/new" className="group/link relative mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-coral hover:underline">
-              Start a campaign
-              <span className="inline-block transition-transform duration-300 group-hover/link:translate-x-1.5">→</span>
-            </Link>
-          </div>
-          <div className="group relative overflow-hidden rounded-2xl border border-brand-sand p-8">
-            <IconHeart className="absolute -right-2 -top-2 h-20 w-20 text-brand-ink/[0.06] transition-transform duration-500 group-hover:rotate-6" />
-            <h3 className="relative font-serif-display text-2xl text-brand-ink">Give something, not just cash</h3>
-            <p className="relative mt-3 text-brand-ink/75">
-              Our wishlist — built with Crossroads Foundation — lists exactly what's needed right
-              now, so your gift goes where it counts instead of into storage.
-            </p>
-            <Link href="/shop" className="group/link relative mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-coral hover:underline">
-              View the wishlist
-              <span className="inline-block transition-transform duration-300 group-hover/link:translate-x-1.5">→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- NEWSLETTER ---------- */}
-      <section className="relative overflow-hidden border-t border-brand-sand bg-white px-4 py-16 sm:px-6 lg:px-8">
+      {/* ---------- NEWSLETTER / CLOSING ---------- */}
+      <section className="relative overflow-hidden border-t border-brand-sand bg-white px-4 py-16 pb-24 sm:px-6 sm:pb-16 lg:px-8">
         <Blob className="left-0 bottom-0 h-40 w-40 -translate-x-1/3 translate-y-1/3 bg-[#EAF6F2] opacity-60" />
-        <div className="relative mx-auto max-w-6xl">
-          <Eyebrow>Stay close</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">
-            One email a month. No noise.
-          </h2>
-          <div className="mt-6">
-            <NewsletterSignup />
-          </div>
-        </div>
-      </section>
+        <Blob className="right-10 top-0 h-32 w-32 -translate-y-1/2 bg-[#FBE3E3] opacity-50" />
 
-      {/* ---------- FINAL CTA ---------- */}
-      <section className="relative overflow-hidden bg-black px-4 py-16 text-center text-white sm:px-6 lg:px-8">
-        <Blob className="left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-brand-coral/10" />
-        <div className="relative">
-          <TriMark className="mx-auto h-2.5 w-9 text-brand-coral" />
-          <h2 className="mt-4 font-serif-display text-3xl sm:text-4xl">Ability doesn&apos;t need permission. It needs opportunity.</h2>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <CtaButton href="/donate">Donate now</CtaButton>
-            <CtaButton href="/our-volunteer" variant="outline-dark">Volunteer</CtaButton>
+        <div className="relative mx-auto max-w-6xl">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div>
+              <Eyebrow>Stay close</Eyebrow>
+              <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">
+                Stay connected with Love 21
+              </h2>
+              <p className="mt-3 max-w-md text-brand-ink/70">
+                Receive stories, programme updates, upcoming events, and ways you can
+                continue making an impact — as often as you'd like to hear from us.
+              </p>
+
+              <form className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <label className="sr-only" htmlFor="newsletter-email">
+                  Email address
+                </label>
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  required
+                  placeholder="you@email.com"
+                  className="min-w-0 flex-1 rounded-full border border-black/15 px-5 py-3 text-sm text-brand-ink outline-none focus:border-brand-coral sm:min-w-[220px]"
+                />
+
+                <label className="sr-only" htmlFor="newsletter-frequency">
+                  Update frequency
+                </label>
+                <select
+                  id="newsletter-frequency"
+                  defaultValue="monthly"
+                  className="rounded-full border border-black/15 bg-white px-5 py-3 text-sm text-brand-ink outline-none focus:border-brand-coral"
+                >
+                  <option value="weekly">Weekly updates</option>
+                  <option value="biweekly">Every 2 weeks</option>
+                  <option value="monthly">Monthly updates</option>
+                  <option value="quarterly">Quarterly updates</option>
+                  <option value="important">Only important announcements</option>
+                </select>
+
+                <button
+                  type="submit"
+                  className="rounded-full bg-brand-coral px-7 py-3 text-sm font-semibold text-white transition hover:bg-black"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
+
+            {/* A quiet closing prompt for people who are ready to act right now,
+                rather than a second big CTA block competing with the form. */}
+            <div className="rounded-3xl border border-brand-sand bg-[#FBF8F1] p-7">
+              <TriMark className="h-2 w-7 text-brand-coral" />
+              <p className="mt-4 font-serif-display text-xl text-brand-ink">
+                Not ready to wait for the next update?
+              </p>
+              <p className="mt-2 text-sm text-brand-ink/70">
+                You can donate or find a volunteer shift today — both take less than five minutes.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <CtaButton href="/donate">Donate</CtaButton>
+                <CtaButton href="/our-volunteer" variant="outline">Volunteer</CtaButton>
+              </div>
+            </div>
           </div>
         </div>
       </section>
