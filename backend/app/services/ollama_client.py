@@ -7,20 +7,27 @@ from urllib.request import Request, urlopen
 from app.core.config import get_settings
 
 
-def chat_json(system: str, user: str) -> dict | None:
+def chat_json(system: str, user: str, timeout_seconds: int | None = None) -> dict | None:
     """Call a local Ollama model and parse a JSON object from the response."""
     settings = get_settings()
     if not settings.ollama_enabled:
         return None
 
+    timeout = timeout_seconds if timeout_seconds is not None else settings.ollama_timeout_seconds
+
     payload = {
         "model": settings.ollama_model,
         "stream": False,
         "format": "json",
+        "keep_alive": "10m",
         "messages": [
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ],
+        "options": {
+            "num_predict": 120,
+            "temperature": 0.2,
+        },
     }
 
     request = Request(
@@ -31,7 +38,7 @@ def chat_json(system: str, user: str) -> dict | None:
     )
 
     try:
-        with urlopen(request, timeout=settings.ollama_timeout_seconds) as response:
+        with urlopen(request, timeout=timeout) as response:
             body = json.loads(response.read().decode("utf-8"))
     except (URLError, TimeoutError, json.JSONDecodeError, KeyError):
         return None

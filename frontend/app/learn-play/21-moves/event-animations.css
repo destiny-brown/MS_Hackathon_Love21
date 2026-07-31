@@ -1,0 +1,369 @@
+/* event-animations.css
+   Keyframes for the field-event and dragon-boat animation stages.
+   Imported once by app/twenty-one-moves/page.tsx.
+   All motion respects prefers-reduced-motion at the bottom of the file. */
+
+/* ---------- shared runner approach ---------- */
+@keyframes runner-approach {
+  0% { transform: translateX(-40%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes runner-idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ---------- success: clears the obstacle and keeps going ---------- */
+@keyframes event-success-hop {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  35% { transform: translate(30px, -46px) rotate(-8deg); }
+  60% { transform: translate(70px, -52px) rotate(4deg); }
+  100% { transform: translate(150px, 0) rotate(0deg); }
+}
+
+@keyframes event-success-throw {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  30% { transform: translate(6px, -4px) rotate(-14deg); }
+  55% { transform: translate(18px, -10px) rotate(18deg); }
+  100% { transform: translate(28px, -4px) rotate(4deg); }
+}
+
+@keyframes event-success-javelin-flight {
+  0% { transform: translate(0, 0) rotate(10deg); opacity: 1; }
+  100% { transform: translate(220px, -30px) rotate(-8deg); opacity: 1; }
+}
+
+@keyframes event-success-vault {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  30% { transform: translate(10px, -10px) rotate(-30deg); }
+  55% { transform: translate(45px, -70px) rotate(40deg); }
+  80% { transform: translate(90px, -30px) rotate(70deg); }
+  100% { transform: translate(140px, 0) rotate(90deg); }
+}
+
+/* ---------- fail: stumble / short attempt ---------- */
+@keyframes event-fail-stumble {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  40% { transform: translate(18px, -10px) rotate(-6deg); }
+  60% { transform: translate(22px, 6px) rotate(14deg); }
+  100% { transform: translate(24px, 10px) rotate(24deg); }
+}
+
+@keyframes event-fail-short {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  40% { transform: translate(8px, -6px) rotate(-4deg); }
+  100% { transform: translate(14px, 4px) rotate(10deg); }
+}
+
+/* ---------- dragon boat ---------- */
+@keyframes boat-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-1deg); }
+}
+
+@keyframes paddle-stroke {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-22deg); }
+}
+
+@keyframes water-scroll {
+  0% { background-position-x: 0; }
+  100% { background-position-x: -120px; }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(90px) rotate(180deg); opacity: 0; }
+}
+
+/* ---------- utility animation classes applied by the components ---------- */
+.anim-runner-approach { animation: runner-approach 1.1s ease-out forwards; }
+.anim-runner-idle { animation: runner-idle-bob 1.4s ease-in-out infinite; }
+.anim-event-success-hop { animation: event-success-hop 1.1s cubic-bezier(.3,.6,.4,1) forwards; }
+.anim-event-success-throw { animation: event-success-throw 0.9s ease-out forwards; }
+.anim-event-success-javelin { animation: event-success-javelin-flight 0.9s ease-out forwards; }
+.anim-event-success-vault { animation: event-success-vault 1.2s cubic-bezier(.3,.6,.4,1) forwards; }
+.anim-event-fail-stumble { animation: event-fail-stumble 0.9s ease-in forwards; }
+.anim-event-fail-short { animation: event-fail-short 0.8s ease-in forwards; }
+.anim-boat-bob { animation: boat-bob 1.6s ease-in-out infinite; }
+.anim-paddle { animation: paddle-stroke 0.6s ease-in-out infinite; }
+.anim-water-scroll { animation: water-scroll 1.4s linear infinite; }
+.anim-confetti { animation: confetti-fall 1.1s ease-in forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-runner-approach,
+  .anim-runner-idle,
+  .anim-event-success-hop,
+  .anim-event-success-throw,
+  .anim-event-success-javelin,
+  .anim-event-success-vault,
+  .anim-event-fail-stumble,
+  .anim-event-fail-short,
+  .anim-boat-bob,
+  .anim-paddle,
+  .anim-water-scroll,
+  .anim-confetti {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ================================================================== */
+/* Realism pass: alternating running gait + ground shadow              */
+/* ================================================================== */
+
+@keyframes leg-run-front {
+  0%, 100% { transform: rotate(-28deg); }
+  50% { transform: rotate(26deg); }
+}
+@keyframes leg-run-back {
+  0%, 100% { transform: rotate(26deg); }
+  50% { transform: rotate(-28deg); }
+}
+@keyframes arm-run-front {
+  0%, 100% { transform: rotate(24deg); }
+  50% { transform: rotate(-22deg); }
+}
+@keyframes arm-run-back {
+  0%, 100% { transform: rotate(-22deg); }
+  50% { transform: rotate(24deg); }
+}
+@keyframes torso-run-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.is-running .leg-front { animation: leg-run-front 0.3s ease-in-out infinite; transform-origin: 22px 50px; }
+.is-running .leg-back { animation: leg-run-back 0.3s ease-in-out infinite; transform-origin: 36px 50px; }
+.is-running .arm-front { animation: arm-run-front 0.3s ease-in-out infinite; transform-origin: 14px 26px; }
+.is-running .arm-back { animation: arm-run-back 0.3s ease-in-out infinite; transform-origin: 46px 26px; }
+.is-running .torso-group { animation: torso-run-bounce 0.3s ease-in-out infinite; }
+
+@keyframes shadow-pulse {
+  0%, 100% { transform: scaleX(1); opacity: 0.32; }
+  50% { transform: scaleX(0.7); opacity: 0.2; }
+}
+@keyframes shadow-hop {
+  0% { transform: scaleX(1) translateX(0); opacity: 0.32; }
+  40% { transform: scaleX(0.45) translateX(70px); opacity: 0.14; }
+  100% { transform: scaleX(1) translateX(150px); opacity: 0.32; }
+}
+@keyframes shadow-vault {
+  0% { transform: scaleX(1) translateX(0); opacity: 0.32; }
+  55% { transform: scaleX(0.4) translateX(80px); opacity: 0.12; }
+  100% { transform: scaleX(1) translateX(140px); opacity: 0.32; }
+}
+@keyframes shadow-stumble {
+  0% { transform: scaleX(1) translateX(0); opacity: 0.32; }
+  100% { transform: scaleX(1.15) translateX(20px); opacity: 0.28; }
+}
+
+.anim-shadow-idle { animation: shadow-pulse 0.3s ease-in-out infinite; }
+.anim-shadow-hop { animation: shadow-hop 1.1s cubic-bezier(.3,.6,.4,1) forwards; }
+.anim-shadow-vault { animation: shadow-vault 1.2s cubic-bezier(.3,.6,.4,1) forwards; }
+.anim-shadow-stumble { animation: shadow-stumble 0.9s ease-in forwards; }
+
+/* javelin held in hand during approach, released mid-flight */
+@keyframes javelin-windup {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(2deg); }
+}
+.is-running .javelin-prop { animation: javelin-windup 0.3s ease-in-out infinite; transform-origin: 46px 20px; }
+
+/* ================================================================== */
+/* Bigger celebration for correct answers                              */
+/* ================================================================== */
+
+@keyframes confetti-burst {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0.35) rotate(var(--rot)); opacity: 0; }
+}
+.anim-confetti-burst { animation: confetti-burst 950ms cubic-bezier(.2,.8,.3,1) forwards; }
+
+@keyframes correct-flash {
+  0% { opacity: 0; }
+  25% { opacity: 0.45; }
+  100% { opacity: 0; }
+}
+.anim-correct-flash { animation: correct-flash 850ms ease-out forwards; }
+
+@keyframes badge-pop {
+  0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+  55% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.anim-badge-pop { animation: badge-pop 480ms cubic-bezier(.3,1.4,.4,1) forwards; }
+
+@keyframes float-up-fade {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-28px); opacity: 0; }
+}
+.anim-float-up { animation: float-up-fade 900ms ease-out forwards; }
+
+@keyframes score-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+.anim-score-bump { animation: score-bump 420ms ease-out; }
+
+/* softer feedback for a wrong answer */
+@keyframes wrong-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.anim-wrong-shake { animation: wrong-shake 420ms ease-in-out; }
+
+@keyframes dust-puff {
+  0% { transform: translateY(0) scale(0.6); opacity: 0.7; }
+  100% { transform: translateY(-10px) scale(1.3); opacity: 0; }
+}
+.anim-dust-puff { animation: dust-puff 700ms ease-out forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .is-running .leg-front,
+  .is-running .leg-back,
+  .is-running .arm-front,
+  .is-running .arm-back,
+  .is-running .torso-group,
+  .is-running .javelin-prop,
+  .anim-shadow-idle,
+  .anim-shadow-hop,
+  .anim-shadow-vault,
+  .anim-shadow-stumble,
+  .anim-confetti-burst,
+  .anim-correct-flash,
+  .anim-badge-pop,
+  .anim-float-up,
+  .anim-score-bump,
+  .anim-wrong-shake,
+  .anim-dust-puff {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ================================================================== */
+/* 21 Moves — cinematic scene polish (Captain 21 trail animations)     */
+/* ================================================================== */
+
+.trail-scene-grid {
+  background-image:
+    linear-gradient(to right, var(--scene-grid-tint, rgba(26, 26, 26, 0.35)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(26, 26, 26, 0.15) 1px, transparent 1px);
+  background-size: 28px 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-scene-grid {
+    opacity: 0.05;
+  }
+}
+
+/* ================================================================== */
+/* Immersive-journey redesign additions                                */
+/* Welcome gate, mission badge, floating "holo" question panel,        */
+/* speech bubbles, and avatar reaction micro-interactions.             */
+/* The avatar rigs themselves (AthleteFigure / DragonBoat) are          */
+/* untouched — everything below dresses the space *around* them.       */
+/* ================================================================== */
+
+/* ---------- name gate ---------- */
+@keyframes gate-fade-in {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.anim-gate-in { animation: gate-fade-in 500ms ease-out forwards; }
+
+@keyframes gate-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.anim-gate-float { animation: gate-float 3.2s ease-in-out infinite; }
+
+/* ---------- mission badge ---------- */
+@keyframes badge-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 84, 62, 0.25); }
+  50% { box-shadow: 0 0 0 6px rgba(232, 84, 62, 0); }
+}
+.anim-badge-glow { animation: badge-glow-pulse 2.4s ease-in-out infinite; }
+
+/* ---------- floating holo question panel ---------- */
+@keyframes panel-slide-bounce-in {
+  0% { opacity: 0; transform: translateX(28px) scale(0.94); }
+  65% { opacity: 1; transform: translateX(-4px) scale(1.015); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+.anim-panel-in { animation: panel-slide-bounce-in 520ms cubic-bezier(.2,.9,.25,1.15) both; }
+
+@keyframes holo-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.anim-holo-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.5) 45%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 220% 100%;
+  animation: holo-shimmer 3.2s linear infinite;
+}
+
+/* ---------- speech bubble ---------- */
+@keyframes bubble-pop-in {
+  0% { opacity: 0; transform: translateY(8px) scale(0.85); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.04); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.anim-bubble-in { animation: bubble-pop-in 420ms cubic-bezier(.3,1.2,.4,1) both; }
+
+/* ---------- avatar micro-reactions (sit *beside* the avatar, never edit it) ---------- */
+@keyframes reaction-pop {
+  0% { opacity: 0; transform: translateY(6px) scale(0.5) rotate(-6deg); }
+  50% { opacity: 1; transform: translateY(-6px) scale(1.15) rotate(4deg); }
+  100% { opacity: 1; transform: translateY(-10px) scale(1) rotate(0deg); }
+}
+.anim-reaction-pop { animation: reaction-pop 480ms cubic-bezier(.3,1.4,.4,1) both; }
+
+@keyframes sparkle-drift {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4) rotate(0deg); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--sx, 12px), calc(var(--sy, -18px))) scale(1) rotate(90deg); }
+}
+.anim-sparkle { animation: sparkle-drift 900ms ease-out forwards; }
+
+/* ---------- zoom/parallax transition between phases ---------- */
+@keyframes scene-zoom-settle {
+  0% { transform: scale(1.03); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.anim-scene-settle { animation: scene-zoom-settle 480ms ease-out both; }
+
+/* ---------- progress fill (mission bar) ---------- */
+@keyframes progress-fill-glow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.25); }
+}
+.anim-progress-glow { animation: progress-fill-glow 1.8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-gate-in,
+  .anim-gate-float,
+  .anim-badge-glow,
+  .anim-panel-in,
+  .anim-holo-shimmer,
+  .anim-bubble-in,
+  .anim-reaction-pop,
+  .anim-sparkle,
+  .anim-scene-settle,
+  .anim-progress-glow {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
