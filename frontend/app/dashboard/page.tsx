@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -11,32 +10,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { api, clearToken, getToken, Item, User } from "@/lib/api";
+import { api, Item } from "@/lib/api";
+import { signOutToLogin, useRequireRoles } from "@/lib/auth";
 import { Locale, t } from "@/lib/i18n";
 
 export default function DashboardPage() {
-  const router = useRouter();
   const [locale, setLocale] = useState<Locale>("en");
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading, error: authError } = useRequireRoles("admin");
   const [items, setItems] = useState<Item[]>([]);
+  const [metrics, setMetrics] = useState<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number } | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editing, setEditing] = useState<Item | null>(null);
   const [error, setError] = useState("");
 
-  async function load() {
-    const [me, list] = await Promise.all([api.me(), api.listItems()]);
-    setUser(me);
+  async function loadAdminData() {
+    const [list, adminMetrics] = await Promise.all([api.listItems(), api.adminMetrics()]);
     setItems(list);
+    setMetrics(adminMetrics);
   }
 
   useEffect(() => {
-    if (!getToken()) {
-      router.push("/login");
-      return;
-    }
-    load().catch((err) => setError(err instanceof Error ? err.message : "Could not load dashboard"));
-  }, [router]);
+    if (user?.role !== "admin") return;
+    loadAdminData().catch((err) => setError(err instanceof Error ? err.message : "Could not load dashboard"));
+  }, [user]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,7 +47,7 @@ export default function DashboardPage() {
       setTitle("");
       setDescription("");
       setEditing(null);
-      await load();
+      await loadAdminData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save item");
     }
@@ -64,12 +61,17 @@ export default function DashboardPage() {
 
   async function remove(item: Item) {
     await api.deleteItem(item.id);
-    await load();
+    await loadAdminData();
   }
 
-  function logout() {
-    clearToken();
-    router.push("/login");
+  if (loading || !user || user.role !== "admin") {
+    return (
+      <main className="flex min-h-screen items-center justify-center px-4 py-10">
+        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">
+          Checking dashboard access...
+        </p>
+      </main>
+    );
   }
 
   return (
@@ -78,19 +80,41 @@ export default function DashboardPage() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">{t(locale, "dashboard")}</h1>
-            {user ? (
-              <p className="text-sm text-muted-foreground">
-                {t(locale, "signedInAs")} {user.email} · {user.role}
-              </p>
-            ) : null}
+            <p className="text-sm text-muted-foreground">
+              {t(locale, "signedInAs")} {user.email} · {user.role}
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <LanguageSwitcher locale={locale} onChange={setLocale} />
-            <Button variant="outline" onClick={logout}>{t(locale, "logout")}</Button>
+            <Button variant="outline" onClick={signOutToLogin}>{t(locale, "logout")}</Button>
           </div>
         </header>
 
+        {authError ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{authError}</p> : null}
         {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
+
+        {metrics ? (
+          <section className="grid gap-4 md:grid-cols-3" aria-label="Admin metrics">
+            <Card>
+              <CardHeader>
+                <CardDescription>Active members</CardDescription>
+                <CardTitle>{metrics.active_members}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardDescription>Recurring donations</CardDescription>
+                <CardTitle>{metrics.monthly_recurring_donations}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardDescription>Open volunteer roles</CardDescription>
+                <CardTitle>{metrics.open_volunteer_roles}</CardTitle>
+              </CardHeader>
+            </Card>
+          </section>
+        ) : null}
 
         <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <Card>
@@ -148,7 +172,7 @@ export default function DashboardPage() {
           </Card>
         </section>
 
-        {user?.role === "admin" ? <SupportOpportunityManager /> : null}
+        <SupportOpportunityManager />
       </div>
     </main>
   );

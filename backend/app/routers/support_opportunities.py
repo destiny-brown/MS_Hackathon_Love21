@@ -5,9 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.deps import require_role
+from app.deps import require_roles
 from app.models.support_opportunity import SupportOpportunity
-from app.models.user import User
+from app.models.user import Role, User
 from app.schemas.support_opportunity import (
     OpportunityKind,
     SupportOpportunityCreate,
@@ -51,7 +51,7 @@ def list_public_opportunities(
 
 @router.get("/admin", response_model=list[SupportOpportunityRead])
 def list_admin_opportunities(
-    _: User = Depends(require_role("admin")),
+    _: User = Depends(require_roles(Role.ADMIN)),
     db: Session = Depends(get_db),
 ):
     opportunities = db.scalars(
@@ -65,7 +65,7 @@ def list_admin_opportunities(
 @router.post("", response_model=SupportOpportunityRead, status_code=status.HTTP_201_CREATED)
 def create_opportunity(
     payload: SupportOpportunityCreate,
-    _: User = Depends(require_role("admin")),
+    _: User = Depends(require_roles(Role.ADMIN)),
     db: Session = Depends(get_db),
 ):
     opportunity = SupportOpportunity(
@@ -82,7 +82,7 @@ def create_opportunity(
 def update_opportunity(
     opportunity_id: int,
     payload: SupportOpportunityUpdate,
-    _: User = Depends(require_role("admin")),
+    _: User = Depends(require_roles(Role.ADMIN)),
     db: Session = Depends(get_db),
 ):
     opportunity = db.get(SupportOpportunity, opportunity_id)

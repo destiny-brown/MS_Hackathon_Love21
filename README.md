@@ -49,11 +49,14 @@ cp .env.example .env.local
 npm run dev
 ```
 
-## Demo login
+## Demo logins
 
-- Email: `demo@demo.com`
-- Password: `demo1234`
-- Role: `admin`
+All demo users use password `demo1234`:
+
+- Admin: `admin@love21.demo`
+- Member: `member@love21.demo`
+- Donor: `donor@love21.demo`
+- Volunteer: `volunteer@love21.demo`
 
 ## Managing donations and the wishlist
 
@@ -118,6 +121,9 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `POST /auth/register`
 - `POST /auth/login`
 - `GET /auth/me`
+- `GET /admin/metrics` — admin-only role-protection template
+- `GET /donor/recurring-donation` — donor/volunteer/member recurring-support template
+- `GET /member/profile` — member-only profile template
 - `GET /items`
 - `POST /items`
 - `GET /items/{id}`

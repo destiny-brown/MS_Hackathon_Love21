@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.core.config import get_settings
@@ -19,6 +19,12 @@ def create_db_and_tables() -> None:
     import app.models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
+    if settings.database_url.startswith("sqlite"):
+        with engine.begin() as connection:
+            connection.execute(
+                text("UPDATE users SET role = :donor WHERE role IN ('user', '') OR role IS NULL"),
+                {"donor": "donor"},
+            )
 
 
 def get_db():

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db import get_db
 from app.deps import get_current_user
-from app.models.user import User
+from app.models.user import Role, User
 from app.schemas.user import Token, UserCreate, UserLogin, UserRead
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -14,11 +14,13 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 def register(payload: UserCreate, db: Session = Depends(get_db)) -> Token:
     email = payload.email.lower().strip()
+    if payload.role == Role.ADMIN:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admins cannot self-register")
     existing = db.scalar(select(User).where(User.email == email))
     if existing:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
 
-    user = User(email=email, hashed_password=hash_password(payload.password), role="user")
+    user = User(email=email, hashed_password=hash_password(payload.password), role=payload.role)
     db.add(user)
     db.commit()
     db.refresh(user)
