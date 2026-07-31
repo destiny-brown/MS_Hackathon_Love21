@@ -38,6 +38,40 @@ export type YouTubeVideo = {
   thumbnail_url: string | null;
 };
 export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
+export type VolunteerMatchRequest = {
+  interest: "hands-on" | "food" | "people" | "skills";
+  availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
+};
+export type VolunteerMatchItem = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  score: number;
+  reasons: string[];
+};
+export type VolunteerMatchResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  matches: VolunteerMatchItem[];
+  message: string | null;
+};
+export type VolunteerActivity = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  filled?: number | null;
+  total?: number | null;
+  note?: string | null;
+  cta_label?: string;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -128,4 +162,10 @@ export const api = {
     request<YouTubeSearchResponse>(
       `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
     ),
+  matchVolunteer: (payload: VolunteerMatchRequest) =>
+    request<VolunteerMatchResponse>("/ai/volunteer/match", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
 };
