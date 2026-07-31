@@ -327,10 +327,10 @@ const volunteerStories = [
 
 // Candid, in-the-field moments — placeholder paths.
 const galleryStrip = [
-  { src: "/images/volunteer/gallery-1.jpg", alt: "A volunteer coaching a football drill", shape: "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]" },
-  { src: "/images/volunteer/gallery-2.jpg", alt: "Volunteers helping run a cooking workshop", shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]" },
-  { src: "/images/volunteer/gallery-3.jpg", alt: "A high-five between a volunteer and a member at swim class", shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]" },
-  { src: "/images/volunteer/gallery-4.jpg", alt: "A corporate volunteer team on-site", shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]" },
+  { src: "/images/get-involved/gallery-1.jpeg", alt: "A volunteer coaching a football drill", shape: "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]" },
+  { src: "/images/get-involved/gallery-2.jpeg", alt: "Volunteers helping run a cooking workshop", shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]" },
+  { src: "/images/get-involved/gallery-3.jpg", alt: "A high-five between a volunteer and a member at swim class", shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]" },
+  { src: "/images/get-involved/gallery-4.jpg", alt: "A corporate volunteer team on-site", shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]" },
 ];
 
 const faqs = [
@@ -765,7 +765,7 @@ function VolunteerContent() {
             <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-sand lg:aspect-[3/4]">
               {/* Swap for a real photo of a volunteer mid-shift — energetic, not posed. */}
-              <Image src="/images/volunteer/hero-image.jpg" alt="A volunteer coaching alongside a Love 21 member" fill priority className="object-cover" />
+              <Image src="/images/get-involved/hero-image.png" alt="A volunteer coaching alongside a Love 21 member" fill priority className="object-cover" />
             </div>
           </div>
         </div>
@@ -900,7 +900,7 @@ function VolunteerContent() {
         <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div className="relative aspect-square w-full overflow-hidden rounded-[45%_55%_60%_40%/50%_45%_55%_50%] bg-brand-sand">
             {/* Replace with a real volunteer photo — mid-shift, genuine, not posed. */}
-            <Image src="/images/volunteer/story-spotlight.jpg" alt="A Love 21 volunteer during a shift" fill className="object-cover" />
+            <Image src="/images/get-involved/story-spotlight.png" alt="A Love 21 volunteer during a shift" fill className="object-cover" />
           </div>
           <div>
             <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">

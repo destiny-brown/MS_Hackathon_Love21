@@ -270,7 +270,7 @@ const personas: Record<PersonaKey, Persona> = {
     headline: "See the model. Help fix inclusive education in Hong Kong.",
     body: "We're happy to host visits and share our data — class outcomes, employment stats, family reach — for anyone working on disability and education policy.",
     primary: { label: "Request a visit", href: "/about-us" },
-    secondary: { label: "Read our impact data", href: "/impact" },
+    secondary: { label: "Read our impact data", href: "/impact-dashboard" },
   },
 };
 

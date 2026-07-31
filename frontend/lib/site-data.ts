@@ -1,22 +1,23 @@
 export type NavItem = { label: string; href: string };
 
 export const mainNav: NavItem[] = [
-  { label: "Our Story", href: "/our-story" },
-  { label: "Our Programmes", href: "/our-programmes" },
-  { label: "Our Volunteers", href: "/our-volunteer" },
-  { label: "Media", href: "/media" },
-  { label: "Donate", href: "/donate" },
-  { label: "Contact Us", href: "/contact-us" },
+  { label: "Learn", href: "/learn-play" },
+  { label: "Get Involved", href: "/get-involved" },
+  { label: "Impact", href: "/impact-dashboard" },
+  { label: "Stories", href: "/stories-media" },
+  { label: "Events", href: "/events-campaigns" },
+  { label: "About Us", href: "/about-governance" },
 ];
 
 export const footerNav: NavItem[] = [
+  { label: "Volunteers", href: "/our-volunteer" },
+  { label: "Donate", href: "/donate" },
   { label: "Join Us", href: "/join-us" },
   { label: "Our Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
-  { label: "Board of Directors", href: "/board-of-directors" },
-  { label: "Staff", href: "/staff" },
   { label: "Shop", href: "/shop" },
   { label: "Members", href: "/members" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export const stats = [
@@ -77,12 +78,12 @@ export const fourDoors = [
   {
     title: "Volunteer",
     description: "Share your time supporting weekly classes, family sessions, and inclusive community events.",
-    href: "/volunteer",
+    href: "/our-volunteer",
   },
   {
     title: "Activity Calendar",
     description: "Find upcoming sports, nutrition workshops, family programmes, and community gatherings.",
-    href: "/calendar",
+    href: "/events-campaigns",
   },
 ];
 
