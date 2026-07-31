@@ -95,7 +95,7 @@ export type ImpactPillar = {
   sessions: string;
   quote: string;
   details: string[];
-  volunteerAction: string;
+  ctaLabel: string;
   icon: LucideIcon;
 };
 
@@ -108,12 +108,11 @@ export const impactPillars: ImpactPillar[] = [
     quote:
       "Proper health and nutrition aren't just about food—they are the essential foundation that allows strength and confidence to take root.",
     details: [
-      "Comprehensive dietary guidance and healthy cooking workshops",
-      "Data-driven health monitoring with pre- and post-program blood tests",
-      "Practical education on meal planning and gut health",
+      "Facilitate healthy cooking classes",
+      "Assist with nutrition material preparation",
+      "Support meal preparation workshops",
     ],
-    volunteerAction:
-      "Facilitate healthy cooking classes, assist with nutrition material preparation, and support meal preparation workshops.",
+    ctaLabel: "Nourish Our Butterfly",
     icon: Apple,
   },
   {
@@ -124,12 +123,11 @@ export const impactPillars: ImpactPillar[] = [
     quote:
       "We don't lower the bar—we train our members to break right through it.",
     details: [
-      "Tailored physical training to improve strength, mobility, and cardiovascular health",
-      "Objective progress tracking through regular body composition analysis",
-      "Structured group workouts that build lasting confidence",
+      "Assist trainers during group workouts",
+      "Provide one-on-one encouragement",
+      "Guide exercises",
     ],
-    volunteerAction:
-      "Assist trainers during group workouts, provide one-on-one encouragement, and guide exercises.",
+    ctaLabel: "Strengthen Our Butterfly",
     icon: Dumbbell,
   },
   {
@@ -140,12 +138,11 @@ export const impactPillars: ImpactPillar[] = [
     quote:
       "Sports gave our athletes a stage to shine, showing everyone that passion and grit beat expectations every time.",
     details: [
-      "Diverse athletic offerings across 84 activity types — trampoline, Latin dance, basketball, outdoor sports",
-      "Training pipelines for open athletic events and the Special Olympics",
-      "Emphasis on teamwork, grit, and self-belief",
+      "Co-coach sports teams",
+      "Assist with equipment setup",
+      "Support sports workshops and competitive event trips",
     ],
-    volunteerAction:
-      "Co-coach sports teams, assist with equipment setup, participate in sports workshops, and support competitive event trips.",
+    ctaLabel: "Protect Our Butterfly",
     icon: Trophy,
   },
   {
@@ -156,12 +153,11 @@ export const impactPillars: ImpactPillar[] = [
     quote:
       "Love 21 didn't just give my child a place to train—they gave our entire household a sanctuary of unconditional support.",
     details: [
-      "Dedicated Family Support Team providing targeted 1:1 counseling and mental wellness assistance",
-      "Caregiver empowerment through parent fitness, stress-relief, and peer support",
-      '"Family Living Room" community space for connection and rest',
+      "Support parent wellness events",
+      "Assist with childcare during caregiver workshops",
+      "Host community gatherings",
     ],
-    volunteerAction:
-      "Support parent wellness events, assist with childcare during caregiver workshops, and host community gatherings.",
+    ctaLabel: "Spread Wings",
     icon: Users,
   },
   {
@@ -172,12 +168,11 @@ export const impactPillars: ImpactPillar[] = [
     quote:
       "Inclusion isn't about fitting into society—it's about building a world where everyone's unique talents are recognized and celebrated.",
     details: [
-      "Employment & Development Programme — training and employing members as assistant coaches, receptionists, and administrative assistants",
-      "Social inclusion events including Disco Diverso and Celebration of Ability",
-      "Corporate CSR workshops that celebrate neurodiverse talent",
+      "Corporate team volunteering and event logistics support",
+      "Social skills buddying",
+      "Career mentoring for member-employees",
     ],
-    volunteerAction:
-      "Corporate team volunteering, event logistics support, social skills buddying, and career mentoring for member-employees.",
+    ctaLabel: "Soar with Us",
     icon: Handshake,
   },
 ];
