@@ -28,13 +28,13 @@ export function SupportProgress({
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-        <span className="text-brand-ink/70">
+        <span className="text-brand-dark/70">
           {formatHkd(fundedAmount)} of {formatHkd(targetAmount)}
         </span>
-        <span className="font-semibold text-brand-sea">{progressPercent}% funded</span>
+        <span className="font-semibold text-brand-slate">{progressPercent}% funded</span>
       </div>
       <div
-        className="h-3 overflow-hidden rounded-full bg-brand-sand/45"
+        className="h-3 overflow-hidden rounded-full bg-brand-light/45"
         role="progressbar"
         aria-label={`${label} funding progress`}
         aria-valuemin={0}
@@ -42,7 +42,7 @@ export function SupportProgress({
         aria-valuenow={visibleProgress}
       >
         <div
-          className="h-full rounded-full bg-brand-coral transition-[width]"
+          className="h-full rounded-full bg-brand-red transition-[width]"
           style={{ width: `${visibleProgress}%` }}
         />
       </div>

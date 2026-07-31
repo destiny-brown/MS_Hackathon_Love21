@@ -1,0 +1,79 @@
+{
+  "hero": {
+    "storiesMedia": {
+      "title": "Stories & Media",
+      "subtitle": "Stories, sports, nutrition and community — achievements, press coverage, and lived experiences in one place."
+    },
+    "media": {
+      "title": "Media & Programmes",
+      "subtitle": "Stories, sports, nutrition and community — social feeds, achievements, and Love 21 press coverage in one place."
+    }
+  },
+  "abilityCards": {
+    "karate": {
+      "title": "Medals on the Asian Stage",
+      "description": "Love 21 athletes stood on the podium at the 22nd Asian Senior Karate Championship's Para-Karate division in Bali, medals around their necks after competing against the region's best."
+    },
+    "job-ready": {
+      "title": "Job-Ready, Proven",
+      "description": "Featured by the South China Morning Post for a job-training programme built to show employers our members are ready for real, purposeful work."
+    },
+    "badminton": {
+      "title": "Smashing It at Special Olympics",
+      "description": "Our badminton team swept the 50th Special Olympics Hong Kong Badminton Competition, bringing home 5 golds, 1 silver and 1 bronze."
+    }
+  },
+  "pressCards": {
+    "beyond-limits": {
+      "title": "Tables & Seats Now Open for Beyond Limits Banquet",
+      "date": "May 2026"
+    },
+    "raffle-2025": {
+      "title": "Love 21 Foundation Charity Raffle 2025",
+      "date": "Nov 2025"
+    },
+    "dragon-boat": {
+      "title": "HK Yacht Club & Love 21 Team Up for Dragon Boating",
+      "date": "Sep 2021"
+    },
+    "long-happy-life": {
+      "title": "Love 21's Open Secret to a Long, Happy Life",
+      "date": "Nov 2021"
+    }
+  },
+  "sections": {
+    "soMuchAbility": {
+      "title": "So Much Ability",
+      "introStories": "Not a disability story — an opportunity story, straight from #SoMuchAbility, Love 21's own campaign hashtag.",
+      "introMedia": "Not a disability story — an opportunity story, straight from #SoMuchAbility, Love 21's own campaign hashtag. Every medal and headline below is real, pulled from Love 21's official site and press coverage."
+    },
+    "pressMoments": {
+      "title": "Press & Moments",
+      "readStory": "Read the story →"
+    },
+    "socialFeed": {
+      "title": "Social Feed"
+    },
+    "learnExperiences": {
+      "title": "Learn through real experiences",
+      "body": "These stories come from Love 21's media archive — press coverage, interviews, and community events. Pair them with our",
+      "learnLink": "Learn section",
+      "bodyEnd": "to connect facts with lived experience."
+    },
+    "pressInterviews": {
+      "title": "Press & Interviews",
+      "subtitle": "Click any cover to read the original article."
+    },
+    "communityEvents": {
+      "title": "Community Events"
+    }
+  },
+  "cta": {
+    "readyTitle": "Ready to Make a Difference?",
+    "readyBodyStories": "Volunteer, donate, or partner with us — there's a place for you.",
+    "readyBodyMedia": "Whether you want to volunteer, donate, or partner with us — there's a place for you in the Love 21 community.",
+    "getInvolved": "Get Involved →",
+    "browseStories": "Browse all stories in Learn →",
+    "viewArchive": "View full media archive →"
+  }
+}

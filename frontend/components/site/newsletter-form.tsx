@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface Subscriber {
   id: string;
@@ -15,7 +16,7 @@ interface Subscriber {
   status: "active";
 }
 
-export function NewsletterForm() {
+export function NewsletterForm({ dark = false }: { dark?: boolean }) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -97,7 +98,12 @@ export function NewsletterForm() {
       )}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="firstName">First Name</Label>
+          <Label
+            htmlFor="firstName"
+            className={cn(dark && "text-brand-light")}
+          >
+            First Name
+          </Label>
           <Input
             id="firstName"
             value={formData.firstName}
@@ -105,10 +111,16 @@ export function NewsletterForm() {
               setFormData({ ...formData, firstName: e.target.value })
             }
             placeholder="John"
+            className={cn(
+              dark &&
+                "border-brand-light/30 bg-transparent text-brand-light placeholder:text-brand-light/45",
+            )}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastName">Last Name</Label>
+          <Label htmlFor="lastName" className={cn(dark && "text-brand-light")}>
+            Last Name
+          </Label>
           <Input
             id="lastName"
             value={formData.lastName}
@@ -116,11 +128,15 @@ export function NewsletterForm() {
               setFormData({ ...formData, lastName: e.target.value })
             }
             placeholder="Doe"
+            className={cn(
+              dark &&
+                "border-brand-light/30 bg-transparent text-brand-light placeholder:text-brand-light/45",
+            )}
           />
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">
+        <Label htmlFor="email" className={cn(dark && "text-brand-light")}>
           Email Address <span className="text-red-500">*</span>
         </Label>
         <Input
@@ -130,10 +146,19 @@ export function NewsletterForm() {
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           placeholder="you@example.com"
           required
+          className={cn(
+            dark &&
+              "border-brand-light/30 bg-transparent text-brand-light placeholder:text-brand-light/45",
+          )}
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="phoneNumber">Phone Number</Label>
+        <Label
+          htmlFor="phoneNumber"
+          className={cn(dark && "text-brand-light")}
+        >
+          Phone Number
+        </Label>
         <Input
           id="phoneNumber"
           value={formData.phoneNumber}
@@ -141,13 +166,22 @@ export function NewsletterForm() {
             setFormData({ ...formData, phoneNumber: e.target.value })
           }
           placeholder="+852 9123 4567"
+          className={cn(
+            dark &&
+              "border-brand-light/30 bg-transparent text-brand-light placeholder:text-brand-light/45",
+          )}
         />
       </div>
       <Button type="submit" className="w-full">
         Subscribe
       </Button>
-      <p className="text-center text-xs text-muted-foreground">
-        We'll never share your information. Unsubscribe anytime.
+      <p
+        className={cn(
+          "text-center text-xs",
+          dark ? "text-brand-light/60" : "text-muted-foreground",
+        )}
+      >
+        We&apos;ll never share your information. Unsubscribe anytime.
       </p>
     </form>
   );

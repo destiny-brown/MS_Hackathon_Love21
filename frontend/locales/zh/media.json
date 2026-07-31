@@ -1,0 +1,79 @@
+{
+  "hero": {
+    "storiesMedia": {
+      "title": "故事与媒体",
+      "subtitle": "故事、运动、营养与社区——成就、媒体报道与真实经历，尽在一处。"
+    },
+    "media": {
+      "title": "媒体与项目",
+      "subtitle": "故事、运动、营养与社区——社交动态、成就及 Love 21 媒体报道，尽在一处。"
+    }
+  },
+  "abilityCards": {
+    "karate": {
+      "title": "亚洲赛场上的奖牌",
+      "description": "Love 21 运动员在巴厘岛举行的第 22 届亚洲空手道锦标赛残疾空手道组别中登上颁奖台，与区内顶尖选手竞技后，胸前挂满奖牌。"
+    },
+    "job-ready": {
+      "title": "就业就绪，实力证明",
+      "description": "获《南华早报》报道的职业培训计划，旨在向雇主展示我们的会员已准备好投入真实、有意义的工作。"
+    },
+    "badminton": {
+      "title": "特殊奥运会上大放异彩",
+      "description": "我们的羽毛球队在第 50 届香港特殊奥运羽毛球比赛中横扫奖项，勇夺 5 金、1 银及 1 铜。"
+    }
+  },
+  "pressCards": {
+    "beyond-limits": {
+      "title": "Beyond Limits 晚宴现正接受订座",
+      "date": "2026 年 5 月"
+    },
+    "raffle-2025": {
+      "title": "Love 21 Foundation 2025 慈善抽奖",
+      "date": "2025 年 11 月"
+    },
+    "dragon-boat": {
+      "title": "香港游艇会与 Love 21 携手推广龙舟",
+      "date": "2021 年 9 月"
+    },
+    "long-happy-life": {
+      "title": "Love 21 长寿快乐的公开秘诀",
+      "date": "2021 年 11 月"
+    }
+  },
+  "sections": {
+    "soMuchAbility": {
+      "title": "无限能力",
+      "introStories": "这不是一个关于残疾的故事——而是一个关于机遇的故事，源自 Love 21 自家活动标签 #SoMuchAbility。",
+      "introMedia": "这不是一个关于残疾的故事——而是一个关于机遇的故事，源自 Love 21 自家活动标签 #SoMuchAbility。以下每一面奖牌和每一则头条都是真实的，来自 Love 21 官方网站及媒体报道。"
+    },
+    "pressMoments": {
+      "title": "媒体与精彩时刻",
+      "readStory": "阅读故事 →"
+    },
+    "socialFeed": {
+      "title": "社交动态"
+    },
+    "learnExperiences": {
+      "title": "通过真实经历学习",
+      "body": "这些故事来自 Love 21 的媒体档案库——媒体报道、专访及社区活动。配合我们的",
+      "learnLink": "学习专区",
+      "bodyEnd": "，将事实与亲身经历联系起来。"
+    },
+    "pressInterviews": {
+      "title": "媒体报道与专访",
+      "subtitle": "点击任何封面即可阅读原文。"
+    },
+    "communityEvents": {
+      "title": "社区活动"
+    }
+  },
+  "cta": {
+    "readyTitle": "准备好改变世界？",
+    "readyBodyStories": "做志愿者、捐款或成为合作伙伴——这里有你的一席之地。",
+    "readyBodyMedia": "无论你想做志愿者、捐款或成为合作伙伴——Love 21 社区都有你的一席之地。",
+    "getInvolved": "参与我们 →",
+    "browseStories": "在学习专区浏览所有故事 →",
+    "viewArchive": "查看完整媒体档案 →"
+  }
+}

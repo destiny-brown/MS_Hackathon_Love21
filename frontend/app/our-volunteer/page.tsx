@@ -1,10 +1,16 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
+import { Blob } from "@/components/brand/Blob";
+import { BrandCard } from "@/components/brand/BrandCard";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { Eyebrow } from "@/components/brand/Eyebrow";
+import { Reveal } from "@/components/brand/Reveal";
+import { TriMark } from "@/components/brand/TriMark";
 import { SiteLayout } from "@/components/site/site-layout";
 import { api, type VolunteerActivity } from "@/lib/api";
 import {
@@ -23,37 +29,11 @@ import {
 } from "@/lib/volunteer-roster";
 
 // ---------------------------------------------------------------------------
-// Shared visual language (mirrors get-involved/page.tsx).
-// TODO: if both pages keep growing, pull TriMark / Eyebrow / Blob / Reveal /
-// CtaButton / WaveDivider into components/site/story-kit.tsx so they're not
-// duplicated across files.
+// Page-local decorative helpers (WaveDivider / icons stay here).
 // ---------------------------------------------------------------------------
 
-function TriMark({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 44 14" className={className} aria-hidden="true" fill="currentColor">
-      <circle cx="7" cy="7" r="4.5" />
-      <circle cx="22" cy="7" r="4.5" />
-      <circle cx="37" cy="7" r="4.5" />
-    </svg>
-  );
-}
-
-function Eyebrow({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <p className={`flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral ${className}`}>
-      <TriMark className="h-2 w-7" />
-      {children}
-    </p>
-  );
-}
-
 function DashedRule({ className = "" }: { className?: string }) {
-  return <span aria-hidden="true" className={`mt-2 block h-px w-16 border-t border-dashed border-brand-coral/40 ${className}`} />;
-}
-
-function Blob({ className = "" }: { className?: string }) {
-  return <div aria-hidden="true" className={`pointer-events-none absolute rounded-full blur-3xl ${className}`} />;
+  return <span aria-hidden="true" className={`mt-2 block h-px w-16 border-t border-dashed border-brand-red/40 ${className}`} />;
 }
 
 function WaveDivider({ color = "#FFFFFF", flip = false, className = "" }: { color?: string; flip?: boolean; className?: string }) {
@@ -66,81 +46,6 @@ function WaveDivider({ color = "#FFFFFF", flip = false, className = "" }: { colo
         <path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,50 L1440,100 L0,100 Z" fill={color} />
       </svg>
     </div>
-  );
-}
-
-function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.15 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: visible ? `${delay}ms` : "0ms", filter: visible ? "blur(0px)" : "blur(6px)" }}
-      className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:blur-none ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      } ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function CtaButton({
-  href,
-  children,
-  variant = "solid",
-  onClick,
-}: {
-  href?: string;
-  children: React.ReactNode;
-  variant?: "solid" | "outline" | "outline-dark";
-  onClick?: () => void;
-}) {
-  const styles = {
-    solid:
-      "bg-brand-coral text-white shadow-[0_6px_20px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] hover:bg-black",
-    outline: "border border-black/15 text-brand-ink hover:border-black hover:bg-black hover:text-white",
-    "outline-dark": "border border-white/30 text-white hover:border-white hover:bg-white hover:text-black",
-  }[variant];
-
-  const content = (
-    <>
-      {children}
-      <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
-        →
-      </span>
-    </>
-  );
-
-  if (onClick && !href) {
-    return (
-      <button onClick={onClick} className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300 ${styles}`}>
-        {content}
-      </button>
-    );
-  }
-
-  return (
-    <Link href={href ?? "#"} className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300 ${styles}`}>
-      {content}
-    </Link>
   );
 }
 
@@ -338,19 +243,19 @@ function LiveActivityBadge() {
   const shiftsToday = useCountUp(6, 1000);
 
   return (
-    <div className="mt-8 inline-flex w-full items-center gap-4 rounded-2xl border border-brand-sand bg-white p-4 shadow-sm shadow-black/5 sm:w-auto">
+    <div className="mt-8 inline-flex w-full items-center gap-4 rounded-2xl border border-brand-light bg-white p-4 shadow-sm shadow-black/5 sm:w-auto">
       <span className="relative flex h-2.5 w-2.5 shrink-0">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-coral opacity-60" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-coral" />
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-red opacity-60" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-red" />
       </span>
       <div>
         <div className="flex items-baseline gap-1.5">
-          <span className="font-serif-display text-2xl leading-none text-brand-ink">{volunteers}</span>
-          <span className="text-xs text-brand-ink/60">volunteers active this month</span>
+          <span className="font-serif-display text-2xl leading-none text-brand-dark">{volunteers}</span>
+          <span className="text-xs text-brand-dark/60">volunteers active this month</span>
         </div>
-        <div className="mt-1.5 flex items-baseline gap-1.5 border-t border-dashed border-brand-ink/15 pt-1.5">
-          <span className="font-serif-display text-lg leading-none text-brand-ink">{shiftsToday}</span>
-          <span className="text-xs text-brand-ink/50">shifts running today</span>
+        <div className="mt-1.5 flex items-baseline gap-1.5 border-t border-dashed border-brand-dark/15 pt-1.5">
+          <span className="font-serif-display text-lg leading-none text-brand-dark">{shiftsToday}</span>
+          <span className="text-xs text-brand-dark/50">shifts running today</span>
         </div>
       </div>
     </div>
@@ -385,18 +290,18 @@ function VolunteerStoryCarousel() {
   return (
     <div>
       <div className={`transition-opacity duration-300 motion-reduce:transition-none ${fade ? "opacity-100" : "opacity-0"}`}>
-        <blockquote className="font-serif-display text-3xl leading-snug text-brand-ink sm:text-4xl">"{active.quote}"</blockquote>
-        <p className="mt-5 text-sm font-semibold text-brand-ink/60">{active.name}</p>
+        <blockquote className="font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">"{active.quote}"</blockquote>
+        <p className="mt-5 text-sm font-semibold text-brand-dark/60">{active.name}</p>
       </div>
       <div className="mt-6 flex items-center gap-3">
-        <TriMark className="h-2 w-7 text-brand-coral/40" />
+        <TriMark className="h-2 w-7 text-brand-red/40" />
         <div className="flex gap-1.5">
           {volunteerStories.map((_, i) => (
             <button
               key={i}
               onClick={() => go(i)}
               aria-label={`Show story ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-brand-coral" : "w-1.5 bg-brand-ink/20"}`}
+              className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-brand-red" : "w-1.5 bg-brand-dark/20"}`}
             />
           ))}
         </div>
@@ -408,17 +313,17 @@ function VolunteerStoryCarousel() {
 function FaqAccordion() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <div className="divide-y divide-brand-sand">
+    <div className="divide-y divide-brand-light">
       {faqs.map((item, i) => {
         const isOpen = open === i;
         return (
           <div key={item.q} className="py-5">
             <button onClick={() => setOpen(isOpen ? null : i)} className="flex w-full items-center justify-between gap-6 text-left" aria-expanded={isOpen}>
-              <span className="font-serif-display text-lg text-brand-ink sm:text-xl">{item.q}</span>
-              <span className={`shrink-0 text-2xl text-brand-coral transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`} aria-hidden="true">+</span>
+              <span className="font-serif-display text-lg text-brand-dark sm:text-xl">{item.q}</span>
+              <span className={`shrink-0 text-2xl text-brand-red transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`} aria-hidden="true">+</span>
             </button>
             <div className={`grid overflow-hidden transition-all duration-300 ease-out ${isOpen ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-              <p className="overflow-hidden text-brand-ink/70">{item.a}</p>
+              <p className="overflow-hidden text-brand-dark/70">{item.a}</p>
             </div>
           </div>
         );
@@ -511,7 +416,7 @@ function AiVolunteerMatch({
   return (
     <div className="relative mx-auto max-w-4xl rounded-[32px] border border-white/15 bg-white/[0.04] p-8 sm:p-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+        <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
           <IconSpark className="h-4 w-4" />
           AI · Smart Matching
         </p>
@@ -539,7 +444,7 @@ function AiVolunteerMatch({
                   key={opt.key}
                   onClick={() => setInterest(opt.key)}
                   className={`rounded-2xl border px-4 py-3 text-left transition ${
-                    interest === opt.key ? "border-brand-coral bg-brand-coral/10" : "border-white/15 hover:border-white/30"
+                    interest === opt.key ? "border-brand-red bg-brand-red/10" : "border-white/15 hover:border-white/30"
                   }`}
                 >
                   <div className="text-sm font-semibold text-white">{opt.label}</div>
@@ -557,7 +462,7 @@ function AiVolunteerMatch({
                   key={opt.key}
                   onClick={() => setAvailability(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    availability === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    availability === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -576,7 +481,7 @@ function AiVolunteerMatch({
                   key={opt.key}
                   onClick={() => setCommitment(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    commitment === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    commitment === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -593,7 +498,7 @@ function AiVolunteerMatch({
                   key={opt.key}
                   onClick={() => setGroupSize(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    groupSize === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    groupSize === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -605,7 +510,7 @@ function AiVolunteerMatch({
           <button
             onClick={findMatch}
             disabled={!interest || !availability || !commitment || !groupSize}
-            className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-coral disabled:hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-red px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-red disabled:hover:text-white"
           >
             Ask AI for my match →
           </button>
@@ -615,9 +520,9 @@ function AiVolunteerMatch({
       {thinking && (
         <div className="mt-10 flex items-center gap-3 text-sm text-white/60">
           <span className="flex gap-1">
-            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.3s]" />
-            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.15s]" />
-            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-red [animation-delay:-0.3s]" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-red [animation-delay:-0.15s]" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-red" />
           </span>
           Ollama is reading every open role and weighing your answers…
         </div>
@@ -631,14 +536,14 @@ function AiVolunteerMatch({
               {aiEnhanced && (
                 <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">AI matched</span>
               )}
-              <span className="rounded-full bg-brand-coral/15 px-3 py-1 text-xs font-semibold text-brand-coral">
+              <span className="rounded-full bg-brand-red/15 px-3 py-1 text-xs font-semibold text-brand-red">
                 {active.score}% match
               </span>
             </div>
           </div>
 
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-            <div className="h-full rounded-full bg-brand-coral transition-all duration-700" style={{ width: `${active.score}%` }} />
+            <div className="h-full rounded-full bg-brand-red transition-all duration-700" style={{ width: `${active.score}%` }} />
           </div>
 
           <div className="mt-6 flex items-start gap-4">
@@ -656,7 +561,7 @@ function AiVolunteerMatch({
           <ul className="mt-5 space-y-2">
             {active.reasons.map((reason) => (
               <li key={reason} className="flex items-start gap-2.5 text-sm text-white/70">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-coral" />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-red" />
                 {reason}
               </li>
             ))}
@@ -665,7 +570,7 @@ function AiVolunteerMatch({
           <div className="mt-7 flex flex-wrap gap-3">
             <button
               onClick={() => onSelectRole(active.item.title)}
-              className="rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
+              className="rounded-full bg-brand-red px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
             >
               Sign me up for this
             </button>
@@ -767,18 +672,19 @@ function VolunteerContent() {
   return (
     <>
       {/* ---------- HERO ---------- */}
+      <Reveal>
       <section className="relative overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
         <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <Eyebrow>Get Involved · Volunteers</Eyebrow>
-            <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-ink sm:text-5xl">
+            <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-dark sm:text-5xl">
               Come be part of a{" "}
-              <span className="relative text-brand-coral">
+              <span className="relative text-brand-red">
                 so much ability
                 <svg
                   viewBox="0 0 200 14"
-                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-coral/50"
+                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-red/50"
                   preserveAspectRatio="none"
                   aria-hidden="true"
                 >
@@ -794,15 +700,15 @@ function VolunteerContent() {
               </span>{" "}
               community.
             </h1>
-            <p className="mt-5 max-w-lg text-brand-ink/75">
+            <p className="mt-5 max-w-lg text-brand-dark/75">
               No email chains, no waiting on the office. Pick an opening across sport, nutrition,
               family support or a corporate day, and you&apos;re confirmed straight away.
             </p>
             <div className="mt-7 flex flex-wrap gap-4">
-              <a href="#opportunities" className="rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white hover:bg-black">
+              <a href="#opportunities" className="rounded-full bg-brand-red px-7 py-3.5 text-sm font-semibold text-white hover:bg-black">
                 See open roles
               </a>
-              <a href="#match" className="rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-brand-ink hover:border-black">
+              <a href="#match" className="rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-brand-dark hover:border-black">
                 Not sure where to start?
               </a>
             </div>
@@ -810,7 +716,7 @@ function VolunteerContent() {
           </div>
           <div className="relative">
             <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-sand lg:aspect-[3/4]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-light lg:aspect-[3/4]">
               {/* Swap for a real photo of a volunteer mid-shift — energetic, not posed. */}
               <Image src="/images/get-involved/hero-image.png" alt="A volunteer coaching alongside a Love 21 member" fill priority className="object-cover" />
             </div>
@@ -824,27 +730,29 @@ function VolunteerContent() {
             { value: String(rosterItems.length + 8), label: "Volunteer roles open now" },
             { value: "4", label: "Programme areas to join" },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl bg-brand-sand px-5 py-6">
-              <div className="font-serif-display text-2xl text-brand-ink">{stat.value}</div>
-              <div className="mt-1 text-xs leading-snug text-brand-ink/70">{stat.label}</div>
+            <div key={stat.label} className="rounded-2xl bg-brand-light px-5 py-6">
+              <div className="font-serif-display text-2xl text-brand-dark">{stat.value}</div>
+              <div className="mt-1 text-xs leading-snug text-brand-dark/70">{stat.label}</div>
             </div>
           ))}
         </div> */}
       </section>
+      </Reveal>
 
       {/* ---------- START YOUR OWN CAMPAIGN ---------- */}
-      <section className="border-y border-brand-sand bg-[#F8F4EB] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-coral/40 bg-white p-7">
+      <Reveal>
+      <section className="border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-red/40 bg-white p-7">
           <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-sand">
-              <IconFlag className="h-5 w-5 text-brand-coral" />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-light">
+              <IconFlag className="h-5 w-5 text-brand-red" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Another way to help</p>
-              <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-ink sm:text-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">Another way to help</p>
+              <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-dark sm:text-2xl">
                 Can&apos;t commit to a shift? Start your own fundraising campaign instead.
               </h3>
-              <p className="mt-2 max-w-md text-sm text-brand-ink/70">
+              <p className="mt-2 max-w-md text-sm text-brand-dark/70">
                 Run a marathon, host a birthday fundraiser, or rally your friends — set up a
                 peer-to-peer page in minutes and raise funds on your own schedule.
               </p>
@@ -853,12 +761,13 @@ function VolunteerContent() {
           <CtaButton href="/campaigns/new">Start a campaign</CtaButton>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- URGENCY STRIP ---------- */}
       {urgentItems.length > 0 && (
         <section className="bg-black px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 text-sm text-white">
-            <span className="flex items-center gap-2 font-semibold text-brand-coral">
+            <span className="flex items-center gap-2 font-semibold text-brand-red">
               <TriMark className="h-2 w-6" />
               Going fast
             </span>
@@ -877,27 +786,27 @@ function VolunteerContent() {
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Eyebrow>The board</Eyebrow>
-              <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Open opportunities</h2>
+              <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Open opportunities</h2>
             </div>
-            <p className="max-w-md text-sm text-brand-ink/70">
+            <p className="max-w-md text-sm text-brand-dark/70">
               Every role sits under one of our four programme pillars. Pick the one that fits you.
             </p>
           </div>
 
           <div className="relative mb-8">
-            <IconSearch className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-ink/40" />
+            <IconSearch className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-dark/40" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search roles — try “Saturday”, “cooking”, or “CSR”"
-              className="w-full rounded-full border border-dashed border-brand-ink/20 bg-white py-3 pl-11 pr-4 text-sm text-brand-ink placeholder:text-brand-ink/40 outline-none transition focus:border-solid focus:border-brand-coral"
+              className="w-full rounded-full border border-dashed border-brand-dark/20 bg-white py-3 pl-11 pr-4 text-sm text-brand-dark placeholder:text-brand-dark/40 outline-none transition focus:border-solid focus:border-brand-red"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
                 aria-label="Clear search"
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-brand-ink/40 hover:text-brand-ink"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-brand-dark/40 hover:text-brand-dark"
               >
                 Clear
               </button>
@@ -910,8 +819,8 @@ function VolunteerContent() {
                 onClick={() => setFilter("all")}
                 className={`whitespace-nowrap rounded-full px-4 py-2 text-left text-sm font-semibold transition lg:rounded-none lg:border-l-2 lg:px-0 lg:pl-4 ${
                   filter === "all"
-                    ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-coral lg:text-brand-ink"
-                    : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
+                    ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-red lg:text-brand-dark"
+                    : "bg-brand-light text-brand-dark lg:bg-transparent lg:border-dashed lg:border-brand-dark/15 lg:text-brand-dark/60"
                 }`}
               >
                 All roles
@@ -922,20 +831,20 @@ function VolunteerContent() {
                   onClick={() => setFilter(key)}
                   className={`whitespace-nowrap rounded-full px-4 py-2 text-left text-sm font-semibold transition lg:rounded-none lg:border-l-2 lg:px-0 lg:pl-4 ${
                     filter === key
-                      ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-coral lg:text-brand-ink"
-                      : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
+                      ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-red lg:text-brand-dark"
+                      : "bg-brand-light text-brand-dark lg:bg-transparent lg:border-dashed lg:border-brand-dark/15 lg:text-brand-dark/60"
                   }`}
                 >
                   {categoryMeta[key].label}
-                  <span className="hidden text-xs font-normal text-brand-ink/50 lg:block">{categoryMeta[key].blurb}</span>
+                  <span className="hidden text-xs font-normal text-brand-dark/50 lg:block">{categoryMeta[key].blurb}</span>
                 </button>
               ))}
             </div>
 
             <div>
               {displayedItems.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-brand-ink/20 p-10 text-center">
-                  <p className="text-sm text-brand-ink/60">
+                <div className="rounded-2xl border border-dashed border-brand-dark/20 p-10 text-center">
+                  <p className="text-sm text-brand-dark/60">
                     No roles match {searchQuery ? `“${searchQuery}”` : "this filter"} right now.
                   </p>
                   <button
@@ -943,7 +852,7 @@ function VolunteerContent() {
                       setSearchQuery("");
                       setFilter("all");
                     }}
-                    className="mt-3 text-sm font-semibold text-brand-coral hover:underline"
+                    className="mt-3 text-sm font-semibold text-brand-red hover:underline"
                   >
                     Clear search & filters
                   </button>
@@ -953,30 +862,30 @@ function VolunteerContent() {
                   {displayedItems.map((item, i) => {
                     const pct = item.total && item.filled !== undefined ? Math.round((item.filled / item.total) * 100) : null;
                     return (
-                      <Reveal key={item.id} delay={i * 60}>
-                        <article className="h-full rounded-2xl border border-brand-sand p-6 transition hover:-translate-y-0.5 hover:shadow-md">
-                          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-sand text-lg">{item.icon}</div>
-                          <h3 className="text-xl text-brand-ink">{item.title}</h3>
-                          <p className="mt-2 text-sm text-brand-ink/70">{item.desc}</p>
-                          <div className="mt-4 flex flex-col gap-1 text-xs text-brand-ink/60">
-                            <span><b className="font-semibold text-brand-ink">When:</b> {item.when}</span>
-                            <span><b className="font-semibold text-brand-ink">Where:</b> {item.where}</span>
+                      <Reveal key={item.id} delay={i * 0.06}>
+                        <BrandCard as="article" className="h-full rounded-2xl p-6 transition hover:-translate-y-0.5 hover:shadow-md sm:p-6">
+                          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-light text-lg">{item.icon}</div>
+                          <h3 className="text-xl text-brand-dark">{item.title}</h3>
+                          <p className="mt-2 text-sm text-brand-dark/70">{item.desc}</p>
+                          <div className="mt-4 flex flex-col gap-1 text-xs text-brand-dark/60">
+                            <span><b className="font-semibold text-brand-dark">When:</b> {item.when}</span>
+                            <span><b className="font-semibold text-brand-dark">Where:</b> {item.where}</span>
                           </div>
 
                           {pct !== null ? (
                             <div className="mt-4 flex items-center gap-2">
-                              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-sand">
-                                <div className="h-full rounded-full bg-brand-coral" style={{ width: `${pct}%` }} />
+                              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-light">
+                                <div className="h-full rounded-full bg-brand-red" style={{ width: `${pct}%` }} />
                               </div>
-                              <span className="whitespace-nowrap text-xs text-brand-ink/50">{item.filled} / {item.total} filled</span>
+                              <span className="whitespace-nowrap text-xs text-brand-slate">{item.filled} / {item.total} filled</span>
                             </div>
                           ) : (
-                            <div className="mt-4 text-xs text-brand-ink/50">{item.note}</div>
+                            <div className="mt-4 text-xs text-brand-slate">{item.note}</div>
                           )}
 
                           <button
                             onClick={() => selectRoleAndScroll(item.title)}
-                            className="mt-5 w-full rounded-full bg-brand-sand py-3 text-sm font-semibold text-brand-ink hover:bg-black hover:text-white"
+                            className="mt-5 w-full rounded-full bg-brand-light py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
                           >
                             {item.ctaLabel}
                           </button>
@@ -984,12 +893,12 @@ function VolunteerContent() {
                           {item.category === "csr" && item.id === "corporate-day" && (
                             <button
                               onClick={generateCsrOnePager}
-                              className="mt-2 w-full rounded-full border border-black/15 py-2.5 text-xs font-semibold text-brand-ink hover:border-black"
+                              className="mt-2 w-full rounded-full border border-brand-slate/40 py-2.5 text-xs font-semibold text-brand-dark hover:border-brand-dark"
                             >
                               Generate a one-pager for your HR/CSR team
                             </button>
                           )}
-                        </article>
+                        </BrandCard>
                       </Reveal>
                     );
                   })}
@@ -1000,7 +909,7 @@ function VolunteerContent() {
                 <div className="mt-8 flex justify-center">
                   <button
                     onClick={() => setShowAllRoles((v) => !v)}
-                    className="inline-flex items-center gap-2 rounded-full border border-dashed border-brand-ink/25 px-6 py-3 text-sm font-semibold text-brand-ink transition hover:border-black hover:border-solid"
+                    className="inline-flex items-center gap-2 rounded-full border border-dashed border-brand-dark/25 px-6 py-3 text-sm font-semibold text-brand-dark transition hover:border-black hover:border-solid"
                   >
                     {showAllRoles ? "Show fewer roles" : `View ${hiddenCount} more role${hiddenCount === 1 ? "" : "s"}`}
                     <span aria-hidden="true" className={`inline-block transition-transform duration-300 ${showAllRoles ? "rotate-180" : ""}`}>
@@ -1014,18 +923,18 @@ function VolunteerContent() {
         </div>
       </section>
 
-      <WaveDivider color="#F8F4EB" />
+      <WaveDivider color="#EDF2F4" />
 
       {/* ---------- GALLERY ---------- */}
-      <section className="bg-[#F8F4EB] px-4 pb-20 sm:px-6 lg:px-8">
+      <section className="bg-brand-light px-4 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-ink/50">
+          <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-dark/50">
             <IconHeart className="h-4 w-4" /> Life on shift
           </p>
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {galleryStrip.map((photo, i) => (
-              <Reveal key={photo.src} delay={i * 80}>
-                <div className={`relative aspect-square w-full overflow-hidden bg-brand-sand ${photo.shape}`}>
+              <Reveal key={photo.src} delay={i * 0.08}>
+                <div className={`relative aspect-square w-full overflow-hidden bg-brand-light ${photo.shape}`}>
                   <Image src={photo.src} alt={photo.alt} fill className="object-cover" />
                 </div>
               </Reveal>
@@ -1035,29 +944,32 @@ function VolunteerContent() {
       </section>
 
       {/* ---------- AS SEEN ON SOCIAL ---------- */}
-      <section className="relative overflow-hidden border-t border-brand-sand bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden border-t border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-40" />
         <div className="relative mx-auto max-w-6xl">
           <Eyebrow>From our feed</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">As featured this week</h2>
+          <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">As featured this week</h2>
           <div className="mt-8 grid gap-5 sm:grid-cols-3">
             {socialPosts.map((post) => (
-              <a key={post.caption} href={post.href} className="block rounded-2xl border border-brand-sand p-5 transition hover:border-black/20">
-                <div className="text-xs font-semibold uppercase tracking-wide text-brand-coral">{post.platform}</div>
-                <p className="mt-3 text-sm text-brand-ink/80">{post.caption}</p>
-                <div className="mt-4 text-xs text-brand-ink/50">{post.date}</div>
+              <a key={post.caption} href={post.href} className="block rounded-2xl border border-brand-light p-5 transition hover:border-black/20">
+                <div className="text-xs font-semibold uppercase tracking-wide text-brand-red">{post.platform}</div>
+                <p className="mt-3 text-sm text-brand-dark/80">{post.caption}</p>
+                <div className="mt-4 text-xs text-brand-dark/50">{post.date}</div>
               </a>
             ))}
           </div>
         </div>
       </section>
+      </Reveal>
 
 
       {/* ---------- RECOGNITION ---------- */}
+      <Reveal>
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <Eyebrow>Hours & recognition</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">Every hour counts, and it shows</h2>
+          <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">Every hour counts, and it shows</h2>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
@@ -1066,73 +978,82 @@ function VolunteerContent() {
               { tier: "50", title: "Community favourite", body: "50 hours of showing up. Featured in our volunteer spotlight." },
               { tier: "100", title: "Team captain", body: "100+ hours. Invited to help lead new volunteer onboarding." },
             ].map((m) => (
-              <div key={m.tier} className="rounded-2xl border border-brand-sand p-6">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-black text-sm font-semibold text-white">{m.tier}</div>
-                <h3 className="text-base text-brand-ink">{m.title}</h3>
-                <p className="mt-2 text-xs text-brand-ink/60">{m.body}</p>
-              </div>
+              <BrandCard key={m.tier} className="rounded-2xl p-6 sm:p-6">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-dark text-sm font-semibold text-white">{m.tier}</div>
+                <h3 className="text-base text-brand-dark">{m.title}</h3>
+                <p className="mt-2 text-xs text-brand-dark/60">{m.body}</p>
+              </BrandCard>
             ))}
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-6 rounded-2xl bg-brand-sand p-7">
-            <div className="font-serif-display text-3xl text-brand-ink">32<span className="text-sm font-sans font-normal text-brand-ink/60"> hrs</span></div>
+          <div className="mt-8 flex flex-wrap items-center gap-6 rounded-2xl bg-brand-light p-7">
+            <div className="font-serif-display text-3xl text-brand-dark">32<span className="text-sm font-sans font-normal text-brand-dark/60"> hrs</span></div>
             <div className="h-2.5 flex-1 min-w-[200px] overflow-hidden rounded-full bg-white">
-              <div className="h-full w-[64%] rounded-full bg-brand-coral" />
+              <div className="h-full w-[64%] rounded-full bg-brand-red" />
             </div>
-            <div className="text-xs text-brand-ink/60">18 hours to your Community Favourite ribbon</div>
+            <div className="text-xs text-brand-dark/60">18 hours to your Community Favourite ribbon</div>
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- CORPORATE NUDGE ---------- */}
+      <Reveal>
       <section className="bg-white px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-brand-sand border-l-4 border-l-brand-coral p-8">
+        <BrandCard className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border-l-4 border-l-brand-red p-8 sm:p-8">
           <div>
-            <h3 className="max-w-lg text-xl text-brand-ink">Know a company that could sponsor a class of 15?</h3>
-            <p className="mt-2 max-w-md text-sm text-brand-ink/70">
+            <h3 className="max-w-lg text-xl text-brand-dark">Know a company that could sponsor a class of 15?</h3>
+            <p className="mt-2 max-w-md text-sm text-brand-dark/70">
               Volunteers are often the first link to a new corporate partner — a quick introduction goes a long way.
             </p>
           </div>
           <button
             onClick={generateCsrOnePager}
-            className="rounded-full bg-brand-sand px-6 py-3 text-sm font-semibold text-brand-ink hover:bg-black hover:text-white"
+            className="rounded-full bg-brand-light px-6 py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
           >
             Generate one-pager to introduce them
           </button>
-        </div>
+        </BrandCard>
       </section>
+      </Reveal>
 
       {/* ---------- FAQ ---------- */}
-      <section className="relative overflow-hidden bg-brand-sand px-4 py-20 sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
         <div className="relative mx-auto max-w-3xl">
           <Eyebrow>Before you sign up</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Questions people actually ask</h2>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Questions people actually ask</h2>
           <div className="mt-8 rounded-3xl bg-white px-6 sm:px-8">
             <FaqAccordion />
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/*---------- AI VOLUNTEER MATCH ----------*/}
+      <Reveal>
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
-        <Blob className="-left-20 top-0 h-72 w-72 bg-brand-coral/15" />
-        <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-coral/10" />
+        <Blob className="-left-20 top-0 h-72 w-72 bg-brand-red/15" />
+        <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-red/10" />
         <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={selectRoleAndScroll} />
       </section>
+      </Reveal>
 
       {/* ---------- FINAL CTA ---------- */}
-      <section className="relative overflow-hidden bg-[#F8F4EB] px-4 py-16 text-center sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden bg-brand-light px-4 py-16 text-center sm:px-6 lg:px-8">
         <Blob className="left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-[#F8DCDA] opacity-50" />
         <div className="relative">
-          <TriMark className="mx-auto h-2.5 w-9 text-brand-coral" />
-          <h2 className="mt-4 font-serif-display text-3xl text-brand-ink sm:text-4xl">Every shift starts with someone saying yes.</h2>
+          <TriMark className="mx-auto h-2.5 w-9 text-brand-red" />
+          <h2 className="mt-4 font-serif-display text-3xl text-brand-dark sm:text-4xl">Every shift starts with someone saying yes.</h2>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             {/* <CtaButton href="#opportunities">Browse open roles</CtaButton> */}
             <CtaButton href="/donate" variant="outline">Prefer to give instead?</CtaButton>
           </div>
         </div>
       </section>
+      </Reveal>
     </>
   );
 }

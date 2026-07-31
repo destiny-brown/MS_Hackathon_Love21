@@ -21,15 +21,15 @@ function SocialFeedBlock({
   widgetClass: string;
 }) {
   return (
-    <article className="rounded-3xl border border-brand-sand bg-white p-5 shadow-sm sm:p-7">
-      <div className="mb-4 flex items-center justify-between border-b border-brand-sand pb-3">
-        <span className={`flex items-center gap-2 text-lg font-semibold text-brand-ink ${iconClassName ?? ""}`}>
+    <article className="rounded-3xl border border-brand-light bg-white p-5 shadow-sm sm:p-7">
+      <div className="mb-4 flex items-center justify-between border-b border-brand-light pb-3">
+        <span className={`flex items-center gap-2 text-lg font-semibold text-brand-dark ${iconClassName ?? ""}`}>
           {icon}
           {title}
         </span>
-        <span className="text-sm text-brand-ink/60">{handle}</span>
+        <span className="text-sm text-brand-dark/60">{handle}</span>
       </div>
-      <div className="min-h-[280px] overflow-hidden rounded-2xl bg-brand-cream/60">
+      <div className="min-h-[280px] overflow-hidden rounded-2xl bg-brand-light/60">
         <div className={widgetClass} data-elfsight-app-lazy />
       </div>
     </article>

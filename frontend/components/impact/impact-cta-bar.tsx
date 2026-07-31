@@ -46,7 +46,7 @@ function Modal({
       <button
         type="button"
         aria-label="Close dialog"
-        className="absolute inset-0 bg-brand-ink/50"
+        className="absolute inset-0 bg-brand-dark/50"
         onClick={onClose}
       />
       <div
@@ -56,7 +56,7 @@ function Modal({
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         tabIndex={-1}
-        className="relative z-10 grid w-full max-w-lg gap-4 rounded-2xl border border-brand-sand bg-white p-6 shadow-lg outline-none"
+        className="relative z-10 grid w-full max-w-lg gap-4 rounded-2xl border border-brand-light bg-white p-6 shadow-lg outline-none"
       >
         <button
           type="button"
@@ -67,10 +67,10 @@ function Modal({
           <X className="h-4 w-4" />
         </button>
         <div className="space-y-1.5 pr-6 text-left">
-          <h2 id={titleId} className="font-serif-display text-2xl text-brand-ink">
+          <h2 id={titleId} className="font-serif-display text-2xl text-brand-dark">
             {title}
           </h2>
-          <p id={descriptionId} className="text-sm text-brand-ink/70">
+          <p id={descriptionId} className="text-sm text-brand-dark/70">
             {description}
           </p>
         </div>
@@ -99,16 +99,16 @@ export function ImpactCtaBar() {
   };
 
   return (
-    <div className="sticky bottom-0 z-40 border-t border-brand-sand bg-white/95 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
+    <div className="sticky bottom-0 z-40 border-t border-brand-light bg-white/95 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="hidden text-sm text-brand-ink/70 lg:block lg:max-w-sm">
+        <p className="hidden text-sm text-brand-dark/70 lg:block lg:max-w-sm">
           Grow the forest. Fuel the metamorphosis. Every gift and every hour
           unlocks ability.
         </p>
 
         <div className="grid w-full gap-3 sm:grid-cols-2 lg:w-auto lg:min-w-[34rem]">
           <Button
-            className="h-12 bg-brand-coral text-white hover:bg-brand-coral/90"
+            className="h-12 bg-brand-red text-white hover:bg-brand-red/90"
             onClick={() => {
               setSubmitted(null);
               setDonateOpen(true);
@@ -120,7 +120,7 @@ export function ImpactCtaBar() {
 
           <Button
             variant="outline"
-            className="h-12 border-brand-sea text-brand-sea hover:bg-brand-sea/10"
+            className="h-12 border-brand-slate text-brand-slate hover:bg-brand-slate/10"
             onClick={() => {
               setSubmitted(null);
               setVolunteerOpen(true);
@@ -139,7 +139,7 @@ export function ImpactCtaBar() {
         description="You are not giving hand-outs—you are unlocking potential. 100% of your gift ensures world-class fitness, nutrition, and community remain free for every family."
       >
         {submitted === "donate" ? (
-          <div className="rounded-xl bg-brand-cream p-4 text-sm text-brand-ink/80">
+          <div className="rounded-xl bg-brand-light p-4 text-sm text-brand-dark/80">
             Thank you. Continue to the donate page to complete your{" "}
             {frequency === "monthly" ? "monthly" : "one-time"} gift.
           </div>
@@ -152,8 +152,8 @@ export function ImpactCtaBar() {
                 onClick={() => setFrequency("monthly")}
                 className={
                   frequency === "monthly"
-                    ? "bg-brand-coral text-white hover:bg-brand-coral/90"
-                    : "border-brand-sand"
+                    ? "bg-brand-red text-white hover:bg-brand-red/90"
+                    : "border-brand-light"
                 }
               >
                 Monthly
@@ -164,14 +164,14 @@ export function ImpactCtaBar() {
                 onClick={() => setFrequency("one-time")}
                 className={
                   frequency === "one-time"
-                    ? "bg-brand-coral text-white hover:bg-brand-coral/90"
-                    : "border-brand-sand"
+                    ? "bg-brand-red text-white hover:bg-brand-red/90"
+                    : "border-brand-light"
                 }
               >
                 One-Time
               </Button>
             </div>
-            <p className="text-xs text-brand-ink/60">
+            <p className="text-xs text-brand-dark/60">
               Selected:{" "}
               <strong>
                 {frequency === "monthly" ? "Monthly" : "One-Time"}
@@ -184,14 +184,14 @@ export function ImpactCtaBar() {
           {submitted === "donate" ? (
             <Button
               asChild
-              className="bg-brand-coral text-white hover:bg-brand-coral/90"
+              className="bg-brand-red text-white hover:bg-brand-red/90"
             >
               <Link href="/donate">Continue to Donate</Link>
             </Button>
           ) : (
             <Button
               type="button"
-              className="bg-brand-coral text-white hover:bg-brand-coral/90"
+              className="bg-brand-red text-white hover:bg-brand-red/90"
               onClick={() => setSubmitted("donate")}
             >
               Confirm {frequency === "monthly" ? "Monthly" : "One-Time"} Gift
@@ -208,12 +208,12 @@ export function ImpactCtaBar() {
       >
         {submitted === "volunteer" ? (
           <>
-            <div className="rounded-xl bg-brand-cream p-4 text-sm text-brand-ink/80">
+            <div className="rounded-xl bg-brand-light p-4 text-sm text-brand-dark/80">
               Thanks for stepping forward. Our team will follow up, or you can
               register interest on the volunteer page now.
             </div>
             <div className="flex justify-end">
-              <Button asChild variant="outline" className="border-brand-sand">
+              <Button asChild variant="outline" className="border-brand-light">
                 <Link href="/our-volunteer">View Volunteer Page</Link>
               </Button>
             </div>
@@ -256,7 +256,7 @@ export function ImpactCtaBar() {
             <div className="flex justify-end">
               <Button
                 type="submit"
-                className="bg-brand-sea text-white hover:bg-brand-sea/90"
+                className="bg-brand-slate text-white hover:bg-brand-slate/90"
               >
                 Submit Interest
               </Button>

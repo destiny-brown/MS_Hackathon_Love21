@@ -1,0 +1,150 @@
+{
+  "quotes": {
+    "growingForest": "What started as a small spark of hope has grown into a thriving community where every individual has the space to flourish.",
+    "financialRoots": "Every dollar given is a vote of confidence in a member's strength, and we honor that trust by directing it straight to where it matters most."
+  },
+  "growth": {
+    "families": {
+      "title": "Expanding Our Community Family",
+      "unit": "Families"
+    },
+    "sessions": {
+      "title": "Scaling Active Engagement",
+      "unit": "Sessions"
+    },
+    "activities": {
+      "title": "Diversifying Holistic Care",
+      "unit": "Activity Types"
+    }
+  },
+  "financial": [
+    {
+      "name": "Core Programs & Services",
+      "amount": "HKD $9.94M"
+    },
+    {
+      "name": "Fundraising Events & Growth",
+      "amount": "HKD $0.92M"
+    },
+    {
+      "name": "Governance & Administration",
+      "amount": "HKD $0.69M"
+    }
+  ],
+  "reports": [
+    {
+      "label": "FY 2024/25 Audited Report"
+    },
+    {
+      "label": "FY 2023/24 Audited Report"
+    }
+  ],
+  "pillars": {
+    "nutrition": {
+      "title": "Nutrition",
+      "stage": "Stage 1: Nourishment & Foundation",
+      "sessions": "1,489 Sessions Offered",
+      "quote": "Proper health and nutrition aren't just about food—they are the essential foundation that allows strength and confidence to take root.",
+      "details": [
+        "Facilitate healthy cooking classes",
+        "Assist with nutrition material preparation",
+        "Support meal preparation workshops"
+      ],
+      "ctaLabel": "Nourish Our Butterfly"
+    },
+    "fitness": {
+      "title": "Fitness",
+      "stage": "Stage 2: Building Core Strength",
+      "sessions": "1,504 Sessions Offered",
+      "quote": "We don't lower the bar—we train our members to break right through it.",
+      "details": [
+        "Assist trainers during group workouts",
+        "Provide one-on-one encouragement",
+        "Guide exercises"
+      ],
+      "ctaLabel": "Strengthen Our Butterfly"
+    },
+    "sports": {
+      "title": "Sports",
+      "stage": "Stage 3: Spreading Wings",
+      "sessions": "2,792 Sessions Offered",
+      "quote": "Sports gave our athletes a stage to shine, showing everyone that passion and grit beat expectations every time.",
+      "details": [
+        "Co-coach sports teams",
+        "Assist with equipment setup",
+        "Support sports workshops and competitive event trips"
+      ],
+      "ctaLabel": "Protect Our Butterfly"
+    },
+    "family": {
+      "title": "Family Support",
+      "stage": "Stage 4: The Protective Cocoon",
+      "sessions": "930 Sessions Offered",
+      "quote": "Love 21 didn't just give my child a place to train—they gave our entire household a sanctuary of unconditional support.",
+      "details": [
+        "Support parent wellness events",
+        "Assist with childcare during caregiver workshops",
+        "Host community gatherings"
+      ],
+      "ctaLabel": "Spread Wings"
+    },
+    "community": {
+      "title": "Community & Education",
+      "stage": "Stage 5: Taking Flight into Society",
+      "sessions": "Ongoing",
+      "quote": "Inclusion isn't about fitting into society—it's about building a world where everyone's unique talents are recognized and celebrated.",
+      "details": [
+        "Corporate team volunteering and event logistics support",
+        "Social skills buddying",
+        "Career mentoring for member-employees"
+      ],
+      "ctaLabel": "Soar with Us"
+    }
+  },
+  "stories": [
+    {
+      "id": "story-0",
+      "role": "Member Athlete",
+      "name": "Alex",
+      "quote": "On the trampoline I found rhythm, courage, and a team that cheers every landing. Sport taught me I can lead — not just follow.",
+      "highlight": "Special Olympics pathway · Team captain energy",
+      "alt": "Member athlete training with focus and joy"
+    },
+    {
+      "id": "story-1",
+      "role": "Parent / Caregiver",
+      "name": "Helen",
+      "quote": "Love 21 gave our whole household a sanctuary. While my child builds strength, I finally have peers who understand — and space to breathe.",
+      "highlight": "Family Living Room · Caregiver wellness",
+      "alt": "Parent and caregiver finding community support"
+    },
+    {
+      "id": "story-2",
+      "role": "Assistant Coach",
+      "name": "Chris",
+      "quote": "From member to assistant coach — I now teach the skills that changed my life. Employment here means purpose, pay, and belonging.",
+      "highlight": "Employment & Development Programme",
+      "alt": "Assistant coach mentoring peers at Love 21"
+    }
+  ],
+  "ui": {
+    "growingForest": "The Growing Forest",
+    "ourGrowth": "Our Growth",
+    "vsPriorYear": "+{{pct}}% vs prior year",
+    "toProgrammes": "86% To programmes",
+    "strengthSpotlights": "Strength-Based Spotlights",
+    "prevPillar": "Previous pillar",
+    "nextPillar": "Next pillar",
+    "prevStory": "Previous story",
+    "nextStory": "Next story",
+    "stickyEyebrow": "Every gift grows the forest",
+    "stickyTitle": "Back their potential today",
+    "stickyDonate": "Donate",
+    "stickyVolunteer": "Volunteer",
+    "modalDonateTitle": "Choose how to give",
+    "modalVolunteerTitle": "Find your volunteer fit",
+    "thankYou": "Thank you — we'll be in touch shortly.",
+    "funded": "{{pct}}% funded",
+    "of": "{{current}} of {{total}}"
+  }
+}

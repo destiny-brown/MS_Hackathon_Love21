@@ -36,10 +36,10 @@ export default function AboutGovernancePage() {
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2">
           {sections.map((section) => (
-            <article key={section.title} className="rounded-2xl border border-brand-sand bg-white p-6">
-              <h2 className="font-serif-display text-3xl text-brand-ink">{section.title}</h2>
-              <p className="mt-3 text-brand-ink/75">{section.description}</p>
-              <Link href={section.href} className="mt-5 inline-flex text-sm font-semibold text-brand-coral hover:underline">
+            <article key={section.title} className="rounded-2xl border border-brand-light bg-white p-6">
+              <h2 className="font-serif-display text-3xl text-brand-dark">{section.title}</h2>
+              <p className="mt-3 text-brand-dark/75">{section.description}</p>
+              <Link href={section.href} className="mt-5 inline-flex text-sm font-semibold text-brand-red hover:underline">
                 Open Section
               </Link>
             </article>
