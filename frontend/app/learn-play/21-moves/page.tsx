@@ -160,7 +160,12 @@ export default function TwentyOneMovesPage() {
                 onLegComplete={handleEventComplete}
               />
             ) : (
-              <EventAnimationStage key={currentEvent.id} event={currentEvent} onEventComplete={handleEventComplete} />
+              <EventAnimationStage
+                key={currentEvent.id}
+                event={currentEvent}
+                locationTheme={location.theme}
+                onEventComplete={handleEventComplete}
+              />
             )}
           </div>
         </div>
