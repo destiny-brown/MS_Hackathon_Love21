@@ -1,24 +1,22 @@
 export type NavItem = { label: string; href: string };
 
 export const mainNav: NavItem[] = [
-  { label: "Learn", href: "/learn-play" },
-  { label: "Get Involved", href: "/get-involved" },
-  { label: "Impact", href: "/impact-dashboard" },
-  { label: "Stories", href: "/stories-media" },
-  { label: "Events", href: "/events-campaigns" },
-  { label: "About Us", href: "/about-governance" },
+  { label: "Our Story", href: "/our-story" },
+  { label: "Our Programmes", href: "/our-programmes" },
+  { label: "Our Volunteers", href: "/our-volunteer" },
+  { label: "Media", href: "/media" },
+  { label: "Donate", href: "/donate" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export const footerNav: NavItem[] = [
-  { label: "Families (Member Registration)", href: "/members" },
-  { label: "Volunteers", href: "/our-volunteer" },
-  { label: "Donate", href: "/donate" },
-  { label: "Wishlist", href: "/shop" },
-  { label: "Annual Reports", href: "/our-finance" },
+  { label: "Join Us", href: "/join-us" },
+  { label: "Our Reports", href: "/our-finance" },
+  { label: "Newsletter", href: "/newsletter" },
   { label: "Board of Directors", href: "/board-of-directors" },
   { label: "Staff", href: "/staff" },
-  { label: "Contact Us", href: "/contact-us" },
-  { label: "Newsletter", href: "/newsletter" },
+  { label: "Shop", href: "/shop" },
+  { label: "Members", href: "/members" },
 ];
 
 export const stats = [
@@ -26,6 +24,106 @@ export const stats = [
   { value: "800+", label: "Sessions of classes and activities each month" },
   { value: "90+", label: "Types of activities" },
   { value: "1000+", label: "Volunteer hours per month" },
+];
+
+/** Live Impact Public Dashboard metrics (homepage). */
+export const impactStats = [
+  { target: 600, suffix: "+", label: "Families Served Monthly" },
+  { target: 1000, suffix: "+", label: "Classes & Activities Each Month" },
+  { target: 1000, suffix: "+", label: "Volunteer Hours Per Month" },
+];
+
+/** Hero community photo gallery slides (homepage). */
+export const heroGallery = [
+  {
+    src: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80",
+    alt: "Neurodiverse community members smiling together during a group programme",
+    caption: "Down Syndrome & Autism Empowerment",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80",
+    alt: "Families and peers connecting during a support session",
+    caption: "Family & Peer Support",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=900&q=80",
+    alt: "Holistic nutrition workshop with fresh wholesome foods",
+    caption: "Holistic Nutrition & Health",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=80",
+    alt: "Self-advocate communicating and participating in community life",
+    caption: "Nonverbal Inclusion & Voice",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=900&q=80",
+    alt: "Volunteers and members collaborating toward greater independence",
+    caption: "Community Independence",
+  },
+];
+
+/** Four-door homepage navigation cards. */
+export const fourDoors = [
+  {
+    title: "Education & Support",
+    description: "Grow life skills, join inclusive programmes, and access family care across sport, nutrition, and support.",
+    href: "/our-programmes",
+  },
+  {
+    title: "Donate & Partner",
+    description: "Fund nutrition packs, blood testing, coaching sessions, and day-to-day community care.",
+    href: "/donate",
+  },
+  {
+    title: "Volunteer",
+    description: "Share your time supporting weekly classes, family sessions, and inclusive community events.",
+    href: "/volunteer",
+  },
+  {
+    title: "Activity Calendar",
+    description: "Find upcoming sports, nutrition workshops, family programmes, and community gatherings.",
+    href: "/calendar",
+  },
+];
+
+export type StorySpotlight = {
+  name: string;
+  tag: string;
+  quote: string;
+  href: string;
+  image: string;
+  alt: string;
+};
+
+/** Featured Story Spotlight carousel cards (homepage). */
+export const storySpotlight: StorySpotlight[] = [
+  {
+    name: "Jamie",
+    tag: "TEDx Speaker & Self-Advocate",
+    quote:
+      "Delivering my first TEDx talk proved to everyone that having Down syndrome never limits what you can express and contribute.",
+    href: "/media",
+    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1000&q=80",
+    alt: "Self-advocate presenting on stage at a public speaking event",
+  },
+  {
+    name: "Chris",
+    tag: "Purposeful Employment Milestone",
+    quote:
+      "Working independently in food service and community outreach, gaining confidence and financial independence.",
+    href: "/our-story",
+    image: "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1000&q=80",
+    alt: "Young adult thriving at purposeful employment in a community workplace",
+  },
+  {
+    name: "Mei",
+    tag: "Holistic Health & Sports Champion",
+    quote:
+      "Overcoming health challenges through tailored nutrition and sports classes, now mentoring younger neurodiverse peers.",
+    href: "/our-programmes",
+    image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1000&q=80",
+    alt: "Community champion mentoring peers after holistic health progress",
+  },
 ];
 
 export const programmes = [
@@ -73,11 +171,7 @@ export const boardMembers: BoardMember[] = [
   {
     slug: "carol-chan",
     name: "Carol Chan",
-    bio: `Carol has a passion for sports and healthy lifestyle, and embraces a mission in developing the young and promoting healthy family functioning. Professionally, Carol is experienced in nonprofit governance as a seasoned administrator serving one of the leading local NGOs supporting children and youth in Hong Kong. Prior to joining the NGO sector, Carol has worked in the Proctor & Gamble Hong Kong and in Asia Market, the largest Asian food suppliers in Ireland.
-
-With 20 years of netball experience, Carol has been a national player, a certified coach and is one of the top umpires in HK who has umpired in multiple international tournaments and has groomed many umpires before giving birth to her 1-year-old son. Carol has served as Council Member of the Hong Kong Netball Association till 2017 and was the founding Chairman of the Hantang Netball Club (2016-2020), the only non-profit local community netball club that has reached out to the underprivileged children in addition to nurturing elite youth player. With the passion to sharing healthy lifestyle and eating well to the wider community, Carol provides support and advice to a healthy food company distributing healthy food imported from Taiwan.
-
-Carol has earned her Master of Philosophy in Psychology (specialised in child development and parenting) from the Chinese University of Hong Kong and the Bachelor of Economics and Finance from the University of Hong Kong. She has also completed the Professional Diploma for Company Secretaries by the HKMA, and is an alumni of the HK Young Leaders Programme by the Global Institute for Tomorrow and was one of the presenters for the proposal on a Community Sports Hub Project in the public forum.`,
+    bio: "Carol has a passion for sports and healthy lifestyle, and embraces a mission in developing the young and promoting healthy family functioning. Professionally, Carol is experienced in nonprofit governance as a seasoned administrator serving one of the leading local NGOs supporting children and youth in Hong Kong.",
   },
   {
     slug: "dan-maley",
