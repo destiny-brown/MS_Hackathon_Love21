@@ -6,6 +6,17 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
 import { SiteLayout } from "@/components/site/site-layout";
+import { api, type VolunteerActivity } from "@/lib/api";
+import {
+  availabilityOptions,
+  categoryMeta,
+  interestOptions,
+  rosterItems as fallbackRosterItems,
+  type Availability,
+  type Category,
+  type Interest,
+  type RosterItem,
+} from "@/lib/volunteer-roster";
 
 // ---------------------------------------------------------------------------
 // Shared visual language (mirrors get-involved/page.tsx).
@@ -154,153 +165,24 @@ function IconSpark({ className = "" }: { className?: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Data
+// Page-only content (roster + matcher data lives in lib/volunteer-roster.ts)
 // ---------------------------------------------------------------------------
 
-type Category = "sport" | "nutrition" | "family" | "csr";
-
-const categoryMeta: Record<Category, { label: string; blurb: string }> = {
-  sport: { label: "Sport", blurb: "Football, swimming, karate & more" },
-  nutrition: { label: "Nutrition", blurb: "Cooking, dietician days" },
-  family: { label: "Family", blurb: "Counselling, mentorship, events" },
-  csr: { label: "CSR", blurb: "Corporate volunteering" },
-};
-
-type RosterItem = {
-  id: string;
-  icon: string;
-  title: string;
-  desc: string;
-  when: string;
-  where: string;
-  category: Category;
-  filled?: number;
-  total?: number;
-  note?: string;
-  ctaLabel: string;
-};
-
-const rosterItems: RosterItem[] = [
-  {
-    id: "football-basketball",
-    icon: "⚽",
-    title: "Football & basketball coach",
-    desc: "Help run our weekly ball-game sessions — no coaching certificate needed, just energy and patience.",
-    when: "Saturday mornings",
-    where: "San Po Kong centre",
-    category: "sport",
-    filled: 3,
-    total: 5,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "swimming-dragonboat",
-    icon: "🏊",
-    title: "Swimming & dragon boat buddy",
-    desc: "Support our water-based sessions — a splash of confidence, one paddle at a time.",
-    when: "Sunday mornings",
-    where: "Victoria Park pool",
-    category: "sport",
-    filled: 17,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "trampoline-karate",
-    icon: "🥋",
-    title: "Trampoline & karate class helper",
-    desc: "Cheer on the same members who've gone on to win medals at Asian Para-Karate events.",
-    when: "Wednesday evenings",
-    where: "San Po Kong centre",
-    category: "sport",
-    filled: 2,
-    total: 5,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "cooking-workshop",
-    icon: "🥗",
-    title: "Cooking workshop helper",
-    desc: "Assist our monthly healthy-cooking classes where members and parents learn recipes together.",
-    when: "One Sunday a month",
-    where: "San Po Kong kitchen",
-    category: "nutrition",
-    filled: 1,
-    total: 6,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "dietician-day",
-    icon: "📋",
-    title: "Dietician day & health points assistant",
-    desc: "Welcome families to their monthly one-on-one nutrition check-ins and help track the health points they earn.",
-    when: "Weekday afternoons",
-    where: "San Po Kong centre",
-    category: "nutrition",
-    filled: 11,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "family-counselling",
-    icon: "💬",
-    title: "Family counselling support",
-    desc: "Front-of-house support around our parent counselling sessions — greeting families, not delivering counselling.",
-    when: "Weekday mornings",
-    where: "San Po Kong centre",
-    category: "family",
-    filled: 3,
-    total: 10,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "mentorship-buddy",
-    icon: "🤝",
-    title: "Mentorship programme buddy",
-    desc: "Get matched 1:1 with a member and work toward a shared weekly activity goal, side by side.",
-    when: "Weekly, your schedule",
-    where: "Varies by activity",
-    category: "family",
-    filled: 12,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "community-dinners",
-    icon: "🎉",
-    title: "Community dinners & trips crew",
-    desc: "Help run the dinners, outings and away trips that keep the whole Love 21 family close.",
-    when: "Occasional evenings/weekends",
-    where: "Varies",
-    category: "family",
-    filled: 9,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "corporate-day",
-    icon: "🏢",
-    title: "Corporate volunteer day",
-    desc: "Bring your team for a hands-on day at our San Po Kong centre — no experience needed, just show up together.",
-    when: "Book a date for your team",
-    where: "San Po Kong centre",
-    category: "csr",
-    note: "2 dates booked this quarter",
-    ctaLabel: "Book a date",
-  },
-  {
-    id: "skills-based",
-    icon: "💡",
-    title: "Skills-based placement",
-    desc: "Offer your professional skills — design, marketing, legal — pro bono, on your own schedule.",
-    when: "Flexible",
-    where: "Remote or on-site",
-    category: "csr",
-    filled: 3,
-    total: 12,
-    ctaLabel: "I'm interested",
-  },
-];
+function mapActivityToRosterItem(activity: VolunteerActivity): RosterItem {
+  return {
+    id: activity.role_id,
+    icon: activity.icon,
+    title: activity.title,
+    desc: activity.desc,
+    when: activity.when,
+    where: activity.where,
+    category: activity.category as Category,
+    filled: activity.filled ?? undefined,
+    total: activity.total ?? undefined,
+    note: activity.note ?? undefined,
+    ctaLabel: activity.cta_label ?? "I'm interested",
+  };
+}
 
 // Placeholder — wire up to Instagram/Facebook Graph API later.
 const socialPosts = [
@@ -339,57 +221,6 @@ const faqs = [
   { q: "Is training provided?", a: "Yes. Every new volunteer gets a short on-site briefing before their first shift, plus a returning volunteer paired alongside them for support." },
   { q: "Can I bring a friend, or volunteer as a group?", a: "Absolutely — group and friend sign-ups are common, especially for the community dinners & trips crew and corporate days." },
 ];
-
-// ---- AI match logic ---------------------------------------------------
-
-type Interest = "hands-on" | "food" | "people" | "skills";
-type Availability = "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
-
-const interestOptions: { key: Interest; label: string; blurb: string; category: Category }[] = [
-  { key: "hands-on", label: "Hands-on & active", blurb: "Sport, coaching, being on the move", category: "sport" },
-  { key: "food", label: "Food & wellbeing", blurb: "Cooking, nutrition, health check-ins", category: "nutrition" },
-  { key: "people", label: "People & connection", blurb: "Counselling support, mentorship, events", category: "family" },
-  { key: "skills", label: "My professional skills", blurb: "Design, marketing, legal, corporate days", category: "csr" },
-];
-
-const availabilityOptions: { key: Availability; label: string; matchWhen: string[] }[] = [
-  { key: "weekday-am", label: "Weekday mornings", matchWhen: ["weekday mornings"] },
-  { key: "weekday-pm", label: "Weekday afternoons/evenings", matchWhen: ["weekday afternoons", "wednesday evenings"] },
-  { key: "weekend-am", label: "Weekend mornings", matchWhen: ["saturday mornings", "sunday mornings"] },
-  { key: "flexible", label: "Flexible — it varies", matchWhen: ["flexible", "varies", "one sunday a month", "occasional", "weekly, your schedule"] },
-];
-
-function scoreRosterItem(item: RosterItem, interest: Interest, availability: Availability) {
-  let score = 52;
-  const reasons: string[] = [];
-  const interestMeta = interestOptions.find((o) => o.key === interest)!;
-  const availMeta = availabilityOptions.find((o) => o.key === availability)!;
-
-  if (item.category === interestMeta.category) {
-    score += 26;
-    reasons.push(`You're drawn to "${interestMeta.label.toLowerCase()}" — this role sits right in that pillar.`);
-  }
-
-  const whenLower = item.when.toLowerCase();
-  if (availMeta.matchWhen.some((kw) => whenLower.includes(kw))) {
-    score += 16;
-    reasons.push(`The timing (${item.when}) lines up with when you said you're free.`);
-  }
-
-  if (item.total && item.filled !== undefined) {
-    const openRatio = 1 - item.filled / item.total;
-    if (openRatio > 0.4) {
-      score += 6;
-      reasons.push("Plenty of open spots — you'd start right away, no waitlist.");
-    }
-  }
-
-  if (reasons.length === 0) {
-    reasons.push("It's a role with open capacity right now across a pillar close to what you picked.");
-  }
-
-  return { score: Math.min(score, 98), reasons };
-}
 
 // ---- One-pager generator -------------------------------------------------
 
@@ -523,30 +354,64 @@ function FaqAccordion() {
   );
 }
 
-// ---- AI Volunteer Match — the headline feature -----------------------
+// ---- AI Volunteer Match — wired to backend /ai/volunteer/match ----------------
 
-function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => void }) {
+type MatchResult = {
+  item: RosterItem;
+  score: number;
+  reasons: string[];
+};
+
+function AiVolunteerMatch({
+  rosterItems,
+  onSelectRole,
+}: {
+  rosterItems: RosterItem[];
+  onSelectRole: (title: string) => void;
+}) {
   const [interest, setInterest] = useState<Interest | null>(null);
   const [availability, setAvailability] = useState<Availability | null>(null);
   const [thinking, setThinking] = useState(false);
-  const [results, setResults] = useState<{ item: RosterItem; score: number; reasons: string[] }[] | null>(null);
+  const [results, setResults] = useState<MatchResult[] | null>(null);
   const [resultIndex, setResultIndex] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const [aiEnhanced, setAiEnhanced] = useState(false);
 
-  function findMatch() {
+  async function findMatch() {
     if (!interest || !availability) return;
     setThinking(true);
     setResults(null);
-    // Simulated scoring pass — swap for a real call to the member app's
-    // engagement/participation data once that API is available.
-    window.setTimeout(() => {
-      const scored = rosterItems
-        .map((item) => ({ item, ...scoreRosterItem(item, interest, availability) }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 2);
-      setResults(scored);
+    setError(null);
+    setAiEnhanced(false);
+
+    try {
+      const response = await api.matchVolunteer({ interest, availability });
+      if (!response.enabled || response.matches.length === 0) {
+        setError(response.message || "No matches found right now. Try another combination.");
+        return;
+      }
+
+      const mapped = response.matches
+        .map((match) => {
+          const item = rosterItems.find((role) => role.id === match.role_id);
+          if (!item) return null;
+          return { item, score: match.score, reasons: match.reasons };
+        })
+        .filter((match): match is MatchResult => match !== null);
+
+      if (mapped.length === 0) {
+        setError("We couldn't map those matches to open roles. Please try again.");
+        return;
+      }
+
+      setResults(mapped);
+      setAiEnhanced(response.ai_enhanced);
       setResultIndex(0);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Matching failed. Is the backend running on port 8000?");
+    } finally {
       setThinking(false);
-    }, 900);
+    }
   }
 
   function reset() {
@@ -554,6 +419,8 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
     setAvailability(null);
     setResults(null);
     setThinking(false);
+    setError(null);
+    setAiEnhanced(false);
   }
 
   const active = results?.[resultIndex];
@@ -565,7 +432,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
           <IconSpark className="h-4 w-4" />
           New · Smart Matching
         </p>
-        {(interest || availability || results) && !thinking && (
+        {(interest || availability || results || error) && !thinking && (
           <button onClick={reset} className="text-xs font-semibold text-white/50 hover:text-white">
             Start over
           </button>
@@ -576,8 +443,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
         Not sure where you fit? Let it find your shift.
       </h3>
       <p className="mt-3 max-w-xl text-sm text-white/65">
-        Two questions, and we'll match you against every open role the same way the member app
-        tracks engagement — by pillar, timing, and real capacity.
+        Two questions, and we&apos;ll match you against every open role by pillar, timing, and real capacity.
       </p>
 
       {!results && !thinking && (
@@ -617,6 +483,8 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
             </div>
           </div>
 
+          {error && <p className="text-sm text-red-300">{error}</p>}
+
           <button
             onClick={findMatch}
             disabled={!interest || !availability}
@@ -642,9 +510,14 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
         <div className="mt-8">
           <div className="flex items-center justify-between gap-4">
             <span className="text-xs font-semibold uppercase tracking-wide text-white/50">Your best match</span>
-            <span className="rounded-full bg-brand-coral/15 px-3 py-1 text-xs font-semibold text-brand-coral">
-              {active.score}% match
-            </span>
+            <div className="flex items-center gap-2">
+              {aiEnhanced && (
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">AI polished</span>
+              )}
+              <span className="rounded-full bg-brand-coral/15 px-3 py-1 text-xs font-semibold text-brand-coral">
+                {active.score}% match
+              </span>
+            </div>
           </div>
 
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
@@ -713,13 +586,30 @@ function VolunteerContent() {
   const requestedCategory = searchParams.get("category");
   const initialFilter: Category | "all" = requestedCategory && requestedCategory in categoryMeta ? (requestedCategory as Category) : "all";
 
+  const [rosterItems, setRosterItems] = useState<RosterItem[]>(fallbackRosterItems);
   const [filter, setFilter] = useState<Category | "all">(initialFilter);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<string>(rosterItems[0].title);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<string>(fallbackRosterItems[0].title);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    api
+      .listVolunteerActivities()
+      .then((activities) => {
+        if (activities.length === 0) return;
+        const mapped = activities.map(mapActivityToRosterItem);
+        setRosterItems(mapped);
+        setSelectedOpportunity((current) =>
+          mapped.some((item) => item.title === current) ? current : mapped[0].title,
+        );
+      })
+      .catch(() => {
+        // Keep local fallback roster if backend is unavailable.
+      });
+  }, []);
 
   const visibleItems = useMemo(
     () => (filter === "all" ? rosterItems : rosterItems.filter((item) => item.category === filter)),
-    [filter],
+    [filter, rosterItems],
   );
 
   const urgentItems = useMemo(
@@ -728,7 +618,7 @@ function VolunteerContent() {
         .filter((item) => item.total && item.filled !== undefined && item.filled / item.total >= 0.6)
         .sort((a, b) => b.filled! / b.total! - a.filled! / a.total!)
         .slice(0, 2),
-    [],
+    [rosterItems],
   );
 
   function selectRoleAndScroll(title: string) {
@@ -1085,7 +975,7 @@ function VolunteerContent() {
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-0 h-72 w-72 bg-brand-coral/15" />
         <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-coral/10" />
-        <AiVolunteerMatch onSelectRole={selectRoleAndScroll} />
+        <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={selectRoleAndScroll} />
       </section>
 
       {/* ---------- FINAL CTA ---------- */}

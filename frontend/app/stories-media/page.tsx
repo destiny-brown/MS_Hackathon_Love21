@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ElfsightFeeds } from "@/components/media/elfsight-feeds";
+import { ProgrammeShowcase } from "@/components/media/programme-showcase";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
@@ -13,15 +15,16 @@ export default function StoriesMediaPage() {
     <SiteLayout>
       <PageHero
         title="Stories"
-        subtitle="Member spotlights, press coverage, and community stories — learn through shared experiences."
+        subtitle="Social feeds, programme highlights, press coverage, and community stories — learn through shared experiences."
       />
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl space-y-12">
+
+      <section className="border-b border-brand-sand bg-white px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl space-y-8">
           <div className="rounded-2xl border border-brand-sand bg-brand-cream p-6">
             <h2 className="font-serif-display text-2xl text-brand-ink">Learn through real experiences</h2>
             <p className="mt-2 text-brand-ink/75">
-              These stories come from Love 21&apos;s media archive — press coverage, interviews, and community events.
-              Pair them with our{" "}
+              Follow Love 21 live, explore our programmes, then dive into press coverage and community events. Pair
+              stories with our{" "}
               <Link href="/learn-play" className="font-semibold text-brand-coral hover:underline">
                 Learn section
               </Link>{" "}
@@ -30,7 +33,31 @@ export default function StoriesMediaPage() {
           </div>
 
           <div>
-            <h2 className="font-serif-display text-3xl text-brand-ink">Press & Interviews</h2>
+            <h2 className="font-serif-display text-3xl text-brand-ink">Social feed</h2>
+            <p className="mt-2 max-w-2xl text-brand-ink/75">
+              Instagram and YouTube — community moments from sport, nutrition, and family programmes.
+            </p>
+          </div>
+          <ElfsightFeeds />
+        </div>
+      </section>
+
+      <section className="border-b border-brand-sand bg-brand-cream/40 px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl space-y-8">
+          <div>
+            <h2 className="font-serif-display text-3xl text-brand-ink">Our Programmes</h2>
+            <p className="mt-2 max-w-2xl text-brand-ink/75">
+              Sport, nutrition, family support, and CSR — where Love 21 stories begin.
+            </p>
+          </div>
+          <ProgrammeShowcase />
+        </div>
+      </section>
+
+      <section className="px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl space-y-12">
+          <div>
+            <h2 className="font-serif-display text-3xl text-brand-ink">Press &amp; Interviews</h2>
             <p className="mt-1 text-sm text-brand-ink/65">Click any cover to read the original article.</p>
             <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {pressStories.map((post) => (
@@ -48,7 +75,7 @@ export default function StoriesMediaPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <Link href="/learn-play/resources" className="text-sm font-semibold text-brand-coral hover:underline">
               Browse all stories in Learn →
             </Link>
