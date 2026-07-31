@@ -29,6 +29,14 @@ export type SupportOpportunityInput = Omit<
   SupportOpportunity,
   "id" | "slug" | "progress_percent" | "created_at" | "updated_at"
 >;
+export type YouTubeVideo = {
+  video_id: string;
+  title: string;
+  channel_title: string;
+  published_at: string;
+  thumbnail_url: string | null;
+};
+export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -93,4 +101,8 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify(payload),
     }),
+  searchYouTube: (query: string, maxResults = 20, maxDurationMinutes = 5) =>
+    request<YouTubeSearchResponse>(
+      `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
+    ),
 };

@@ -16,3 +16,5 @@ services:
         value: http://localhost:3000
       - key: ANTHROPIC_API_KEY
         sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false
