@@ -277,6 +277,14 @@ const personas: Record<PersonaKey, Persona> = {
 // Replace with real, family-approved quotes and names before this goes live.
 const testimonials = [
   {
+    title: "Donate",
+    description: "Back campaigns and causes that create more opportunities for every ability to shine.",
+    href: "/donate",
+  },
+  {
+    title: "Wishlist",
+    description: "Fund or purchase practical tools that help members train, learn, and create.",
+    href: "/shop",
     quote: "Two years ago, [Name] couldn't finish a lap. This season, [she/he] led the warm-up.",
     name: "[Parent name], mother of a Saturday football member",
   },

@@ -157,14 +157,6 @@ export const annualReports = [
   { year: "2022-2023", href: "#" },
 ];
 
-export const shopProducts = [
-  { name: "Product A", price: "HKD$1.00" },
-  { name: "Product B", price: "HKD$9.00" },
-  { name: "Product C", price: "HKD$50.00" },
-  { name: "Product D", price: "HKD$99.00" },
-  { name: "Product E", price: "HKD$200.00" },
-];
-
 export type BoardMember = { slug: string; name: string; bio: string };
 
 export const boardMembers: BoardMember[] = [
