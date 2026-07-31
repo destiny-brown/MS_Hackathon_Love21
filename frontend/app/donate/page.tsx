@@ -1,48 +1,51 @@
+import { DonationOpportunities } from "@/components/site/donation-opportunities";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
-import { Button } from "@/components/ui/button";
 
 export default function DonatePage() {
   return (
     <SiteLayout>
-      <PageHero title="DONATE" subtitle="Thank you so much for supporting Love 21!" />
+      <PageHero
+        title="Back Their Potential"
+        subtitle="Choose the campaign or cause that speaks to you and help create more opportunities for every ability to shine."
+      />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl space-y-10">
-          <div className="space-y-4 text-brand-ink/80">
-            <p>
-              For donations of HKD$100 or above, an official receipt will be issued and mailed to you upon request.
-              Please contact Maggie at{" "}
-              <a href="mailto:Maggie@love21foundation.com" className="text-brand-coral hover:underline">
-                Maggie@love21foundation.com
-              </a>{" "}
-              for enquiries.
-            </p>
-            <p>
-              Your kind donation will help us provide even more opportunities for our Down syndrome and autistic
-              community, allowing them to take ownership of their health through sports, nutrition and our vast range of
-              holistic programmes.
-            </p>
+        <div className="mx-auto max-w-6xl space-y-12">
+          <div className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
+            <div className="space-y-4 text-brand-ink/80">
+              <h2 className="font-serif-display text-4xl text-brand-ink">Ability deserves opportunity</h2>
+              <p>
+                Love 21 members bring talent, ambition, and determination. Your gift helps remove the barriers that
+                prevent those strengths from being fully seen in sport, work, family life, and the wider community.
+              </p>
+              <p>
+                For donations of HKD$100 or above, an official receipt will be issued and mailed to you upon request.
+                Please contact Maggie at{" "}
+                <a href="mailto:Maggie@love21foundation.com" className="text-brand-coral hover:underline">
+                  Maggie@love21foundation.com
+                </a>{" "}
+                for enquiries.
+              </p>
+            </div>
+            <aside className="rounded-2xl border border-brand-sand bg-white p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Give your way</p>
+              <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">One gift or lasting support</h2>
+              <p className="mt-3 text-sm text-brand-ink/75">
+                Choose one-time, weekly, monthly, quarterly, semiannual, or annual giving securely through MoonClerk.
+              </p>
+            </aside>
           </div>
 
-          <div className="rounded-2xl border border-brand-sand bg-white p-6">
-            <h2 className="font-serif-display text-2xl text-brand-ink">Every dollar counts!</h2>
-            <p className="mt-3 text-brand-ink/75">
-              We now have a recurring donation option. Please consider a weekly or monthly donation through your credit
-              card.
-            </p>
-            <Button className="mt-6">Donate Now</Button>
-          </div>
+          <DonationOpportunities />
 
-          <div className="space-y-4">
-            <h2 className="font-serif-display text-2xl text-brand-ink">To donate by other means</h2>
-            <p className="text-brand-ink/80">
+          <div className="space-y-4 border-t border-brand-sand pt-10 text-brand-ink/80">
+            <h2 className="font-serif-display text-3xl text-brand-ink">Donate by other means</h2>
+            <p>
               You can also donate by HSBC transfer to <strong>582-350526-838</strong> / FPS ID:{" "}
-              <strong>164778151</strong>
+              <strong>164778151</strong>.
             </p>
-            <p className="text-brand-ink/80">
-              Cheques can be written out to &ldquo;Love 21 Foundation Limited&rdquo; and mailed to us at:
-            </p>
-            <address className="not-italic text-brand-ink/80">
+            <p>Cheques can be written out to &ldquo;Love 21 Foundation Limited&rdquo; and mailed to:</p>
+            <address className="not-italic">
               1102, 11/F, Artisan Lab
               <br />
               21 Luk Hop Street, San Po Kong,

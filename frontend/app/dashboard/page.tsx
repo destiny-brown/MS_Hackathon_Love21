@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { SupportOpportunityManager } from "@/components/support-opportunity-manager";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -146,6 +147,8 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </section>
+
+        {user?.role === "admin" ? <SupportOpportunityManager /> : null}
       </div>
     </main>
   );

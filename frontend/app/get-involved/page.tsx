@@ -22,12 +22,12 @@ const pathways = [
   },
   {
     title: "Donate",
-    description: "One-time and recurring donations to support holistic programmes.",
+    description: "Back campaigns and causes that create more opportunities for every ability to shine.",
     href: "/donate",
   },
   {
     title: "Wishlist",
-    description: "Non-financial contributions through requested products and supplies.",
+    description: "Fund or purchase practical tools that help members train, learn, and create.",
     href: "/shop",
   },
 ];

@@ -4,6 +4,31 @@ const TOKEN_KEY = "hackkit_token";
 export type User = { id: number; email: string; role: string; created_at: string };
 export type Item = { id: number; title: string; description: string | null; owner_id: number; created_at: string };
 export type AuthResponse = { access_token: string; token_type: "bearer"; user: User };
+export type OpportunityKind = "campaign" | "cause" | "wishlist";
+export type OpportunityStatus = "active" | "archived";
+export type SupportOpportunity = {
+  id: number;
+  slug: string;
+  kind: OpportunityKind;
+  title: string;
+  description: string;
+  impact_statement: string;
+  target_amount_hkd: number;
+  funded_amount_hkd: number;
+  moonclerk_url: string | null;
+  purchase_url: string | null;
+  quantity_needed: number | null;
+  quantity_secured: number | null;
+  status: OpportunityStatus;
+  display_order: number;
+  progress_percent: number;
+  created_at: string;
+  updated_at: string;
+};
+export type SupportOpportunityInput = Omit<
+  SupportOpportunity,
+  "id" | "slug" | "progress_percent" | "created_at" | "updated_at"
+>;
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -55,4 +80,17 @@ export const api = {
   updateItem: (id: number, payload: Partial<Pick<Item, "title" | "description">>) =>
     request<Item>(`/items/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteItem: (id: number) => request<void>(`/items/${id}`, { method: "DELETE" }),
+  listSupportOpportunities: (kind?: OpportunityKind) =>
+    request<SupportOpportunity[]>(`/support-opportunities${kind ? `?kind=${kind}` : ""}`),
+  listAdminSupportOpportunities: () => request<SupportOpportunity[]>("/support-opportunities/admin"),
+  createSupportOpportunity: (payload: SupportOpportunityInput) =>
+    request<SupportOpportunity>("/support-opportunities", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateSupportOpportunity: (id: number, payload: Partial<SupportOpportunityInput>) =>
+    request<SupportOpportunity>(`/support-opportunities/admin/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
 };

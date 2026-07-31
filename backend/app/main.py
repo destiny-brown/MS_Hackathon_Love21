@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
 from app.db import create_db_and_tables
-from app.routers import ai, auth, items
+from app.routers import ai, auth, items, support_opportunities
 
 
 @asynccontextmanager
@@ -34,3 +34,4 @@ def health() -> dict[str, str]:
 app.include_router(auth.router)
 app.include_router(items.router)
 app.include_router(ai.router)
+app.include_router(support_opportunities.router)

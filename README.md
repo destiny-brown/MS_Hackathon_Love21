@@ -55,6 +55,30 @@ npm run dev
 - Password: `demo1234`
 - Role: `admin`
 
+## Managing donations and the wishlist
+
+1. Sign in with an admin account at `http://localhost:3000/login`.
+2. Open the **Donations and wishlist** section on the dashboard.
+3. Create or edit a campaign, ongoing cause, or wishlist need.
+4. After reconciling MoonClerk payments and in-kind gifts, update the funded amount (and secured quantity for wishlist items).
+
+Published progress is shared by the Donate and Wishlist pages and is available to the future Impact dashboard through
+the same API. Payments continue through MoonClerk; this project does not store card details or MoonClerk credentials.
+
+The initial seeded goals and totals are demonstration content. Love 21 should verify and replace them before publishing
+the site in production.
+
+### Public dashboard handoff
+
+The public Impact dashboard is intentionally left for its owner to implement. It can reuse:
+
+- `api.listSupportOpportunities()` from `frontend/lib/api.ts`
+- `SupportOpportunity` and its `target_amount_hkd`, `funded_amount_hkd`, `progress_percent`, and `kind` fields
+- `SupportProgress` from `frontend/components/site/support-progress.tsx`
+
+The API calculates `progress_percent`, so the public dashboard should display that value instead of maintaining separate
+hard-coded funding percentages.
+
 ## Day 1 checklist
 
 1. Rename the product copy (`hackkit`) in `frontend/app/page.tsx`, `frontend/app/layout.tsx`, and `README.md`.
@@ -99,6 +123,11 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `GET /items/{id}`
 - `PATCH /items/{id}`
 - `DELETE /items/{id}`
+- `GET /support-opportunities` — public active campaigns, causes, and wishlist needs
+- `GET /support-opportunities/{slug}` — public support-opportunity detail
+- `GET /support-opportunities/admin` — admin listing, including archived records
+- `POST /support-opportunities` — admin creation
+- `PATCH /support-opportunities/admin/{id}` — admin update or archive
 - `POST /ai/ask` — no-ops clearly when `ANTHROPIC_API_KEY` is missing
 
 ## Environment variables
