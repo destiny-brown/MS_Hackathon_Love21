@@ -1,0 +1,14 @@
+/* 21 Moves — cinematic scene polish (Captain 21 trail animations) */
+
+.trail-scene-grid {
+  background-image:
+    linear-gradient(to right, rgba(26, 26, 26, 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(26, 26, 26, 0.2) 1px, transparent 1px);
+  background-size: 28px 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trail-scene-grid {
+    opacity: 0.05;
+  }
+}

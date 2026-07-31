@@ -74,6 +74,25 @@ export type VolunteerActivity = {
   note?: string | null;
   cta_label?: string;
 };
+export type TrailDebriefRequest = {
+  captain_name?: string;
+  stop_title: string;
+  ability_line: string;
+  sections_completed: number;
+  trail_streak: number;
+  myth_completed_today: boolean;
+  myth_won_today: boolean;
+  myth_statement?: string;
+};
+export type TrailDebriefResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  encouragement: string;
+  friend_prompt: string;
+  suggested_replies: string[];
+  upgrade_message: string;
+  message: string | null;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -170,4 +189,9 @@ export const api = {
       body: JSON.stringify(payload),
     }),
   listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  trailDebrief: (payload: TrailDebriefRequest) =>
+    request<TrailDebriefResponse>("/ai/trail/debrief", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 };

@@ -46,8 +46,8 @@ export function CommunityQuotesWall() {
           >
             Read the full story →
           </a>
-          <Link href="/learn-play/daily-myth-buster" className="font-semibold text-white/80 hover:text-white hover:underline">
-            Try today&apos;s myth
+          <Link href="/learn-play/21-moves" className="font-semibold text-white/80 hover:text-white hover:underline">
+            Play today&apos;s 21 Moves
           </Link>
           <Link href={quote.programmeHref} className="font-semibold text-white/80 hover:text-white hover:underline">
             {quote.programmeLabel} →
