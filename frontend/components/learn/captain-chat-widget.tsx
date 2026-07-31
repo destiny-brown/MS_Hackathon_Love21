@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { Mic, Square } from "lucide-react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CaptainMascot } from "@/components/learn/captain-mascot";
 import { useSitePreferences } from "@/components/site/site-preferences";
-import { captainMeta } from "@/lib/captain-character";
 import { api, type CaptainChatMessage } from "@/lib/api";
 import { useLearnUi } from "@/lib/i18n/translated-data";
 
@@ -30,21 +30,32 @@ function getSpeechRecognition(): (new () => SpeechRecognitionInstance) | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
-const STARTER_PROMPT_FALLBACK = `Hi! I'm ${captainMeta.fullName}. Ask me about Love 21 programmes, volunteering, myths vs facts, or how to get involved.`;
+const CAPTAIN21_NAME = "Captain21";
+
+const STARTER_PROMPT_FALLBACK = `Hi! I'm ${CAPTAIN21_NAME}. Ask me about Love 21 programmes, volunteering, or how to get involved.`;
+
+const BUBBLE_PROMPT_KEYS = ["captainBubbleQuestions", "captainBubbleCurious", "captainBubbleVolunteer"] as const;
+const BUBBLE_PROMPT_FALLBACKS = [
+  "Do you have any questions?",
+  "Curious about what we do?",
+  "Do you want to volunteer?",
+];
+const BUBBLE_DISMISSED_KEY = "love21-captain-bubble-dismissed";
+const BUBBLE_INITIAL_DELAY_MS = 4500;
+const BUBBLE_ROTATE_MS = 5500;
 
 export function CaptainChatWidget() {
   const ui = useLearnUi();
   const { t, i18n } = useTranslation("learn");
-  const { speechLang, locale } = useSitePreferences();
+  const { speechLang, locale, a11y } = useSitePreferences();
   const dialogTitleId = useId();
-  const dialogDescId = useId();
   const inputId = useId();
   const liveRegionId = useId();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const starterText = t("ui.captainStarter", {
-    name: captainMeta.fullName,
+    name: CAPTAIN21_NAME,
     defaultValue: STARTER_PROMPT_FALLBACK,
   });
 
@@ -61,17 +72,63 @@ export function CaptainChatWidget() {
   const [error, setError] = useState<string | null>(null);
   const [listening, setListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
+  const [bubbleVisible, setBubbleVisible] = useState(false);
+  const [bubbleIndex, setBubbleIndex] = useState(0);
+  const [bubbleDismissed, setBubbleDismissed] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
-  const chatOpenLabel = mounted ? ui("chatOpen", "Ask Captain21") : "Ask Captain21";
   const captainOpenAria = mounted
     ? t("ui.captainOpenAria", { defaultValue: "Ask Captain21" })
     : "Ask Captain21";
 
+  const floatClass = a11y.reduceMotion
+    ? ""
+    : "motion-safe:animate-[captain-float_3.2s_ease-in-out_infinite]";
+
+  const bubblePrompt = mounted
+    ? t(`ui.${BUBBLE_PROMPT_KEYS[bubbleIndex]}`, {
+        defaultValue: BUBBLE_PROMPT_FALLBACKS[bubbleIndex],
+      })
+    : BUBBLE_PROMPT_FALLBACKS[bubbleIndex];
+
+  const dismissBubble = useCallback(() => {
+    setBubbleVisible(false);
+    setBubbleDismissed(true);
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(BUBBLE_DISMISSED_KEY, "1");
+    }
+  }, []);
+
+  const openChat = useCallback(() => {
+    setBubbleVisible(false);
+    setBubbleDismissed(true);
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(BUBBLE_DISMISSED_KEY, "1");
+    }
+    setOpen(true);
+  }, []);
+
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== "undefined" && window.sessionStorage.getItem(BUBBLE_DISMISSED_KEY)) {
+      setBubbleDismissed(true);
+    }
   }, []);
+
+  useEffect(() => {
+    if (!mounted || open || bubbleDismissed) return undefined;
+    const showTimer = window.setTimeout(() => setBubbleVisible(true), BUBBLE_INITIAL_DELAY_MS);
+    return () => window.clearTimeout(showTimer);
+  }, [mounted, open, bubbleDismissed]);
+
+  useEffect(() => {
+    if (!bubbleVisible || open) return undefined;
+    const rotateTimer = window.setInterval(() => {
+      setBubbleIndex((index) => (index + 1) % BUBBLE_PROMPT_KEYS.length);
+    }, BUBBLE_ROTATE_MS);
+    return () => window.clearInterval(rotateTimer);
+  }, [bubbleVisible, open]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -173,15 +230,48 @@ export function CaptainChatWidget() {
   return (
     <>
       {!open && (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full border-2 border-brand-ink bg-brand-coral px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral focus-visible:ring-offset-2"
-          aria-label={captainOpenAria}
-        >
-          <CaptainMascot mood="happy" outfit="default" size={36} label="" />
-          <span className="hidden sm:inline">{chatOpenLabel}</span>
-        </button>
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+          {mounted && bubbleVisible && (
+            <div
+              key={bubbleIndex}
+              className="relative max-w-[15rem] animate-[fadeUp_0.35s_ease-out]"
+            >
+              <button
+                type="button"
+                onClick={openChat}
+                className="block w-full rounded-2xl border border-brand-sand bg-white px-4 py-3 text-left text-sm font-medium leading-snug text-brand-ink shadow-lg transition hover:border-brand-coral/40 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral"
+              >
+                {bubblePrompt}
+              </button>
+              <button
+                type="button"
+                onClick={dismissBubble}
+                className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full border border-brand-sand bg-white text-xs text-brand-ink/50 shadow-sm hover:text-brand-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral"
+                aria-label={ui("captainDismissBubble", "Dismiss")}
+              >
+                ✕
+              </button>
+              <span
+                className="absolute -bottom-2 right-8 h-4 w-4 rotate-45 border-b border-r border-brand-sand bg-white"
+                aria-hidden="true"
+              />
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={openChat}
+            className={`group rounded-full border-0 bg-transparent p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral focus-visible:ring-offset-2 ${floatClass}`}
+            aria-label={captainOpenAria}
+          >
+            <CaptainMascot
+              mood="happy"
+              outfit="default"
+              size={76}
+              label={captainOpenAria}
+              className="pointer-events-none transition group-hover:drop-shadow-[0_14px_22px_rgba(144,0,0,0.28)]"
+            />
+          </button>
+        </div>
       )}
 
       {open && (
@@ -189,19 +279,15 @@ export function CaptainChatWidget() {
           role="dialog"
           aria-modal="true"
           aria-labelledby={dialogTitleId}
-          aria-describedby={dialogDescId}
-          className="fixed bottom-5 right-5 z-50 flex h-[min(32rem,85vh)] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-brand-sand bg-white shadow-2xl"
+          className="fixed bottom-6 right-6 z-50 flex h-[min(32rem,85vh)] w-[min(24rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-brand-sand bg-white shadow-2xl"
         >
           <header className="flex items-center justify-between gap-3 border-b border-brand-sand bg-brand-ink px-4 py-3 text-white">
             <div className="flex items-center gap-2">
               <CaptainMascot mood="happy" outfit="athlete" size={44} label="" />
               <div>
                 <h2 id={dialogTitleId} className="text-sm font-semibold">
-                  {captainMeta.fullName}
+                  {CAPTAIN21_NAME}
                 </h2>
-                <p id={dialogDescId} className="text-xs text-white/65">
-                  {ui("captainRole", "Inclusion coach · powered by local Ollama")}
-                </p>
               </div>
             </div>
             <button
@@ -263,36 +349,43 @@ export function CaptainChatWidget() {
             <label htmlFor={inputId} className="sr-only">
               {ui("captainMessageLabel", "Message to Captain 21")}
             </label>
-            <textarea
-              id={inputId}
-              ref={inputRef}
-              rows={2}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              disabled={loading}
-              placeholder={ui("chatPlaceholder", "Ask about programmes, volunteering, or myths…")}
-              className="w-full resize-none rounded-xl border border-brand-sand px-3 py-2 text-sm text-brand-ink placeholder:text-brand-ink/40 focus:border-brand-coral focus:outline-none focus:ring-2 focus:ring-brand-coral/30 disabled:opacity-60"
-            />
-            <div className="mt-2 flex items-center justify-between gap-2">
-              {speechSupported ? (
+            <div className="relative">
+              <textarea
+                id={inputId}
+                ref={inputRef}
+                rows={2}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={loading}
+                placeholder={ui("chatPlaceholder", "Ask about programmes, volunteering, or how to get involved…")}
+                className="w-full resize-none rounded-xl border border-brand-sand py-2 pl-3 pr-11 text-sm text-brand-ink placeholder:text-brand-ink/40 focus:border-brand-coral focus:outline-none focus:ring-2 focus:ring-brand-coral/30 disabled:opacity-60"
+              />
+              {speechSupported && (
                 <button
                   type="button"
                   onClick={listening ? stopListening : startListening}
                   disabled={loading}
                   aria-pressed={listening}
                   aria-label={listening ? ui("captainStopVoice", "Stop voice input") : ui("captainStartVoice", "Start voice input")}
-                  className={`rounded-full border px-3 py-1.5 text-xs font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral ${
+                  className={`absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral disabled:cursor-not-allowed disabled:opacity-40 ${
                     listening
-                      ? "border-brand-coral bg-brand-coral/10 text-brand-coral"
-                      : "border-brand-sand text-brand-ink/70 hover:border-brand-coral/40"
+                      ? "bg-brand-coral/15 text-brand-coral"
+                      : "text-brand-ink/45 hover:bg-brand-cream hover:text-brand-coral"
                   }`}
                 >
-                  {listening ? ui("listening", "Listening…") : ui("captainSpeakEmoji", "🎤 Speak")}
+                  {listening ? (
+                    <Square className="h-3.5 w-3.5 fill-current" aria-hidden="true" />
+                  ) : (
+                    <Mic className="h-4 w-4" aria-hidden="true" />
+                  )}
                 </button>
-              ) : (
-                <span className="text-[11px] text-brand-ink/45">{ui("voiceNeedsChrome", "Voice input needs Chrome or Edge")}</span>
               )}
+            </div>
+            {!speechSupported && (
+              <p className="mt-1 text-[11px] text-brand-ink/45">{ui("voiceNeedsChrome", "Voice input needs Chrome or Edge")}</p>
+            )}
+            <div className="mt-2 flex justify-end">
               <button
                 type="button"
                 onClick={() => void sendMessage()}
