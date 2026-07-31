@@ -1,11 +1,13 @@
+"use client";
+
 import { NewsletterForm } from "@/components/site/newsletter-form";
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 
 export default function NewsletterPage() {
   return (
     <SiteLayout>
-      <PageHero title="Sign up for Love 21 Foundation Newsletter" />
+      <TranslatedPageHero titleKey="newsletter.title" subtitleKey="newsletter.subtitle" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-lg">
           <NewsletterForm />

@@ -1,30 +1,38 @@
-import Link from "next/link";
+"use client";
 
-import { PageHero } from "@/components/site/page-hero";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 
-const campaigns = [
-  {
-    title: "Beyond Limits Banquet",
-    description: "Signature fundraising event supporting community programmes.",
-  },
-  {
-    title: "Charity Raffle",
-    description: "Community raffle campaign to fund sports, nutrition, and support activities.",
-  },
-  {
-    title: "Programme-specific Drives",
-    description: "Targeted support drives aligned with specific programme needs and calendar moments.",
-  },
-];
-
 export default function EventsCampaignsPage() {
+  const { t } = useTranslation("pages");
+
+  const campaigns = [
+    {
+      title: t("events.campaign1.title", { defaultValue: "Beyond Limits Banquet" }),
+      description: t("events.campaign1.description", {
+        defaultValue: "Signature fundraising event supporting community programmes.",
+      }),
+    },
+    {
+      title: t("events.campaign2.title", { defaultValue: "Charity Raffle" }),
+      description: t("events.campaign2.description", {
+        defaultValue: "Community raffle campaign to fund sports, nutrition, and support activities.",
+      }),
+    },
+    {
+      title: t("events.campaign3.title", { defaultValue: "Programme-specific Drives" }),
+      description: t("events.campaign3.description", {
+        defaultValue: "Targeted support drives aligned with specific programme needs and calendar moments.",
+      }),
+    },
+  ];
+
   return (
     <SiteLayout>
-      <PageHero
-        title="Events"
-        subtitle="Special events, campaign fundraising, and programme-specific drives."
-      />
+      <TranslatedPageHero titleKey="events.title" subtitleKey="events.subtitle" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-10">
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -32,24 +40,15 @@ export default function EventsCampaignsPage() {
               <article key={campaign.title} className="rounded-2xl border border-brand-sand bg-white p-6">
                 <h2 className="font-serif-display text-2xl text-brand-ink">{campaign.title}</h2>
                 <p className="mt-3 text-brand-ink/75">{campaign.description}</p>
-                <Link href="/donate" className="mt-5 inline-flex text-sm font-semibold text-brand-coral hover:underline">
-                  Support this campaign
-                </Link>
               </article>
             ))}
           </div>
-
-          <article className="rounded-2xl border border-brand-sand bg-brand-cream p-6">
-            <h2 className="font-serif-display text-3xl text-brand-ink">Calendar and Programme Links</h2>
-            <p className="mt-3 text-brand-ink/80">
-              This section can include the public calendar and campaign timelines while keeping programme updates in sync.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-4 text-sm">
-              <Link href="/our-programmes" className="font-semibold text-brand-coral hover:underline">View Programmes</Link>
-              <Link href="/media" className="font-semibold text-brand-coral hover:underline">View Campaign News</Link>
-              <Link href="/donate" className="font-semibold text-brand-coral hover:underline">Donate</Link>
-            </div>
-          </article>
+          <p className="text-brand-ink/70">
+            <Link href="/get-involved" className="font-semibold text-brand-coral hover:underline">
+              {t("learnPlay.getInvolved", { defaultValue: "Get involved" })}
+            </Link>{" "}
+            to see the latest calendar and volunteer opportunities.
+          </p>
         </div>
       </section>
     </SiteLayout>

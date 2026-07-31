@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { impactStories } from "@/lib/impact-data";
+import { useImpactUi, useTranslatedImpactStories } from "@/lib/i18n/translated-data";
 
 const viewport = { once: false, amount: 0.2 } as const;
 
@@ -14,6 +14,8 @@ export function ImpactStories() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, viewport);
   const [index, setIndex] = useState(0);
+  const impactStories = useTranslatedImpactStories();
+  const ui = useImpactUi();
   const story = impactStories[index];
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function ImpactStories() {
       setIndex((current) => (current + 1) % impactStories.length);
     }, 7000);
     return () => window.clearInterval(timer);
-  }, [inView]);
+  }, [inView, impactStories.length]);
 
   const go = (direction: -1 | 1) => {
     setIndex((current) => {
@@ -48,10 +50,10 @@ export function ImpactStories() {
           <div>
             <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-brand-coral">
               <Sparkles className="h-4 w-4" />
-              Strength-Based Spotlights
+              {ui("strengthSpotlights", "Strength-Based Spotlights")}
             </p>
             <h2 className="mt-3 font-serif-display text-3xl text-brand-ink sm:text-4xl">
-              Impact Stories
+              {ui("impactStories", "Impact Stories")}
             </h2>
           </div>
           <div className="flex gap-2">
@@ -59,7 +61,7 @@ export function ImpactStories() {
               type="button"
               variant="outline"
               size="sm"
-              aria-label="Previous story"
+              aria-label={ui("prevStory", "Previous story")}
               onClick={() => go(-1)}
               className="border-brand-sand"
             >
@@ -69,7 +71,7 @@ export function ImpactStories() {
               type="button"
               variant="outline"
               size="sm"
-              aria-label="Next story"
+              aria-label={ui("nextStory", "Next story")}
               onClick={() => go(1)}
               className="border-brand-sand"
             >
@@ -119,7 +121,7 @@ export function ImpactStories() {
             <button
               key={item.name}
               type="button"
-              aria-label={`Go to story ${i + 1}`}
+              aria-label={ui("goToStory", `Go to story ${i + 1}`)}
               onClick={() => setIndex(i)}
               className={`h-2.5 w-2.5 rounded-full transition ${
                 i === index

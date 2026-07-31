@@ -7,12 +7,13 @@ import { ChevronLeft, ChevronRight, HeartHandshake } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useImpactUi, useTranslatedImpactPillars } from "@/lib/i18n/translated-data";
 import { cn } from "@/lib/utils";
-import { impactPillars } from "@/lib/impact-data";
+import type { ImpactPillar } from "@/lib/impact-data";
 
 const viewport = { once: false, amount: 0.15 } as const;
 
-const pillarImages: Record<(typeof impactPillars)[number]["id"], string> = {
+const pillarImages: Record<ImpactPillar["id"], string> = {
   nutrition: "/images/nutrition.png",
   fitness: "/images/fitness.png",
   sports: "/images/sports.png",
@@ -32,6 +33,8 @@ export function ImpactPillars() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, viewport);
   const [index, setIndex] = useState(0);
+  const impactPillars = useTranslatedImpactPillars();
+  const ui = useImpactUi();
   const active = impactPillars[index];
   const ActiveIcon = active.icon;
 
@@ -58,21 +61,22 @@ export function ImpactPillars() {
         >
           <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-coral">
             <HeartHandshake className="h-3.5 w-3.5" />
-            The Butterfly Metamorphosis
+            {ui("butterflyMetamorphosis", "The Butterfly Metamorphosis")}
           </p>
           <h2 className="mt-1.5 font-serif-display text-2xl text-brand-ink sm:text-3xl">
-            The 5 Pillars of Impact
+            {ui("fivePillars", "The 5 Pillars of Impact")}
           </h2>
           <p className="mt-1.5 max-w-2xl text-sm text-brand-ink/70">
-            From nourishment to taking flight — each pillar marks a stage of
-            growth for members and families.
+            {ui(
+              "pillarsIntro",
+              "From nourishment to taking flight — each pillar marks a stage of growth for members and families.",
+            )}
           </p>
         </motion.div>
 
         <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-12 lg:items-stretch lg:gap-6">
-          {/* Vertical Metamorphosis Spine */}
           <nav
-            aria-label="Metamorphosis stages"
+            aria-label={ui("metamorphosisStages", "Metamorphosis stages")}
             className="min-h-0 lg:col-span-3"
           >
             <div className="relative flex h-full flex-row items-center justify-between gap-2 overflow-x-auto pb-1 lg:flex-col lg:justify-between lg:gap-1 lg:overflow-visible lg:pb-0">
@@ -82,7 +86,7 @@ export function ImpactPillars() {
                   <button
                     key={pillar.id}
                     type="button"
-                    aria-label={`Stage ${i + 1}: ${pillar.title}`}
+                    aria-label={ui("stageLabel", `Stage ${i + 1}: ${pillar.title}`)}
                     aria-current={selected ? "step" : undefined}
                     onClick={() => setIndex(i)}
                     className={cn(
@@ -104,13 +108,12 @@ export function ImpactPillars() {
             </div>
           </nav>
 
-          {/* Hero card carousel */}
           <div className="relative flex min-h-[320px] lg:col-span-9 lg:min-h-0">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              aria-label="Previous pillar"
+              aria-label={ui("prevPillar", "Previous pillar")}
               onClick={() => go(-1)}
               className="absolute left-2 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-full border-white/20 bg-white/35 p-0 text-brand-ink/70 shadow-none backdrop-blur-[2px] hover:bg-white/55 hover:text-brand-ink sm:left-3"
             >
@@ -120,7 +123,7 @@ export function ImpactPillars() {
               type="button"
               variant="outline"
               size="sm"
-              aria-label="Next pillar"
+              aria-label={ui("nextPillar", "Next pillar")}
               onClick={() => go(1)}
               className="absolute right-2 top-1/2 z-20 h-9 w-9 -translate-y-1/2 rounded-full border-white/20 bg-white/35 p-0 text-brand-ink/70 shadow-none backdrop-blur-[2px] hover:bg-white/55 hover:text-brand-ink sm:right-3"
             >

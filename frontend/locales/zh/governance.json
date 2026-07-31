@@ -1,0 +1,93 @@
+{
+  "programmes": {
+    "p0": {
+      "title": "运动",
+      "description": "我们的运动计划不设限制。我们致力为受惠者提供最大机会发挥潜能，提供全面的活动选择，同时在每项运动中追求卓越。"
+    },
+    "p1": {
+      "title": "营养",
+      "description": "单靠运动课堂不足以显著延长受惠者的预期寿命。因此，我们制定了周全的营养计划，协助社区作出重大的健康生活方式改变。"
+    },
+    "p2": {
+      "title": "家庭",
+      "description": "Love 21 对家庭的关注让我们与众不同。我们的家长受惠者在课堂中扮演重要角色。我们提供专为家长而设的课程，并容许家长参与大量运动及健康生活方式课堂。"
+    },
+    "p3": {
+      "title": "CSR",
+      "description": "我们的企业社会责任计划对香港极为重要。你的员工将了解我们受惠者在运动方面的卓越能力，以及他们激发他人潜能的最大才能。"
+    }
+  },
+  "board": {
+    "carol-chan": {
+      "name": "Carol Chan",
+      "bio": "Carol 热爱运动及健康生活方式，致力培育年轻人及推广健康的家庭功能。在专业方面，Carol 拥有丰富的非营利机构管治经验，曾担任香港其中一间领先青少年及儿童支援机构的资深行政人员。"
+    },
+    "dan-maley": {
+      "name": "Dan Maley",
+      "bio": "Dan 自 2019 年起定居香港。他与妻子 Milk 育有一子 Max。Dan 是一位全球公民，于 2020 年开始在 Love 21 Foundation 做志愿者，最初参加体能课堂，后来协助教授每周拳击班。"
+    },
+    "dr-ruby-ng": {
+      "name": "Dr. Ruby Ng",
+      "bio": "Dr. Ruby Ng 是加州旧金山 Stanford Medicine Children's Health 的生物反馈专家。她在香港出生及成长，其后在海外接受教育并建立医疗事业。她现正透过社区服务及非营利机构领导工作，积极与香港重新联结。"
+    },
+    "edith-chen": {
+      "name": "Edith Chen",
+      "bio": "Edith Chen 拥有超过 27 年的行政专才，推动业务转型、多市场扩展、品牌发展及亚太区管治。她曾担任 De Beers APAC 总裁、Brooks Brothers APAC 行政总裁，以及 Calvin Klein Asia 董事总经理。"
+    },
+    "elenisymeonidou": {
+      "name": "Eleni Symeonidou",
+      "bio": "Eleni 原籍希腊，自 2013 年起定居亚洲。她的职业生涯致力以不同方式培育人才，并深切承诺建立融合社区。她在心理健康、无家可归者支援及少数族群支援方面拥有超过 25 年志愿者经验。"
+    },
+    "james-barrett": {
+      "name": "James Barrett",
+      "bio": "James 原籍澳洲，自 2008 年起定居香港。他对神经多样性社群的承诺极为个人化；他的家族参与可追溯至 1953 年，当时他的曾祖母共同创办了一间为唐氏综合征儿童而设的幼儿园。"
+    },
+    "jeff-sayed": {
+      "name": "Jeff Sayed",
+      "bio": "Jeff 自 2005 年起定居香港。他与妻子 Wendy 育有 Benton 及 Olivia。Jeff 在 Bank of America Merrill Lynch 工作，现任合规及营运风险行政人员，负责监督亚太区全球科技及营运的合规及营运风险框架。"
+    },
+    "kevin-wong": {
+      "name": "Kevin Wong",
+      "bio": "作为 Love 21 董事会的司库，Kevin 运用其会计及财务经验，确保 Love 21 持续稳健发展。Kevin 在建立及维护 Love 21 的综合透明会计系统方面所作的努力，对我们的发展至关重要。"
+    },
+    "lobo-cheung": {
+      "name": "Lobo Cheung",
+      "bio": "Lobo 在香港成长，1994 年前往英国升读大学。在科技行业建立稳定事业后，他于 2016 年决定攻读行政工商管理硕士及基督教研究文学硕士。Lobo 一直感到有使命为唐氏综合征及自闭症谱系社群建设更美好的未来。"
+    },
+    "matthew-hosford": {
+      "name": "Matthew Hosford",
+      "bio": "Matthew 与家人已在香港居住 27 年。他在亚洲金融服务业建立事业，包括在 Santander 工作 17 年、在 PwC 风险管理咨询部门工作 7 年，以及最近任职于国际金融公司。"
+    },
+    "raymond-tam": {
+      "name": "Raymond Tam",
+      "bio": "Raymond 是一位资深金融行政人员，在 Manulife、Value Partners、BlackRock 及 Merrill Lynch 拥有近 30 年数码财富、退休金及资产管理领导经验。他致力运用其管治及财务专才，支持社区及社会影响力倡议。"
+    },
+    "young-sook-stewart": {
+      "name": "Young-Sook Stewart",
+      "bio": "作为 EY 金融服务组织亚太区人才职能领导，Young-Sook 管理横跨大洋洲、大中华、日本、韩国及东盟的营运。她的活力团队透过人才招聘、留任及发展，推动亚太区 FSO 的稳健业务增长。"
+    }
+  },
+  "internship": {
+    "roles": [
+      "为社区设计运动计划",
+      "管理 Love 21 Space（我们的社区中心）的营运",
+      "撰写建议书及项目/计划报告",
+      "优化及执行营养计划",
+      "行政及营运工作",
+      "市场推广及设计"
+    ],
+    "requirements": [
+      "流利的中英文书写及口语能力",
+      "现正就读大学",
+      "对非营利机构行业有兴趣及/或相关经验（优先）",
+      "灵活、富有同理心及主动积极"
+    ],
+    "requirementsTitle": "要求",
+    "rolesTitle": "职位",
+    "intro": "我们欢迎修读相关专业的学生申请 Love 21 实习！作为实习生，你将亲身体验年轻成长中 NGO 的营运（后端及前端）及管理。根据你的兴趣、专业及实习时长，你的工作可能包括：",
+    "contactBefore": "有意者请将履历及求职信发送至 Jeff（",
+    "contactMiddle": "）及 Maggie（",
+    "contactAfter": "）。",
+    "availability": "我们全年接受申请，实习计划可按你的时间表调整。请在申请中告知你的可用时间。"
+  }
+}

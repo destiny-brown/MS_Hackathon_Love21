@@ -9,6 +9,8 @@ import { EventAnimationStage } from "@/components/learn/trail-map/event-animatio
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { getLocationForDayNumber, LOCATION_DAYS } from "@/lib/day-locations-data";
+import { useTranslatedTrailDays } from "@/lib/i18n/translated-data";
+import { useTranslation } from "react-i18next";
 
 import "./event-animations.css";
 
@@ -41,6 +43,8 @@ function loadProgress(): StoredProgress {
 }
 
 export default function TwentyOneMovesPage() {
+  const { t } = useTranslation(["learn", "pages"]);
+  const translatedDays = useTranslatedTrailDays();
   const [progress, setProgress] = useState<StoredProgress | null>(null);
   const [dayJustCompleted, setDayJustCompleted] = useState(false);
 
@@ -53,7 +57,11 @@ export default function TwentyOneMovesPage() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   }, [progress]);
 
-  const location = useMemo(() => (progress ? getLocationForDayNumber(progress.dayNumber) : null), [progress]);
+  const location = useMemo(() => {
+    if (!progress) return null;
+    const raw = getLocationForDayNumber(progress.dayNumber);
+    return translatedDays.find((d) => d.id === raw.id) ?? raw;
+  }, [progress, translatedDays]);
   const completedLoops = progress ? Math.floor((progress.dayNumber - 1) / LOCATION_DAYS.length) : 0;
 
   function handleEventComplete(correct: boolean) {
@@ -82,7 +90,7 @@ export default function TwentyOneMovesPage() {
   if (!progress || !location) {
     return (
       <SiteLayout>
-        <PageHero title="21 Moves" subtitle="Loading your trail…" />
+        <PageHero title={t("pages:learnPlay.moves.title")} subtitle={t("learn:ui.loading")} />
       </SiteLayout>
     );
   }
@@ -93,15 +101,15 @@ export default function TwentyOneMovesPage() {
   return (
     <SiteLayout>
       <PageHero
-        title="21 Moves"
-        subtitle="Bust a myth, learn a fact, and make the right call — five moves a day with Captain 21."
+        title={t("pages:learnPlay.moves.title")}
+        subtitle={t("pages:learnPlay.moves.description")}
       />
 
       <section className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Link href="/learn-play" className="text-sm font-semibold text-brand-coral hover:underline">
-              ← Back to Learn
+              ← {t("learn:ui.backToLearn")}
             </Link>
             <div className="flex flex-wrap gap-3 text-sm text-brand-ink/65">
               <span className="rounded-full bg-brand-cream px-3 py-1">

@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "title": "支持他們的潛能",
+    "subtitle": "選擇最能打動你的活動或項目，為每一份能力創造更多發光發熱的機會。"
+  },
+  "transparency": {
+    "eyebrow": "捐款透明度",
+    "title": "你的捐款用於何處",
+    "cta": "選擇捐款級別"
+  },
+  "tiers": {
+    "t100": { "amount": "HKD$100", "impact": "為一位會員提供一個月的運動裝備" },
+    "t250": { "amount": "HKD$250", "impact": "資助一節職業培訓工作坊" },
+    "t500": { "amount": "HKD$500", "impact": "支持一位會員三個月參與社區活動" },
+    "t1000": { "amount": "HKD$1,000+", "impact": "協助舉辦一整天的共融運動計劃" }
+  },
+  "body": {
+    "title": "能力值得機遇",
+    "p1": "Love 21 會員擁有才華、抱負和決心。你的捐款有助消除障礙，讓這些優點在運動、工作、家庭生活及更廣泛的社區中充分展現。",
+    "p2": "捐款達 HKD$100 或以上，可按要求發出正式收據並郵寄予你。如有查詢，請聯絡 Maggie：Maggie@love21foundation.com。"
+  },
+  "aside": {
+    "eyebrow": "按你的方式捐款",
+    "title": "一次性或持續支持",
+    "body": "透過 MoonClerk 安全地選擇一次性、每週、每月、每季、每半年或每年捐款。"
+  },
+  "other": {
+    "title": "其他捐款方式",
+    "paymeTitle": "使用 PayMe 捐款",
+    "paymeBody": "開啟 PayMe 並掃描 Love 21 官方二維碼進行捐款。",
+    "paymeNote": "PayMe 捐款在 Love 21 職員核對後，才會反映在活動進度中。",
+    "bankTitle": "銀行轉帳、轉數快或支票",
+    "chequeNote": "支票抬頭請寫「Love 21 Foundation Limited」，並郵寄至："
+  },
+  "shop": {
+    "title": "心願清單",
+    "subtitle": "提供實用工具，幫助 Love 21 會員訓練、學習、創作，展現他們的能力。",
+    "eyebrow": "實用支援",
+    "heading": "幫助消除障礙",
+    "body": "如有供應商連結，可直接購買所需物品；或捐款任何金額以達成目標。Love 21 會在物品及捐款到位後更新各項總額。"
+  },
+  "opportunities": {
+    "loading": "正在載入機會…",
+    "error": "無法載入捐款機會",
+    "unavailableTitle": "捐款機會暫時不可用。",
+    "empty": "目前冇進行中嘅活動。",
+    "emptySoon": "新機會將很快喺此公布。",
+    "support": "支持此{{kind}}",
+    "remarkHelper": "為 Love 21 添加備註（選填）",
+    "remarkMoonclerk": "請喺 MoonClerk 備註欄填寫「{{title}}」，以便 Love 21 指定你嘅捐款。",
+    "campaignEyebrow": "限時機會",
+    "campaignTitle": "當前活動",
+    "causeEyebrow": "持續影響力",
+    "causeTitle": "支持佢哋嘅潛能"
+  },
+  "wishlist": {
+    "loading": "正在載入心願清單…",
+    "error": "無法載入心願清單",
+    "empty": "目前冇心願清單項目。",
+    "emptySoon": "Love 21 當前需求將很快喺此公布。",
+    "unavailableTitle": "心願清單暫時不可用。",
+    "buy": "購買此物品",
+    "contribute": "捐款任何金額",
+    "secured": "已籌得 {{count}} 項",
+    "securedOf": "已籌得 {{secured}} / {{needed}} 項",
+    "remarkMoonclerk": "請喺 MoonClerk 備註欄填寫「{{title}}」以指定你嘅捐款。"
+  }
+}

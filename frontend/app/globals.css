@@ -32,6 +32,43 @@
     font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
   :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
+
+  html[data-font-scale="large"] {
+    font-size: 112.5%;
+  }
+
+  html[data-font-scale="xl"] {
+    font-size: 125%;
+  }
+
+  html.a11y-high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --brand-cream: 0 0% 100%;
+    --brand-ink: 0 0% 0%;
+    --brand-coral: 0 72% 35%;
+    --brand-sand: 0 0% 85%;
+    --border: 0 0% 0%;
+    --ring: 0 72% 35%;
+  }
+
+  html.a11y-high-contrast body {
+    font-weight: 500;
+  }
+
+  html.a11y-reduce-motion *,
+  html.a11y-reduce-motion *::before,
+  html.a11y-reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.a11y-underline-links a {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
 }
 
 @layer utilities {

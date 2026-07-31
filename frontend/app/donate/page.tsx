@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import { DonationOpportunities } from "@/components/site/donation-opportunities";
 import { PageHero } from "@/components/site/page-hero";
@@ -68,52 +71,38 @@ function CtaButton({
   );
 }
 
-const donationTiers = [
-  {
-    amount: "HKD$100",
-    impact: "Provides sports equipment for one member for a month",
-  },
-  {
-    amount: "HKD$250",
-    impact: "Funds one vocational training workshop session",
-  },
-  {
-    amount: "HKD$500",
-    impact: "Supports a member's participation in community activities for 3 months",
-  },
-  {
-    amount: "HKD$1,000+",
-    impact: "Helps run a full day of inclusive sports programs",
-  },
-];
-
+const tierKeys = ["t100", "t250", "t500", "t1000"] as const;
 
 export default function DonatePage() {
+  const { t } = useTranslation("donate");
+
   return (
     <SiteLayout>
-      <PageHero
-        title="Back Their Potential"
-        subtitle="Choose the campaign or cause that speaks to you and help create more opportunities for every ability to shine."
-      />
+      <PageHero title={t("hero.title")} subtitle={t("hero.subtitle")} />
 
-      {/* ---------- WHERE YOUR GIFT GOES ---------- */}
       <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="relative mx-auto max-w-6xl">
-          <Eyebrow>Donor transparency</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Where your gift goes</h2>
+          <Eyebrow>{t("transparency.eyebrow")}</Eyebrow>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">
+            {t("transparency.title")}
+          </h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {donationTiers.map((tier, i) => (
+            {tierKeys.map((key, i) => (
               <div
-                key={tier.amount}
+                key={key}
                 className={`rounded-2xl border border-brand-sand bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${i % 2 === 0 ? "sm:-rotate-1" : "sm:rotate-1"}`}
               >
-                <div className="font-serif-display text-2xl text-brand-coral">{tier.amount}</div>
-                <p className="mt-3 text-sm text-brand-ink/70">{tier.impact}</p>
+                <div className="font-serif-display text-2xl text-brand-coral">
+                  {t(`tiers.${key}.amount`)}
+                </div>
+                <p className="mt-3 text-sm text-brand-ink/70">
+                  {t(`tiers.${key}.impact`)}
+                </p>
               </div>
             ))}
           </div>
           <div className="mt-8">
-            <CtaButton href="/donate">Choose your tier</CtaButton>
+            <CtaButton href="/donate">{t("transparency.cta")}</CtaButton>
           </div>
         </div>
       </section>
@@ -122,60 +111,60 @@ export default function DonatePage() {
         <div className="mx-auto max-w-6xl space-y-12">
           <div className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
             <div className="space-y-4 text-brand-ink/80">
-              <h2 className="font-serif-display text-4xl text-brand-ink">Ability deserves opportunity</h2>
+              <h2 className="font-serif-display text-4xl text-brand-ink">
+                {t("body.title")}
+              </h2>
+              <p>{t("body.p1")}</p>
               <p>
-                Love 21 members bring talent, ambition, and determination. Your gift helps remove the barriers that
-                prevent those strengths from being fully seen in sport, work, family life, and the wider community.
-              </p>
-              <p>
-                For donations of HKD$100 or above, an official receipt will be issued and mailed to you upon request.
-                Please contact Maggie at{" "}
-                <a href="mailto:Maggie@love21foundation.com" className="text-brand-coral hover:underline">
-                  Maggie@love21foundation.com
-                </a>{" "}
-                for enquiries.
+                {t("body.p2")}
               </p>
             </div>
             <aside className="rounded-2xl border border-brand-sand bg-white p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Give your way</p>
-              <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">One gift or lasting support</h2>
-              <p className="mt-3 text-sm text-brand-ink/75">
-                Choose one-time, weekly, monthly, quarterly, semiannual, or annual giving securely through MoonClerk.
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+                {t("aside.eyebrow")}
               </p>
+              <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">
+                {t("aside.title")}
+              </h2>
+              <p className="mt-3 text-sm text-brand-ink/75">{t("aside.body")}</p>
             </aside>
           </div>
 
           <DonationOpportunities />
 
           <div className="border-t border-brand-sand pt-10 text-brand-ink/80">
-            <h2 className="font-serif-display text-3xl text-brand-ink">Donate by other means</h2>
+            <h2 className="font-serif-display text-3xl text-brand-ink">
+              {t("other.title")}
+            </h2>
             <div className="mt-6 grid gap-6 md:grid-cols-2">
               <article className="rounded-2xl border border-brand-sand bg-white p-6">
-                <h3 className="font-serif-display text-2xl text-brand-ink">Donate with PayMe</h3>
-                <p className="mt-2 text-sm">
-                  Open PayMe and scan Love 21&rsquo;s official QR code to make a donation.
-                </p>
+                <h3 className="font-serif-display text-2xl text-brand-ink">
+                  {t("other.paymeTitle")}
+                </h3>
+                <p className="mt-2 text-sm">{t("other.paymeBody")}</p>
                 <Image
                   src="/images/love21-payme.png"
-                  alt="Love 21 Foundation PayMe donation QR code"
+                  alt={t("other.paymeTitle", {
+                    defaultValue: "Love 21 Foundation PayMe donation QR code",
+                  })}
                   width={332}
                   height={383}
                   className="mx-auto mt-5 h-auto w-full max-w-72"
                   unoptimized
                 />
-                <p className="mt-4 text-xs text-brand-ink/65">
-                  PayMe donations are reflected in campaign progress after Love 21 staff reconcile them.
-                </p>
+                <p className="mt-4 text-xs text-brand-ink/65">{t("other.paymeNote")}</p>
               </article>
 
               <article className="space-y-4 rounded-2xl border border-brand-sand bg-white p-6">
-                <h3 className="font-serif-display text-2xl text-brand-ink">Bank transfer, FPS, or cheque</h3>
+                <h3 className="font-serif-display text-2xl text-brand-ink">
+                  {t("other.bankTitle")}
+                </h3>
                 <p>
                   HSBC transfer: <strong>582-350526-838</strong>
                   <br />
                   FPS ID: <strong>164778151</strong>
                 </p>
-                <p>Cheques can be written out to &ldquo;Love 21 Foundation Limited&rdquo; and mailed to:</p>
+                <p>{t("other.chequeNote")}</p>
                 <address className="not-italic">
                   1102, 11/F, Artisan Lab
                   <br />

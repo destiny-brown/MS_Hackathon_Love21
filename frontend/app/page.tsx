@@ -12,15 +12,14 @@ import {
 } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
-import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { SiteLayout } from "@/components/site/site-layout";
 import { Button } from "@/components/ui/button";
 import {
-  fourDoors,
   impactStats,
   storySpotlight,
 } from "@/lib/site-data";
+import { useTranslation } from "react-i18next";
 
 const scrollViewport = { once: false, amount: 0.2 } as const;
 
@@ -50,6 +49,8 @@ function Blob({ className = "" }: { className?: string }) {
 // placed here between the hero and the impact dashboard. Recolored to the
 // same red used in the hero (#EF233C) instead of orange.
 function YearsMarquee() {
+  const { t } = useTranslation("home");
+
   return (
     <div className="relative overflow-hidden border-y border-lavender/30 bg-[#FBEAEA] py-3">
       <Blob className="left-1/4 top-1/2 h-24 w-24 -translate-y-1/2 bg-white/40" />
@@ -61,11 +62,11 @@ function YearsMarquee() {
             {Array.from({ length: 8 }).map((_, i) => (
               <span key={i} className="mx-5 flex items-center gap-2.5 whitespace-nowrap">
                 <span className="font-serif-display text-sm text-indigo sm:text-base">
-                  21 Years in Hong Kong
+                  {t("marquee.years")}
                 </span>
                 <TriMark className="h-1.5 w-5 text-[#EF233C]/50" />
                 <span className="text-[10px] uppercase tracking-[0.2em] text-lavender">
-                  Celebrating Ability
+                  {t("marquee.celebrating")}
                 </span>
               </span>
             ))}
@@ -119,6 +120,8 @@ function ImpactDashboard() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, scrollViewport);
   const cardTilts = ["-rotate-1", "rotate-0", "rotate-1"];
+  const { t } = useTranslation("home");
+  const statLabels = [t("impact.families"), t("impact.activities"), t("impact.volunteerHours")];
 
   return (
     <section
@@ -134,7 +137,7 @@ function ImpactDashboard() {
           className="mb-8 flex items-center justify-center gap-2.5 text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#EF233C]"
         >
           <TriMark className="h-2 w-7" />
-          Live Impact Dashboard
+          {t("impact.eyebrow")}
         </motion.p>
         <div className="grid gap-8 sm:grid-cols-3">
           {impactStats.map((stat, index) => (
@@ -153,7 +156,7 @@ function ImpactDashboard() {
                 />
               </p>
               <p className="mt-3 text-sm uppercase tracking-[0.13em] text-lavender">
-                {stat.label}
+                {statLabels[index]}
               </p>
             </motion.div>
           ))}
@@ -163,8 +166,18 @@ function ImpactDashboard() {
   );
 }
 
+const fourDoorItems = [
+  { href: "/our-programmes", titleKey: "fourDoors.education.title", descKey: "fourDoors.education.description" },
+  { href: "/donate", titleKey: "fourDoors.donate.title", descKey: "fourDoors.donate.description" },
+  { href: "/our-volunteer", titleKey: "fourDoors.volunteer.title", descKey: "fourDoors.volunteer.description" },
+  { href: "/events-campaigns", titleKey: "fourDoors.calendar.title", descKey: "fourDoors.calendar.description" },
+] as const;
+
+const storyTranslationKeys = ["jamie", "chris", "mei"] as const;
+
 function FourDoors() {
   const cardAccents = ["bg-[#EF233C]", "bg-indigo", "bg-[#D90429]", "bg-indigo"];
+  const { t } = useTranslation(["home", "common"]);
 
   return (
     <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
@@ -177,7 +190,7 @@ function FourDoors() {
           transition={{ duration: 0.45 }}
           className="mb-3 text-center font-serif-display text-4xl text-indigo sm:text-5xl"
         >
-          Where will you begin?
+          {t("home:fourDoors.title")}
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -186,13 +199,12 @@ function FourDoors() {
           transition={{ duration: 0.45, delay: 0.05 }}
           className="mx-auto mb-10 max-w-2xl text-center text-lavender"
         >
-          Four doors into Love 21 — choose the path that matches how you want to
-          support our Down syndrome, autistic, and neurodiverse community.
+          {t("home:fourDoors.subtitle")}
         </motion.p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {fourDoors.map((door, index) => (
+          {fourDoorItems.map((door, index) => (
             <motion.div
-              key={door.title}
+              key={door.href}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={scrollViewport}
@@ -208,13 +220,13 @@ function FourDoors() {
                   className={`absolute right-0 top-0 h-14 w-14 -translate-y-7 translate-x-7 rotate-45 opacity-10 transition-opacity group-hover:opacity-20 ${cardAccents[index % cardAccents.length]}`}
                 />
                 <h3 className="relative font-serif-display text-2xl text-indigo">
-                  {door.title}
+                  {t(`home:${door.titleKey}`)}
                 </h3>
                 <p className="relative mt-3 flex-1 text-sm leading-relaxed text-lavender">
-                  {door.description}
+                  {t(`home:${door.descKey}`)}
                 </p>
                 <span className="relative mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-[#EF233C]">
-                  Enter <ArrowRight className="h-4 w-4" />
+                  {t("common:actions.enter")} <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
             </motion.div>
@@ -228,9 +240,11 @@ function FourDoors() {
 function StoryCarousel() {
   const [index, setIndex] = useState(0);
   const story = storySpotlight[index];
+  const storyKey = storyTranslationKeys[index];
   const count = storySpotlight.length;
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, scrollViewport);
+  const { t } = useTranslation(["home", "common"]);
 
   function prev() {
     setIndex((current) => (current - 1 + count) % count);
@@ -254,10 +268,10 @@ function StoryCarousel() {
             transition={{ duration: 0.45 }}
           >
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#EF233C]">
-              Featured Stories
+              {t("home:stories.eyebrow")}
             </p>
             <h2 className="mt-2 font-serif-display text-4xl text-indigo sm:text-5xl">
-              Ability in motion
+              {t("home:stories.title")}
             </h2>
           </motion.div>
           <motion.div
@@ -269,7 +283,7 @@ function StoryCarousel() {
             <motion.button
               type="button"
               onClick={prev}
-              aria-label="Previous story"
+              aria-label={t("common:actions.previousStory")}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-[#EF233C] hover:text-[#EF233C]"
@@ -279,7 +293,7 @@ function StoryCarousel() {
             <motion.button
               type="button"
               onClick={next}
-              aria-label="Next story"
+              aria-label={t("common:actions.nextStory")}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-[#EF233C] hover:text-[#EF233C]"
@@ -328,7 +342,7 @@ function StoryCarousel() {
                   transition={{ duration: 0.35, delay: 0.08 }}
                   className="text-sm font-semibold uppercase tracking-[0.16em] text-[#EF233C]"
                 >
-                  {story.tag}
+                  {t(`home:stories.${storyKey}.tag`)}
                 </motion.p>
                 <motion.blockquote
                   initial={{ opacity: 0, y: 14 }}
@@ -336,7 +350,7 @@ function StoryCarousel() {
                   transition={{ duration: 0.4, delay: 0.14 }}
                   className="mt-4 font-serif-display text-2xl leading-snug text-indigo sm:text-3xl"
                 >
-                  “{story.quote}”
+                  “{t(`home:stories.${storyKey}.quote`)}”
                 </motion.blockquote>
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
@@ -355,7 +369,7 @@ function StoryCarousel() {
                     href={story.href}
                     className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-[#EF233C] transition hover:text-[#D90429]"
                   >
-                    Read Story <ArrowRight className="h-4 w-4" />
+                    {t("common:actions.readStory")} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </motion.div>
               </div>
@@ -373,7 +387,7 @@ function StoryCarousel() {
             <motion.button
               key={item.name}
               type="button"
-              aria-label={`Go to story ${i + 1}`}
+              aria-label={t("common:actions.goToStory", { number: i + 1 })}
               onClick={() => setIndex(i)}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
@@ -389,6 +403,8 @@ function StoryCarousel() {
 }
 
 export default function HomePage() {
+  const { t } = useTranslation("home");
+
   return (
     <SiteLayout>
       {/* Keyframes for the "21 Years in Hong Kong" marquee. */}
@@ -440,7 +456,7 @@ export default function HomePage() {
             transition={{ duration: 0.5 }}
             className="font-serif-display text-5xl leading-[1.05] text-[#EF233C] sm:text-6xl lg:text-7xl"
           >
-            #SoMuchAbility
+            {t("hero.title")}
           </motion.h1>
 
           <motion.p
@@ -450,9 +466,7 @@ export default function HomePage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-6 max-w-2xl text-lg text-white/95 drop-shadow-sm sm:text-xl"
           >
-            Empowering people with Down syndrome, autism, and neurodiversity in
-            Hong Kong through sport, nutrition, family support, and holistic
-            community care.
+            {t("hero.subtitle")}
           </motion.p>
 
           <motion.div
@@ -467,7 +481,7 @@ export default function HomePage() {
               className="bg-[#EF233C] text-white hover:bg-[#D90429]"
             >
               <Link href="/our-story">
-                Discover More <ArrowRight className="ml-2 h-4 w-4" />
+                {t("hero.cta")} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
@@ -501,17 +515,16 @@ export default function HomePage() {
         >
           <p className="flex items-center justify-center gap-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-[#EF233C]">
             <TriMark className="h-2 w-7" />
-            Celebrating Ability
+            {t("philosophy.eyebrow")}
           </p>
           <p className="mt-5 font-serif-display text-3xl leading-snug text-indigo sm:text-4xl">
-            We focus entirely on what our community CAN do — unlocking potential
-            through sports, nutrition, and lifelong empowerment.
+            {t("philosophy.body")}
           </p>
           <Link
             href="/our-programmes"
             className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-lavender transition hover:text-[#EF233C]"
           >
-            Explore Education & Support <ArrowRight className="h-4 w-4" />
+            {t("philosophy.cta")} <ArrowRight className="h-4 w-4" />
           </Link>
         </motion.div>
       </section>
@@ -522,10 +535,10 @@ export default function HomePage() {
         <div className="relative mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-[#EF233C]">
-              Subscribe to our eNews
+              {t("newsletter.eyebrow")}
             </p>
             <h2 className="mt-2 font-serif-display text-4xl sm:text-5xl">
-              Stay close to the mission
+              {t("newsletter.title")}
             </h2>
           </div>
           <NewsletterForm dark />

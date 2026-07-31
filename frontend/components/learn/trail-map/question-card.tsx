@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 import type { DayQuestion } from "@/lib/day-locations-data";
 
 const KICKER_STYLES: Record<DayQuestion["type"], string> = {
@@ -19,6 +21,7 @@ interface QuestionCardProps {
 }
 
 export function QuestionCard({ question, selectedOptionId, revealed, showHint, onSelect }: QuestionCardProps) {
+  const { t } = useTranslation("learn");
   const isCorrectSelected = selectedOptionId === question.correctOptionId;
 
   return (
@@ -61,7 +64,7 @@ export function QuestionCard({ question, selectedOptionId, revealed, showHint, o
 
       {showHint && !revealed && (
         <div className="mt-4 border-l-4 border-brand-sea bg-brand-sea/5 p-3 text-left">
-          <p className="text-xs font-semibold uppercase text-brand-sea">Captain&apos;s clue</p>
+          <p className="text-xs font-semibold uppercase text-brand-sea">{t("ui.captainsClue")}</p>
           <p className="mt-1 text-sm text-brand-ink/70">{question.hint}</p>
         </div>
       )}
@@ -73,7 +76,7 @@ export function QuestionCard({ question, selectedOptionId, revealed, showHint, o
           }`}
         >
           <p className="text-xs font-semibold uppercase tracking-wide">
-            {isCorrectSelected ? "Correct!" : "Not quite"}
+            {isCorrectSelected ? t("ui.correct") : t("ui.notQuite")}
           </p>
           <p className="mt-1 text-brand-ink/80">{question.explanation}</p>
         </div>

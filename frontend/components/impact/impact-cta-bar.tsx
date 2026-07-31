@@ -7,6 +7,7 @@ import { HandHeart, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useImpactUi } from "@/lib/i18n/translated-data";
 
 function Modal({
   open,
@@ -14,12 +15,14 @@ function Modal({
   title,
   description,
   children,
+  closeLabel,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   description: string;
   children: React.ReactNode;
+  closeLabel: string;
 }) {
   const titleId = useId();
   const descriptionId = useId();
@@ -45,7 +48,7 @@ function Modal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
         type="button"
-        aria-label="Close dialog"
+        aria-label={closeLabel}
         className="absolute inset-0 bg-brand-ink/50"
         onClick={onClose}
       />
@@ -62,7 +65,7 @@ function Modal({
           type="button"
           onClick={onClose}
           className="absolute right-4 top-4 rounded-sm opacity-70 transition hover:opacity-100"
-          aria-label="Close"
+          aria-label={closeLabel}
         >
           <X className="h-4 w-4" />
         </button>
@@ -87,6 +90,7 @@ export function ImpactCtaBar() {
   const [submitted, setSubmitted] = useState<"donate" | "volunteer" | null>(
     null,
   );
+  const ui = useImpactUi();
 
   const closeDonate = () => {
     setDonateOpen(false);
@@ -98,12 +102,17 @@ export function ImpactCtaBar() {
     setSubmitted(null);
   };
 
+  const monthlyLabel = ui("monthly", "Monthly");
+  const oneTimeLabel = ui("oneTime", "One-Time");
+
   return (
-    <div className="sticky bottom-0 z-40 border-t border-brand-sand bg-white/95 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
+    <div className="sticky bottom-0 z-30 border-t border-brand-sand bg-white/95 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="hidden text-sm text-brand-ink/70 lg:block lg:max-w-sm">
-          Grow the forest. Fuel the metamorphosis. Every gift and every hour
-          unlocks ability.
+          {ui(
+            "ctaBarBody",
+            "Grow the forest. Fuel the metamorphosis. Every gift and every hour unlocks ability.",
+          )}
         </p>
 
         <div className="grid w-full gap-3 sm:grid-cols-2 lg:w-auto lg:min-w-[34rem]">
@@ -115,7 +124,7 @@ export function ImpactCtaBar() {
             }}
           >
             <Heart className="mr-2 h-4 w-4" />
-            Sponsor a Family&apos;s Journey
+            {ui("sponsorFamily", "Sponsor a Family's Journey")}
           </Button>
 
           <Button
@@ -127,7 +136,7 @@ export function ImpactCtaBar() {
             }}
           >
             <HandHeart className="mr-2 h-4 w-4" />
-            Join as a Volunteer Coach / Helper
+            {ui("volunteerCoach", "Join as a Volunteer Coach / Helper")}
           </Button>
         </div>
       </div>
@@ -135,13 +144,18 @@ export function ImpactCtaBar() {
       <Modal
         open={donateOpen}
         onClose={closeDonate}
-        title="Sponsor a Family's Journey"
-        description="You are not giving hand-outs—you are unlocking potential. 100% of your gift ensures world-class fitness, nutrition, and community remain free for every family."
+        closeLabel={ui("close", "Close")}
+        title={ui("sponsorFamily", "Sponsor a Family's Journey")}
+        description={ui(
+          "donateModalDesc",
+          "You are not giving hand-outs—you are unlocking potential. 100% of your gift ensures world-class fitness, nutrition, and community remain free for every family.",
+        )}
       >
         {submitted === "donate" ? (
           <div className="rounded-xl bg-brand-cream p-4 text-sm text-brand-ink/80">
-            Thank you. Continue to the donate page to complete your{" "}
-            {frequency === "monthly" ? "monthly" : "one-time"} gift.
+            {ui("donateThankContinue", "Thank you. Continue to the donate page to complete your")}{" "}
+            {frequency === "monthly" ? monthlyLabel.toLowerCase() : oneTimeLabel.toLowerCase()}{" "}
+            {ui("gift", "gift")}.
           </div>
         ) : (
           <div className="space-y-4">
@@ -156,7 +170,7 @@ export function ImpactCtaBar() {
                     : "border-brand-sand"
                 }
               >
-                Monthly
+                {monthlyLabel}
               </Button>
               <Button
                 type="button"
@@ -168,15 +182,15 @@ export function ImpactCtaBar() {
                     : "border-brand-sand"
                 }
               >
-                One-Time
+                {oneTimeLabel}
               </Button>
             </div>
             <p className="text-xs text-brand-ink/60">
-              Selected:{" "}
+              {ui("selected", "Selected:")}{" "}
               <strong>
-                {frequency === "monthly" ? "Monthly" : "One-Time"}
+                {frequency === "monthly" ? monthlyLabel : oneTimeLabel}
               </strong>{" "}
-              sponsorship
+              {ui("sponsorship", "sponsorship")}
             </p>
           </div>
         )}
@@ -186,7 +200,7 @@ export function ImpactCtaBar() {
               asChild
               className="bg-brand-coral text-white hover:bg-brand-coral/90"
             >
-              <Link href="/donate">Continue to Donate</Link>
+              <Link href="/donate">{ui("continueToDonate", "Continue to Donate")}</Link>
             </Button>
           ) : (
             <Button
@@ -194,7 +208,9 @@ export function ImpactCtaBar() {
               className="bg-brand-coral text-white hover:bg-brand-coral/90"
               onClick={() => setSubmitted("donate")}
             >
-              Confirm {frequency === "monthly" ? "Monthly" : "One-Time"} Gift
+              {ui("confirmGift", "Confirm")}{" "}
+              {frequency === "monthly" ? monthlyLabel : oneTimeLabel}{" "}
+              {ui("gift", "Gift")}
             </Button>
           )}
         </div>
@@ -203,18 +219,24 @@ export function ImpactCtaBar() {
       <Modal
         open={volunteerOpen}
         onClose={closeVolunteer}
-        title="Volunteer Sign-Up"
-        description="Share your time as a coach or helper across nutrition, fitness, sports, family support, and community programmes."
+        closeLabel={ui("close", "Close")}
+        title={ui("volunteerSignUp", "Volunteer Sign-Up")}
+        description={ui(
+          "volunteerModalDesc",
+          "Share your time as a coach or helper across nutrition, fitness, sports, family support, and community programmes.",
+        )}
       >
         {submitted === "volunteer" ? (
           <>
             <div className="rounded-xl bg-brand-cream p-4 text-sm text-brand-ink/80">
-              Thanks for stepping forward. Our team will follow up, or you can
-              register interest on the volunteer page now.
+              {ui(
+                "volunteerThank",
+                "Thanks for stepping forward. Our team will follow up, or you can register interest on the volunteer page now.",
+              )}
             </div>
             <div className="flex justify-end">
               <Button asChild variant="outline" className="border-brand-sand">
-                <Link href="/our-volunteer">View Volunteer Page</Link>
+                <Link href="/our-volunteer">{ui("viewVolunteerPage", "View Volunteer Page")}</Link>
               </Button>
             </div>
           </>
@@ -227,30 +249,33 @@ export function ImpactCtaBar() {
             }}
           >
             <div className="space-y-2">
-              <Label htmlFor="volunteer-name">Full name</Label>
+              <Label htmlFor="volunteer-name">{ui("fullName", "Full name")}</Label>
               <Input
                 id="volunteer-name"
                 name="name"
                 required
-                placeholder="Your name"
+                placeholder={ui("namePlaceholder", "Your name")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="volunteer-email">Email</Label>
+              <Label htmlFor="volunteer-email">{ui("email", "Email")}</Label>
               <Input
                 id="volunteer-email"
                 name="email"
                 type="email"
                 required
-                placeholder="you@example.com"
+                placeholder={ui("emailPlaceholder", "you@example.com")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="volunteer-interest">Interest area</Label>
+              <Label htmlFor="volunteer-interest">{ui("interestArea", "Interest area")}</Label>
               <Input
                 id="volunteer-interest"
                 name="interest"
-                placeholder="e.g. Sports coaching, nutrition workshops"
+                placeholder={ui(
+                  "interestPlaceholder",
+                  "e.g. Sports coaching, nutrition workshops",
+                )}
               />
             </div>
             <div className="flex justify-end">
@@ -258,7 +283,7 @@ export function ImpactCtaBar() {
                 type="submit"
                 className="bg-brand-sea text-white hover:bg-brand-sea/90"
               >
-                Submit Interest
+                {ui("submitInterest", "Submit Interest")}
               </Button>
             </div>
           </form>

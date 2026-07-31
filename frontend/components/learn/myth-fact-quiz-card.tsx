@@ -1,3 +1,9 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
+
+import { useLearnUi } from "@/lib/i18n/translated-data";
+
 export type MythFactAnswer = "myth" | "fact";
 
 export type MythFactClaim = {
@@ -30,6 +36,7 @@ type MythFactChoiceProps = {
   isSelected: boolean;
   isWrongGuess: boolean;
   onSelect: (choice: MythFactAnswer) => void;
+  label: string;
 };
 
 function MythFactChoice({
@@ -40,6 +47,7 @@ function MythFactChoice({
   isSelected,
   isWrongGuess,
   onSelect,
+  label,
 }: MythFactChoiceProps) {
   const isMyth = choice === "myth";
   const base =
@@ -69,7 +77,7 @@ function MythFactChoice({
       <span className="text-xl" aria-hidden="true">
         {isMyth ? "✗" : "✓"}
       </span>
-      <span className="capitalize">{choice}</span>
+      <span className="capitalize">{label}</span>
     </button>
   );
 }
@@ -108,11 +116,15 @@ export function MythFactQuizCard({
   resultHeadline,
   children,
 }: MythFactQuizCardProps) {
+  const ui = useLearnUi();
+  const { t } = useTranslation("learn");
   const topicClass = TOPIC_ACCENTS[claim.topic ?? "Daily"] ?? "bg-brand-sand text-brand-ink";
   const userCorrect = selected === claim.answer;
   const stampCorrect = revealed && userCorrect;
   const stampWrong = revealed && !userCorrect && selected !== null;
   const stampRevealAnswer = revealed && revealCorrectAnswer && !userCorrect;
+  const mythLabel = ui("myth", "Myth");
+  const factLabel = ui("fact", "Fact");
 
   return (
     <div className="overflow-hidden rounded-2xl border border-brand-sand bg-white shadow-sm">
@@ -150,8 +162,8 @@ export function MythFactQuizCard({
                 ?
               </span>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-brand-ink/50">Common claim</p>
-                <p className="text-xs text-brand-ink/45">Is this a myth or a fact?</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-ink/50">{ui("commonClaim", "Common claim")}</p>
+                <p className="text-xs text-brand-ink/45">{ui("isMythOrFact", "Is this a myth or a fact?")}</p>
               </div>
             </div>
 
@@ -170,13 +182,13 @@ export function MythFactQuizCard({
               >
                 {stampCorrect
                   ? claim.answer === "myth"
-                    ? "MYTH BUSTED"
-                    : "CORRECT"
+                    ? ui("mythBusted", "MYTH BUSTED")
+                    : ui("stampCorrect", "CORRECT")
                   : stampRevealAnswer
                     ? claim.answer === "myth"
-                      ? "MYTH"
-                      : "FACT"
-                    : "NOT QUITE"}
+                      ? ui("stampMyth", "MYTH")
+                      : ui("stampFact", "FACT")
+                    : ui("notQuite", "NOT QUITE")}
               </div>
             )}
           </div>
@@ -187,10 +199,11 @@ export function MythFactQuizCard({
         <div
           className={`mt-5 grid gap-3 ${revealed ? "sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2"}`}
           role="group"
-          aria-label="Choose myth or fact"
+          aria-label={ui("chooseMythOrFact", "Choose myth or fact")}
         >
           <MythFactChoice
             choice="myth"
+            label={mythLabel}
             disabled={revealed}
             revealed={revealed}
             isCorrect={claim.answer === "myth"}
@@ -202,6 +215,7 @@ export function MythFactQuizCard({
           />
           <MythFactChoice
             choice="fact"
+            label={factLabel}
             disabled={revealed}
             revealed={revealed}
             isCorrect={claim.answer === "fact"}
@@ -221,14 +235,16 @@ export function MythFactQuizCard({
           >
             <p className="text-sm font-semibold text-brand-ink">
               {resultHeadline ??
-                (userCorrect ? "That's right!" : `It's actually a ${claim.answer}.`)}
+                (userCorrect
+                  ? ui("thatsRight", "That's right!")
+                  : t("ui.actuallyAnswer", { answer: claim.answer, defaultValue: `It's actually a ${claim.answer}.` }))}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-brand-ink/75">{claim.explanation}</p>
             {claim.source ? (
-              <p className="mt-2 text-[11px] text-brand-ink/45">Source: {claim.source}</p>
+              <p className="mt-2 text-[11px] text-brand-ink/45">{ui("sourceLabel", "Source:")} {claim.source}</p>
             ) : null}
             {claim.imageCredit ? (
-              <p className="mt-2 text-[11px] text-brand-ink/45">Photo: {claim.imageCredit}</p>
+              <p className="mt-2 text-[11px] text-brand-ink/45">{ui("photoLabel", "Photo:")} {claim.imageCredit}</p>
             ) : null}
             {children}
           </div>
@@ -239,19 +255,20 @@ export function MythFactQuizCard({
 }
 
 export function QuizResultBadge({ score, total }: { score: number; total: number }) {
+  const ui = useLearnUi();
   const pct = Math.round((score / total) * 100);
-  let title = "Still Learning";
-  let stamp = "KEEP GOING";
+  let title = ui("scoreStillLearning", "Still Learning");
+  let stamp = ui("stampKeepGoing", "KEEP GOING");
 
   if (pct >= 90) {
-    title = "Neurodiversity Champion";
-    stamp = "CHAMPION";
+    title = ui("scoreChampion", "Neurodiversity Champion");
+    stamp = ui("stampChampion", "CHAMPION");
   } else if (pct >= 70) {
-    title = "Fact Finder";
-    stamp = "FACT FINDER";
+    title = ui("scoreFactFinder", "Fact Finder");
+    stamp = ui("stampFactFinder", "FACT FINDER");
   } else if (pct >= 50) {
-    title = "Myth Buster";
-    stamp = "MYTH BUSTER";
+    title = ui("scoreMythBuster", "Myth Buster");
+    stamp = ui("stampMythBuster", "MYTH BUSTER");
   }
 
   return (

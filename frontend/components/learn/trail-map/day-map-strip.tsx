@@ -1,6 +1,9 @@
 "use client";
 
-import { LOCATION_DAYS, type LocationDay } from "@/lib/day-locations-data";
+import { useTranslation } from "react-i18next";
+
+import type { LocationDay } from "@/lib/day-locations-data";
+import { useTranslatedTrailDays } from "@/lib/i18n/translated-data";
 
 const THEME_ICON: Record<LocationDay["theme"], string> = {
   stadium: "🏟️",
@@ -20,15 +23,20 @@ interface DayMapStripProps {
 }
 
 export function DayMapStrip({ currentDayNumber, currentDayProgress, completedLoops }: DayMapStripProps) {
-  const currentIndex = (currentDayNumber - 1) % LOCATION_DAYS.length;
+  const { t } = useTranslation("learn");
+  const translatedDays = useTranslatedTrailDays();
+  const currentIndex = (currentDayNumber - 1) % translatedDays.length;
 
   return (
     <div className="rounded-2xl border border-brand-sand bg-white p-4 shadow-sm sm:p-6">
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-ink/45">
-          The 21 Moves Trail {completedLoops > 0 && <span className="text-brand-coral">· Loop {completedLoops + 1}</span>}
+          {t("ui.trailTitle")}{" "}
+          {completedLoops > 0 && (
+            <span className="text-brand-coral">· {t("ui.loop", { n: completedLoops + 1 })}</span>
+          )}
         </p>
-        <p className="text-xs font-semibold text-brand-ink/45">Day {currentDayNumber}</p>
+        <p className="text-xs font-semibold text-brand-ink/45">{t("ui.day", { n: currentDayNumber })}</p>
       </div>
 
       <div className="relative mt-5">
@@ -37,13 +45,13 @@ export function DayMapStrip({ currentDayNumber, currentDayProgress, completedLoo
         <div
           className="absolute left-0 top-6 h-1 rounded-full bg-brand-coral transition-all duration-700 ease-out sm:top-7"
           style={{
-            width: `${((currentIndex + currentDayProgress) / (LOCATION_DAYS.length - 1)) * 100}%`,
+            width: `${((currentIndex + currentDayProgress) / (translatedDays.length - 1)) * 100}%`,
           }}
           aria-hidden
         />
 
         <ol className="relative grid grid-cols-3 gap-y-6 sm:grid-cols-6 sm:gap-y-0" aria-label="Trail locations">
-          {LOCATION_DAYS.map((location, index) => {
+          {translatedDays.map((location, index) => {
             const isPast = index < currentIndex;
             const isActive = index === currentIndex;
             return (

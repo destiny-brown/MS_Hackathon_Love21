@@ -1,15 +1,24 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
-import { boardMembers } from "@/lib/site-data";
+import { useTranslatedBoardMembers } from "@/lib/i18n/translated-data";
 
 export default function BoardOfDirectorsPage() {
+  const { t } = useTranslation("governance");
+  const boardMembers = useTranslatedBoardMembers();
+
   return (
     <SiteLayout>
       <PageHero
-        title="BOARD OF DIRECTORS"
-        subtitle="Our Board of Directors is comprised of caring individuals from diverse professional backgrounds in Hong Kong, who bring their various talents and passion to support and strengthen Love 21."
+        title={t("pages.board.title", { defaultValue: "BOARD OF DIRECTORS" })}
+        subtitle={t("pages.board.subtitle", {
+          defaultValue:
+            "Our Board of Directors is comprised of caring individuals from diverse professional backgrounds in Hong Kong, who bring their various talents and passion to support and strengthen Love 21.",
+        })}
       />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3">

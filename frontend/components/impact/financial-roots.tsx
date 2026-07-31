@@ -4,17 +4,16 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { ChevronDown, Download, Sprout } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
-import {
-  auditedReports,
-  financialBreakdown,
-  financialRootsQuote,
-} from "@/lib/impact-data";
+import { useImpactUi, useTranslatedFinancialBreakdown } from "@/lib/i18n/translated-data";
+import { auditedReports } from "@/lib/impact-data";
 
 const viewport = { once: false, amount: 0.2 } as const;
 
-function DonutChart() {
+function DonutChart({ toProgrammesLabel }: { toProgrammesLabel: string }) {
+  const financialBreakdown = useTranslatedFinancialBreakdown();
   let cursor = 0;
   const segments = financialBreakdown.map((item) => {
     const start = cursor;
@@ -37,7 +36,7 @@ function DonutChart() {
       <div className="absolute inset-[22%] flex flex-col items-center justify-center rounded-full bg-white text-center">
         <p className="font-serif-display text-3xl text-[#2A7A7B]">86%</p>
         <p className="px-2 text-[10px] uppercase tracking-[0.12em] text-brand-ink/60">
-          To programmes
+          {toProgrammesLabel}
         </p>
       </div>
     </div>
@@ -48,6 +47,9 @@ export function FinancialRoots() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, viewport);
   const [reportsOpen, setReportsOpen] = useState(false);
+  const financialBreakdown = useTranslatedFinancialBreakdown();
+  const ui = useImpactUi();
+  const { t } = useTranslation("impact");
 
   return (
     <section
@@ -63,10 +65,10 @@ export function FinancialRoots() {
         >
           <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-brand-sea">
             <Sprout className="h-4 w-4" />
-            Deep Financial Roots
+            {ui("deepFinancialRoots", "Deep Financial Roots")}
           </p>
           <h2 className="mt-3 font-serif-display text-3xl text-brand-ink sm:text-4xl">
-            Financial Transparency & Beneficiary Impact
+            {ui("financialTransparency", "Financial Transparency & Beneficiary Impact")}
           </h2>
         </motion.div>
 
@@ -85,17 +87,23 @@ export function FinancialRoots() {
                 }}
               >
                 <h3 className="font-serif-display text-2xl leading-snug sm:text-3xl">
-                  86% of Every Dollar Goes Directly to Programs &amp; Beneficiary
-                  Care
+                  {ui(
+                    "programmesShare",
+                    "86% of Every Dollar Goes Directly to Programs & Beneficiary Care",
+                  )}
                 </h3>
                 <p className="mt-4 text-sm text-white/85">
-                  HKD $9.94M of $11.49M total expenditure — roots sunk deep into
-                  programmes that unlock potential.
+                  {ui(
+                    "programmesShareDetail",
+                    "HKD $9.94M of $11.49M total expenditure — roots sunk deep into programmes that unlock potential.",
+                  )}
                 </p>
               </div>
 
               <div className="bg-brand-cream/40 px-4 py-6 sm:px-6 sm:py-8">
-                <DonutChart />
+                <DonutChart
+                  toProgrammesLabel={ui("toProgrammes", "To programmes")}
+                />
                 <ul className="mt-6 space-y-2">
                   {financialBreakdown.map((item) => (
                     <li
@@ -126,18 +134,21 @@ export function FinancialRoots() {
             className="space-y-6"
           >
             <blockquote className="rounded-2xl border border-brand-sand bg-brand-cream p-6 font-serif-display text-xl leading-snug text-brand-ink">
-              &ldquo;{financialRootsQuote}&rdquo;
+              &ldquo;{t("quotes.financialRoots")}&rdquo;
             </blockquote>
 
             <div className="space-y-3 text-brand-ink/75">
               <p>
-                Donor gifts are the deep roots of Love 21&apos;s forest —
-                channelled into nutrition, fitness, sports, family support, and
-                community education so every member can flourish free of charge.
+                {ui(
+                  "donorGiftsP1",
+                  "Donor gifts are the deep roots of Love 21's forest — channelled into nutrition, fitness, sports, family support, and community education so every member can flourish free of charge.",
+                )}
               </p>
               <p>
-                Governance stays lean so the canopy of programmes stays wide.
-                Transparency is how we honour each vote of confidence.
+                {ui(
+                  "donorGiftsP2",
+                  "Governance stays lean so the canopy of programmes stays wide. Transparency is how we honour each vote of confidence.",
+                )}
               </p>
             </div>
 
@@ -148,7 +159,7 @@ export function FinancialRoots() {
                 onClick={() => setReportsOpen((open) => !open)}
                 className="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-brand-ink transition hover:text-brand-coral"
               >
-                View Audited Financial Reports
+                {ui("viewAuditedReports", "View Audited Financial Reports")}
                 <ChevronDown
                   className={`h-4 w-4 shrink-0 text-brand-ink/50 transition-transform ${
                     reportsOpen ? "rotate-180" : ""
@@ -165,7 +176,7 @@ export function FinancialRoots() {
                     className="overflow-hidden"
                   >
                     <div className="flex flex-col gap-3 pb-4 sm:flex-row">
-                      {auditedReports.map((report) => (
+                      {auditedReports.map((report, i) => (
                         <Button
                           key={report.label}
                           asChild
@@ -174,7 +185,7 @@ export function FinancialRoots() {
                         >
                           <Link href={report.href}>
                             <Download className="mr-2 h-4 w-4" />
-                            {report.label}
+                            {t(`reports.${i}.label`, { defaultValue: report.label })}
                           </Link>
                         </Button>
                       ))}

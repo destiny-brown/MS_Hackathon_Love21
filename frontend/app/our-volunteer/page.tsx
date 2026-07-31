@@ -4,15 +4,18 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 
 import { SiteLayout } from "@/components/site/site-layout";
 import { api, type VolunteerActivity } from "@/lib/api";
 import {
-  availabilityOptions,
+  useTranslatedCategoryMeta,
+  useTranslatedMatcherOptions,
+  useTranslatedRosterItems,
+} from "@/lib/i18n/translated-data";
+import {
   categoryMeta,
-  commitmentOptions,
-  groupSizeOptions,
-  interestOptions,
   rosterItems as fallbackRosterItems,
   type Availability,
   type Category,
@@ -192,7 +195,7 @@ function IconSearch({ className = "" }: { className?: string }) {
 // Page-only content (roster + matcher data lives in lib/volunteer-roster.ts)
 // ---------------------------------------------------------------------------
 
-function mapActivityToRosterItem(activity: VolunteerActivity): RosterItem {
+function mapActivityToRosterItem(activity: VolunteerActivity, defaultCta: string): RosterItem {
   return {
     id: activity.role_id,
     icon: activity.icon,
@@ -204,51 +207,27 @@ function mapActivityToRosterItem(activity: VolunteerActivity): RosterItem {
     filled: activity.filled ?? undefined,
     total: activity.total ?? undefined,
     note: activity.note ?? undefined,
-    ctaLabel: activity.cta_label ?? "I'm interested",
+    ctaLabel: activity.cta_label ?? defaultCta,
   };
 }
 
-// Placeholder — wire up to Instagram/Facebook Graph API later.
-const socialPosts = [
-  { platform: "Instagram", caption: "Saturday football squad putting in the work ⚽", date: "2 days ago", href: "#" },
-  { platform: "Instagram", caption: "Dragon boat practice ahead of next month's race 🐉", date: "5 days ago", href: "#" },
-  { platform: "Facebook", caption: "Thank you to this quarter's corporate volunteer team!", date: "1 week ago", href: "#" },
+const GALLERY_SHAPES = [
+  "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]",
+  "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]",
+  "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]",
+  "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]",
 ];
 
-// Replace with a real, consented volunteer story before this goes live.
-const volunteerStories = [
-  {
-    quote: "I signed up for one Saturday shift because a friend dragged me along. Eighteen months later I'm on the events committee.",
-    name: "[Volunteer name], class volunteer since 2024",
-  },
-  {
-    quote: "My daughter has Down syndrome, and I never expected to be the one coaching football. Now I can't imagine my Saturdays without it.",
-    name: "[Volunteer name], parent & sports volunteer",
-  },
-  {
-    quote: "Our team came for one CSR morning. Half of us still show up monthly, on our own time.",
-    name: "[Company name], corporate partner",
-  },
-];
-
-// Candid, in-the-field moments — placeholder paths.
-const galleryStrip = [
-  { src: "/images/get-involved/gallery-1.jpeg", alt: "A volunteer coaching a football drill", shape: "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]" },
-  { src: "/images/get-involved/gallery-2.jpeg", alt: "Volunteers helping run a cooking workshop", shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]" },
-  { src: "/images/get-involved/gallery-3.jpg", alt: "A high-five between a volunteer and a member at swim class", shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]" },
-  { src: "/images/get-involved/gallery-4.jpg", alt: "A corporate volunteer team on-site", shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]" },
-];
-
-const faqs = [
-  { q: "Do I need experience to volunteer?", a: "No. Most of our volunteers have never worked with neurodiverse members before their first shift. Coaches brief you on-site, every time." },
-  { q: "What if I need to cancel a shift?", a: "Life happens — cancel or swap through the member app up to 24 hours ahead, no penalty. We'd just ask you not to no-show, since a role sitting empty means a class runs short-staffed." },
-  { q: "Is training provided?", a: "Yes. Every new volunteer gets a short on-site briefing before their first shift, plus a returning volunteer paired alongside them for support." },
-  { q: "Can I bring a friend, or volunteer as a group?", a: "Absolutely — group and friend sign-ups are common, especially for the community dinners & trips crew and corporate days." },
+const GALLERY_SRCS = [
+  "/images/get-involved/gallery-1.jpeg",
+  "/images/get-involved/gallery-2.jpeg",
+  "/images/get-involved/gallery-3.jpg",
+  "/images/get-involved/gallery-4.jpg",
 ];
 
 // ---- One-pager generator -------------------------------------------------
 
-function generateCsrOnePager() {
+function generateCsrOnePager(t: TFunction<"volunteer">) {
   const win = window.open("", "_blank");
   if (!win) return;
 
@@ -271,31 +250,27 @@ function generateCsrOnePager() {
       </style>
     </head>
     <body>
-      <div class="tag">Bring your team</div>
-      <h1>Corporate Volunteer Day at Love 21 Foundation</h1>
-      <p>Share this with your HR or CSR team — everything they need to say yes is on this page.</p>
+      <div class="tag">${t("page.csrOnePager.tag")}</div>
+      <h1>${t("page.csrOnePager.title")}</h1>
+      <p>${t("page.csrOnePager.intro")}</p>
 
       <div class="stat-row">
-        <div class="stat"><b>600+</b>families supported monthly</div>
-        <div class="stat"><b>~1,000</b>classes run each month</div>
-        <div class="stat"><b>21 yrs</b>building this community in HK</div>
+        <div class="stat"><b>600+</b>${t("page.csrOnePager.statFamilies")}</div>
+        <div class="stat"><b>~1,000</b>${t("page.csrOnePager.statClasses")}</div>
+        <div class="stat"><b>21 yrs</b>${t("page.csrOnePager.statYears")}</div>
       </div>
 
-      <p><b>What it is:</b> A hands-on day at our San Po Kong centre alongside our members —
-      no experience needed. Past teams have helped run sports sessions, nutrition workshops,
-      and community events.</p>
+      <p><b>${t("page.csrOnePager.whatIs")}</b> ${t("page.csrOnePager.whatIsBody")}</p>
 
-      <p><b>Why it matters for your team:</b> Employees leave with a direct, ability-focused
-      understanding of neurodiversity — not a lecture, a real afternoon spent together.</p>
+      <p><b>${t("page.csrOnePager.whyMatters")}</b> ${t("page.csrOnePager.whyMattersBody")}</p>
 
-      <p><b>Next step:</b> Reply to this email or visit our Get Involved page to pick a date
-      for your team.</p>
+      <p><b>${t("page.csrOnePager.nextStep")}</b> ${t("page.csrOnePager.nextStepBody")}</p>
 
-      <div class="cta">Contact us at partnerships@love21.org.hk to book your team's date.</div>
+      <div class="cta">${t("page.csrOnePager.cta")}</div>
 
-      <footer>Love 21 Foundation · San Po Kong, Kowloon · Generated from a volunteer's visit to love21.org.hk/our-volunteer</footer>
+      <footer>${t("page.csrOnePager.footer")}</footer>
 
-      <p class="no-print"><button onclick="window.print()">Print / Save as PDF</button></p>
+      <p class="no-print"><button onclick="window.print()">${t("page.csrOnePager.print")}</button></p>
     </body>
     </html>
   `;
@@ -334,6 +309,7 @@ function useCountUp(target: number, durationMs = 1400) {
 // buttons) rather than floating over the photo. Swap the two target numbers
 // for a real Supabase count() query once that's wired up.
 function LiveActivityBadge() {
+  const { t } = useTranslation("volunteer");
   const volunteers = useCountUp(214, 1400);
   const shiftsToday = useCountUp(6, 1000);
 
@@ -346,11 +322,11 @@ function LiveActivityBadge() {
       <div>
         <div className="flex items-baseline gap-1.5">
           <span className="font-serif-display text-2xl leading-none text-brand-ink">{volunteers}</span>
-          <span className="text-xs text-brand-ink/60">volunteers active this month</span>
+          <span className="text-xs text-brand-ink/60">{t("page.hero.volunteersActive")}</span>
         </div>
         <div className="mt-1.5 flex items-baseline gap-1.5 border-t border-dashed border-brand-ink/15 pt-1.5">
           <span className="font-serif-display text-lg leading-none text-brand-ink">{shiftsToday}</span>
-          <span className="text-xs text-brand-ink/50">shifts running today</span>
+          <span className="text-xs text-brand-ink/50">{t("page.hero.shiftsToday")}</span>
         </div>
       </div>
     </div>
@@ -358,6 +334,15 @@ function LiveActivityBadge() {
 }
 
 function VolunteerStoryCarousel() {
+  const { t } = useTranslation("volunteer");
+  const volunteerStories = useMemo(
+    () =>
+      ["1", "2", "3"].map((id) => ({
+        quote: t(`page.stories.items.${id}.quote`),
+        name: t(`page.stories.items.${id}.name`),
+      })),
+    [t],
+  );
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
@@ -370,7 +355,7 @@ function VolunteerStoryCarousel() {
       }, 200);
     }, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, [volunteerStories.length]);
 
   function go(next: number) {
     setFade(false);
@@ -395,7 +380,7 @@ function VolunteerStoryCarousel() {
             <button
               key={i}
               onClick={() => go(i)}
-              aria-label={`Show story ${i + 1}`}
+              aria-label={t("page.stories.showLabel", { number: i + 1 })}
               className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-brand-coral" : "w-1.5 bg-brand-ink/20"}`}
             />
           ))}
@@ -406,6 +391,16 @@ function VolunteerStoryCarousel() {
 }
 
 function FaqAccordion() {
+  const { t } = useTranslation("volunteer");
+  const faqKeys = ["experience", "cancel", "training", "group"] as const;
+  const faqs = useMemo(
+    () =>
+      faqKeys.map((key) => ({
+        q: t(`page.faq.items.${key}.q`),
+        a: t(`page.faq.items.${key}.a`),
+      })),
+    [t],
+  );
   const [open, setOpen] = useState<number | null>(0);
   return (
     <div className="divide-y divide-brand-sand">
@@ -442,6 +437,8 @@ function AiVolunteerMatch({
   rosterItems: RosterItem[];
   onSelectRole: (title: string) => void;
 }) {
+  const { t } = useTranslation("volunteer");
+  const matcherOptions = useTranslatedMatcherOptions();
   const [interest, setInterest] = useState<Interest | null>(null);
   const [availability, setAvailability] = useState<Availability | null>(null);
   const [commitment, setCommitment] = useState<Commitment | null>(null);
@@ -467,7 +464,7 @@ function AiVolunteerMatch({
         group_size: groupSize,
       });
       if (!response.enabled || response.matches.length === 0) {
-        setError(response.message || "AI matching is unavailable right now. Try again in a moment.");
+        setError(response.message || t("page.matcher.unavailable"));
         return;
       }
 
@@ -481,7 +478,7 @@ function AiVolunteerMatch({
         .sort((a, b) => b.score - a.score);
 
       if (mapped.length === 0) {
-        setError("We couldn't map those matches to open roles. Please try again.");
+        setError(t("page.matcher.mapFailed"));
         return;
       }
 
@@ -489,7 +486,7 @@ function AiVolunteerMatch({
       setAiEnhanced(response.ai_enhanced);
       setResultIndex(0);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Matching failed. Is the backend running on port 8000?");
+      setError(err instanceof Error ? err.message : t("page.matcher.backendError"));
     } finally {
       setThinking(false);
     }
@@ -513,28 +510,28 @@ function AiVolunteerMatch({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
           <IconSpark className="h-4 w-4" />
-          AI · Smart Matching
+          {t("page.matcher.eyebrow")}
         </p>
         {(interest || availability || commitment || groupSize || results || error) && !thinking && (
           <button onClick={reset} className="text-xs font-semibold text-white/50 hover:text-white">
-            Start over
+            {t("page.matcher.startOver")}
           </button>
         )}
       </div>
 
       <h3 className="mt-3 font-serif-display text-3xl text-white sm:text-4xl">
-        Not sure where you fit? Let it find your shift.
+        {t("page.matcher.title")}
       </h3>
       <p className="mt-3 max-w-xl text-sm text-white/65">
-        Four quick questions, and our local AI (Ollama) will read every open role to find the best fit for your interests, timing, commitment, and group size.
+        {t("page.matcher.subtitle")}
       </p>
 
       {!results && !thinking && (
         <div className="mt-8 space-y-7">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">1. What pulls you in?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">{t("page.matcher.step1")}</p>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
-              {interestOptions.map((opt) => (
+              {matcherOptions.interests.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setInterest(opt.key)}
@@ -550,9 +547,9 @@ function AiVolunteerMatch({
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">2. When are you usually free?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">{t("page.matcher.step2")}</p>
             <div className="mt-3 flex flex-wrap gap-2.5">
-              {availabilityOptions.map((opt) => (
+              {matcherOptions.availability.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setAvailability(opt.key)}
@@ -569,9 +566,9 @@ function AiVolunteerMatch({
           {error && <p className="text-sm text-red-300">{error}</p>}
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">3. How often can you commit?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">{t("page.matcher.step3")}</p>
             <div className="mt-3 flex flex-wrap gap-2.5">
-              {commitmentOptions.map((opt) => (
+              {matcherOptions.commitment.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setCommitment(opt.key)}
@@ -586,9 +583,9 @@ function AiVolunteerMatch({
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">4. Coming alone, or bringing others?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">{t("page.matcher.step4")}</p>
             <div className="mt-3 flex flex-wrap gap-2.5">
-              {groupSizeOptions.map((opt) => (
+              {matcherOptions.groupSize.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setGroupSize(opt.key)}
@@ -607,7 +604,7 @@ function AiVolunteerMatch({
             disabled={!interest || !availability || !commitment || !groupSize}
             className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-coral disabled:hover:text-white"
           >
-            Ask AI for my match →
+            {t("page.matcher.submit")}
           </button>
         </div>
       )}
@@ -619,20 +616,20 @@ function AiVolunteerMatch({
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.15s]" />
             <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral" />
           </span>
-          Ollama is reading every open role and weighing your answers…
+          {t("page.matcher.thinking")}
         </div>
       )}
 
       {results && active && (
         <div className="mt-8">
           <div className="flex items-center justify-between gap-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-white/50">Your best match</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-white/50">{t("page.matcher.bestMatch")}</span>
             <div className="flex items-center gap-2">
               {aiEnhanced && (
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">AI matched</span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">{t("page.matcher.aiMatched")}</span>
               )}
               <span className="rounded-full bg-brand-coral/15 px-3 py-1 text-xs font-semibold text-brand-coral">
-                {active.score}% match
+                {t("page.matcher.matchPercent", { score: active.score })}
               </span>
             </div>
           </div>
@@ -667,14 +664,14 @@ function AiVolunteerMatch({
               onClick={() => onSelectRole(active.item.title)}
               className="rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
             >
-              Sign me up for this
+              {t("page.matcher.signUp")}
             </button>
             {results.length > 1 && (
               <button
                 onClick={() => setResultIndex((resultIndex + 1) % results.length)}
                 className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-white/40"
               >
-                See another match
+                {t("page.matcher.anotherMatch")}
               </button>
             )}
           </div>
@@ -701,23 +698,58 @@ export default function VolunteerPage() {
 const ROLES_PREVIEW_COUNT = 4;
 
 function VolunteerContent() {
+  const { t } = useTranslation("volunteer");
   const searchParams = useSearchParams();
   const requestedCategory = searchParams.get("category");
   const initialFilter: Category | "all" = requestedCategory && requestedCategory in categoryMeta ? (requestedCategory as Category) : "all";
 
   const [rosterItems, setRosterItems] = useState<RosterItem[]>(fallbackRosterItems);
+  const translatedRosterItems = useTranslatedRosterItems(rosterItems);
+  const translatedCategoryMeta = useTranslatedCategoryMeta();
   const [filter, setFilter] = useState<Category | "all">(initialFilter);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllRoles, setShowAllRoles] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState<string>(fallbackRosterItems[0].title);
   const [submitted, setSubmitted] = useState(false);
 
+  const socialPosts = useMemo(
+    () =>
+      ["1", "2", "3"].map((id) => ({
+        platform: t(`page.social.posts.${id}.platform`),
+        caption: t(`page.social.posts.${id}.caption`),
+        date: t(`page.social.posts.${id}.date`),
+        href: "#",
+      })),
+    [t],
+  );
+
+  const galleryStrip = useMemo(
+    () =>
+      GALLERY_SRCS.map((src, i) => ({
+        src,
+        alt: t(`page.gallery.items.${i + 1}.alt`),
+        shape: GALLERY_SHAPES[i],
+      })),
+    [t],
+  );
+
+  const recognitionTiers = useMemo(
+    () =>
+      ["1", "2", "3", "4"].map((tier) => ({
+        tier,
+        title: t(`page.recognition.tiers.${tier}.title`),
+        body: t(`page.recognition.tiers.${tier}.body`),
+      })),
+    [t],
+  );
+
   useEffect(() => {
+    const defaultCta = t("page.defaultCta");
     api
       .listVolunteerActivities()
       .then((activities) => {
         if (activities.length === 0) return;
-        const mapped = activities.map(mapActivityToRosterItem);
+        const mapped = activities.map((activity) => mapActivityToRosterItem(activity, defaultCta));
         setRosterItems(mapped);
         setSelectedOpportunity((current) =>
           mapped.some((item) => item.title === current) ? current : mapped[0].title,
@@ -726,10 +758,10 @@ function VolunteerContent() {
       .catch(() => {
         // Keep local fallback roster if backend is unavailable.
       });
-  }, []);
+  }, [t]);
 
   const visibleItems = useMemo(() => {
-    let items = filter === "all" ? rosterItems : rosterItems.filter((item) => item.category === filter);
+    let items = filter === "all" ? translatedRosterItems : translatedRosterItems.filter((item) => item.category === filter);
     const q = searchQuery.trim().toLowerCase();
     if (q) {
       items = items.filter(
@@ -741,7 +773,7 @@ function VolunteerContent() {
       );
     }
     return items;
-  }, [filter, rosterItems, searchQuery]);
+  }, [filter, translatedRosterItems, searchQuery]);
 
   useEffect(() => {
     setShowAllRoles(false);
@@ -752,11 +784,11 @@ function VolunteerContent() {
 
   const urgentItems = useMemo(
     () =>
-      rosterItems
+      translatedRosterItems
         .filter((item) => item.total && item.filled !== undefined && item.filled / item.total >= 0.6)
         .sort((a, b) => b.filled! / b.total! - a.filled! / a.total!)
         .slice(0, 2),
-    [rosterItems],
+    [translatedRosterItems],
   );
 
   function selectRoleAndScroll(title: string) {
@@ -771,11 +803,11 @@ function VolunteerContent() {
         <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
         <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
-            <Eyebrow>Get Involved · Volunteers</Eyebrow>
+            <Eyebrow>{t("page.hero.eyebrow")}</Eyebrow>
             <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-ink sm:text-5xl">
-              Come be part of a{" "}
+              {t("page.hero.titleBefore")}{" "}
               <span className="relative text-brand-coral">
-                so much ability
+                {t("page.hero.titleHighlight")}
                 <svg
                   viewBox="0 0 200 14"
                   className="absolute -bottom-1 left-0 h-3 w-full text-brand-coral/50"
@@ -792,18 +824,17 @@ function VolunteerContent() {
                   />
                 </svg>
               </span>{" "}
-              community.
+              {t("page.hero.titleAfter")}
             </h1>
             <p className="mt-5 max-w-lg text-brand-ink/75">
-              No email chains, no waiting on the office. Pick an opening across sport, nutrition,
-              family support or a corporate day, and you&apos;re confirmed straight away.
+              {t("page.hero.body")}
             </p>
             <div className="mt-7 flex flex-wrap gap-4">
               <a href="#opportunities" className="rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white hover:bg-black">
-                See open roles
+                {t("page.hero.ctaRoles")}
               </a>
               <a href="#match" className="rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-brand-ink hover:border-black">
-                Not sure where to start?
+                {t("page.hero.ctaMatcher")}
               </a>
             </div>
             <LiveActivityBadge />
@@ -812,7 +843,7 @@ function VolunteerContent() {
             <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-sand lg:aspect-[3/4]">
               {/* Swap for a real photo of a volunteer mid-shift — energetic, not posed. */}
-              <Image src="/images/get-involved/hero-image.png" alt="A volunteer coaching alongside a Love 21 member" fill priority className="object-cover" />
+              <Image src="/images/get-involved/hero-image.png" alt={t("page.hero.imageAlt")} fill priority className="object-cover" />
             </div>
           </div>
         </div>
@@ -840,17 +871,16 @@ function VolunteerContent() {
               <IconFlag className="h-5 w-5 text-brand-coral" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Another way to help</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{t("page.campaign.eyebrow")}</p>
               <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-ink sm:text-2xl">
-                Can&apos;t commit to a shift? Start your own fundraising campaign instead.
+                {t("page.campaign.title")}
               </h3>
               <p className="mt-2 max-w-md text-sm text-brand-ink/70">
-                Run a marathon, host a birthday fundraiser, or rally your friends — set up a
-                peer-to-peer page in minutes and raise funds on your own schedule.
+                {t("page.campaign.body")}
               </p>
             </div>
           </div>
-          <CtaButton href="/campaigns/new">Start a campaign</CtaButton>
+          <CtaButton href="/campaigns/new">{t("page.campaign.cta")}</CtaButton>
         </div>
       </section>
 
@@ -860,11 +890,11 @@ function VolunteerContent() {
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 text-sm text-white">
             <span className="flex items-center gap-2 font-semibold text-brand-coral">
               <TriMark className="h-2 w-6" />
-              Going fast
+              {t("page.urgency.label")}
             </span>
             {urgentItems.map((item) => (
               <a key={item.id} href="#opportunities" className="text-white/80 hover:text-white">
-                {item.title} — {item.filled}/{item.total} filled
+                {item.title} — {t("page.urgency.filled", { filled: item.filled!, total: item.total! })}
               </a>
             ))}
           </div>
@@ -876,11 +906,11 @@ function VolunteerContent() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
-              <Eyebrow>The board</Eyebrow>
-              <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Open opportunities</h2>
+              <Eyebrow>{t("page.board.eyebrow")}</Eyebrow>
+              <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">{t("page.board.title")}</h2>
             </div>
             <p className="max-w-md text-sm text-brand-ink/70">
-              Every role sits under one of our four programme pillars. Pick the one that fits you.
+              {t("page.board.subtitle")}
             </p>
           </div>
 
@@ -890,16 +920,16 @@ function VolunteerContent() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search roles — try “Saturday”, “cooking”, or “CSR”"
+              placeholder={t("page.board.searchPlaceholder")}
               className="w-full rounded-full border border-dashed border-brand-ink/20 bg-white py-3 pl-11 pr-4 text-sm text-brand-ink placeholder:text-brand-ink/40 outline-none transition focus:border-solid focus:border-brand-coral"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
+                aria-label={t("page.board.clearSearch")}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-brand-ink/40 hover:text-brand-ink"
               >
-                Clear
+                {t("page.board.clearSearch")}
               </button>
             )}
           </div>
@@ -914,9 +944,9 @@ function VolunteerContent() {
                     : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
                 }`}
               >
-                All roles
+                {t("page.board.allRoles")}
               </button>
-              {(Object.keys(categoryMeta) as Category[]).map((key) => (
+              {(Object.keys(translatedCategoryMeta) as Category[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => setFilter(key)}
@@ -926,8 +956,8 @@ function VolunteerContent() {
                       : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
                   }`}
                 >
-                  {categoryMeta[key].label}
-                  <span className="hidden text-xs font-normal text-brand-ink/50 lg:block">{categoryMeta[key].blurb}</span>
+                  {translatedCategoryMeta[key].label}
+                  <span className="hidden text-xs font-normal text-brand-ink/50 lg:block">{translatedCategoryMeta[key].blurb}</span>
                 </button>
               ))}
             </div>
@@ -936,7 +966,9 @@ function VolunteerContent() {
               {displayedItems.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-brand-ink/20 p-10 text-center">
                   <p className="text-sm text-brand-ink/60">
-                    No roles match {searchQuery ? `“${searchQuery}”` : "this filter"} right now.
+                    {searchQuery
+                      ? t("page.board.noMatchQuery", { query: searchQuery })
+                      : t("page.board.noMatchFilter")}
                   </p>
                   <button
                     onClick={() => {
@@ -945,7 +977,7 @@ function VolunteerContent() {
                     }}
                     className="mt-3 text-sm font-semibold text-brand-coral hover:underline"
                   >
-                    Clear search & filters
+                    {t("page.board.clearFilters")}
                   </button>
                 </div>
               ) : (
@@ -959,8 +991,8 @@ function VolunteerContent() {
                           <h3 className="text-xl text-brand-ink">{item.title}</h3>
                           <p className="mt-2 text-sm text-brand-ink/70">{item.desc}</p>
                           <div className="mt-4 flex flex-col gap-1 text-xs text-brand-ink/60">
-                            <span><b className="font-semibold text-brand-ink">When:</b> {item.when}</span>
-                            <span><b className="font-semibold text-brand-ink">Where:</b> {item.where}</span>
+                            <span><b className="font-semibold text-brand-ink">{t("page.board.when")}</b> {item.when}</span>
+                            <span><b className="font-semibold text-brand-ink">{t("page.board.where")}</b> {item.where}</span>
                           </div>
 
                           {pct !== null ? (
@@ -968,7 +1000,7 @@ function VolunteerContent() {
                               <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-sand">
                                 <div className="h-full rounded-full bg-brand-coral" style={{ width: `${pct}%` }} />
                               </div>
-                              <span className="whitespace-nowrap text-xs text-brand-ink/50">{item.filled} / {item.total} filled</span>
+                              <span className="whitespace-nowrap text-xs text-brand-ink/50">{t("page.board.filled", { filled: item.filled!, total: item.total! })}</span>
                             </div>
                           ) : (
                             <div className="mt-4 text-xs text-brand-ink/50">{item.note}</div>
@@ -983,10 +1015,10 @@ function VolunteerContent() {
 
                           {item.category === "csr" && item.id === "corporate-day" && (
                             <button
-                              onClick={generateCsrOnePager}
+                              onClick={() => generateCsrOnePager(t)}
                               className="mt-2 w-full rounded-full border border-black/15 py-2.5 text-xs font-semibold text-brand-ink hover:border-black"
                             >
-                              Generate a one-pager for your HR/CSR team
+                              {t("page.board.csrOnePager")}
                             </button>
                           )}
                         </article>
@@ -1002,7 +1034,7 @@ function VolunteerContent() {
                     onClick={() => setShowAllRoles((v) => !v)}
                     className="inline-flex items-center gap-2 rounded-full border border-dashed border-brand-ink/25 px-6 py-3 text-sm font-semibold text-brand-ink transition hover:border-black hover:border-solid"
                   >
-                    {showAllRoles ? "Show fewer roles" : `View ${hiddenCount} more role${hiddenCount === 1 ? "" : "s"}`}
+                    {showAllRoles ? t("page.board.showFewer") : t("page.board.viewMore", { count: hiddenCount })}
                     <span aria-hidden="true" className={`inline-block transition-transform duration-300 ${showAllRoles ? "rotate-180" : ""}`}>
                       ↓
                     </span>
@@ -1020,7 +1052,7 @@ function VolunteerContent() {
       <section className="bg-[#F8F4EB] px-4 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-ink/50">
-            <IconHeart className="h-4 w-4" /> Life on shift
+            <IconHeart className="h-4 w-4" /> {t("page.gallery.label")}
           </p>
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {galleryStrip.map((photo, i) => (
@@ -1038,8 +1070,8 @@ function VolunteerContent() {
       <section className="relative overflow-hidden border-t border-brand-sand bg-white px-4 py-16 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-40" />
         <div className="relative mx-auto max-w-6xl">
-          <Eyebrow>From our feed</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">As featured this week</h2>
+          <Eyebrow>{t("page.social.eyebrow")}</Eyebrow>
+          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">{t("page.social.title")}</h2>
           <div className="mt-8 grid gap-5 sm:grid-cols-3">
             {socialPosts.map((post) => (
               <a key={post.caption} href={post.href} className="block rounded-2xl border border-brand-sand p-5 transition hover:border-black/20">
@@ -1056,16 +1088,11 @@ function VolunteerContent() {
       {/* ---------- RECOGNITION ---------- */}
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <Eyebrow>Hours & recognition</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">Every hour counts, and it shows</h2>
+          <Eyebrow>{t("page.recognition.eyebrow")}</Eyebrow>
+          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">{t("page.recognition.title")}</h2>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { tier: "1", title: "First cap", body: "Your first logged shift. Welcome to the roster." },
-              { tier: "10", title: "Season regular", body: "10 hours in — you've got a standing spot on the schedule." },
-              { tier: "50", title: "Community favourite", body: "50 hours of showing up. Featured in our volunteer spotlight." },
-              { tier: "100", title: "Team captain", body: "100+ hours. Invited to help lead new volunteer onboarding." },
-            ].map((m) => (
+            {recognitionTiers.map((m) => (
               <div key={m.tier} className="rounded-2xl border border-brand-sand p-6">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-black text-sm font-semibold text-white">{m.tier}</div>
                 <h3 className="text-base text-brand-ink">{m.title}</h3>
@@ -1075,11 +1102,11 @@ function VolunteerContent() {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-6 rounded-2xl bg-brand-sand p-7">
-            <div className="font-serif-display text-3xl text-brand-ink">32<span className="text-sm font-sans font-normal text-brand-ink/60"> hrs</span></div>
+            <div className="font-serif-display text-3xl text-brand-ink">32<span className="text-sm font-sans font-normal text-brand-ink/60"> {t("page.recognition.hoursUnit")}</span></div>
             <div className="h-2.5 flex-1 min-w-[200px] overflow-hidden rounded-full bg-white">
               <div className="h-full w-[64%] rounded-full bg-brand-coral" />
             </div>
-            <div className="text-xs text-brand-ink/60">18 hours to your Community Favourite ribbon</div>
+            <div className="text-xs text-brand-ink/60">{t("page.recognition.progressLabel")}</div>
           </div>
         </div>
       </section>
@@ -1088,16 +1115,16 @@ function VolunteerContent() {
       <section className="bg-white px-4 pb-16 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-brand-sand border-l-4 border-l-brand-coral p-8">
           <div>
-            <h3 className="max-w-lg text-xl text-brand-ink">Know a company that could sponsor a class of 15?</h3>
+            <h3 className="max-w-lg text-xl text-brand-ink">{t("page.corporate.title")}</h3>
             <p className="mt-2 max-w-md text-sm text-brand-ink/70">
-              Volunteers are often the first link to a new corporate partner — a quick introduction goes a long way.
+              {t("page.corporate.body")}
             </p>
           </div>
           <button
-            onClick={generateCsrOnePager}
+            onClick={() => generateCsrOnePager(t)}
             className="rounded-full bg-brand-sand px-6 py-3 text-sm font-semibold text-brand-ink hover:bg-black hover:text-white"
           >
-            Generate one-pager to introduce them
+            {t("page.corporate.cta")}
           </button>
         </div>
       </section>
@@ -1106,8 +1133,8 @@ function VolunteerContent() {
       <section className="relative overflow-hidden bg-brand-sand px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
         <div className="relative mx-auto max-w-3xl">
-          <Eyebrow>Before you sign up</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Questions people actually ask</h2>
+          <Eyebrow>{t("page.faq.eyebrow")}</Eyebrow>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">{t("page.faq.title")}</h2>
           <div className="mt-8 rounded-3xl bg-white px-6 sm:px-8">
             <FaqAccordion />
           </div>
@@ -1118,7 +1145,7 @@ function VolunteerContent() {
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-0 h-72 w-72 bg-brand-coral/15" />
         <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-coral/10" />
-        <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={selectRoleAndScroll} />
+        <AiVolunteerMatch rosterItems={translatedRosterItems} onSelectRole={selectRoleAndScroll} />
       </section>
 
       {/* ---------- FINAL CTA ---------- */}
@@ -1126,10 +1153,10 @@ function VolunteerContent() {
         <Blob className="left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-[#F8DCDA] opacity-50" />
         <div className="relative">
           <TriMark className="mx-auto h-2.5 w-9 text-brand-coral" />
-          <h2 className="mt-4 font-serif-display text-3xl text-brand-ink sm:text-4xl">Every shift starts with someone saying yes.</h2>
+          <h2 className="mt-4 font-serif-display text-3xl text-brand-ink sm:text-4xl">{t("page.finalCta.title")}</h2>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             {/* <CtaButton href="#opportunities">Browse open roles</CtaButton> */}
-            <CtaButton href="/donate" variant="outline">Prefer to give instead?</CtaButton>
+            <CtaButton href="/donate" variant="outline">{t("page.finalCta.donate")}</CtaButton>
           </div>
         </div>
       </section>

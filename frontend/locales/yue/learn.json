@@ -1,0 +1,633 @@
+{
+  "ui": {
+    "myth": "迷思",
+    "fact": "事實",
+    "mythOrFact": "迷思還是事實",
+    "situation": "情境",
+    "correct": "答對了！",
+    "notQuite": "不太對",
+    "captainsClue": "船長提示",
+    "trailTitle": "21 Moves 之旅",
+    "loop": "循環 {{n}}",
+    "day": "第 {{n}} 天",
+    "loading": "載入今日旅程中…",
+    "backToLearn": "返回學習",
+    "startQuiz": "開始測驗",
+    "seeResults": "查看結果",
+    "tryAgain": "再試一次",
+    "scorePerfect": "滿分！",
+    "scoreGreat": "做得好！",
+    "scoreGood": "不錯的努力！",
+    "scoreKeep": "繼續學習！",
+    "fromCommunity": "來自社群",
+    "readFullStory": "閱讀完整故事",
+    "play21Moves": "玩今日 21 Moves",
+    "howItWorks": "運作方式",
+    "commonClaim": "常見說法",
+    "mythBusted": "迷思破解",
+    "correctFact": "正確 — 這是事實",
+    "relatedStories": "相關故事",
+    "relatedStoriesSubtitle": "與你剛學到的內容相關的真實 Love 21 故事",
+    "searchVideos": "搜尋影片",
+    "searchPlaceholder": "搜尋神經多樣性主題…",
+    "recommended": "推薦",
+    "curated": "精選",
+    "all": "全部",
+    "teachers": "教師",
+    "parents": "家長",
+    "moreFromLove21": "更多 Love 21 內容",
+    "captainThinking": "Captain 21 思考中…",
+    "chatOpen": "問 Captain21",
+    "chatPlaceholder": "詢問計劃、義工服務或迷思…",
+    "speak": "語音",
+    "listening": "聆聽中…",
+    "send": "發送",
+    "closeChat": "關閉對話",
+    "voiceNeedsChrome": "語音輸入需要 Chrome 或 Edge",
+    "sources": "資料來源",
+    "isMythOrFact": "呢個係迷思定事實？",
+    "chooseMythOrFact": "揀迷思或事實",
+    "stampMyth": "迷思",
+    "stampFact": "事實",
+    "stampCorrect": "正確",
+    "thatsRight": "答對咗！",
+    "actuallyAnswer": "其實係{{answer}}。",
+    "sourceLabel": "來源：",
+    "photoLabel": "相片：",
+    "scoreStillLearning": "仍在學習",
+    "stampKeepGoing": "繼續加油",
+    "scoreChampion": "神經多樣性冠軍",
+    "stampChampion": "冠軍",
+    "scoreFactFinder": "事實探索者",
+    "stampFactFinder": "事實探索者",
+    "scoreMythBuster": "迷思破解者",
+    "stampMythBuster": "迷思破解者",
+    "playMoreDailyTitle": "想玩更長版本？",
+    "playMoreDailyBody": "喺完整迷思 vs 事實測驗中核實 10 條說法。",
+    "playMoreDailyLink": "玩完整測驗 →",
+    "playMoreQuizTitle": "將所學付諸行動",
+    "playMoreQuizBody": "將今日迷思帶入實用嘅 Love 21 技能任務。",
+    "playMoreQuizLink": "開始 21 Moves →",
+    "communityStoriesTitle": "聆聽社區聲音",
+    "communityStoriesSubtitle": "來自 Love 21 家庭、計劃及媒體報導嘅真實故事。",
+    "captainRole": "融合教練 · 由本地 Ollama 驅動",
+    "captainStarter": "你好！我係{{name}}。可以問 Love 21 計劃、義工服務、迷思與事實，或者點樣參與。",
+    "captainOpenAria": "問 Captain21",
+    "captainMessageLabel": "畀 Captain 21 嘅訊息",
+    "captainStopVoice": "停止語音輸入",
+    "captainStartVoice": "開始語音輸入",
+    "captainSpeakEmoji": "🎤 語音",
+    "captainChatMessages": "聊天訊息",
+    "captainSuggestedPages": "建議頁面",
+    "captainReachError": "無法聯絡 Captain 21。後端係咪喺運行？",
+    "videosSearchLabel": "你想了解咩？",
+    "videosSearchPlaceholder": "試下：學校入面嘅自閉症、唐氏綜合症支援、融合溝通",
+    "videosSearchBtn": "搜尋 YouTube",
+    "videosSearching": "搜尋中…",
+    "videosReset": "重置",
+    "videosSearchHint": "精選內容即時載入。YouTube 搜尋使用每日 API 配額——僅在需要時撳搜尋。",
+    "videosCuratedLine": "顯示來自可信機構嘅 {{count}} 條精選視頻。",
+    "videosCuratedLine_plural": "顯示來自可信機構嘅 {{count}} 條精選視頻。",
+    "videosYoutubeResults": "YouTube 搜尋結果：",
+    "videosSearchingYoutube": "正在搜尋 YouTube 視頻…",
+    "videosYoutubeUnavailable": "YouTube 搜尋暫時不可用。顯示精選內容。",
+    "videosNoResults": "搵唔到視頻。改為顯示精選內容。",
+    "videosSearchFailed": "暫時無法搜尋 YouTube。",
+    "videosShowingCurated": "改為顯示精選內容。",
+    "videosQuotaNote": "你嘅 YouTube API 密鑰限額為",
+    "videosQuotaLimit": "每日 100 次搜尋查詢",
+    "videosQuotaSuffix": "（與 10,000 通用配額分開）。於太平洋時間午夜重置。如需可在 Google Cloud Console 申請提高配額。",
+    "videosNoFilterMatch": "冇符合篩選條件嘅視頻。試其他關鍵字或重置以睇所有精選內容。",
+    "resourcesLoading": "載入故事中…",
+    "resourcesArchiveTitle": "Love 21 檔案庫",
+    "resourcesArchiveSubtitle": "教育故事",
+    "resourcesReadingTitle": "延伸閱讀",
+    "resourcesReadingSubtitle": "精選自",
+    "resourcesNeurodiversityNetwork": "Neurodiversity Network",
+    "resourcesMoreBody": "探索完整嘅 Love 21 故事中心及媒體檔案庫——基金會嘅新聞報導、訪談及社區故事。",
+    "resourcesStoriesLink": "Love 21 故事 →",
+    "resourcesMediaLink": "媒體檔案庫 →",
+    "resourcesGetInvolvedLink": "參與我哋 →",
+    "parentsCarers": "家長及照顧者"
+  },
+  "quiz": {
+    "questions": {
+      "q1": {
+        "statement": "自閉症患者缺乏同理心。",
+        "explanation": "許多自閉症患者能深切感受同理心——他們可能只是以不同方式表達或處理。難以讀懂社交線索，並不等於不在乎。",
+        "topic": "自閉症"
+      },
+      "q2": {
+        "statement": "唐氏綜合症是由多了一條第 21 號染色體所引起。",
+        "explanation": "21 三體症指每個細胞有三條第 21 號染色體而非兩條。這會影響發展，但每個人的能力差異很大。",
+        "topic": "唐氏綜合症"
+      },
+      "q3": {
+        "statement": "ADHD 只是兒童期的行為問題，長大後就會消失。",
+        "explanation": "ADHD 是一種終身的神經發展狀況。許多成年人同樣面對 ADHD；症狀可能隨時間改變，但不會單純消失。",
+        "topic": "ADHD"
+      },
+      "q4": {
+        "statement": "使用以人為本的語言（例如「患有自閉症的人」）永遠是首選。",
+        "explanation": "語言偏好因人而異。有些人偏好身份優先的用語（「自閉症患者」）。最好的做法是直接問對方喜歡哪種稱呼。",
+        "topic": "共融用語"
+      },
+      "q5": {
+        "statement": "神經多樣性學生能從可預測的作息和清晰的指示中受益。",
+        "explanation": "結構、視覺支援和明確期望能減少認知負荷和焦慮，幫助許多神經多樣性學習者更自信地參與。",
+        "topic": "教育"
+      },
+      "q6": {
+        "statement": "所有自閉症患者都像電影中那樣擁有學者症候群能力。",
+        "explanation": "學者症候群能力只存在於少數自閉症患者中。大多數自閉症人士擁有多樣化的強項和挑戰，與其他人無異。",
+        "topic": "自閉症"
+      },
+      "q7": {
+        "statement": "感官敏感（對光線、聲音或觸覺）在神經多樣性人士中很常見。",
+        "explanation": "許多神經多樣性人士以不同方式處理感官輸入。調整環境——更安靜的空間、較柔和的光線——能帶來實質幫助。",
+        "topic": "感官"
+      },
+      "q8": {
+        "statement": "共融教育是指把所有學生放在同一課室而無需任何支援。",
+        "explanation": "真正的共融提供適當的調整、差異化教學和支援，讓每位學習者都能有意義地參與。",
+        "topic": "教育"
+      },
+      "q9": {
+        "statement": "自我刺激行為（重複動作或聲音）能幫助神經多樣性人士自我調節。",
+        "explanation": "自我刺激行為往往是管理情緒、感官輸入或專注力的應對策略。在未理解的情況下壓制它，可能增加壓力。",
+        "topic": "自閉症"
+      },
+      "q10": {
+        "statement": "智力障礙人士無法獨立生活或工作。",
+        "explanation": "在適當支援下，許多智力障礙人士能夠工作、獨立生活，並為社區作出豐富貢獻。",
+        "topic": "唐氏綜合症"
+      }
+    }
+  },
+  "quotes": {
+    "love-is-simple": {
+      "quote": "愛很簡單。",
+      "programmeLabel": "家庭計劃"
+    },
+    "water-to-racing": {
+      "quote": "從怕水到公開水域競賽——透過運動實踐共融。",
+      "programmeLabel": "運動計劃"
+    },
+    "purposeful-work": {
+      "quote": "唐氏綜合症及自閉症人士已準備好投身有意義的工作。",
+      "programmeLabel": "參與我們"
+    },
+    "nutrition-families": {
+      "quote": "為最需要幫助的家庭中患有智力障礙的兒童提供免費飲食建議。",
+      "programmeLabel": "營養計劃"
+    },
+    "long-happy-life": {
+      "quote": "營養與運動並重——支持更長壽、更健康的生活。",
+      "programmeLabel": "家庭與營養"
+    },
+    "autistic-careers": {
+      "quote": "挑戰對自閉症人士職業能力的刻板印象。",
+      "programmeLabel": "社區計劃"
+    }
+  },
+  "trail": {
+    "locations": {
+      "stadium": {
+        "title": "體育場",
+        "subtitle": "與 Captain 21 一起進行五項田徑比賽"
+      },
+      "harbour": {
+        "title": "海港",
+        "subtitle": "划龍舟衝向終點，一次一個答案"
+      },
+      "court": {
+        "title": "球場",
+        "subtitle": "五個回合的籃球接力"
+      },
+      "wall": {
+        "title": "攀石牆",
+        "subtitle": "五個岩點，五道問題，一個山頂"
+      },
+      "track": {
+        "title": "單車賽道",
+        "subtitle": "在室內賽道繞行五圈"
+      },
+      "festival": {
+        "title": "終點嘉年華",
+        "subtitle": "旅程再次循環前的五項終極挑戰"
+      }
+    },
+    "events": {
+      "stadium-hurdles-1": {
+        "label": "跨欄"
+      },
+      "stadium-javelin": {
+        "label": "標槍"
+      },
+      "stadium-longjump": {
+        "label": "跳遠"
+      },
+      "stadium-polevault": {
+        "label": "撐竿跳"
+      },
+      "stadium-hurdles-final": {
+        "label": "跨欄決賽"
+      },
+      "harbour-leg-1": {
+        "label": "第一棒"
+      },
+      "harbour-leg-2": {
+        "label": "第二棒"
+      },
+      "harbour-leg-3": {
+        "label": "第三棒"
+      },
+      "harbour-leg-4": {
+        "label": "第四棒"
+      },
+      "harbour-finish": {
+        "label": "終點線"
+      },
+      "court-1": {
+        "label": "運球衝刺"
+      },
+      "court-2": {
+        "label": "罰球"
+      },
+      "court-3": {
+        "label": "上籃"
+      },
+      "court-4": {
+        "label": "三分球"
+      },
+      "court-5": {
+        "label": "絕殺球"
+      },
+      "wall-1": {
+        "label": "第一個岩點"
+      },
+      "wall-2": {
+        "label": "橫移"
+      },
+      "wall-3": {
+        "label": "關鍵動作"
+      },
+      "wall-4": {
+        "label": "外傾岩壁"
+      },
+      "wall-5": {
+        "label": "山頂"
+      },
+      "track-1": {
+        "label": "第一圈"
+      },
+      "track-2": {
+        "label": "第二圈"
+      },
+      "track-3": {
+        "label": "衝刺道"
+      },
+      "track-4": {
+        "label": "跟車線"
+      },
+      "track-5": {
+        "label": "最後一圈"
+      },
+      "festival-1": {
+        "label": "開幕巡遊"
+      },
+      "festival-2": {
+        "label": "才藝舞台"
+      },
+      "festival-3": {
+        "label": "團隊遊戲"
+      },
+      "festival-4": {
+        "label": "頒獎"
+      },
+      "festival-5": {
+        "label": "閉幕典禮"
+      }
+    },
+    "questions": {
+      "stadium-hurdles-1": {
+        "kicker": "迷思還是事實",
+        "prompt": "唐氏綜合症人士無法參與競技運動。",
+        "explanation": "唐氏綜合症運動員在各個層級競賽，包括特殊奧林匹克和主流本地聯賽——力量和協調能力因人而異，就像一般人口一樣。",
+        "hint": "想想你在特殊奧林匹克見過多少不同的運動員。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "stadium-javelin": {
+        "kicker": "這是什麼？",
+        "prompt": "什麼是「共融教育」？",
+        "explanation": "共融教育是指所有能力的學生在同一課室和校園生活中一起學習，並獲得適當支援——而不是預設把他們分開。",
+        "hint": "這關乎學生在哪裡、如何一起學習。",
+        "options": {
+          "a": "殘疾學生只能在特殊學校學習",
+          "b": "所有能力的學生在同一課室一起學習，並獲得支援",
+          "c": "只適用於體育課的學校政策"
+        }
+      },
+      "stadium-longjump": {
+        "kicker": "情境",
+        "prompt": "一位使用輪椅的新同學今天加入你的體育課。最好的第一步是什麼？",
+        "explanation": "最具共融意識的做法是直接詢問並一起調整——這尊重當事人對自己需求的了解。",
+        "hint": "誰最清楚一個人需要什麼？當事人自己。",
+        "options": {
+          "a": "問他們哪些活動適合，並一起調整遊戲",
+          "b": "假設他們應該只在旁邊觀看",
+          "c": "只跟他們的助理說話，不直接與他們溝通"
+        }
+      },
+      "stadium-polevault": {
+        "kicker": "迷思還是事實",
+        "prompt": "唐氏綜合症是一種可以從別人身上傳染的疾病。",
+        "explanation": "唐氏綜合症是從受孕時已存在的基因狀況——由多了一條第 21 號染色體引起。它不是疾病，也不能傳染。",
+        "hint": "想想基因存在於人體的哪個部分。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "stadium-hurdles-final": {
+        "kicker": "這是什麼？",
+        "prompt": "在唐氏綜合症／世界唐氏綜合症日（3/21）中，數字「21」代表什麼？",
+        "explanation": "唐氏綜合症是由多了一條（第三條）第 21 號染色體引起——這也是世界唐氏綜合症日定在 3/21（3 月 21 日）的原因。",
+        "hint": "3 月 21 日這個日期就是線索：3/21。",
+        "options": {
+          "a": "大多數人確診的年齡",
+          "b": "多了一條第 21 號染色體",
+          "c": "已知相關狀況的數量"
+        }
+      },
+      "harbour-leg-1": {
+        "kicker": "情境",
+        "prompt": "你的龍舟隊需要一位鼓手來保持划桨節奏。一位聾人隊友想做這個角色。你會怎麼做？",
+        "explanation": "小小的調整——例如在鼓聲之外加上視覺提示——讓每個人都能擔任想要的角色，而不會令任何人被特別對待。",
+        "hint": "有什麼非聽覺方式可以讓整條船看到節拍？",
+        "options": {
+          "a": "讓他們擔任鼓手，並約定視覺提示（如旗幟）配合鼓聲",
+          "b": "告訴他們打鼓需要聽力，所以應該去划桨",
+          "c": "悄悄把角色給別人，不說明原因"
+        }
+      },
+      "harbour-leg-2": {
+        "kicker": "迷思還是事實",
+        "prompt": "智力障礙人士無法學習划桨同步等團隊合作技能。",
+        "explanation": "團隊合作和節奏感是每個人都可以學習的技能——世界各地的龍舟隊都有智力障礙划手，他們像其他隊員一樣訓練和競賽。",
+        "hint": "團隊合作是透過練習培養的技能，不是與生俱來就固定的。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "harbour-leg-3": {
+        "kicker": "這是什麼？",
+        "prompt": "什麼是「合理便利」？",
+        "explanation": "合理便利是一項實際的調整——例如斜坡、額外時間或視覺提示——用來消除障礙，讓當事人能充分參與。",
+        "hint": "想想「消除障礙的調整」，而不是「特別優待」。",
+        "options": {
+          "a": "不論需要與否都給每個人的免費升級",
+          "b": "為殘疾人士消除障礙的實際調整",
+          "c": "殘疾人士必須嚴格遵守的規則"
+        }
+      },
+      "harbour-leg-4": {
+        "kicker": "情境",
+        "prompt": "一位划手的節奏與其他人稍有不同。Captain 21 放慢鼓點幫助大家同步。這展現了什麼價值？",
+        "explanation": "調整節奏讓每個人都能貢獻，是簡單而日常的共融行動——整隊一起向前。",
+        "hint": "什麼能幫助整隊一起衝線，而不只是最快的隊員？",
+        "options": {
+          "a": "耐心並調整節奏，讓整隊一起成功",
+          "b": "懲罰那位與眾不同的划手",
+          "c": "忽略問題，希望它自行解決"
+        }
+      },
+      "harbour-finish": {
+        "kicker": "迷思還是事實",
+        "prompt": "共融團隊比排斥殘疾人士的團隊更慢、更不成功。",
+        "explanation": "研究和現實團隊一致顯示，多元共融的團隊表現出色——不同強項互相結合，士氣和合作往往也會提升。",
+        "hint": "想想團隊獲得什麼，而不只是「需要配合什麼」。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "court-1": {
+        "kicker": "這是什麼？",
+        "prompt": "什麼是「感官友善」活動？",
+        "explanation": "感官友善活動減少過強的光線和聲音，並提供安靜空間，讓有感官敏感的人士能夠參與。",
+        "hint": "想想什麼能讓空間更平靜，而不是更嘈。",
+        "options": {
+          "a": "調暗燈光、降低音量並提供安靜空間的活動",
+          "b": "只給喜歡大聲音樂的人參加的活動",
+          "c": "沒有座位的活動"
+        }
+      },
+      "court-2": {
+        "kicker": "迷思還是事實",
+        "prompt": "使用輪椅的人無法打籃球。",
+        "explanation": "輪椅籃球是一項完整的競技運動，有自己的聯賽和殘奧賽事——許多使用輪椅的人在高水平比賽。",
+        "hint": "有一項完整的殘奧運動就是圍繞這個問題建立的。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "court-3": {
+        "kicker": "情境",
+        "prompt": "你的隊長總是挑選同兩個人解釋新戰術。一位有學習障礙的隊友說他從圖表比口頭說明學得更好。隊長應該怎麼做？",
+        "explanation": "以多於一種格式提供相同資訊（視覺加口頭）是簡單、低成本地包容不同學習方式的方法。",
+        "hint": "不同的人處理資訊的方式不同——如何用兩種方式說同一件事？",
+        "options": {
+          "a": "在口頭說明之外加上簡單圖表",
+          "b": "叫他們更努力聽",
+          "c": "把他們放在板凳上，不讓參加練習"
+        }
+      },
+      "court-4": {
+        "kicker": "這是什麼？",
+        "prompt": "「以人為本的語言」是什麼意思，例如說「患有唐氏綜合症的人」？",
+        "explanation": "以人為本的語言把個人放在任何診斷或狀況之前，承認他們首先是完整的人。",
+        "hint": "短語中哪個詞在前面——人，還是狀況？",
+        "options": {
+          "a": "把個人放在狀況之前，以免人被狀況定義",
+          "b": "只有醫生需要遵守的規則",
+          "c": "讓對話更正式的方式"
+        }
+      },
+      "court-5": {
+        "kicker": "迷思還是事實",
+        "prompt": "大多數唐氏綜合症人士無法工作。",
+        "explanation": "許多唐氏綜合症成年人在各行各業工作，尤其在職場提供清晰培訓和合理便利時。",
+        "hint": "想想世上有多少種工作，以及什麼支援能讓它們成為可能。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "wall-1": {
+        "kicker": "情境",
+        "prompt": "一位低視力的攀石夥伴請你用時鐘方位系統報出岩點位置（例如「2 點鐘方向的岩點」）。你應該怎麼做？",
+        "explanation": "學習簡單的共同系統，例如時鐘方位，是讓低視力夥伴能充分參與攀石的小努力。",
+        "hint": "如果你的夥伴看不見，指向是沒用的——什麼方法才有效？",
+        "options": {
+          "a": "學習這個系統並使用，讓他們能自信地攀爬",
+          "b": "說太費事，把他們配給別人",
+          "c": "忽略請求，繼續用手指"
+        }
+      },
+      "wall-2": {
+        "kicker": "迷思還是事實",
+        "prompt": "身體殘疾永遠意味著某人無法進行冒險或體能活動。",
+        "explanation": "在適當的適應性裝備和技術下，身體殘疾人士能參與攀石、滑雪、衝浪和許多其他冒險運動。",
+        "hint": "想想你可能見過的適應性運動裝備——例如坐式滑雪或適應性攀石安全帶。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "wall-3": {
+        "kicker": "這是什麼？",
+        "prompt": "什麼是「IEP」（個別化教育計劃）？",
+        "explanation": "IEP 是一份個人化計劃，為單一學生訂立目標和支援，切合其特定學習需要。",
+        "hint": "關鍵詞是「個別化」——想想「為一個人度身訂造」。",
+        "options": {
+          "a": "圍繞學生特定需要而制定的個人化學習計劃",
+          "b": "針對行為不當學生的懲罰計劃",
+          "c": "給每位學生的通用時間表"
+        }
+      },
+      "wall-4": {
+        "kicker": "情境",
+        "prompt": "一位朋友不斷替有口吃問題的同學把話說完。最尊重的做法是什麼？",
+        "explanation": "給口吃的人時間把話說完，不打斷，是簡單而尊重的耐心表現。",
+        "hint": "在對話中，耐心是什麼樣子？",
+        "options": {
+          "a": "溫和地請朋友讓同學按自己的節奏把話說完",
+          "b": "什麼都不說，覺得沒什麼大不了",
+          "c": "避免跟同學說話，以免尷尬"
+        }
+      },
+      "wall-5": {
+        "kicker": "迷思還是事實",
+        "prompt": "自閉症患者不想要朋友或社交聯繫。",
+        "explanation": "許多自閉症患者深切重視友誼和聯繫——他們可能以不同方式社交，但渴望聯繫是常見的，並非不存在。",
+        "hint": "不同於「不想要」——想想某人可能偏好*如何*聯繫。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "track-1": {
+        "kicker": "這是什麼？",
+        "prompt": "在殘疾人單車比賽中，「雙人單車」有什麼用途？",
+        "explanation": "雙人單車讓有視力的「領騎員」在前座，視障運動員在後座，兩人一起在殘疾人單車比賽中競賽。",
+        "hint": "想想「兩個座位、一架單車」能為看不見賽道的騎手解決什麼問題。",
+        "options": {
+          "a": "讓有視力的領騎員與視障運動員一起騎行的雙人單車",
+          "b": "只用來跟自己比賽的單車",
+          "c": "沒有腳踏的單車"
+        }
+      },
+      "track-2": {
+        "kicker": "迷思還是事實",
+        "prompt": "一旦某人被診斷有殘疾，他們的能力就不會改變或進步。",
+        "explanation": "殘疾人士的技能、力量和獨立能力可以終生增長，就像任何人一樣——透過練習、治療和機會。",
+        "hint": "想想任何技能——對任何人而言——通常如何隨練習而改變。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "track-3": {
+        "kicker": "情境",
+        "prompt": "一位有 ADHD 的新成員說長時間的團隊會議很難坐完。支持性的第一步是什麼？",
+        "explanation": "詢問並調整——較短的環節、休息時間或書面議程——是對許多 ADHD 人士簡單而有效的支援。",
+        "hint": "會議可以做什麼結構性改變，讓人更容易坐完？",
+        "options": {
+          "a": "問什麼會有幫助——例如較短的會議或定時休息——並嘗試",
+          "b": "假設他們對學會不感興趣",
+          "c": "叫他們更努力集中"
+        }
+      },
+      "track-4": {
+        "kicker": "這是什麼？",
+        "prompt": "在建築物或網站的語境中，「無障礙」是什麼意思？",
+        "explanation": "無障礙是指設計空間、產品或網站，讓廣泛能力的人士都能使用——受益的人遠超過任何單一群體。",
+        "hint": "從廣泛角度想：誰會受益於斜坡、字幕或清晰標示？",
+        "options": {
+          "a": "廣泛能力的人士都能使用的設計",
+          "b": "只有輪椅使用者才需要的功能",
+          "c": "可有可無的額外功能"
+        }
+      },
+      "track-5": {
+        "kicker": "迷思還是事實",
+        "prompt": "問別人他們希望如何獲得支援是無禮的。",
+        "explanation": "直接而尊重地問別人希望如何獲得支援，通常會受到歡迎——這遠比替他們猜測要好。",
+        "hint": "哪種更尊重：猜測別人需要什麼，還是直接問他們？",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "festival-1": {
+        "kicker": "情境",
+        "prompt": "嘉年華舞台有樓梯而沒有斜坡，一位使用輪椅的表演者要上台。主辦方應該怎麼做？",
+        "explanation": "實體通道——例如斜坡——應從活動策劃之初就納入，讓每位表演者都能有尊嚴地登上舞台。",
+        "hint": "永久解決方案和臨時方案有什麼分別？",
+        "options": {
+          "a": "在演出前加設斜坡或其他同層通道",
+          "b": "請義工把表演者抬上去",
+          "c": "把表演者的時段改到只在後台"
+        }
+      },
+      "festival-2": {
+        "kicker": "迷思還是事實",
+        "prompt": "唐氏綜合症對每個人的影響完全相同。",
+        "explanation": "唐氏綜合症對每個人的影響不同——能力、健康、性格和興趣因人而異，就像其他人一樣。",
+        "hint": "想想一般人之間有多大差異。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      },
+      "festival-3": {
+        "kicker": "這是什麼？",
+        "prompt": "什麼是世界唐氏綜合症日？",
+        "explanation": "世界唐氏綜合症日是每年 3 月 21 日的國際認可日子，選這個日期是為了呼應多了一條第 21 號染色體。",
+        "hint": "日期本身（3/21）就是關於什麼的線索。",
+        "options": {
+          "a": "每年 3 月 21 日提高意識並慶祝唐氏綜合症人士的日子",
+          "b": "每年進行一次的醫療檢查",
+          "c": "只有一個國家慶祝的節日"
+        }
+      },
+      "festival-4": {
+        "kicker": "情境",
+        "prompt": "頒獎時，主持人開玩笑說某隊「一定有人幫忙」，因為一位隊友有殘疾。朋友應該如何回應？",
+        "explanation": "溫和而清楚地指出為什麼某句話不公平，有助轉變當下氣氛並支持隊友。",
+        "hint": "為隊友發聲是什麼樣子——友善而清晰？",
+        "options": {
+          "a": "站出來說隊伍一起贏得的，那句話不恰當",
+          "b": "跟著笑以避免尷尬",
+          "c": "什麼都不說，希望不會再發生"
+        }
+      },
+      "festival-5": {
+        "kicker": "迷思還是事實",
+        "prompt": "共融只在特別的關注日才重要。",
+        "explanation": "共融是日常實踐——在課室、團隊和職場中——而不只是留給單一的關注日。",
+        "hint": "想想障礙出現的頻率，對比關注日的頻率。",
+        "options": {
+          "myth": "迷思",
+          "fact": "事實"
+        }
+      }
+    }
+  }
+}

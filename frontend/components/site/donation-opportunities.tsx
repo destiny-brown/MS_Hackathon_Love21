@@ -2,12 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { SupportProgress } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
 
 function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
+  const { t } = useTranslation("donate");
+
   return (
     <article className="flex h-full flex-col rounded-2xl border border-brand-sand bg-white p-6">
       <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
@@ -28,11 +31,11 @@ function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
       {opportunity.moonclerk_url ? (
         <>
           <p className="mt-5 text-xs text-brand-ink/65">
-            Please write &ldquo;{opportunity.title}&rdquo; in the MoonClerk Remarks field so Love 21 can designate your gift.
+            {t("opportunities.remarkMoonclerk", { title: opportunity.title })}
           </p>
           <Button asChild className="mt-3 w-full">
             <a href={opportunity.moonclerk_url} target="_blank" rel="noreferrer">
-              Support this {opportunity.kind}
+              {t("opportunities.support", { kind: opportunity.kind })}
               <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
             </a>
           </Button>
@@ -43,6 +46,7 @@ function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
 }
 
 export function DonationOpportunities() {
+  const { t } = useTranslation("donate");
   const [opportunities, setOpportunities] = useState<SupportOpportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -51,36 +55,36 @@ export function DonationOpportunities() {
     api
       .listSupportOpportunities()
       .then((entries) => setOpportunities(entries.filter((entry) => entry.kind !== "wishlist")))
-      .catch((err) => setError(err instanceof Error ? err.message : "Could not load donation opportunities"))
+      .catch((err) => setError(err instanceof Error ? err.message : t("opportunities.error")))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   const groups = useMemo(
     () => [
       {
         kind: "campaign",
-        eyebrow: "Time-bound opportunities",
-        title: "Current Campaigns",
+        eyebrow: t("opportunities.campaignEyebrow"),
+        title: t("opportunities.campaignTitle"),
         entries: opportunities.filter((entry) => entry.kind === "campaign"),
       },
       {
         kind: "cause",
-        eyebrow: "Sustained impact",
-        title: "Champion Their Potential",
+        eyebrow: t("opportunities.causeEyebrow"),
+        title: t("opportunities.causeTitle"),
         entries: opportunities.filter((entry) => entry.kind === "cause"),
       },
     ],
-    [opportunities],
+    [opportunities, t],
   );
 
   if (loading) {
-    return <p className="text-brand-ink/70" role="status">Loading opportunities…</p>;
+    return <p className="text-brand-ink/70" role="status">{t("opportunities.loading")}</p>;
   }
 
   if (error) {
     return (
       <div className="rounded-2xl border border-brand-sand bg-white p-6">
-        <p className="font-semibold text-brand-ink">Donation opportunities are temporarily unavailable.</p>
+        <p className="font-semibold text-brand-ink">{t("opportunities.unavailableTitle")}</p>
         <p className="mt-2 text-sm text-brand-ink/70">{error}</p>
       </div>
     );
@@ -101,7 +105,7 @@ export function DonationOpportunities() {
               ))}
             </div>
           ) : (
-            <p className="mt-5 text-brand-ink/70">New opportunities will be shared here soon.</p>
+            <p className="mt-5 text-brand-ink/70">{t("opportunities.emptySoon")}</p>
           )}
         </section>
       ))}

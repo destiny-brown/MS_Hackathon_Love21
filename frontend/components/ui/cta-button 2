@@ -1,0 +1,32 @@
+import Link from "next/link";
+
+export function CtaButton({
+  href,
+  children,
+  variant = "solid",
+}: {
+  href: string;
+  children: React.ReactNode;
+  variant?: "solid" | "outline" | "outline-dark";
+}) {
+  const styles = {
+    solid:
+      "bg-brand-coral text-white shadow-[0_6px_20px_-8px_rgba(0,0,0,0.35)] hover:bg-black",
+    outline:
+      "border border-black/15 text-brand-ink hover:bg-black hover:text-white",
+    "outline-dark":
+      "border border-white/30 text-white hover:bg-white hover:text-black",
+  }[variant];
+
+  return (
+    <Link
+      href={href}
+      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300 ${styles}`}
+    >
+      {children}
+      <span className="transition-transform group-hover:translate-x-1">
+        →
+      </span>
+    </Link>
+  );
+}

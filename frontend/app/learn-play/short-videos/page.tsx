@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
@@ -20,6 +21,7 @@ function getYouTubeThumbnail(video: YouTubeVideo): string {
 }
 
 export default function ShortVideosPage() {
+  const { t } = useTranslation(["learn", "pages"]);
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [videos, setVideos] = useState<YouTubeVideo[]>(curatedVideos);
@@ -37,13 +39,13 @@ export default function ShortVideosPage() {
       if (!response.enabled) {
         setVideos(filterCuratedVideos(query));
         setSource("curated");
-        setErrorText(response.error || "YouTube search is currently unavailable. Showing curated picks.");
+        setErrorText(response.error || t("learn:ui.videosYoutubeUnavailable"));
         return;
       }
       if (response.items.length === 0) {
         setVideos(filterCuratedVideos(query));
         setSource("curated");
-        setErrorText(response.error || "No videos found. Showing curated picks instead.");
+        setErrorText(response.error || t("learn:ui.videosNoResults"));
         return;
       }
       setVideos(response.items);
@@ -51,8 +53,8 @@ export default function ShortVideosPage() {
     } catch (error) {
       setVideos(filterCuratedVideos(query));
       setSource("curated");
-      const message = error instanceof Error ? error.message : "Unable to search YouTube right now.";
-      setErrorText(`${message} Showing curated picks instead.`);
+      const message = error instanceof Error ? error.message : t("learn:ui.videosSearchFailed");
+      setErrorText(`${message} ${t("learn:ui.videosShowingCurated")}`);
     } finally {
       setIsLoading(false);
     }
@@ -107,20 +109,20 @@ export default function ShortVideosPage() {
   return (
     <SiteLayout>
       <PageHero
-        title="Short Videos"
-        subtitle="Neurodiversity education clips for families, volunteers, and community partners."
+        title={t("pages:learnPlay.videos.title")}
+        subtitle={t("pages:learnPlay.videos.description")}
       />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-6">
             <Link href="/learn-play" className="text-sm font-semibold text-brand-coral hover:underline">
-              ← Back to Learn
+              ← {t("learn:ui.backToLearn")}
             </Link>
           </div>
 
           <div className="mb-8 rounded-2xl border border-brand-sand bg-white p-5">
             <label htmlFor="learn-query" className="mb-2 block text-sm font-semibold text-brand-ink">
-              What do you want to learn about?
+              {t("learn:ui.videosSearchLabel")}
             </label>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Input
@@ -130,56 +132,51 @@ export default function ShortVideosPage() {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") handleSearch();
                 }}
-                placeholder="Try: autism in school, down syndrome support, inclusive communication"
+                placeholder={t("learn:ui.videosSearchPlaceholder")}
                 className="flex-1"
               />
               <Button onClick={handleSearch} disabled={isLoading}>
-                {isLoading ? "Searching…" : "Search YouTube"}
+                {isLoading ? t("learn:ui.videosSearching") : t("learn:ui.videosSearchBtn")}
               </Button>
               {source === "youtube" ? (
                 <Button variant="outline" onClick={handleReset}>
-                  Reset
+                  {t("learn:ui.videosReset")}
                 </Button>
               ) : null}
             </div>
-            <p className="mt-2 text-xs text-brand-ink/65">
-              Curated picks load instantly. YouTube search uses your daily API quota — click Search only when
-              needed.
-            </p>
+            <p className="mt-2 text-xs text-brand-ink/65">{t("learn:ui.videosSearchHint")}</p>
           </div>
 
           {source === "curated" && !errorText ? (
             <p className="mb-4 text-sm text-brand-ink/70">
-              Showing {rankedVideos.length} curated video{rankedVideos.length === 1 ? "" : "s"} from trusted
-              organisations.
+              {t("learn:ui.videosCuratedLine", { count: rankedVideos.length })}
             </p>
           ) : null}
 
           {source === "youtube" && submittedQuery ? (
             <p className="mb-4 text-sm text-brand-ink/70">
-              YouTube results for: <span className="font-medium text-brand-ink">{submittedQuery}</span>
+              {t("learn:ui.videosYoutubeResults")}{" "}
+              <span className="font-medium text-brand-ink">{submittedQuery}</span>
             </p>
           ) : null}
 
-          {isLoading ? <p className="mb-4 text-sm text-brand-ink/70">Searching YouTube videos…</p> : null}
+          {isLoading ? <p className="mb-4 text-sm text-brand-ink/70">{t("learn:ui.videosSearchingYoutube")}</p> : null}
 
           {errorText ? (
             <div className="mb-4 rounded-xl border border-brand-coral/30 bg-brand-coral/5 p-4">
               <p className="text-sm text-brand-coral">{errorText}</p>
               {isQuotaError ? (
                 <p className="mt-2 text-xs text-brand-ink/65">
-                  Your YouTube API key has a limit of <strong>100 search queries per day</strong> (separate from
-                  the 10,000 general quota). It resets at midnight Pacific Time. Request a quota increase in
-                  Google Cloud Console if needed.
+                  {t("learn:ui.videosQuotaNote")}{" "}
+                  <strong>{t("learn:ui.videosQuotaLimit")}</strong>{" "}
+                  {t("learn:ui.videosQuotaSuffix")}
                 </p>
               ) : null}
             </div>
           ) : null}
 
           {!isLoading && rankedVideos.length === 0 ? (
-            <p className="mb-4 text-sm text-brand-ink/70">
-              No videos match your filter. Try a different keyword or reset to see all curated picks.
-            </p>
+            <p className="mb-4 text-sm text-brand-ink/70">{t("learn:ui.videosNoFilterMatch")}</p>
           ) : null}
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -199,11 +196,11 @@ export default function ShortVideosPage() {
                 <div className="p-3">
                   {hasQuery && score > 0 ? (
                     <span className="inline-flex rounded-full bg-brand-coral/15 px-2 py-0.5 text-[11px] font-semibold text-brand-coral">
-                      Recommended
+                      {t("learn:ui.recommended")}
                     </span>
                   ) : source === "curated" ? (
                     <span className="inline-flex rounded-full bg-brand-sea/10 px-2 py-0.5 text-[11px] font-semibold text-brand-sea">
-                      Curated
+                      {t("learn:ui.curated")}
                     </span>
                   ) : null}
                   <p className="line-clamp-2 text-sm font-semibold text-brand-ink">{video.title}</p>

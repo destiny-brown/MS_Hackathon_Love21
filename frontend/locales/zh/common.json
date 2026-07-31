@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "learn": "学习与玩乐",
+    "getInvolved": "参与我们",
+    "impact": "影响力",
+    "stories": "故事",
+    "events": "活动",
+    "aboutUs": "关于我们",
+    "donate": "捐款",
+    "volunteers": "志愿者",
+    "joinUs": "加入我们",
+    "ourReports": "财务报告",
+    "newsletter": "通讯",
+    "shop": "商店",
+    "members": "会员",
+    "contactUs": "联系我们"
+  },
+  "footer": {
+    "tagline": "通过运动、营养及全方位支持，赋能香港唐氏综合征及自闭症社群。",
+    "explore": "探索",
+    "more": "更多",
+    "copyright": "Love 21 Foundation。版权所有。",
+    "charity": "香港注册慈善机构"
+  },
+  "a11y": {
+    "menu": "无障碍菜单",
+    "menuLine1": "无障",
+    "menuLine2": "碍",
+    "options": "无障碍选项",
+    "textSize": "文字大小",
+    "textSizeNormal": "标准",
+    "textSizeLarge": "较大",
+    "textSizeExtraLarge": "特大",
+    "highContrast": "高对比",
+    "reduceMotion": "减少动画",
+    "underlineLinks": "下划线链接",
+    "reset": "重置",
+    "close": "关闭",
+    "skipToContent": "跳至主要内容",
+    "languageGroup": "语言"
+  },
+  "actions": {
+    "enter": "进入",
+    "explore": "探索",
+    "readStory": "阅读故事",
+    "discoverMore": "了解更多",
+    "previousStory": "上一个故事",
+    "nextStory": "下一个故事",
+    "goToStory": "前往故事 {{number}}"
+  }
+}

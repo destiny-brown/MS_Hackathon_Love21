@@ -3,12 +3,12 @@
 import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { Trees } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
+import { useImpactUi, useTranslatedGrowthData } from "@/lib/i18n/translated-data";
 import { cn } from "@/lib/utils";
 import {
-  growingForestQuote,
   growthCategoryOrder,
-  growthData,
   type GrowthCategoryKey,
 } from "@/lib/impact-data";
 
@@ -24,9 +24,13 @@ const CHART = {
 function GrowthLineChart({
   categoryKey,
   inView,
+  growthData,
+  vsPriorYearLabel,
 }: {
   categoryKey: GrowthCategoryKey;
   inView: boolean;
+  growthData: ReturnType<typeof useTranslatedGrowthData>;
+  vsPriorYearLabel: (pct: number) => string;
 }) {
   const category = growthData[categoryKey];
   const series = category.series;
@@ -76,7 +80,7 @@ function GrowthLineChart({
           </p>
           {growthPct !== null ? (
             <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-ink/50">
-              +{growthPct}% vs prior year
+              {vsPriorYearLabel(growthPct)}
             </p>
           ) : null}
         </div>
@@ -184,6 +188,15 @@ export function MetricBanner() {
   const inView = useInView(ref, viewport);
   const [activeCategory, setActiveCategory] =
     useState<GrowthCategoryKey>("families");
+  const growthData = useTranslatedGrowthData();
+  const ui = useImpactUi();
+  const { t } = useTranslation("impact");
+
+  const vsPriorYearLabel = (pct: number) =>
+    t("ui.vsPriorYear", {
+      pct,
+      defaultValue: `+${pct}% vs prior year`,
+    });
 
   return (
     <section
@@ -200,15 +213,17 @@ export function MetricBanner() {
           <div>
             <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand-coral">
               <Trees className="h-4 w-4" />
-              The Growing Forest
+              {ui("growingForest", "The Growing Forest")}
             </p>
             <h1 className="mt-4 font-serif-display text-4xl text-brand-ink sm:text-5xl">
-              Our Growth
+              {ui("ourGrowth", "Our Growth")}
             </h1>
           </div>
           <p className="max-w-md text-sm leading-relaxed text-brand-ink/60 sm:text-right">
-            Seed to canopy — measuring how Love 21&apos;s community grows in
-            reach, care, and capability.
+            {ui(
+              "growthIntro",
+              "Seed to canopy — measuring how Love 21's community grows in reach, care, and capability.",
+            )}
           </p>
         </motion.div>
 
@@ -219,7 +234,7 @@ export function MetricBanner() {
           className="grid gap-12 lg:grid-cols-[200px_1fr] lg:gap-16"
         >
           <nav
-            aria-label="Growth categories"
+            aria-label={ui("growthCategories", "Growth categories")}
             className="flex flex-row gap-10 overflow-x-auto pb-2 lg:flex-col lg:gap-12 lg:overflow-visible lg:pb-0"
           >
             {growthCategoryOrder.map((key) => {
@@ -256,7 +271,12 @@ export function MetricBanner() {
             })}
           </nav>
 
-          <GrowthLineChart categoryKey={activeCategory} inView={inView} />
+          <GrowthLineChart
+            categoryKey={activeCategory}
+            inView={inView}
+            growthData={growthData}
+            vsPriorYearLabel={vsPriorYearLabel}
+          />
         </motion.div>
 
         <motion.blockquote
@@ -265,7 +285,7 @@ export function MetricBanner() {
           transition={{ duration: 0.55, delay: 0.35, ease: "easeOut" }}
           className="mt-20 max-w-3xl font-serif-display text-xl leading-snug text-brand-ink/80 sm:text-2xl"
         >
-          &ldquo;{growingForestQuote}&rdquo;
+          &ldquo;{t("quotes.growingForest")}&rdquo;
         </motion.blockquote>
       </div>
     </section>
