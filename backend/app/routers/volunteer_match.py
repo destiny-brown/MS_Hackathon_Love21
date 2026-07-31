@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import json
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
 from typing import Literal
 
 from fastapi import APIRouter, Depends
@@ -9,27 +7,24 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.config import get_settings
 from app.db import get_db
 from app.models.volunteer_activity import VolunteerActivity
-from app.services.ollama_client import chat_json
-from app.services.volunteer_matcher import (
-    AVAILABILITY_OPTIONS,
-    INTEREST_OPTIONS,
-    activity_to_dict,
-    match_activities,
-)
+from app.services.volunteer_ai_matcher import match_volunteer_with_ai
+from app.services.volunteer_matcher import INTEREST_OPTIONS, AVAILABILITY_OPTIONS, activity_to_dict
 
 router = APIRouter(prefix="/ai/volunteer", tags=["ai"])
 
 Interest = Literal["hands-on", "food", "people", "skills"]
 Availability = Literal["weekday-am", "weekday-pm", "weekend-am", "flexible"]
+Commitment = Literal["one-off", "weekly", "long-term"]
+GroupSize = Literal["solo", "friend", "team"]
 
 
 class VolunteerMatchRequest(BaseModel):
     interest: Interest
     availability: Availability
-    enhance_with_ai: bool = False
+    commitment: Commitment
+    group_size: GroupSize
 
 
 class VolunteerActivityItem(BaseModel):
@@ -56,63 +51,6 @@ class VolunteerMatchResponse(BaseModel):
     ai_enhanced: bool
     matches: list[VolunteerMatchItem]
     message: str | None = None
-
-
-def _enhance_reasons_with_ollama(interest: Interest, availability: Availability, matches: list[dict]) -> list[dict] | None:
-    interest_label = str(INTEREST_OPTIONS[interest]["label"])
-    availability_labels = {
-        "weekday-am": "Weekday mornings",
-        "weekday-pm": "Weekday afternoons/evenings",
-        "weekend-am": "Weekend mornings",
-        "flexible": "Flexible — it varies",
-    }
-
-    payload = {
-        "interest": interest_label,
-        "availability": availability_labels[availability],
-        "matches": [
-            {
-                "role_id": match["role_id"],
-                "title": match["title"],
-                "when": match["when"],
-                "where": match["where"],
-                "score": match["score"],
-                "reasons": match["reasons"],
-            }
-            for match in matches
-        ],
-    }
-
-    parsed = chat_json(
-        system=(
-            "You help Love 21 Foundation match volunteers to open roles. "
-            "Use ability-first, warm language. Keep each reason to one short sentence. "
-            'Return JSON: {"matches":[{"role_id":"...","reasons":["...","..."]}]}'
-        ),
-        user=(
-            "Improve the match reasons for these volunteer role suggestions. "
-            "Keep the same role_id values and provide 2 reasons each.\n\n"
-            f"{json.dumps(payload)}"
-        ),
-        timeout_seconds=get_settings().ollama_enhance_timeout_seconds,
-    )
-    if not parsed:
-        return None
-
-    reason_map = {
-        item["role_id"]: item.get("reasons", [])
-        for item in parsed.get("matches", [])
-        if isinstance(item, dict) and item.get("role_id")
-    }
-
-    enhanced = []
-    for match in matches:
-        updated = dict(match)
-        ai_reasons = reason_map.get(match["role_id"])
-        if ai_reasons:
-            updated["reasons"] = [str(reason) for reason in ai_reasons[:3]]
-        enhanced.append(updated)
-    return enhanced
 
 
 @router.get("/activities", response_model=list[VolunteerActivityItem])
@@ -142,44 +80,25 @@ def match_volunteer(payload: VolunteerMatchRequest, db: Session = Depends(get_db
             message="Unknown availability value.",
         )
 
-    activity_count = db.scalar(
-        select(VolunteerActivity.id).where(VolunteerActivity.status == "active").limit(1)
+    matches, error = match_volunteer_with_ai(
+        db,
+        payload.interest,
+        payload.availability,
+        payload.commitment,
+        payload.group_size,
+        limit=2,
     )
-    if activity_count is None:
+    if error or not matches:
         return VolunteerMatchResponse(
             enabled=False,
             ai_enhanced=False,
             matches=[],
-            message="No volunteer activities in the database yet. Run: python seed.py",
+            message=error or "AI matching is unavailable right now.",
         )
-
-    base_matches = match_activities(db, payload.interest, payload.availability, limit=2)
-
-    settings = get_settings()
-    enhanced_matches = None
-    if payload.enhance_with_ai and settings.ollama_enabled:
-        with ThreadPoolExecutor(max_workers=1) as pool:
-            future = pool.submit(
-                _enhance_reasons_with_ollama,
-                payload.interest,
-                payload.availability,
-                base_matches,
-            )
-            try:
-                enhanced_matches = future.result(timeout=settings.ollama_enhance_timeout_seconds)
-            except FuturesTimeout:
-                enhanced_matches = None
-
-    ai_enhanced = enhanced_matches is not None
-    final_matches = enhanced_matches or base_matches
-
-    message = None
-    if payload.enhance_with_ai and not ai_enhanced and settings.ollama_enabled:
-        message = "Matched instantly. AI polish skipped — Ollama was slow or unavailable."
 
     return VolunteerMatchResponse(
         enabled=True,
-        ai_enhanced=ai_enhanced,
-        matches=[VolunteerMatchItem(**match) for match in final_matches],
-        message=message,
+        ai_enhanced=True,
+        matches=[VolunteerMatchItem(**match) for match in matches],
+        message=None,
     )

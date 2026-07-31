@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
 from app.db import create_db_and_tables
-from app.routers import ai, auth, items, support_opportunities, trail_debrief, volunteer_match
+from app.routers import ai, auth, items, role_examples, support_opportunities, trail_debrief, volunteer_match
 
 
 @asynccontextmanager
@@ -37,3 +37,4 @@ app.include_router(ai.router)
 app.include_router(volunteer_match.router)
 app.include_router(trail_debrief.router)
 app.include_router(support_opportunities.router)
+app.include_router(role_examples.router)

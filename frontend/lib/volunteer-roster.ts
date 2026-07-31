@@ -16,6 +16,8 @@ export type RosterItem = {
 
 export type Interest = "hands-on" | "food" | "people" | "skills";
 export type Availability = "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
+export type Commitment = "one-off" | "weekly" | "long-term";
+export type GroupSize = "solo" | "friend" | "team";
 
 export const categoryMeta: Record<Category, { label: string; blurb: string }> = {
   sport: { label: "Sport", blurb: "Football, swimming, karate & more" },
@@ -164,6 +166,43 @@ export const availabilityOptions: { key: Availability; label: string; matchWhen:
   },
 ];
 
+export const commitmentOptions: { key: Commitment; label: string; blurb: string; matchWhen: string[] }[] = [
+  {
+    key: "one-off",
+    label: "One-off or occasional",
+    blurb: "A single date, not a standing slot",
+    matchWhen: ["one sunday a month", "occasional", "book a date for your team"],
+  },
+  {
+    key: "weekly",
+    label: "A regular weekly slot",
+    blurb: "Same day, most weeks",
+    matchWhen: ["saturday mornings", "sunday mornings", "wednesday evenings", "weekday mornings", "weekday afternoons"],
+  },
+  {
+    key: "long-term",
+    label: "Flexible & ongoing",
+    blurb: "I'll show up on my own schedule, long-term",
+    matchWhen: ["flexible", "weekly, your schedule", "varies"],
+  },
+];
+
+export const groupSizeOptions: { key: GroupSize; label: string; blurb: string; keywords: string[] }[] = [
+  { key: "solo", label: "Just me", blurb: "Happy to go it alone", keywords: [] },
+  {
+    key: "friend",
+    label: "With a friend",
+    blurb: "Roles that welcome pairs or small groups",
+    keywords: ["buddy", "crew", "dinners", "trips", "mentorship"],
+  },
+  {
+    key: "team",
+    label: "As a team / corporate group",
+    blurb: "Bring colleagues along",
+    keywords: ["corporate", "team"],
+  },
+];
+
 export function scoreRosterItem(item: RosterItem, interest: Interest, availability: Availability) {
   let score = 52;
   const reasons: string[] = [];
@@ -194,4 +233,38 @@ export function scoreRosterItem(item: RosterItem, interest: Interest, availabili
   }
 
   return { score: Math.min(score, 98), reasons };
+}
+
+export function refineMatchWithPreferences(
+  item: RosterItem,
+  score: number,
+  reasons: string[],
+  commitment: Commitment,
+  groupSize: GroupSize,
+) {
+  let nextScore = score;
+  const nextReasons = [...reasons];
+  const commitmentMeta = commitmentOptions.find((option) => option.key === commitment)!;
+  const groupMeta = groupSizeOptions.find((option) => option.key === groupSize)!;
+  const whenLower = item.when.toLowerCase();
+  const haystack = `${item.title} ${item.desc} ${item.id}`.toLowerCase();
+
+  if (commitmentMeta.matchWhen.some((keyword) => whenLower.includes(keyword))) {
+    nextScore += 14;
+    nextReasons.push(`It's ${commitmentMeta.label.toLowerCase()} — the pace you said works for you.`);
+  }
+
+  if (groupSize === "solo") {
+    nextScore += 4;
+    nextReasons.push("A straightforward solo shift — no need to coordinate with anyone else.");
+  } else if (groupMeta.keywords.some((keyword) => haystack.includes(keyword))) {
+    nextScore += 12;
+    nextReasons.push(
+      groupSize === "team"
+        ? "This one's built for a team — bring your colleagues along."
+        : "This role plays well with a friend or small group joining you.",
+    );
+  }
+
+  return { score: Math.min(nextScore, 98), reasons: nextReasons };
 }
