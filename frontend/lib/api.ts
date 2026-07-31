@@ -93,6 +93,34 @@ export type TrailDebriefResponse = {
   upgrade_message: string;
   message: string | null;
 };
+export type CaptainSiteLink = {
+  title: string;
+  href: string;
+  description: string;
+};
+export type CaptainToolCall = {
+  name: string;
+  arguments: Record<string, string>;
+};
+export type CaptainChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+  links?: CaptainSiteLink[];
+  actionNote?: string;
+};
+export type CaptainChatRequest = {
+  message: string;
+  history?: CaptainChatMessage[];
+  locale?: "en" | "yue" | "zh";
+};
+export type CaptainChatResponse = {
+  enabled: boolean;
+  reply: string;
+  links: CaptainSiteLink[];
+  tool_calls: CaptainToolCall[];
+  sources: string[];
+  message: string | null;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -191,6 +219,11 @@ export const api = {
   listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
   trailDebrief: (payload: TrailDebriefRequest) =>
     request<TrailDebriefResponse>("/ai/trail/debrief", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  captainChat: (payload: CaptainChatRequest) =>
+    request<CaptainChatResponse>("/ai/captain/chat", {
       method: "POST",
       body: JSON.stringify(payload),
     }),

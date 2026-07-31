@@ -1,0 +1,16 @@
+export const navKeyByHref: Record<string, string> = {
+  "/learn-play": "nav.learn",
+  "/get-involved": "nav.getInvolved",
+  "/impact-dashboard": "nav.impact",
+  "/stories-media": "nav.stories",
+  "/events-campaigns": "nav.events",
+  "/about-governance": "nav.aboutUs",
+  "/our-volunteer": "nav.volunteers",
+  "/donate": "nav.donate",
+  "/join-us": "nav.joinUs",
+  "/our-finance": "nav.ourReports",
+  "/newsletter": "nav.newsletter",
+  "/shop": "nav.shop",
+  "/members": "nav.members",
+  "/contact-us": "nav.contactUs",
+};
