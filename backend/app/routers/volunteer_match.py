@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
 from typing import Literal
 
 from fastapi import APIRouter, Depends
@@ -28,6 +29,7 @@ Availability = Literal["weekday-am", "weekday-pm", "weekend-am", "flexible"]
 class VolunteerMatchRequest(BaseModel):
     interest: Interest
     availability: Availability
+    enhance_with_ai: bool = False
 
 
 class VolunteerActivityItem(BaseModel):
@@ -92,6 +94,7 @@ def _enhance_reasons_with_ollama(interest: Interest, availability: Availability,
             "Keep the same role_id values and provide 2 reasons each.\n\n"
             f"{json.dumps(payload)}"
         ),
+        timeout_seconds=get_settings().ollama_enhance_timeout_seconds,
     )
     if not parsed:
         return None
@@ -151,17 +154,28 @@ def match_volunteer(payload: VolunteerMatchRequest, db: Session = Depends(get_db
         )
 
     base_matches = match_activities(db, payload.interest, payload.availability, limit=2)
-    enhanced_matches = _enhance_reasons_with_ollama(payload.interest, payload.availability, base_matches)
+
+    settings = get_settings()
+    enhanced_matches = None
+    if payload.enhance_with_ai and settings.ollama_enabled:
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            future = pool.submit(
+                _enhance_reasons_with_ollama,
+                payload.interest,
+                payload.availability,
+                base_matches,
+            )
+            try:
+                enhanced_matches = future.result(timeout=settings.ollama_enhance_timeout_seconds)
+            except FuturesTimeout:
+                enhanced_matches = None
+
     ai_enhanced = enhanced_matches is not None
     final_matches = enhanced_matches or base_matches
 
-    settings = get_settings()
     message = None
-    if not ai_enhanced and settings.ollama_enabled:
-        message = (
-            f"Rule-based matching is active. Start Ollama with `{settings.ollama_model}` "
-            f"for AI-polished reasons (ollama pull {settings.ollama_model})."
-        )
+    if payload.enhance_with_ai and not ai_enhanced and settings.ollama_enabled:
+        message = "Matched instantly. AI polish skipped — Ollama was slow or unavailable."
 
     return VolunteerMatchResponse(
         enabled=True,

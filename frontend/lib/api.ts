@@ -40,6 +40,7 @@ export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; e
 export type VolunteerMatchRequest = {
   interest: "hands-on" | "food" | "people" | "skills";
   availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
+  enhance_with_ai?: boolean;
 };
 export type VolunteerMatchItem = {
   role_id: string;
@@ -70,6 +71,25 @@ export type VolunteerActivity = {
   total?: number | null;
   note?: string | null;
   cta_label?: string;
+};
+export type TrailDebriefRequest = {
+  captain_name?: string;
+  stop_title: string;
+  ability_line: string;
+  sections_completed: number;
+  trail_streak: number;
+  myth_completed_today: boolean;
+  myth_won_today: boolean;
+  myth_statement?: string;
+};
+export type TrailDebriefResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  encouragement: string;
+  friend_prompt: string;
+  suggested_replies: string[];
+  upgrade_message: string;
+  message: string | null;
 };
 
 export function getToken() {
@@ -145,4 +165,9 @@ export const api = {
       body: JSON.stringify(payload),
     }),
   listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  trailDebrief: (payload: TrailDebriefRequest) =>
+    request<TrailDebriefResponse>("/ai/trail/debrief", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 };

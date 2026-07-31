@@ -21,7 +21,8 @@ class Settings(BaseSettings):
     ollama_enabled: bool = True
     ollama_base_url: str = "http://127.0.0.1:11434"
     ollama_model: str = "llama3.2"
-    ollama_timeout_seconds: int = 30
+    ollama_timeout_seconds: int = 8
+    ollama_enhance_timeout_seconds: int = 6
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILES,

@@ -6,10 +6,10 @@ import { SiteLayout } from "@/components/site/site-layout";
 
 const resources = [
   {
-    title: "Daily Myth Buster",
+    title: "21 Moves",
     description:
-      "One myth-or-fact challenge every day. Guess correctly to keep your streak — like Wordle, but for neurodiversity literacy.",
-    href: "/learn-play/daily-myth-buster",
+      "Bust today's myth, practise a real inclusion skill, and journey across Hong Kong with Captain 21.",
+    href: "/learn-play/21-moves",
     badge: "Daily",
   },
   {
