@@ -14,7 +14,7 @@ export function SiteHeader() {
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-medium lg:flex" aria-label="Main navigation">
           {mainNav.map((item) => (
-            <Link key={item.href} href={item.href} className="transition-colors hover:text-brand-coral">
+            <Link key={item.href} href={item.href} className="rounded-md transition-colors hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               {item.label}
             </Link>
           ))}

@@ -66,7 +66,7 @@ export function MockDonationForm({
   }
 
   return (
-    <section aria-labelledby="mock-donation-heading" className="rounded-3xl border border-brand-sand bg-white p-6 shadow-sm sm:p-8">
+    <section id="donation-form" aria-labelledby="mock-donation-heading" className="scroll-mt-24 rounded-3xl border border-brand-sand bg-white p-6 shadow-sm sm:p-8">
       <div className="flex items-start gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-cream text-brand-coral">
           <HeartHandshake className="h-6 w-6" aria-hidden="true" />

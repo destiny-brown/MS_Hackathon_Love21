@@ -13,34 +13,38 @@ export default async function DonatePage({
   return (
     <SiteLayout>
       <PageHero
-        title="Back Their Potential"
-        subtitle="Choose the campaign or cause that speaks to you and help create more opportunities for every ability to shine."
+        title="Donate"
+        subtitle="Choose one clear way to help. Your gift supports sports, nutrition, family programmes, and everyday care for Love 21 members."
+        primaryAction={{ label: "Start donation", href: "#donation-form" }}
+        secondaryAction={{ label: "See wishlist", href: "/shop" }}
       />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-12">
-          <div className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
-            <div className="space-y-4 text-brand-ink/80">
-              <h2 className="font-serif-display text-4xl text-brand-ink">Ability deserves opportunity</h2>
-              <p>
-                Love 21 members bring talent, ambition, and determination. Your gift helps remove the barriers that
-                prevent those strengths from being fully seen in sport, work, family life, and the wider community.
-              </p>
-              <p>
-                For donations of HKD$100 or above, an official receipt will be issued and mailed to you upon request.
-                Please contact Maggie at{" "}
-                <a href="mailto:Maggie@love21foundation.com" className="text-brand-coral hover:underline">
-                  Maggie@love21foundation.com
-                </a>{" "}
-                for enquiries.
-              </p>
+          <div className="rounded-3xl border border-brand-sand bg-white p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Before you give</p>
+            <div className="mt-3 grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+              <div className="space-y-4 text-brand-ink/80">
+                <h2 className="font-serif-display text-3xl text-brand-ink sm:text-4xl">Ability deserves opportunity</h2>
+                <p>
+                  Love 21 members bring talent, ambition, and determination. Your gift helps remove barriers in sport,
+                  work, family life, and the wider community.
+                </p>
+                <p>
+                  You do not need to log in to donate. For donations of HKD$100 or above, an official receipt can be
+                  issued upon request. Contact Maggie at{" "}
+                  <a href="mailto:Maggie@love21foundation.com" className="rounded-md text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                    Maggie@love21foundation.com
+                  </a>{" "}
+                  for enquiries.
+                </p>
+              </div>
+              <aside className="rounded-2xl bg-brand-cream p-5">
+                <h2 className="font-serif-display text-2xl text-brand-ink">One gift or monthly support</h2>
+                <p className="mt-3 text-sm leading-6 text-brand-ink/75">
+                  Choose one-time or monthly giving in the demo checkout. No real payment is taken until a payment processor is connected.
+                </p>
+              </aside>
             </div>
-            <aside className="rounded-2xl border border-brand-sand bg-white p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Give your way</p>
-              <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">One gift or lasting support</h2>
-              <p className="mt-3 text-sm text-brand-ink/75">
-                Choose one-time or monthly giving in the mock checkout. No real payment is taken until a processor is connected.
-              </p>
-            </aside>
           </div>
 
           <DonationOpportunities initialItemSlug={item} />

@@ -663,7 +663,7 @@ export default function GetInvolvedPage() {
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
               <div>
                 <Eyebrow>Programmes</Eyebrow>
-                <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">What We Do</h2>
+                <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">What we do</h2>
               </div>
               <p className="max-w-2xl text-sm text-brand-ink/70">
                 A whole-person model — sport, nutrition, and family support — because reaching full
@@ -682,11 +682,9 @@ export default function GetInvolvedPage() {
                     <h3 className="font-serif-display text-2xl text-brand-ink">{programme.title}</h3>
                     <p className="mt-3 text-sm text-brand-ink/75">{programme.description}</p>
                     <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                      <Link href="/members" className="font-semibold text-brand-coral hover:underline">Join as Family</Link>
-                      <Link href="/our-volunteer" className="font-semibold text-brand-coral hover:underline">Volunteer</Link>
-                      <Link href="/join-us" className="font-semibold text-brand-coral hover:underline">Corporate CSR</Link>
-                      <Link href="/donate" className="font-semibold text-brand-coral hover:underline">Donate</Link>
-                      <Link href="/shop" className="font-semibold text-brand-coral hover:underline">Wishlist</Link>
+                      <Link href="/members" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Join as a member</Link>
+                      <Link href="/our-volunteer" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Volunteer</Link>
+                      <Link href="/donate" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Donate</Link>
                     </div>
                   </article>
                 </Reveal>
@@ -821,14 +819,17 @@ export default function GetInvolvedPage() {
         <Blob className="-top-14 right-10 h-52 w-52 bg-white/40" />
         <div className="relative mx-auto max-w-6xl">
           <Eyebrow>Get Involved</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Who are you here as?</h2>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Choose your path</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-brand-ink/70">
+            Select the option that sounds closest. Each path has one main next step.
+          </p>
 
           <div className="mt-8 flex flex-wrap gap-2">
             {(Object.keys(personas) as PersonaKey[]).map((key) => (
               <button
                 key={key}
                 onClick={() => setPersona(key)}
-                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral focus-visible:ring-offset-2 ${
                   persona === key
                     ? "bg-black text-white"
                     : "bg-white text-brand-ink hover:bg-black/10"

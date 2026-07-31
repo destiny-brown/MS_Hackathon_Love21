@@ -18,12 +18,12 @@ const accountTypes: Record<LoginRole, { label: string; email: string; descriptio
   supporter: {
     label: "Supporter",
     email: "supporter@love21.demo",
-    description: "Track your giving, volunteering, activities, and impact.",
+    description: "I donate, volunteer, or support Love 21 activities.",
   },
   member: {
     label: "Member",
     email: "member@love21.demo",
-    description: "Access your Love 21 member profile and programme information.",
+    description: "I take part in Love 21 programmes.",
   },
   admin: {
     label: "Staff",
@@ -90,17 +90,17 @@ function LoginForm() {
     <main className="px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[1fr_28rem]">
         <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Account access</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Login</p>
           <h1 className="mt-3 font-serif-display text-5xl text-brand-ink sm:text-6xl">Welcome back</h1>
-          <p className="mt-5 text-lg text-brand-ink/75">
+          <p className="mt-5 text-lg leading-8 text-brand-ink/75">
             Sign in to continue your Love 21 journey. Choose the account type that best describes you, then use your email and password.
           </p>
 
           {!isStaffMode ? (
             <fieldset className="mt-8" aria-describedby="account-type-help">
               <legend className="text-sm font-semibold text-brand-ink">Choose your account type</legend>
-              <p id="account-type-help" className="mt-2 text-sm text-brand-ink/65">
-                This only helps us prefill the right demo account. After login, your dashboard is based on your actual account role.
+              <p id="account-type-help" className="mt-2 text-sm leading-6 text-brand-ink/65">
+                Not sure? Choose the closest option. We’ll send you to the right account after login.
               </p>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {publicAccountTypes.map((role) => {

@@ -119,7 +119,7 @@ function FourDoors() {
           transition={{ duration: 0.45 }}
           className="mb-3 text-center font-serif-display text-4xl text-indigo sm:text-5xl"
         >
-          Where will you begin?
+Choose what you need
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -128,8 +128,7 @@ function FourDoors() {
           transition={{ duration: 0.45, delay: 0.05 }}
           className="mx-auto mb-10 max-w-2xl text-center text-lavender"
         >
-          Four doors into Love 21 — choose the path that matches how you want to
-          support our Down syndrome, autistic, and neurodiverse community.
+          Pick one clear path. You can browse, donate, volunteer, and learn without creating an account.
         </motion.p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {fourDoors.map((door, index) => (
@@ -152,7 +151,7 @@ function FourDoors() {
                   {door.description}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-punch">
-                  Enter <ArrowRight className="h-4 w-4" />
+                  Go <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
             </motion.div>
@@ -194,7 +193,7 @@ function StoryCarousel() {
               Featured Stories
             </p>
             <h2 className="mt-2 font-serif-display text-4xl text-indigo sm:text-5xl">
-              Ability in motion
+Member stories
             </h2>
           </motion.div>
           <motion.div
@@ -388,7 +387,7 @@ export default function HomePage() {
               className="bg-[#EF233C] text-white hover:bg-[#D90429]"
             >
               <Link href="/our-story">
-                Discover More <ArrowRight className="ml-2 h-4 w-4" />
+                Learn about Love 21 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
@@ -424,7 +423,7 @@ export default function HomePage() {
             href="/our-programmes"
             className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-lavender transition hover:text-punch"
           >
-            Explore Education & Support <ArrowRight className="h-4 w-4" />
+            Explore programmes <ArrowRight className="h-4 w-4" />
           </Link>
         </motion.div>
       </section>
