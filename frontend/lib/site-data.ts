@@ -149,25 +149,7 @@ export const programmes = [
   },
 ];
 
-export const mediaPosts = [
-  { title: "Tables & Seats Now Open for Beyond Limits Banquet", date: "May 11, 2026" },
-  { title: "Love 21 Foundation Charity Raffle 2025", date: "November 27, 2025" },
-  { title: "【繞場一週】守護特殊兒童對抗疫境", date: "May 25, 2022" },
-  { title: "精靈一點 健康人物專訪- 愛·很簡單", date: "December 16, 2021" },
-  { title: "Love 21's Open Secret to a Long, Happy Life", date: "November 9, 2021" },
-  {
-    title: "Hong Kong's Love 21 Foundation aims to prove those with Down's syndrome, autism ready for purposeful employment",
-    date: "November 8, 2021",
-  },
-  {
-    title: "Hong Kong yacht club and charity team up to help special needs teens learn dragon boating",
-    date: "September 30, 2021",
-  },
-  {
-    title: "Hong Kong charity offers free diet advice and guidance for children with intellectual disabilities in low-income families",
-    date: "May 22, 2021",
-  },
-];
+export { mediaPosts, type MediaPost } from "@/lib/media-stories";
 
 export const annualReports = [
   { year: "2024-2025", href: "#" },
