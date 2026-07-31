@@ -1,0 +1,110 @@
+/* event-animations.css
+   Keyframes for the field-event and dragon-boat animation stages.
+   Imported once by app/twenty-one-moves/page.tsx.
+   All motion respects prefers-reduced-motion at the bottom of the file. */
+
+/* ---------- shared runner approach ---------- */
+@keyframes runner-approach {
+  0% { transform: translateX(-40%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes runner-idle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ---------- success: clears the obstacle and keeps going ---------- */
+@keyframes event-success-hop {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  35% { transform: translate(30px, -46px) rotate(-8deg); }
+  60% { transform: translate(70px, -52px) rotate(4deg); }
+  100% { transform: translate(150px, 0) rotate(0deg); }
+}
+
+@keyframes event-success-throw {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  30% { transform: translate(6px, -4px) rotate(-14deg); }
+  55% { transform: translate(18px, -10px) rotate(18deg); }
+  100% { transform: translate(28px, -4px) rotate(4deg); }
+}
+
+@keyframes event-success-javelin-flight {
+  0% { transform: translate(0, 0) rotate(10deg); opacity: 1; }
+  100% { transform: translate(220px, -30px) rotate(-8deg); opacity: 1; }
+}
+
+@keyframes event-success-vault {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  30% { transform: translate(10px, -10px) rotate(-30deg); }
+  55% { transform: translate(45px, -70px) rotate(40deg); }
+  80% { transform: translate(90px, -30px) rotate(70deg); }
+  100% { transform: translate(140px, 0) rotate(90deg); }
+}
+
+/* ---------- fail: stumble / short attempt ---------- */
+@keyframes event-fail-stumble {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  40% { transform: translate(18px, -10px) rotate(-6deg); }
+  60% { transform: translate(22px, 6px) rotate(14deg); }
+  100% { transform: translate(24px, 10px) rotate(24deg); }
+}
+
+@keyframes event-fail-short {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  40% { transform: translate(8px, -6px) rotate(-4deg); }
+  100% { transform: translate(14px, 4px) rotate(10deg); }
+}
+
+/* ---------- dragon boat ---------- */
+@keyframes boat-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-1deg); }
+}
+
+@keyframes paddle-stroke {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-22deg); }
+}
+
+@keyframes water-scroll {
+  0% { background-position-x: 0; }
+  100% { background-position-x: -120px; }
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(90px) rotate(180deg); opacity: 0; }
+}
+
+/* ---------- utility animation classes applied by the components ---------- */
+.anim-runner-approach { animation: runner-approach 1.1s ease-out forwards; }
+.anim-runner-idle { animation: runner-idle-bob 1.4s ease-in-out infinite; }
+.anim-event-success-hop { animation: event-success-hop 1.1s cubic-bezier(.3,.6,.4,1) forwards; }
+.anim-event-success-throw { animation: event-success-throw 0.9s ease-out forwards; }
+.anim-event-success-javelin { animation: event-success-javelin-flight 0.9s ease-out forwards; }
+.anim-event-success-vault { animation: event-success-vault 1.2s cubic-bezier(.3,.6,.4,1) forwards; }
+.anim-event-fail-stumble { animation: event-fail-stumble 0.9s ease-in forwards; }
+.anim-event-fail-short { animation: event-fail-short 0.8s ease-in forwards; }
+.anim-boat-bob { animation: boat-bob 1.6s ease-in-out infinite; }
+.anim-paddle { animation: paddle-stroke 0.6s ease-in-out infinite; }
+.anim-water-scroll { animation: water-scroll 1.4s linear infinite; }
+.anim-confetti { animation: confetti-fall 1.1s ease-in forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-runner-approach,
+  .anim-runner-idle,
+  .anim-event-success-hop,
+  .anim-event-success-throw,
+  .anim-event-success-javelin,
+  .anim-event-success-vault,
+  .anim-event-fail-stumble,
+  .anim-event-fail-short,
+  .anim-boat-bob,
+  .anim-paddle,
+  .anim-water-scroll,
+  .anim-confetti {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
