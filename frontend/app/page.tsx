@@ -24,6 +24,58 @@ import {
 
 const scrollViewport = { once: false, amount: 0.2 } as const;
 
+// ---------------------------------------------------------------------------
+// Signature mark — reused from the Get Involved page. Love 21 exists because
+// of trisomy 21 (three copies of a chromosome), so this three-dot mark
+// stands in for that fact anywhere a divider, bullet, or eyebrow accent
+// would normally go.
+// ---------------------------------------------------------------------------
+
+function TriMark({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 44 14" className={className} aria-hidden="true" fill="currentColor">
+      <circle cx="7" cy="7" r="4.5" />
+      <circle cx="22" cy="7" r="4.5" />
+      <circle cx="37" cy="7" r="4.5" />
+    </svg>
+  );
+}
+
+// A soft blurred circle used sparingly to give flat sections a bit of depth.
+function Blob({ className = "" }: { className?: string }) {
+  return <div aria-hidden="true" className={`pointer-events-none absolute rounded-full blur-3xl ${className}`} />;
+}
+
+// The "21 Years in Hong Kong" marquee band from the Get Involved page,
+// placed here between the hero and the impact dashboard. Recolored to the
+// same red used in the hero (#EF233C) instead of orange.
+function YearsMarquee() {
+  return (
+    <div className="relative overflow-hidden border-y border-lavender/30 bg-[#FBEAEA] py-3">
+      <Blob className="left-1/4 top-1/2 h-24 w-24 -translate-y-1/2 bg-white/40" />
+      <Blob className="right-1/4 top-1/2 h-16 w-16 -translate-y-1/2 bg-[#EF233C]/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FBEAEA] via-transparent to-[#FBEAEA]" />
+      <div className="l21-marquee-track">
+        {[0, 1].map((rep) => (
+          <div key={rep} className="flex shrink-0 items-center">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i} className="mx-5 flex items-center gap-2.5 whitespace-nowrap">
+                <span className="font-serif-display text-sm text-indigo sm:text-base">
+                  21 Years in Hong Kong
+                </span>
+                <TriMark className="h-1.5 w-5 text-[#EF233C]/50" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-lavender">
+                  Celebrating Ability
+                </span>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function CountUp({
   target,
   suffix,
@@ -66,19 +118,22 @@ function CountUp({
 function ImpactDashboard() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, scrollViewport);
+  const cardTilts = ["-rotate-1", "rotate-0", "rotate-1"];
 
   return (
     <section
       ref={ref}
-      className="border-y border-lavender/40 bg-platinum px-4 py-14 sm:px-6 lg:px-8"
+      className="relative overflow-hidden border-y border-lavender/40 bg-platinum px-4 py-14 sm:px-6 lg:px-8"
     >
-      <div className="mx-auto max-w-6xl">
+      <Blob className="-top-16 left-1/2 h-64 w-64 -translate-x-1/2 bg-white/50" />
+      <div className="relative mx-auto max-w-6xl">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
           transition={{ duration: 0.4 }}
-          className="mb-8 text-center text-sm font-semibold uppercase tracking-[0.2em] text-punch"
+          className="mb-8 flex items-center justify-center gap-2.5 text-center text-sm font-semibold uppercase tracking-[0.2em] text-[#EF233C]"
         >
+          <TriMark className="h-2 w-7" />
           Live Impact Dashboard
         </motion.p>
         <div className="grid gap-8 sm:grid-cols-3">
@@ -88,7 +143,7 @@ function ImpactDashboard() {
               initial={{ opacity: 0, y: 18 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
               transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="text-center"
+              className={`rounded-[28px] bg-white/70 px-6 py-9 text-center shadow-sm shadow-indigo/5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:rotate-0 hover:shadow-md ${cardTilts[index % cardTilts.length]}`}
             >
               <p className="font-serif-display text-5xl text-indigo sm:text-6xl">
                 <CountUp
@@ -109,9 +164,12 @@ function ImpactDashboard() {
 }
 
 function FourDoors() {
+  const cardAccents = ["bg-[#EF233C]", "bg-indigo", "bg-[#D90429]", "bg-indigo"];
+
   return (
-    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <Blob className="-right-20 top-10 h-56 w-56 bg-[#EF233C]/5" />
+      <div className="relative mx-auto max-w-6xl">
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -143,15 +201,19 @@ function FourDoors() {
             >
               <Link
                 href={door.href}
-                className="flex h-full flex-col rounded-2xl border border-lavender/50 bg-platinum p-6 transition-shadow hover:shadow-[0_16px_40px_rgba(43,45,66,0.1)]"
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-lavender/50 bg-platinum p-6 transition-shadow hover:shadow-[0_16px_40px_rgba(43,45,66,0.1)]"
               >
-                <h3 className="font-serif-display text-2xl text-indigo">
+                <span
+                  aria-hidden="true"
+                  className={`absolute right-0 top-0 h-14 w-14 -translate-y-7 translate-x-7 rotate-45 opacity-10 transition-opacity group-hover:opacity-20 ${cardAccents[index % cardAccents.length]}`}
+                />
+                <h3 className="relative font-serif-display text-2xl text-indigo">
                   {door.title}
                 </h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-lavender">
+                <p className="relative mt-3 flex-1 text-sm leading-relaxed text-lavender">
                   {door.description}
                 </p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-punch">
+                <span className="relative mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-[#EF233C]">
                   Enter <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
@@ -181,16 +243,17 @@ function StoryCarousel() {
   return (
     <section
       ref={sectionRef}
-      className="border-y border-lavender/30 bg-platinum px-4 py-16 sm:px-6 lg:px-8"
+      className="relative overflow-hidden border-y border-lavender/30 bg-platinum px-4 py-16 sm:px-6 lg:px-8"
     >
-      <div className="mx-auto max-w-5xl">
+      <Blob className="-left-16 top-1/4 h-56 w-56 bg-[#EF233C]/10" />
+      <div className="relative mx-auto max-w-5xl">
         <div className="mb-8 flex items-end justify-between gap-4">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             transition={{ duration: 0.45 }}
           >
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-punch">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#EF233C]">
               Featured Stories
             </p>
             <h2 className="mt-2 font-serif-display text-4xl text-indigo sm:text-5xl">
@@ -209,7 +272,7 @@ function StoryCarousel() {
               aria-label="Previous story"
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-punch hover:text-punch"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-[#EF233C] hover:text-[#EF233C]"
             >
               <ChevronLeft className="h-5 w-5" />
             </motion.button>
@@ -219,7 +282,7 @@ function StoryCarousel() {
               aria-label="Next story"
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-punch hover:text-punch"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-[#EF233C] hover:text-[#EF233C]"
             >
               <ChevronRight className="h-5 w-5" />
             </motion.button>
@@ -263,7 +326,7 @@ function StoryCarousel() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: 0.08 }}
-                  className="text-sm font-semibold uppercase tracking-[0.16em] text-punch"
+                  className="text-sm font-semibold uppercase tracking-[0.16em] text-[#EF233C]"
                 >
                   {story.tag}
                 </motion.p>
@@ -290,7 +353,7 @@ function StoryCarousel() {
                 >
                   <Link
                     href={story.href}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-punch transition hover:text-flag"
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-[#EF233C] transition hover:text-[#D90429]"
                   >
                     Read Story <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -315,7 +378,7 @@ function StoryCarousel() {
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
               className={`h-2.5 w-2.5 rounded-full transition ${
-                i === index ? "bg-punch" : "bg-lavender/50 hover:bg-lavender"
+                i === index ? "bg-[#EF233C]" : "bg-lavender/50 hover:bg-lavender"
               }`}
             />
           ))}
@@ -328,6 +391,22 @@ function StoryCarousel() {
 export default function HomePage() {
   return (
     <SiteLayout>
+      {/* Keyframes for the "21 Years in Hong Kong" marquee. */}
+      <style>{`
+        @keyframes l21-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .l21-marquee-track {
+          display: flex;
+          width: max-content;
+          animation: l21-marquee 38s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .l21-marquee-track { animation: none; }
+        }
+      `}</style>
+
       {/* Section 1: Hero — full-bleed looping video */}
       <section className="relative left-1/2 right-1/2 w-screen -ml-[50vw] -mr-[50vw] min-h-[88vh] overflow-hidden">
         <motion.div
@@ -395,6 +474,12 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Section 1.5: 21 Years in Hong Kong — marquee, between the hero and the
+          dashboard. No wave shape between the two — the pink band ends and
+          the platinum section starts cleanly, which reads better than the
+          curved seam did. */}
+      <YearsMarquee />
+
       {/* Section 2: Live Impact Public Dashboard */}
       <ImpactDashboard />
 
@@ -405,15 +490,17 @@ export default function HomePage() {
       <StoryCarousel />
 
       {/* Section 5: Celebrating Ability Philosophy */}
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <Blob className="left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-[#EF233C]/5" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={scrollViewport}
           transition={{ duration: 0.6 }}
-          className="mx-auto max-w-4xl text-center"
+          className="relative mx-auto max-w-4xl text-center"
         >
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-punch">
+          <p className="flex items-center justify-center gap-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-[#EF233C]">
+            <TriMark className="h-2 w-7" />
             Celebrating Ability
           </p>
           <p className="mt-5 font-serif-display text-3xl leading-snug text-indigo sm:text-4xl">
@@ -422,7 +509,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/our-programmes"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-lavender transition hover:text-punch"
+            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-lavender transition hover:text-[#EF233C]"
           >
             Explore Education & Support <ArrowRight className="h-4 w-4" />
           </Link>
@@ -430,10 +517,11 @@ export default function HomePage() {
       </section>
 
       {/* Section 6: Newsletter (unchanged structure) */}
-      <section className="bg-brand-ink px-4 py-16 text-brand-cream sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+      <section className="relative overflow-hidden bg-brand-ink px-4 py-16 text-brand-cream sm:px-6 lg:px-8">
+        <Blob className="right-0 top-0 h-64 w-64 translate-x-1/3 -translate-y-1/3 bg-[#EF233C]/10" />
+        <div className="relative mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-brand-coral">
+            <p className="text-sm uppercase tracking-[0.2em] text-[#EF233C]">
               Subscribe to our eNews
             </p>
             <h2 className="mt-2 font-serif-display text-4xl sm:text-5xl">
