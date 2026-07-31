@@ -1,47 +1,23 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
+import { Blob } from "@/components/brand/Blob";
+import { BrandCard } from "@/components/brand/BrandCard";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { Eyebrow } from "@/components/brand/Eyebrow";
+import { Reveal } from "@/components/brand/Reveal";
+import { TriMark } from "@/components/brand/TriMark";
 import { SiteLayout } from "@/components/site/site-layout";
 import { programmes } from "@/lib/site-data";
-
-// ---------------------------------------------------------------------------
-// Signature mark
-// Love 21 exists because of trisomy 21 — three copies of a chromosome.
-// This three-dot mark stands in for that fact everywhere a divider,
-// bullet, or eyebrow accent would normally go.
-// ---------------------------------------------------------------------------
-
-function TriMark({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 44 14" className={className} aria-hidden="true" fill="currentColor">
-      <circle cx="7" cy="7" r="4.5" />
-      <circle cx="22" cy="7" r="4.5" />
-      <circle cx="37" cy="7" r="4.5" />
-    </svg>
-  );
-}
-
-function Eyebrow({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <p className={`flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral ${className}`}>
-      <TriMark className="h-2 w-7" />
-      {children}
-    </p>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Decorative primitives — used sparingly, one or two per section, never as
 // wall-to-wall texture. Each one earns its place by softening a hard edge
 // rather than sitting on top of it.
 // ---------------------------------------------------------------------------
-
-function Blob({ className = "" }: { className?: string }) {
-  return <div aria-hidden="true" className={`pointer-events-none absolute rounded-full blur-3xl ${className}`} />;
-}
 
 // A single torn/organic wave, used as a seam between two sections so the
 // page reads as a continuous piece rather than stacked rectangles.
@@ -124,7 +100,7 @@ function FloatingCta() {
         <div className="pointer-events-auto flex flex-col gap-3 pr-3 lg:pr-4">
           <Link
             href="/donate"
-            className="group flex items-center rounded-full bg-brand-coral text-white shadow-lg shadow-black/20 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/25"
+            className="group flex items-center rounded-full bg-brand-red text-white shadow-lg shadow-black/20 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/25"
           >
             <span className="flex h-14 w-14 shrink-0 items-center justify-center">
               <IconHeart className="h-6 w-6" />
@@ -135,7 +111,7 @@ function FloatingCta() {
           </Link>
           <Link
             href="/our-volunteer"
-            className="group flex items-center rounded-full border border-black/10 bg-white text-brand-ink shadow-lg shadow-black/10 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/15"
+            className="group flex items-center rounded-full border border-black/10 bg-white text-brand-dark shadow-lg shadow-black/10 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/15"
           >
             <span className="flex h-14 w-14 shrink-0 items-center justify-center">
               <IconHands className="h-6 w-6" />
@@ -151,100 +127,18 @@ function FloatingCta() {
       <div className="fixed inset-x-0 bottom-0 z-40 flex gap-px border-t border-black/10 bg-white/95 backdrop-blur sm:hidden">
         <Link
           href="/donate"
-          className="flex flex-1 items-center justify-center gap-2 bg-brand-coral py-3.5 text-sm font-semibold text-white"
+          className="flex flex-1 items-center justify-center gap-2 bg-brand-red py-3.5 text-sm font-semibold text-white"
         >
           <IconHeart className="h-4 w-4" /> Donate
         </Link>
         <Link
           href="/our-volunteer"
-          className="flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-semibold text-brand-ink"
+          className="flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-semibold text-brand-dark"
         >
           <IconHands className="h-4 w-4" /> Volunteer
         </Link>
       </div>
     </>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Scroll reveal — fade + a little lift + a soft focus pull, rather than a
-// flat opacity toggle, so entrances feel considered instead of mechanical.
-// ---------------------------------------------------------------------------
-
-function Reveal({
-  children,
-  className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        transitionDelay: visible ? `${delay}ms` : "0ms",
-        filter: visible ? "blur(0px)" : "blur(6px)",
-      }}
-      className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:scale-100 motion-reduce:blur-none ${
-        visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-[0.97]"
-      } ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-// A button with a bit of life in it: fill on hover, arrow slides, shadow
-// deepens. Two variants so it reads correctly on both light and dark grounds.
-function CtaButton({
-  href,
-  children,
-  variant = "solid",
-}: {
-  href: string;
-  children: React.ReactNode;
-  variant?: "solid" | "outline" | "outline-dark";
-}) {
-  const styles = {
-    solid:
-      "bg-brand-coral text-white shadow-[0_6px_20px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] hover:bg-black",
-    outline:
-      "border border-black/15 text-brand-ink hover:border-black hover:bg-black hover:text-white",
-    "outline-dark":
-      "border border-white/30 text-white hover:border-white hover:bg-white hover:text-black",
-  }[variant];
-
-  return (
-    <Link
-      href={href}
-      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300 ${styles}`}
-    >
-      {children}
-      <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
-        →
-      </span>
-    </Link>
   );
 }
 
@@ -364,13 +258,13 @@ function TestimonialCarousel() {
           fade ? "opacity-100" : "opacity-0"
         }`}
       >
-        <blockquote className="font-serif-display text-3xl leading-snug text-brand-ink sm:text-4xl">
+        <blockquote className="font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">
           "{active.quote}"
         </blockquote>
-        <p className="mt-5 text-sm font-semibold text-brand-ink/60">{active.name}</p>
+        <p className="mt-5 text-sm font-semibold text-brand-dark/60">{active.name}</p>
       </div>
       <div className="mt-6 flex items-center gap-3">
-        <TriMark className="h-2 w-7 text-brand-coral/40" />
+        <TriMark className="h-2 w-7 text-brand-red/40" />
         <div className="flex gap-1.5">
           {testimonials.map((_, i) => (
             <button
@@ -378,7 +272,7 @@ function TestimonialCarousel() {
               onClick={() => go(i)}
               aria-label={`Show testimonial ${i + 1}`}
               className={`h-1.5 rounded-full transition-all ${
-                i === index ? "w-6 bg-brand-coral" : "w-1.5 bg-brand-ink/20"
+                i === index ? "w-6 bg-brand-red" : "w-1.5 bg-brand-dark/20"
               }`}
             />
           ))}
@@ -392,7 +286,7 @@ function FaqAccordion() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <div className="divide-y divide-brand-sand">
+    <div className="divide-y divide-brand-light">
       {faqs.map((item, i) => {
         const isOpen = open === i;
         return (
@@ -402,9 +296,9 @@ function FaqAccordion() {
               className="flex w-full items-center justify-between gap-6 text-left"
               aria-expanded={isOpen}
             >
-              <span className="font-serif-display text-lg text-brand-ink sm:text-xl">{item.q}</span>
+              <span className="font-serif-display text-lg text-brand-dark sm:text-xl">{item.q}</span>
               <span
-                className={`shrink-0 text-2xl text-brand-coral transition-transform duration-300 ${
+                className={`shrink-0 text-2xl text-brand-red transition-transform duration-300 ${
                   isOpen ? "rotate-45" : "rotate-0"
                 }`}
                 aria-hidden="true"
@@ -417,7 +311,7 @@ function FaqAccordion() {
                 isOpen ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
               }`}
             >
-              <p className="overflow-hidden text-brand-ink/70">{item.a}</p>
+              <p className="overflow-hidden text-brand-dark/70">{item.a}</p>
             </div>
           </div>
         );
@@ -431,7 +325,7 @@ function FaqAccordion() {
 // ---------------------------------------------------------------------------
 
 export default function GetInvolvedPage() {
-  const cardAccents = ["bg-brand-coral", "bg-brand-ink", "bg-brand-sand"];
+  const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-light"];
 
   return (
     <SiteLayout>
@@ -455,20 +349,21 @@ export default function GetInvolvedPage() {
       <FloatingCta />
 
       {/* ---------- STORY HERO ---------- */}
+      <Reveal>
       <section className="relative overflow-hidden bg-white px-4 pb-16 pt-14 sm:px-6 lg:px-8">
         <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pr-16">
           <div className="relative">
             <Eyebrow>Celebrating Ability</Eyebrow>
-            <h1 className="mt-3 font-serif-display text-4xl leading-[1.05] text-brand-ink sm:text-5xl lg:text-6xl">
+            <h1 className="mt-3 font-serif-display text-4xl leading-[1.05] text-brand-dark sm:text-5xl lg:text-6xl">
               This isn&apos;t a disability issue.
               <br />
               It&apos;s an{" "}
-              <span className="relative italic text-brand-coral">
+              <span className="relative italic text-brand-red">
                 opportunity
                 <svg
                   viewBox="0 0 200 14"
-                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-coral/50"
+                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-red/50"
                   preserveAspectRatio="none"
                   aria-hidden="true"
                 >
@@ -483,7 +378,7 @@ export default function GetInvolvedPage() {
               </span>{" "}
               issue.
             </h1>
-            <p className="mt-6 max-w-lg text-lg text-brand-ink/75">
+            <p className="mt-6 max-w-lg text-lg text-brand-dark/75">
               Every month, 600+ Hong Kong families walk through our doors for sport, nutrition, and
               community — because someone showed up for them first. That someone could be you.
             </p>
@@ -495,7 +390,7 @@ export default function GetInvolvedPage() {
 
           <div className="relative">
             <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[60%_40%_30%_70%/60%_30%_70%_40%] bg-brand-sand lg:aspect-[3/4]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[60%_40%_30%_70%/60%_30%_70%_40%] bg-brand-light lg:aspect-[3/4]">
               {/* Swap for a real, high-res photo of a member mid-activity — smiling, in motion, not posed/pitying. */}
               <Image
                 src="/images/get-involved/hero-image.png"
@@ -508,6 +403,7 @@ export default function GetInvolvedPage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- MARQUEE: 21 YEARS IN HONG KONG ---------- */}
       <div className="relative overflow-hidden border-y border-black/5 bg-[#FBEAEA] py-3">
@@ -519,10 +415,10 @@ export default function GetInvolvedPage() {
             <div key={rep} className="flex shrink-0 items-center">
               {Array.from({ length: 8 }).map((_, i) => (
                 <span key={i} className="mx-5 flex items-center gap-2.5 whitespace-nowrap">
-                  <span className="font-serif-display text-sm text-brand-ink sm:text-base">
+                  <span className="font-serif-display text-sm text-brand-dark sm:text-base">
                     21 Years in Hong Kong
                   </span>
-                  <TriMark className="h-1.5 w-5 text-brand-coral/50" />
+                  <TriMark className="h-1.5 w-5 text-brand-red/50" />
                   <span className="text-[10px] uppercase tracking-[0.2em] text-black/45">
                     Celebrating Ability
                   </span>
@@ -534,7 +430,7 @@ export default function GetInvolvedPage() {
       </div>
 
       {/* ---------- WHAT WE DO + GALLERY (journey connector) ---------- */}
-      <div className="relative overflow-hidden bg-[#F8F4EB]">
+      <div className="relative overflow-hidden bg-brand-light">
         <svg
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block"
@@ -551,33 +447,39 @@ export default function GetInvolvedPage() {
             opacity="0.55"
           />
         </svg>
-        <div className="pointer-events-none absolute left-[9%] top-[4%] hidden h-2.5 w-2.5 rounded-full bg-brand-coral shadow-md lg:block" />
-        <div className="pointer-events-none absolute left-[89%] top-[76%] hidden h-2.5 w-2.5 rounded-full bg-brand-coral shadow-md lg:block" />
+        <div className="pointer-events-none absolute left-[9%] top-[4%] hidden h-2.5 w-2.5 rounded-full bg-brand-red shadow-md lg:block" />
+        <div className="pointer-events-none absolute left-[89%] top-[76%] hidden h-2.5 w-2.5 rounded-full bg-brand-red shadow-md lg:block" />
 
         <section id="programmes" className="relative px-4 py-16 sm:px-6 lg:px-8 lg:pr-24">
+          <Reveal>
           <div className="mx-auto max-w-6xl">
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
               <div>
                 <Eyebrow>Programmes</Eyebrow>
-                <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">What We Do</h2>
+                <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">What We Do</h2>
               </div>
-              <p className="max-w-2xl text-sm text-brand-ink/70">
+              <p className="max-w-2xl text-sm text-brand-dark/70">
                 A whole-person model — sport, nutrition, and family support — because reaching full
                 potential takes more than one hour a week.
               </p>
             </div>
-
+          </div>
+          </Reveal>
+          <div className="mx-auto max-w-6xl">
             <div className="grid gap-5 sm:grid-cols-2">
               {programmes.map((programme, i) => (
-                <Reveal key={programme.title} delay={i * 80}>
-                  <article className="group relative overflow-hidden rounded-2xl border border-black/5 bg-white p-6 transition hover:-translate-y-1 hover:shadow-md">
+                <Reveal key={programme.title} delay={i * 0.08}>
+                  <BrandCard
+                    as="article"
+                    className="group relative overflow-hidden rounded-2xl border-brand-slate/10 p-6 transition hover:-translate-y-1 hover:shadow-md sm:p-6"
+                  >
                     <span
                       className={`absolute right-0 top-0 h-16 w-16 -translate-y-8 translate-x-8 rotate-45 opacity-10 transition-opacity group-hover:opacity-20 ${cardAccents[i % cardAccents.length]}`}
                       aria-hidden="true"
                     />
-                    <h3 className="font-serif-display text-2xl text-brand-ink">{programme.title}</h3>
-                    <p className="mt-3 text-sm text-brand-ink/75">{programme.description}</p>
-                  </article>
+                    <h3 className="font-serif-display text-2xl text-brand-dark">{programme.title}</h3>
+                    <p className="mt-3 text-sm text-brand-dark/75">{programme.description}</p>
+                  </BrandCard>
                 </Reveal>
               ))}
             </div>
@@ -587,13 +489,13 @@ export default function GetInvolvedPage() {
         {/* ---------- GALLERY STRIP ---------- */}
         <section className="relative px-4 pb-16 sm:px-6 lg:px-8 lg:pr-24">
           <div className="mx-auto max-w-6xl">
-            <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-ink/50">
+            <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-dark/50">
               <IconHeart className="h-4 w-4" /> Life at Love 21, in between the numbers
             </p>
             <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {galleryStrip.map((photo, i) => (
-                <Reveal key={photo.src} delay={i * 80}>
-                  <div className={`relative aspect-square w-full overflow-hidden bg-brand-sand ${photo.shape}`}>
+                <Reveal key={photo.src} delay={i * 0.08}>
+                  <div className={`relative aspect-square w-full overflow-hidden bg-brand-light ${photo.shape}`}>
                     <Image src={photo.src} alt={photo.alt} fill className="object-cover" />
                   </div>
                 </Reveal>
@@ -606,35 +508,38 @@ export default function GetInvolvedPage() {
       <WaveDivider color="#EAF6F2" />
 
       {/* ---------- WEEKLY RHYTHM ---------- */}
+      <Reveal>
       <section className="relative overflow-hidden bg-[#EAF6F2] px-4 py-16 sm:px-6 lg:px-8">
         <Blob className="right-8 top-8 h-36 w-36 bg-white/50" />
         <div className="relative mx-auto max-w-6xl">
-          <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+          <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
             <IconSprout className="h-4 w-4" /> A week at Love 21
           </div>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">
+          <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">
             This is what "600+ families a month" looks like on the ground
           </h2>
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {weeklyRhythm.map((slot) => (
               <div key={slot.day + slot.programme} className="rounded-2xl bg-white p-5 shadow-sm">
-                <div className="text-xs font-semibold uppercase tracking-wide text-brand-coral">{slot.day}</div>
-                <div className="mt-2 font-serif-display text-lg text-brand-ink">{slot.programme}</div>
-                <div className="mt-1 text-sm text-brand-ink/60">{slot.time}</div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-brand-red">{slot.day}</div>
+                <div className="mt-2 font-serif-display text-lg text-brand-dark">{slot.programme}</div>
+                <div className="mt-1 text-sm text-brand-dark/60">{slot.time}</div>
               </div>
             ))}
           </div>
-          <p className="mt-4 text-xs text-brand-ink/50">
+          <p className="mt-4 text-xs text-brand-dark/50">
             Placeholder schedule — replace with your real weekly calendar before publishing.
           </p>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- THE DONOR JOURNEY ---------- */}
+      <Reveal>
       <section id="journey" className="relative overflow-hidden bg-black px-4 py-20 text-white sm:px-6 lg:px-8">
-        <Blob className="-left-16 bottom-0 h-64 w-64 bg-brand-coral/20" />
+        <Blob className="-left-16 bottom-0 h-64 w-64 bg-brand-red/20" />
         <div className="relative mx-auto max-w-6xl">
-          <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+          <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
             <TriMark className="h-2 w-7" />
             Your Journey
           </p>
@@ -661,16 +566,16 @@ export default function GetInvolvedPage() {
             </svg>
             <div className="grid gap-6 lg:grid-cols-3">
               {journeySteps.map((step, i) => (
-                <Reveal key={step.step} delay={i * 100} className="relative rounded-2xl border border-white/15 bg-white/[0.03] p-7">
-                  <span className="flex items-center gap-2 font-serif-display text-sm text-brand-coral">
-                    <span className="h-2 w-2 rounded-full bg-brand-coral" />
+                <Reveal key={step.step} delay={i * 0.1} className="relative rounded-2xl border border-white/15 bg-white/[0.03] p-7">
+                  <span className="flex items-center gap-2 font-serif-display text-sm text-brand-red">
+                    <span className="h-2 w-2 rounded-full bg-brand-red" />
                     {step.step}
                   </span>
                   <h3 className="mt-3 font-serif-display text-2xl">{step.title}</h3>
                   <p className="mt-3 text-sm text-white/70">{step.body}</p>
                   <Link
                     href={step.href}
-                    className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-coral hover:underline"
+                    className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-red hover:underline"
                   >
                     {step.cta}
                     <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
@@ -681,12 +586,14 @@ export default function GetInvolvedPage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- STORY SPOTLIGHT (testimonial carousel) ---------- */}
+      <Reveal>
       <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-1/3 h-64 w-64 bg-[#EAF6F2] opacity-60" />
         <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="relative aspect-square w-full overflow-hidden rounded-[40%_60%_70%_30%/40%_50%_60%_50%] bg-brand-sand">
+          <div className="relative aspect-square w-full overflow-hidden rounded-[40%_60%_70%_30%/40%_50%_60%_50%] bg-brand-light">
             {/* Replace with a real member story photo — smiles, motion, not posed/pitying. */}
             <Image
               src="/images/get-involved/story-spotlight.png"
@@ -696,34 +603,38 @@ export default function GetInvolvedPage() {
             />
           </div>
           <div>
-            <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+            <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
               <IconTrophy className="h-4 w-4" /> A Love 21 Story
             </p>
             <div className="mt-3">
               <TestimonialCarousel />
             </div>
-            <Link href="/stories" className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-coral hover:underline">
+            <Link href="/stories-media" className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-red hover:underline">
               Read more member stories
               <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
             </Link>
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- FAQ ---------- */}
-      <section className="relative overflow-hidden bg-brand-sand px-4 py-20 sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
         <div className="relative mx-auto max-w-3xl">
           <Eyebrow>Before you reach out</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Questions people actually ask</h2>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Questions people actually ask</h2>
           <div className="mt-8 rounded-3xl bg-white px-6 shadow-sm sm:px-8">
             <FaqAccordion />
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- NEWSLETTER / CLOSING ---------- */}
-      <section className="relative overflow-hidden border-t border-brand-sand bg-white px-4 py-16 pb-24 sm:px-6 sm:pb-16 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden border-t border-brand-light bg-white px-4 py-16 pb-24 sm:px-6 sm:pb-16 lg:px-8">
         <Blob className="left-0 bottom-0 h-40 w-40 -translate-x-1/3 translate-y-1/3 bg-[#EAF6F2] opacity-60" />
         <Blob className="right-10 top-0 h-32 w-32 -translate-y-1/2 bg-[#FBE3E3] opacity-50" />
 
@@ -731,10 +642,10 @@ export default function GetInvolvedPage() {
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div>
               <Eyebrow>Stay close</Eyebrow>
-              <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">
+              <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">
                 Stay connected with Love 21
               </h2>
-              <p className="mt-3 max-w-md text-brand-ink/70">
+              <p className="mt-3 max-w-md text-brand-dark/70">
                 Receive stories, programme updates, upcoming events, and ways you can
                 continue making an impact — as often as you'd like to hear from us.
               </p>
@@ -748,7 +659,7 @@ export default function GetInvolvedPage() {
                   type="email"
                   required
                   placeholder="you@email.com"
-                  className="min-w-0 flex-1 rounded-full border border-black/15 px-5 py-3 text-sm text-brand-ink outline-none focus:border-brand-coral sm:min-w-[220px]"
+                  className="min-w-0 flex-1 rounded-full border border-black/15 px-5 py-3 text-sm text-brand-dark outline-none focus:border-brand-red sm:min-w-[220px]"
                 />
 
                 <label className="sr-only" htmlFor="newsletter-frequency">
@@ -757,7 +668,7 @@ export default function GetInvolvedPage() {
                 <select
                   id="newsletter-frequency"
                   defaultValue="monthly"
-                  className="rounded-full border border-black/15 bg-white px-5 py-3 text-sm text-brand-ink outline-none focus:border-brand-coral"
+                  className="rounded-full border border-black/15 bg-white px-5 py-3 text-sm text-brand-dark outline-none focus:border-brand-red"
                 >
                   <option value="weekly">Weekly updates</option>
                   <option value="biweekly">Every 2 weeks</option>
@@ -768,7 +679,7 @@ export default function GetInvolvedPage() {
 
                 <button
                   type="submit"
-                  className="rounded-full bg-brand-coral px-7 py-3 text-sm font-semibold text-white transition hover:bg-black"
+                  className="rounded-full bg-brand-red px-7 py-3 text-sm font-semibold text-white transition hover:bg-black"
                 >
                   Subscribe
                 </button>
@@ -777,22 +688,23 @@ export default function GetInvolvedPage() {
 
             {/* A quiet closing prompt for people who are ready to act right now,
                 rather than a second big CTA block competing with the form. */}
-            <div className="rounded-3xl border border-brand-sand bg-[#FBF8F1] p-7">
-              <TriMark className="h-2 w-7 text-brand-coral" />
-              <p className="mt-4 font-serif-display text-xl text-brand-ink">
+            <BrandCard className="border-brand-slate/20 bg-brand-light p-7 sm:p-7">
+              <TriMark className="h-2 w-7 text-brand-red" />
+              <p className="mt-4 font-serif-display text-xl text-brand-dark">
                 Not ready to wait for the next update?
               </p>
-              <p className="mt-2 text-sm text-brand-ink/70">
+              <p className="mt-2 text-sm text-brand-dark/70">
                 You can donate or find a volunteer shift today — both take less than five minutes.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <CtaButton href="/donate">Donate</CtaButton>
                 <CtaButton href="/our-volunteer" variant="outline">Volunteer</CtaButton>
               </div>
-            </div>
+            </BrandCard>
           </div>
         </div>
       </section>
+      </Reveal>
     </SiteLayout>
   );
 }

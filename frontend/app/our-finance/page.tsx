@@ -7,7 +7,7 @@ export default function OurFinancePage() {
     <SiteLayout>
       <PageHero title="OUR REPORTS" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl space-y-6 text-brand-ink/80">
+        <div className="mx-auto max-w-3xl space-y-6 text-brand-dark/80">
           <p>
             Love 21 Foundation is a registered charity under Section 88 of the Inland Revenue Ordinance in Hong Kong.
           </p>
@@ -18,7 +18,7 @@ export default function OurFinancePage() {
           <ul className="space-y-3 pt-4">
             {annualReports.map((report) => (
               <li key={report.year}>
-                <a href={report.href} className="text-brand-coral hover:underline">
+                <a href={report.href} className="text-brand-red hover:underline">
                   Please see our {report.year} Annual Report here
                 </a>
               </li>

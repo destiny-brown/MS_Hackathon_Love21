@@ -68,7 +68,7 @@ export const fourDoors = [
   {
     title: "Education & Support",
     description: "Grow life skills, join inclusive programmes, and access family care across sport, nutrition, and support.",
-    href: "/our-programmes",
+    href: "/get-involved",
   },
   {
     title: "Donate & Partner",
@@ -103,7 +103,7 @@ export const storySpotlight: StorySpotlight[] = [
     tag: "TEDx Speaker & Self-Advocate",
     quote:
       "Delivering my first TEDx talk proved to everyone that having Down syndrome never limits what you can express and contribute.",
-    href: "/media",
+    href: "/stories-media",
     image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1000&q=80",
     alt: "Self-advocate presenting on stage at a public speaking event",
   },
@@ -121,7 +121,7 @@ export const storySpotlight: StorySpotlight[] = [
     tag: "Holistic Health & Sports Champion",
     quote:
       "Overcoming health challenges through tailored nutrition and sports classes, now mentoring younger neurodiverse peers.",
-    href: "/our-programmes",
+    href: "/get-involved",
     image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1000&q=80",
     alt: "Community champion mentoring peers after holistic health progress",
   },

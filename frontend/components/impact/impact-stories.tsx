@@ -36,7 +36,7 @@ export function ImpactStories() {
   return (
     <section
       ref={ref}
-      className="border-b border-brand-sand bg-white px-4 py-16 sm:px-6 lg:px-8"
+      className="border-b border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
@@ -46,11 +46,11 @@ export function ImpactStories() {
           className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
-            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-brand-coral">
+            <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-brand-red">
               <Sparkles className="h-4 w-4" />
               Strength-Based Spotlights
             </p>
-            <h2 className="mt-3 font-serif-display text-3xl text-brand-ink sm:text-4xl">
+            <h2 className="mt-3 font-serif-display text-3xl text-brand-dark sm:text-4xl">
               Impact Stories
             </h2>
           </div>
@@ -61,7 +61,7 @@ export function ImpactStories() {
               size="sm"
               aria-label="Previous story"
               onClick={() => go(-1)}
-              className="border-brand-sand"
+              className="border-brand-light"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -71,14 +71,14 @@ export function ImpactStories() {
               size="sm"
               aria-label="Next story"
               onClick={() => go(1)}
-              className="border-brand-sand"
+              className="border-brand-light"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </motion.div>
 
-        <div className="overflow-hidden rounded-2xl border border-brand-sand bg-brand-cream/40">
+        <div className="overflow-hidden rounded-2xl border border-brand-light bg-brand-light/40">
           <AnimatePresence mode="wait">
             <motion.article
               key={story.name}
@@ -100,13 +100,13 @@ export function ImpactStories() {
                 <Badge variant="outline" className="w-fit">
                   {story.role}
                 </Badge>
-                <h3 className="mt-4 font-serif-display text-3xl text-brand-ink">
+                <h3 className="mt-4 font-serif-display text-3xl text-brand-dark">
                   {story.name}
                 </h3>
-                <blockquote className="mt-4 text-lg leading-relaxed text-brand-ink/85">
+                <blockquote className="mt-4 text-lg leading-relaxed text-brand-dark/85">
                   &ldquo;{story.quote}&rdquo;
                 </blockquote>
-                <p className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-brand-sea">
+                <p className="mt-6 text-sm font-semibold uppercase tracking-[0.14em] text-brand-slate">
                   {story.highlight}
                 </p>
               </div>
@@ -123,8 +123,8 @@ export function ImpactStories() {
               onClick={() => setIndex(i)}
               className={`h-2.5 w-2.5 rounded-full transition ${
                 i === index
-                  ? "bg-brand-coral"
-                  : "bg-brand-sand hover:bg-brand-ink/30"
+                  ? "bg-brand-red"
+                  : "bg-brand-light hover:bg-brand-dark/30"
               }`}
             />
           ))}

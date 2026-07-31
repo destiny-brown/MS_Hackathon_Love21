@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 
 export function NewsletterForm({ dark = false }: { dark?: boolean }) {
   const inputClass = dark
-    ? "h-11 rounded-md border border-brand-cream/30 bg-transparent px-3 text-brand-cream placeholder:text-brand-cream/45"
-    : "h-11 rounded-md border border-brand-sand bg-white px-3 text-brand-ink placeholder:text-brand-ink/45";
+    ? "h-11 rounded-md border border-brand-light/30 bg-transparent px-3 text-brand-light placeholder:text-brand-light/45"
+    : "h-11 rounded-md border border-brand-light bg-white px-3 text-brand-dark placeholder:text-brand-dark/45";
 
   return (
     <form className="grid gap-3" aria-label="Newsletter form">

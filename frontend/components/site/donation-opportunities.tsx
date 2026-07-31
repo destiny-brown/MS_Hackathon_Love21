@@ -9,13 +9,13 @@ import { api, SupportOpportunity } from "@/lib/api";
 
 function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-brand-sand bg-white p-6">
-      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+    <article className="flex h-full flex-col rounded-2xl border border-brand-light bg-white p-6">
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
         {opportunity.kind}
       </p>
-      <h3 className="mt-2 font-serif-display text-3xl text-brand-ink">{opportunity.title}</h3>
-      <p className="mt-3 text-brand-ink/75">{opportunity.description}</p>
-      <p className="mt-4 rounded-xl bg-brand-cream p-4 text-sm font-medium text-brand-ink">
+      <h3 className="mt-2 font-serif-display text-3xl text-brand-dark">{opportunity.title}</h3>
+      <p className="mt-3 text-brand-dark/75">{opportunity.description}</p>
+      <p className="mt-4 rounded-xl bg-brand-light p-4 text-sm font-medium text-brand-dark">
         {opportunity.impact_statement}
       </p>
       <SupportProgress
@@ -27,7 +27,7 @@ function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
       />
       {opportunity.moonclerk_url ? (
         <>
-          <p className="mt-5 text-xs text-brand-ink/65">
+          <p className="mt-5 text-xs text-brand-dark/65">
             Please write &ldquo;{opportunity.title}&rdquo; in the MoonClerk Remarks field so Love 21 can designate your gift.
           </p>
           <Button asChild className="mt-3 w-full">
@@ -74,14 +74,14 @@ export function DonationOpportunities() {
   );
 
   if (loading) {
-    return <p className="text-brand-ink/70" role="status">Loading opportunities…</p>;
+    return <p className="text-brand-dark/70" role="status">Loading opportunities…</p>;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-brand-sand bg-white p-6">
-        <p className="font-semibold text-brand-ink">Donation opportunities are temporarily unavailable.</p>
-        <p className="mt-2 text-sm text-brand-ink/70">{error}</p>
+      <div className="rounded-2xl border border-brand-light bg-white p-6">
+        <p className="font-semibold text-brand-dark">Donation opportunities are temporarily unavailable.</p>
+        <p className="mt-2 text-sm text-brand-dark/70">{error}</p>
       </div>
     );
   }
@@ -90,8 +90,8 @@ export function DonationOpportunities() {
     <div className="space-y-16">
       {groups.map((group) => (
         <section key={group.kind} aria-labelledby={`${group.kind}-heading`}>
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{group.eyebrow}</p>
-          <h2 id={`${group.kind}-heading`} className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">{group.eyebrow}</p>
+          <h2 id={`${group.kind}-heading`} className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">
             {group.title}
           </h2>
           {group.entries.length ? (
@@ -101,7 +101,7 @@ export function DonationOpportunities() {
               ))}
             </div>
           ) : (
-            <p className="mt-5 text-brand-ink/70">New opportunities will be shared here soon.</p>
+            <p className="mt-5 text-brand-dark/70">New opportunities will be shared here soon.</p>
           )}
         </section>
       ))}
