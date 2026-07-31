@@ -1,6 +1,18 @@
-import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrophy,
+  faNewspaper,
+  faShareAlt,
+  faAward,
+  faBriefcase,
+  faMedal,
+  faHandsHelping,
+  faArrowRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons";
 
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { PageHero } from "@/components/site/page-hero";
@@ -92,7 +104,7 @@ export default function StoriesMediaPage() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-center gap-4">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#d4a373]/20 text-[#d4a373]">
-              <i className="fas fa-trophy text-xl"></i>
+              <FontAwesomeIcon icon={faTrophy} className="text-xl" />
             </div>
             <h2 className="font-serif-display text-2xl font-semibold text-[#1e2b2f] sm:text-3xl">
               So Much Ability
@@ -117,15 +129,22 @@ export default function StoriesMediaPage() {
                     className="h-full w-full object-cover"
                   />
                   <div className="absolute -top-1 left-4 h-14 w-10 bg-[#d4a373] shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]">
-                    <i
-                      className={`fas fa-${
-                        card.badge === "award"
-                          ? "award"
-                          : card.badge === "briefcase"
-                            ? "briefcase"
-                            : "medal"
-                      } absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white`}
-                    ></i>
+                    {card.badge === "award" ? (
+                      <FontAwesomeIcon
+                        icon={faAward}
+                        className="absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white"
+                      />
+                    ) : card.badge === "briefcase" ? (
+                      <FontAwesomeIcon
+                        icon={faBriefcase}
+                        className="absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white"
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faMedal}
+                        className="absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white"
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="p-5 sm:p-6">
@@ -147,7 +166,7 @@ export default function StoriesMediaPage() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-center gap-4">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#d4a373]/20 text-[#d4a373]">
-              <i className="fas fa-newspaper text-xl"></i>
+              <FontAwesomeIcon icon={faNewspaper} className="text-xl" />
             </div>
             <h2 className="font-serif-display text-2xl font-semibold text-[#1e2b2f] sm:text-3xl">
               Press & Moments
@@ -180,7 +199,10 @@ export default function StoriesMediaPage() {
                   </h4>
                   <span className="mt-auto inline-flex items-center gap-1 text-xs font-semibold text-[#a2794f] transition group-hover:underline">
                     Read the story{" "}
-                    <i className="fas fa-arrow-right text-[10px] transition group-hover:translate-x-1"></i>
+                    <FontAwesomeIcon
+                      icon={faArrowRight}
+                      className="text-[10px] transition group-hover:translate-x-1"
+                    />
                   </span>
                 </div>
               </a>
@@ -194,7 +216,7 @@ export default function StoriesMediaPage() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-center gap-4">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#d4a373]/20 text-[#d4a373]">
-              <i className="fas fa-share-alt text-xl"></i>
+              <FontAwesomeIcon icon={faShareAlt} className="text-xl" />
             </div>
             <h2 className="font-serif-display text-2xl font-semibold text-[#1e2b2f] sm:text-3xl">
               Social Feed
@@ -205,7 +227,10 @@ export default function StoriesMediaPage() {
           <div className="mb-6 rounded-3xl border border-[#edebe7] bg-white/90 p-6 shadow-sm transition hover:shadow-md sm:p-8">
             <div className="mb-4 flex items-center justify-between border-b border-[#eee9e2] pb-3">
               <span className="flex items-center gap-2 text-lg font-bold text-[#1e2b2f]">
-                <i className="fab fa-instagram text-2xl text-[#c32aa3]"></i>
+                <FontAwesomeIcon
+                  icon={faInstagram}
+                  className="text-2xl text-[#c32aa3]"
+                />
                 Instagram
               </span>
               <small className="text-sm font-light text-[#7b7b7b]">
@@ -225,7 +250,10 @@ export default function StoriesMediaPage() {
           <div className="rounded-3xl border border-[#edebe7] bg-white/90 p-6 shadow-sm transition hover:shadow-md sm:p-8">
             <div className="mb-4 flex items-center justify-between border-b border-[#eee9e2] pb-3">
               <span className="flex items-center gap-2 text-lg font-bold text-[#1e2b2f]">
-                <i className="fab fa-youtube text-2xl text-[#ff0000]"></i>
+                <FontAwesomeIcon
+                  icon={faYoutube}
+                  className="text-2xl text-[#ff0000]"
+                />
                 YouTube
               </span>
               <small className="text-sm font-light text-[#7b7b7b]">
@@ -253,7 +281,10 @@ export default function StoriesMediaPage() {
             <div className="relative z-10">
               <div className="mb-3 flex justify-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#d4a373]/20">
-                  <i className="fas fa-hands-helping text-xl text-[#d4a373]"></i>
+                  <FontAwesomeIcon
+                    icon={faHandsHelping}
+                    className="text-xl text-[#d4a373]"
+                  />
                 </div>
               </div>
               <h2 className="mb-2 text-2xl font-bold sm:text-3xl">
@@ -268,7 +299,10 @@ export default function StoriesMediaPage() {
                 className="inline-flex items-center gap-3 rounded-full bg-[#d4a373] px-8 py-3 text-base font-bold text-[#1e2b2f] transition duration-200 hover:scale-105 hover:bg-[#c08f5c] hover:shadow-lg"
               >
                 Get Involved{" "}
-                <i className="fas fa-arrow-right transition group-hover:translate-x-1"></i>
+                <FontAwesomeIcon
+                  icon={faArrowRight}
+                  className="transition group-hover:translate-x-1"
+                />
               </Link>
             </div>
           </div>

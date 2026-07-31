@@ -1,8 +1,16 @@
+import Link from "next/link";
+import Script from "next/script";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrophy,
+  faNewspaper,
+  faShareAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons";
+
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
-import Script from "next/script";
-import Image from "next/image";
-import Link from "next/link";
 
 // Data for the ability showcase cards
 const abilityCards = [
@@ -81,7 +89,10 @@ export default function MediaPage() {
       <section className="px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex items-center gap-3">
-            <i className="fas fa-ribbon text-3xl text-[#d4a373]"></i>
+            <FontAwesomeIcon
+              icon={faTrophy}
+              className="text-3xl text-[#d4a373]"
+            />
             <h2 className="text-2xl font-semibold text-[#1e2b2f] sm:text-3xl">
               So Much Ability
             </h2>
@@ -102,23 +113,29 @@ export default function MediaPage() {
                 className="group overflow-hidden rounded-3xl border border-[#efebe5] bg-white/90 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="relative h-40 bg-gradient-to-br from-[#e7ddcc] to-[#d9cdb8]">
-                  <Image
+                  <img
                     src={card.image}
                     alt={card.title}
-                    fill
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                   />
                   {/* Ribbon Badge */}
                   <div className="absolute -top-1 left-4 h-14 w-10 bg-[#d4a373] shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]">
-                    <i
-                      className={`fas fa-${
-                        card.badge === "award"
-                          ? "award"
-                          : card.badge === "briefcase"
-                            ? "briefcase"
-                            : "medal"
-                      } absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white`}
-                    ></i>
+                    {card.badge === "award" ? (
+                      <FontAwesomeIcon
+                        icon={faTrophy}
+                        className="absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white"
+                      />
+                    ) : card.badge === "briefcase" ? (
+                      <FontAwesomeIcon
+                        icon={faShareAlt}
+                        className="absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white"
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        icon={faNewspaper}
+                        className="absolute left-1/2 top-2 -translate-x-1/2 text-sm text-white"
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="p-4 sm:p-5">
@@ -139,7 +156,10 @@ export default function MediaPage() {
       <section className="px-4 pb-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex items-center gap-3">
-            <i className="fas fa-newspaper text-3xl text-[#d4a373]"></i>
+            <FontAwesomeIcon
+              icon={faNewspaper}
+              className="text-3xl text-[#d4a373]"
+            />
             <h2 className="text-2xl font-semibold text-[#1e2b2f] sm:text-3xl">
               Press & Moments
             </h2>
@@ -156,11 +176,10 @@ export default function MediaPage() {
                 className="group overflow-hidden rounded-3xl border border-[#efebe5] bg-white/90 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg"
               >
                 <div className="relative h-36 overflow-hidden bg-[#efe9dd]">
-                  <Image
+                  <img
                     src={card.image}
                     alt={card.title}
-                    fill
-                    className="object-cover"
+                    className="h-full w-full object-cover"
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-4 sm:p-5">
@@ -172,7 +191,10 @@ export default function MediaPage() {
                   </h4>
                   <span className="mt-auto inline-flex items-center gap-1 text-xs font-semibold text-[#a2794f] group-hover:underline">
                     Read the story{" "}
-                    <i className="fas fa-arrow-right text-[10px]"></i>
+                    <FontAwesomeIcon
+                      icon={faShareAlt}
+                      className="text-[10px]"
+                    />
                   </span>
                 </div>
               </a>
@@ -185,7 +207,10 @@ export default function MediaPage() {
       <section className="px-4 pb-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex items-center gap-3">
-            <i className="fab fa-instagram text-3xl text-[#d4a373]"></i>
+            <FontAwesomeIcon
+              icon={faInstagram}
+              className="text-3xl text-[#d4a373]"
+            />
             <h2 className="text-2xl font-semibold text-[#1e2b2f] sm:text-3xl">
               Social Feed
             </h2>
@@ -196,7 +221,10 @@ export default function MediaPage() {
           <div className="mb-8 rounded-3xl border border-[#edebe7] bg-white/90 p-4 shadow-sm sm:p-6">
             <div className="mb-4 flex items-center justify-between border-b border-[#eee9e2] pb-3">
               <span className="flex items-center gap-2 text-lg font-bold text-[#1e2b2f]">
-                <i className="fab fa-instagram text-2xl text-[#c32aa3]"></i>
+                <FontAwesomeIcon
+                  icon={faInstagram}
+                  className="text-2xl text-[#c32aa3]"
+                />
                 Instagram
               </span>
               <small className="text-sm font-light text-[#7b7b7b]">
@@ -217,7 +245,10 @@ export default function MediaPage() {
           <div className="rounded-3xl border border-[#edebe7] bg-white/90 p-4 shadow-sm sm:p-6">
             <div className="mb-4 flex items-center justify-between border-b border-[#eee9e2] pb-3">
               <span className="flex items-center gap-2 text-lg font-bold text-[#1e2b2f]">
-                <i className="fab fa-youtube text-2xl text-[#ff0000]"></i>
+                <FontAwesomeIcon
+                  icon={faYoutube}
+                  className="text-2xl text-[#ff0000]"
+                />
                 YouTube
               </span>
               <small className="text-sm font-light text-[#7b7b7b]">
@@ -243,7 +274,10 @@ export default function MediaPage() {
             <div className="absolute -bottom-16 -right-16 h-56 w-56 rounded-full bg-[#d4a373]/10"></div>
             <div className="relative z-10">
               <h2 className="mb-3 text-2xl font-bold sm:text-3xl">
-                <i className="fas fa-hands-helping mr-3 text-[#d4a373]"></i>
+                <FontAwesomeIcon
+                  icon={faShareAlt}
+                  className="mr-3 text-[#d4a373]"
+                />
                 Ready to Make a Difference?
               </h2>
               <p className="mx-auto mb-6 max-w-lg text-base font-light text-[#e6e2d8]">
@@ -254,7 +288,8 @@ export default function MediaPage() {
                 href="/"
                 className="inline-flex items-center gap-3 rounded-full bg-[#d4a373] px-8 py-3 text-lg font-bold text-[#1e2b2f] transition duration-200 hover:scale-105 hover:bg-[#c08f5c] hover:shadow-lg"
               >
-                Get Involved <i className="fas fa-arrow-right"></i>
+                Get Involved{" "}
+                <FontAwesomeIcon icon={faShareAlt} className="text-sm" />
               </Link>
             </div>
           </div>
