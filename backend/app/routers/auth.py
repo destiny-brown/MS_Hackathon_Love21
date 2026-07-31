@@ -14,8 +14,8 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 def register(payload: UserCreate, db: Session = Depends(get_db)) -> Token:
     email = payload.email.lower().strip()
-    if payload.role == Role.ADMIN:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admins cannot self-register")
+    if payload.role not in {Role.SUPPORTER, Role.MEMBER}:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only supporter and member accounts can self-register")
     existing = db.scalar(select(User).where(User.email == email))
     if existing:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")

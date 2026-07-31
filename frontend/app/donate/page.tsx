@@ -4,7 +4,12 @@ import { DonationOpportunities } from "@/components/site/donation-opportunities"
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 
-export default function DonatePage() {
+export default async function DonatePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ item?: string }>;
+}) {
+  const { item } = await searchParams;
   return (
     <SiteLayout>
       <PageHero
@@ -33,12 +38,12 @@ export default function DonatePage() {
               <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Give your way</p>
               <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">One gift or lasting support</h2>
               <p className="mt-3 text-sm text-brand-ink/75">
-                Choose one-time, weekly, monthly, quarterly, semiannual, or annual giving securely through MoonClerk.
+                Choose one-time or monthly giving in the mock checkout. No real payment is taken until a processor is connected.
               </p>
             </aside>
           </div>
 
-          <DonationOpportunities />
+          <DonationOpportunities initialItemSlug={item} />
 
           <div className="border-t border-brand-sand pt-10 text-brand-ink/80">
             <h2 className="font-serif-display text-3xl text-brand-ink">Donate by other means</h2>
