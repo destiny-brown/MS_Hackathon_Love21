@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-//import { ConfettiBurst } from "@/components/learn/trail-map/confetti-burst";
+import { ConfettiBurst } from "@/components/learn/trail-map/confetti-burst";
 import { DayMapStrip } from "@/components/learn/trail-map/day-map-strip";
 import { DragonBoatStage } from "@/components/learn/trail-map/dragon-boat-stage";
 import { EventAnimationStage } from "@/components/learn/trail-map/event-animation-stage";
