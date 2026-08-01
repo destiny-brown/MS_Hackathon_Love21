@@ -12,7 +12,7 @@ from app.models.gratitude_entry import GratitudeEntry, GratitudeEntryStatus
 from app.models.item import Item
 from app.models.support_opportunity import SupportOpportunity
 from app.models.user import Role, User
-from app.models.volunteer_activity import VolunteerActivity, VolunteerActivityRegistration
+from app.models.volunteer_activity import VolunteerActivity
 
 DEMO_PASSWORD = "demo1234"
 DEMO_USERS = [
@@ -374,36 +374,6 @@ def run() -> None:
         if existing_activity is None:
             db.add_all([VolunteerActivity(**entry) for entry in VOLUNTEER_ACTIVITY_SEED])
             db.commit()
-
-        demo_registration_pairs = [
-            (supporter_user, "football-basketball"),
-            (member_user, "cooking-workshop"),
-        ]
-        for user, slug in demo_registration_pairs:
-            volunteer_activity = db.scalar(select(VolunteerActivity).where(VolunteerActivity.slug == slug))
-            if volunteer_activity is None:
-                continue
-            registration = db.scalar(
-                select(VolunteerActivityRegistration).where(
-                    VolunteerActivityRegistration.user_id == user.id,
-                    VolunteerActivityRegistration.activity_id == volunteer_activity.id,
-                )
-            )
-            if registration is None:
-                db.add(
-                    VolunteerActivityRegistration(
-                        user_id=user.id,
-                        activity_id=volunteer_activity.id,
-                        activity_slug=volunteer_activity.slug,
-                        activity_name=volunteer_activity.title,
-                        status="registered",
-                    )
-                )
-            else:
-                registration.activity_slug = volunteer_activity.slug
-                registration.activity_name = volunteer_activity.title
-                registration.status = "registered"
-        db.commit()
 
     print("Seeded demo users:")
     for email, role in DEMO_USERS:
