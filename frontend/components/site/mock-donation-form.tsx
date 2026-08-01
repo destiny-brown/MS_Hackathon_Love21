@@ -9,38 +9,48 @@ import { formatHkd } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api, DonationFrequency, DonationReceipt, SupportOpportunity } from "@/lib/api";
 import { useCurrentUser } from "@/lib/auth";
 import { DONATION_TIERS } from "@/lib/donation-tiers";
+import { type WishlistItem } from "@/lib/wishlist-items";
+
+type DonationFrequency = "one_time" | "monthly";
+
+type MockReceipt = {
+  amountHkd: number;
+  frequency: DonationFrequency;
+  reference: string;
+  donorName: string | null;
+  itemTitle: string;
+};
 
 export function MockDonationForm({
-  opportunities,
-  initialOpportunitySlug,
+  wishlistItems,
+  initialWishlistItemId,
 }: {
-  opportunities: SupportOpportunity[];
-  initialOpportunitySlug?: string | null;
+  wishlistItems: WishlistItem[];
+  initialWishlistItemId?: string | null;
 }) {
   const { user } = useCurrentUser();
   // Amount state is shared (via DonationAmountProvider, wrapping this form and
-  // the tier cards further up the page) so choosing a tier there and editing
+  // the tier cards further up the page) so choosing a tier above and editing
   // the amount here always reflect the same single source of truth.
   const { amountText, amount, selectTier, setAmountText, isTierSelected } = useDonationAmount();
   const [frequency, setFrequency] = useState<DonationFrequency>("one_time");
-  const initialOpportunity = opportunities.find((entry) => entry.slug === initialOpportunitySlug) ?? opportunities[0];
-  const [opportunityId, setOpportunityId] = useState<number | null>(initialOpportunity?.id ?? null);
+  const initialWishlistItem = wishlistItems.find((entry) => entry.id === initialWishlistItemId) ?? wishlistItems[0];
+  const [wishlistItemId, setWishlistItemId] = useState(initialWishlistItem?.id ?? "");
   const [donorName, setDonorName] = useState("");
   const [donorEmail, setDonorEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [receipt, setReceipt] = useState<DonationReceipt | null>(null);
+  const [receipt, setReceipt] = useState<MockReceipt | null>(null);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const selectedOpportunity = useMemo(
-    () => opportunities.find((entry) => entry.id === opportunityId) ?? opportunities[0] ?? null,
-    [opportunities, opportunityId],
+  const selectedWishlistItem = useMemo(
+    () => wishlistItems.find((entry) => entry.id === wishlistItemId) ?? wishlistItems[0] ?? null,
+    [wishlistItems, wishlistItemId],
   );
-  const supportsLine = selectedOpportunity
-    ? `${formatHkd(amount || 0)} ${frequency === "monthly" ? "each month " : ""}helps fund ${selectedOpportunity.title.toLowerCase()}: ${selectedOpportunity.impact_statement}`
+  const supportsLine = selectedWishlistItem
+    ? `${formatHkd(amount || 0)} ${frequency === "monthly" ? "each month " : ""}helps fund ${selectedWishlistItem.title.toLowerCase()}: ${selectedWishlistItem.impact}`
     : `${formatHkd(amount || 0)} helps Love 21 create more inclusive programmes.`;
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -48,22 +58,27 @@ export function MockDonationForm({
     setSaving(true);
     setError("");
     setReceipt(null);
-    try {
-      const response = await api.createMockDonation({
-        amount_hkd: amount,
-        frequency,
-        support_opportunity_id: selectedOpportunity?.id ?? null,
-        donor_email: user?.role === "supporter" ? null : donorEmail,
-        donor_name: donorName || null,
-        message: message || null,
-      });
-      setReceipt(response);
-      setMessage("");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not record this mock donation");
-    } finally {
+
+    if (!selectedWishlistItem) {
+      setError("Please choose a wishlist item to support.");
       setSaving(false);
+      return;
     }
+
+    // TODO: Plug a real payment processor such as Stripe in here. This demo
+    // intentionally mocks payment success so no card details or real charge are
+    // involved.
+    await new Promise((resolve) => window.setTimeout(resolve, 450));
+
+    setReceipt({
+      amountHkd: amount,
+      frequency,
+      reference: `MOCK-${selectedWishlistItem.id.toUpperCase().slice(0, 8)}`,
+      donorName: donorName || null,
+      itemTitle: selectedWishlistItem.title,
+    });
+    setMessage("");
+    setSaving(false);
   }
 
   return (
@@ -78,7 +93,7 @@ export function MockDonationForm({
             Give without leaving the page
           </h2>
           <p className="mt-2 text-sm text-brand-ink/75">
-            No real payment is taken in this demo. A successful mock payment is recorded so the dashboard and progress bars update.
+            No real payment is taken in this demo. Choose a wishlist need, complete the guest details, and see a thank-you confirmation.
           </p>
         </div>
       </div>
@@ -114,6 +129,7 @@ export function MockDonationForm({
               value={amountText}
               onChange={(event) => setAmountText(event.target.value)}
               placeholder="Enter an amount"
+              required
             />
           </div>
         </fieldset>
@@ -122,8 +138,8 @@ export function MockDonationForm({
           <legend className="text-sm font-semibold text-brand-ink">Gift frequency</legend>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {[
-              { value: "one_time" as const, label: "One-time", description: "A single mock payment today." },
-              { value: "monthly" as const, label: "Monthly", description: "A recurring status appears on your dashboard." },
+              { value: "one_time" as const, label: "One-time", description: "A single mocked payment today." },
+              { value: "monthly" as const, label: "Monthly", description: "A mocked recurring gift for this wishlist need." },
             ].map((option) => (
               <label key={option.value} className="cursor-pointer rounded-2xl border border-brand-sand p-4 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                 <input
@@ -141,16 +157,16 @@ export function MockDonationForm({
           </div>
         </fieldset>
 
-        {opportunities.length ? (
+        {wishlistItems.length ? (
           <div className="space-y-2">
             <Label htmlFor="support-area">What should this support?</Label>
             <select
               id="support-area"
-              value={opportunityId ?? ""}
-              onChange={(event) => setOpportunityId(Number(event.target.value))}
-              className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={wishlistItemId}
+              onChange={(event) => setWishlistItemId(event.target.value)}
+              className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              {opportunities.map((entry) => (
+              {wishlistItems.map((entry) => (
                 <option key={entry.id} value={entry.id}>{entry.title}</option>
               ))}
             </select>
@@ -162,7 +178,7 @@ export function MockDonationForm({
 
         {user?.role === "supporter" ? (
           <p className="rounded-2xl bg-brand-cream p-4 text-sm text-brand-ink">
-            Signed in as <strong>{user.email}</strong>. This donation will appear in your supporter dashboard.
+            Signed in as <strong>{user.email}</strong>. This mocked wishlist gift will be confirmed below.
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
@@ -185,7 +201,7 @@ export function MockDonationForm({
         {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
 
         <Button type="submit" disabled={saving || !amount || amount < 1} className="w-full sm:w-auto">
-          {saving ? "Recording mock donation…" : "Complete mock donation"}
+          {saving ? "Completing mocked payment…" : "Complete mock donation"}
         </Button>
       </form>
 
@@ -195,16 +211,17 @@ export function MockDonationForm({
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-brand-sea" aria-hidden="true" />
             <div>
               <p className="font-semibold text-brand-ink">
-                Thank you — {formatHkd(receipt.donation.amount_hkd)} was recorded successfully.
+                Thank you{receipt.donorName ? `, ${receipt.donorName}` : ""} — {formatHkd(receipt.amountHkd)} was mocked successfully for {receipt.itemTitle}.
               </p>
               <p className="mt-1 text-sm text-brand-ink/75">
-                Reference {receipt.donation.payment_reference}. {receipt.attributed_to_account ? "It is now visible on your dashboard." : receipt.account_prompt}
+                Reference {receipt.reference}. Your {receipt.frequency === "monthly" ? "monthly gift" : "gift"} is confirmed in this demo; no real payment was taken.
               </p>
-              {!receipt.attributed_to_account ? (
-                <Button asChild variant="outline" className="mt-4">
-                  <Link href="/register">Create an account to track your impact</Link>
-                </Button>
-              ) : null}
+              <p className="mt-2 text-xs text-brand-ink/60">
+                Wishlist totals are hardcoded for now, so this page does not persist updated funding totals. Real persistence can be added with the production payment integration.
+              </p>
+              <Button asChild variant="outline" className="mt-4">
+                <Link href="/wishlist">Back to wishlist</Link>
+              </Button>
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ export const mainNav: NavItem[] = [
   { label: "Get Involved", href: "/get-involved" },
   { label: "Impact", href: "/impact-dashboard" },
   { label: "Stories", href: "/stories-media" },
-  { label: "Wishlist", href: "/shop" },
+  { label: "Wishlist", href: "/wishlist" },
 ];
 
 export const footerNav: NavItem[] = [
@@ -15,7 +15,6 @@ export const footerNav: NavItem[] = [
   { label: "Partner with Us", href: "/join-us" },
   { label: "Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
-  { label: "Wishlist: Help Us", href: "/shop" },
   { label: "Members", href: "/members" },
   { label: "Contact", href: "/contact-us" },
 ];
