@@ -13,6 +13,7 @@ import { getLocationForDayNumber, LOCATION_DAYS } from "@/lib/day-locations-data
 import "./event-animations.css";
 
 const STORAGE_KEY = "love21_trail_progress_v2";
+const STREAK_STORAGE_KEY = "love21_21_moves_streak_v1";
 
 interface StoredProgress {
   dayNumber: number;
@@ -21,12 +22,30 @@ interface StoredProgress {
   totalAnswered: number;
 }
 
+interface StreakStats {
+  totalPlays: number;
+  currentStreak: number;
+  bestStreak: number;
+}
+
 const DEFAULT_PROGRESS: StoredProgress = {
   dayNumber: 1,
   eventIndex: 0,
   correctCount: 0,
   totalAnswered: 0,
 };
+
+const DEFAULT_STREAK: StreakStats = {
+  totalPlays: 0,
+  currentStreak: 0,
+  bestStreak: 0,
+};
+
+function toSafeCount(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) && value > 0
+    ? Math.floor(value)
+    : 0;
+}
 
 function loadProgress(): StoredProgress {
   if (typeof window === "undefined") return DEFAULT_PROGRESS;
@@ -38,6 +57,83 @@ function loadProgress(): StoredProgress {
   } catch {
     return DEFAULT_PROGRESS;
   }
+}
+
+function loadStreak(): StreakStats {
+  if (typeof window === "undefined") return DEFAULT_STREAK;
+  try {
+    const raw = window.localStorage.getItem(STREAK_STORAGE_KEY);
+    if (!raw) return DEFAULT_STREAK;
+    const parsed = JSON.parse(raw) as Partial<StreakStats>;
+    const currentStreak = toSafeCount(parsed.currentStreak);
+    const bestStreak = Math.max(toSafeCount(parsed.bestStreak), currentStreak);
+
+    return {
+      totalPlays: toSafeCount(parsed.totalPlays),
+      currentStreak,
+      bestStreak,
+    };
+  } catch {
+    // If localStorage is unavailable or blocked, the hook keeps the streak in React state for this session.
+    return DEFAULT_STREAK;
+  }
+}
+
+function saveStreak(streak: StreakStats) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(streak));
+  } catch {
+    // localStorage can fail in private or embedded contexts; the in-memory React state remains the fallback.
+  }
+}
+
+function clearStoredStreak() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(STREAK_STORAGE_KEY);
+  } catch {
+    // Keep reset working in-memory even when localStorage cannot be accessed.
+  }
+}
+
+function useStreak() {
+  const [streak, setStreak] = useState<StreakStats>(DEFAULT_STREAK);
+  const [hasLoadedStreak, setHasLoadedStreak] = useState(false);
+  const skipNextSaveRef = useRef(false);
+
+  useEffect(() => {
+    setStreak(loadStreak());
+    setHasLoadedStreak(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedStreak) return;
+    if (skipNextSaveRef.current) {
+      skipNextSaveRef.current = false;
+      return;
+    }
+    saveStreak(streak);
+  }, [hasLoadedStreak, streak]);
+
+  function recordPlay() {
+    setStreak((prev) => {
+      const currentStreak = prev.currentStreak + 1;
+      return {
+        totalPlays: prev.totalPlays + 1,
+        currentStreak,
+        bestStreak: Math.max(prev.bestStreak, currentStreak),
+      };
+    });
+  }
+
+  function resetStreak() {
+    skipNextSaveRef.current = true;
+    clearStoredStreak();
+    setStreak(DEFAULT_STREAK);
+  }
+
+  return { streak, recordPlay, resetStreak };
 }
 
 const LOCATION_ICONS: Record<string, string> = {
@@ -63,14 +159,19 @@ export default function TwentyOneMovesPage() {
   const [dayJustCompleted, setDayJustCompleted] = useState(false);
   const [scoreBump, setScoreBump] = useState(false);
   const prevCorrectRef = useRef<number | null>(null);
+  const { streak, recordPlay, resetStreak } = useStreak();
 
   useEffect(() => {
     setProgress(loadProgress());
   }, []);
 
   useEffect(() => {
-    if (!progress) return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    if (!progress || typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch {
+      // Progress still works in memory if localStorage is unavailable.
+    }
   }, [progress]);
 
   useEffect(() => {
@@ -92,6 +193,14 @@ export default function TwentyOneMovesPage() {
     : 0;
 
   function handleEventComplete(correct: boolean) {
+    if (!progress || !location) return;
+    const completesDay = progress.eventIndex + 1 >= location.events.length;
+
+    if (completesDay) {
+      recordPlay();
+      setDayJustCompleted(true);
+    }
+
     setProgress((prev) => {
       if (!prev || !location) return prev;
       const nextEventIndex = prev.eventIndex + 1;
@@ -102,7 +211,6 @@ export default function TwentyOneMovesPage() {
       };
 
       if (nextEventIndex >= location.events.length) {
-        setDayJustCompleted(true);
         return { ...updated, dayNumber: prev.dayNumber + 1, eventIndex: 0 };
       }
       return { ...updated, eventIndex: nextEventIndex };
@@ -131,20 +239,28 @@ export default function TwentyOneMovesPage() {
   const currentLocIndex = (progress.dayNumber - 1) % LOCATION_DAYS.length;
 
   function resetProgress() {
-  const confirmed = window.confirm(
-    "Reset your 21 Moves progress and start again from Day 1?"
-  );
+    const confirmed = window.confirm(
+      "Reset your 21 Moves progress and start again from Day 1?"
+    );
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  window.localStorage.removeItem(STORAGE_KEY);
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Keep reset working in-memory even when localStorage cannot be accessed.
+    }
 
-  setDayJustCompleted(false);
-  prevCorrectRef.current = null;
-  setScoreBump(false);
+    setDayJustCompleted(false);
+    prevCorrectRef.current = null;
+    setScoreBump(false);
 
-  setProgress(DEFAULT_PROGRESS);
-}
+    setProgress(DEFAULT_PROGRESS);
+  }
+
+  function handleResetStreak() {
+    resetStreak();
+  }
   return (
     <SiteLayout>
       {/* Hero */}
@@ -175,13 +291,30 @@ export default function TwentyOneMovesPage() {
                 🔥 Loop {completedLoops + 1}
               </div>
             )}
+            <div
+              className="inline-flex items-center gap-2 rounded-full border border-[#f0dfc1] bg-[#fff9ed] px-5 py-2.5 text-sm font-semibold text-[#4a3414] shadow-sm"
+              aria-label={`Game streak ${streak.currentStreak}. Best streak ${streak.bestStreak}. Total plays ${streak.totalPlays}.`}
+            >
+              <span aria-hidden="true">🔥</span>
+              <span>Streak: {streak.currentStreak}</span>
+              <span className="text-[#b45309]">Best: {streak.bestStreak}</span>
+              <span className="text-xs font-medium text-[#8a6f43]">Played: {streak.totalPlays}</span>
+            </div>
             <button
-    type="button"
-    onClick={resetProgress}
-    className="rounded-full border border-[#e8e4de] bg-white px-4 py-2 text-sm font-medium text-[#991b1b] transition hover:border-[#991b1b] hover:bg-[#991b1b] hover:text-white"
-  >
-    Reset Progress
-  </button>
+              type="button"
+              onClick={handleResetStreak}
+              className="rounded-full border border-[#f0dfc1] bg-white px-4 py-2 text-sm font-medium text-[#8a4b0f] transition hover:border-[#b45309] hover:bg-[#fff7ed]"
+              aria-label="Reset game streak"
+            >
+              Reset Streak
+            </button>
+            <button
+              type="button"
+              onClick={resetProgress}
+              className="rounded-full border border-[#e8e4de] bg-white px-4 py-2 text-sm font-medium text-[#991b1b] transition hover:border-[#991b1b] hover:bg-[#991b1b] hover:text-white"
+            >
+              Reset Progress
+            </button>
           </div>
         </div>
       </section>

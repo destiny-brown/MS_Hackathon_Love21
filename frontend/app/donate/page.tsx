@@ -4,6 +4,7 @@ import { BrandCard } from "@/components/brand/BrandCard";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
+import { DONATION_TIERS } from "@/lib/donation-tiers";
 import { DonationAmountProvider } from "@/components/site/donation-amount-context";
 import { DonationOpportunities } from "@/components/site/donation-opportunities";
 import { DonationTierGrid } from "@/components/site/donation-tier-grid";
@@ -187,12 +188,12 @@ export default async function DonatePage({
             <Eyebrow>Donor transparency</Eyebrow>
             <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Where your gift goes</h2>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {donationTiers.map((tier, i) => (
+              {DONATION_TIERS.map((tier, i) => (
                 <Reveal key={tier.amount} delay={i * 0.08}>
                   <BrandCard
                     className={`rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6 ${i % 2 === 0 ? "sm:-rotate-1" : "sm:rotate-1"}`}
                   >
-                    <div className="font-serif-display text-2xl text-brand-red">{tier.amount}</div>
+                    <div className="font-serif-display text-2xl text-brand-red">{tier.label}</div>
                     <p className="mt-3 text-sm text-brand-dark/70">{tier.impact}</p>
                   </BrandCard>
                 </Reveal>
