@@ -191,6 +191,58 @@ export type CaptainChatResponse = {
   sources: string[];
   message: string | null;
 };
+export type AdminActivity = {
+  id: number;
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  location: string;
+  description: string;
+  max_capacity: number | null;
+  category: string | null;
+  status: string;
+  registration_count: number;
+  created_at: string;
+};
+export type AdminVolunteerActivity = {
+  id: number;
+  slug: string;
+  icon: string;
+  title: string;
+  description: string;
+  schedule_label: string;
+  location_label: string;
+  category: string;
+  filled_count: number | null;
+  total_spots: number | null;
+  note: string | null;
+  cta_label: string;
+  status: string;
+  display_order: number;
+  created_at: string;
+};
+export type NewsletterSubscriber = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string | null;
+  status: string;
+  subscribed_at: string;
+};
+export type NewsletterDelivery = {
+  id: number;
+  subject: string;
+  content_text: string;
+  recipient_count: number;
+  sent_at: string;
+};
+export type AdminOverview = {
+  event_count: number;
+  volunteer_program_count: number;
+  subscriber_count: number;
+  active_subscriber_count: number;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -210,13 +262,20 @@ export function clearToken() {
 export function landingPathForRole(role: Role) {
   switch (role) {
     case "admin":
-      return "/dashboard";
+      return "/admin";
     case "member":
       return "/member/profile";
     case "supporter":
     default:
       return "/supporter/dashboard";
   }
+}
+
+export function resolvePostLoginPath(role: Role, nextPath: string | null) {
+  if (nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") && nextPath !== "/login") {
+    return nextPath;
+  }
+  return landingPathForRole(role);
 }
 
 type ApiRequestInit = RequestInit & { redirectOnUnauthorized?: boolean };
@@ -310,4 +369,45 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  adminOverview: () => request<AdminOverview>("/admin/overview"),
+  listAdminActivities: () => request<AdminActivity[]>("/admin/activities"),
+  createAdminActivity: (payload: Omit<AdminActivity, "id" | "registration_count" | "created_at">) =>
+    request<AdminActivity>("/admin/activities", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminActivity: (id: number, payload: Partial<Omit<AdminActivity, "id" | "registration_count" | "created_at">>) =>
+    request<AdminActivity>(`/admin/activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminActivity: (id: number) => request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
+  listAdminVolunteerActivities: () => request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
+  createAdminVolunteerActivity: (payload: Omit<AdminVolunteerActivity, "id" | "created_at">) =>
+    request<AdminVolunteerActivity>("/admin/volunteer-activities", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminVolunteerActivity: (id: number, payload: Partial<Omit<AdminVolunteerActivity, "id" | "created_at">>) =>
+    request<AdminVolunteerActivity>(`/admin/volunteer-activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminVolunteerActivity: (id: number) => request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
+  listNewsletterSubscribers: () => request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
+  createNewsletterSubscriber: (payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">) =>
+    request<NewsletterSubscriber>("/admin/newsletter/subscribers", { method: "POST", body: JSON.stringify({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone_number: payload.phone_number,
+      status: payload.status,
+    }) }),
+  updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
+    request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, { method: "PATCH", body: JSON.stringify({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone_number: payload.phone_number,
+      status: payload.status,
+    }) }),
+  deleteNewsletterSubscriber: (id: number) => request<void>(`/admin/newsletter/subscribers/${id}`, { method: "DELETE" }),
+  listNewsletterDeliveries: () => request<NewsletterDelivery[]>("/admin/newsletter/deliveries"),
+  sendNewsletter: (payload: { subject: string; content: string }) =>
+    request<{ success: boolean; message: string; sent_count: number }>("/admin/newsletter/send", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  subscribeNewsletter: (payload: { first_name: string; last_name: string; email: string; phone_number?: string | null }) =>
+    request<NewsletterSubscriber>("/newsletter/subscribe", { method: "POST", body: JSON.stringify(payload) }),
+  unsubscribeNewsletter: (token: string) =>
+    request<{ email: string; status: string; message: string }>(`/newsletter/unsubscribe/${token}`, { method: "POST" }),
 };

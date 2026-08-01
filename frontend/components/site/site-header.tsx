@@ -8,11 +8,13 @@ import { AccessibilityMenu } from "@/components/site/accessibility-menu";
 import { LanguageSwitcherInline } from "@/components/site/language-switcher-inline";
 import { SiteAccountNav } from "@/components/site/site-account-nav";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/lib/auth";
 import { navKeyByHref } from "@/lib/i18n/nav";
 import { mainNav } from "@/lib/site-data";
 
 export function SiteHeader() {
   const { t } = useTranslation("common");
+  const { user } = useCurrentUser();
 
   return (
     <header className="border-b border-brand-light/80 bg-brand-light/90 backdrop-blur-sm">
@@ -44,25 +46,21 @@ export function SiteHeader() {
               </Link>
             );
           })}
-          <Link
-            href="/admin"
-            className="whitespace-nowrap font-semibold text-[#d4a373] transition-colors hover:text-brand-red"
-          >
-            Admin
-          </Link>
+          {user?.role === "admin" ? (
+            <Link
+              href="/admin"
+              className="whitespace-nowrap font-semibold text-[#d4a373] transition-colors hover:text-brand-red"
+            >
+              Admin
+            </Link>
+          ) : null}
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <AccessibilityMenu />
           <LanguageSwitcherInline />
           <SiteAccountNav />
-          <Link
-            href="/admin"
-            className="text-sm font-semibold text-muted-foreground transition-colors hover:text-brand-red lg:hidden"
-          >
-            Admin
-          </Link>
-          <Button asChild size="sm">
+          <Button asChild size="sm" className="font-semibold">
             <Link href="/donate">{t("nav.donate")}</Link>
           </Button>
         </div>

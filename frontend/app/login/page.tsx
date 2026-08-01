@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api, landingPathForRole, Role, setToken } from "@/lib/api";
+import { api, resolvePostLoginPath, Role, setToken } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 type LoginRole = Role;
@@ -42,6 +42,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryRole = getLoginRole(searchParams.get("role"));
+  const nextPath = searchParams.get("next");
   const [selectedRole, setSelectedRole] = useState<LoginRole | null>(queryRole);
   const [email, setEmail] = useState(queryRole ? accountTypes[queryRole].email : "");
   const [password, setPassword] = useState(queryRole ? "demo1234" : "");
@@ -75,7 +76,7 @@ function LoginForm() {
       const response = await api.login(email, password);
       setToken(response.access_token);
       const currentUser = await api.me();
-      router.push(landingPathForRole(currentUser.role));
+      router.push(resolvePostLoginPath(currentUser.role, nextPath));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

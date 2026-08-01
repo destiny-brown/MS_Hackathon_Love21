@@ -1,24 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { SiteHeader } from "@/components/site/site-header";
 import { Button } from "@/components/ui/button";
 import { LookerStudioEmbed } from "@/components/looker-studio-embed";
 
-// Looker Studio Report URL
 const LOOKER_STUDIO_REPORT_URL =
   "https://datastudio.google.com/embed/reporting/7316b137-05d9-410b-b60b-77fda673c457/page/XCC5F";
 
 export default function AdminAnalyticsPage() {
-  const router = useRouter();
-
   return (
-    <>
-      <SiteHeader />
-      <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -59,6 +51,5 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
       </main>
-    </>
   );
 }

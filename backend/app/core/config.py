@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60 * 24 * 7
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    site_url: str = "http://localhost:3000"
+    resend_api_key: str | None = None
+    newsletter_from_email: str = "Love 21 Foundation <newsletter@love21foundation.com>"
     anthropic_api_key: str | None = None
     youtube_api_key: str | None = None
     ollama_enabled: bool = True
