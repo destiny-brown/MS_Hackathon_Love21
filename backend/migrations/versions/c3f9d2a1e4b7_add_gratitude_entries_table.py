@@ -10,6 +10,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -21,16 +22,20 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     bind = op.get_bind()
-    gratitude_status = sa.Enum(
+    gratitude_status_pg = postgresql.ENUM(
         "pending",
         "approved",
         "rejected",
         name="gratitudeentrystatus",
         create_type=False,
     )
+    gratitude_status_col: sa.types.TypeEngine
 
     if bind.dialect.name == "postgresql":
-        gratitude_status.create(bind, checkfirst=True)
+        gratitude_status_pg.create(bind, checkfirst=True)
+        gratitude_status_col = gratitude_status_pg
+    else:
+        gratitude_status_col = sa.Enum("pending", "approved", "rejected", name="gratitudeentrystatus")
 
     op.create_table(
         "gratitude_entries",
@@ -39,7 +44,7 @@ def upgrade() -> None:
         sa.Column("display_name", sa.String(length=120), nullable=True),
         sa.Column("message", sa.Text(), nullable=False),
         sa.Column("photo_url", sa.String(length=500), nullable=True),
-        sa.Column("status", gratitude_status, nullable=False),
+        sa.Column("status", gratitude_status_col, nullable=False),
         sa.Column("submitted_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("moderated_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("moderator_id", sa.Integer(), nullable=True),
@@ -54,7 +59,7 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     bind = op.get_bind()
-    gratitude_status = sa.Enum(
+    gratitude_status_pg = postgresql.ENUM(
         "pending",
         "approved",
         "rejected",
@@ -68,4 +73,4 @@ def downgrade() -> None:
     op.drop_table("gratitude_entries")
 
     if bind.dialect.name == "postgresql":
-        gratitude_status.drop(bind, checkfirst=True)
+        gratitude_status_pg.drop(bind, checkfirst=True)
