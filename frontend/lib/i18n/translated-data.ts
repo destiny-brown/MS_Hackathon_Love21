@@ -11,6 +11,8 @@ import type { ImpactPillar, ImpactStory } from "@/lib/impact-data";
 import { financialBreakdown, growthData, impactPillars, impactStories } from "@/lib/impact-data";
 import type { QuizQuestion } from "@/lib/learn-quiz-data";
 import { mythVsFactQuestions } from "@/lib/learn-quiz-data";
+import type { MemberStory } from "@/lib/member-stories";
+import { getMemberStory, memberStories, memberStoryCategoryLabels } from "@/lib/member-stories";
 import type { BoardMember } from "@/lib/site-data";
 import { boardMembers, programmes } from "@/lib/site-data";
 import type { RosterItem } from "@/lib/volunteer-roster";
@@ -252,6 +254,45 @@ export function useTranslatedBoardMember(slug: string, fallback: BoardMember): B
   return {
     ...fallback,
     bio: tx(t, `board.${slug}.bio`, fallback.bio),
+  };
+}
+
+export function useTranslatedMemberStories(): MemberStory[] {
+  const { t } = useTranslation("media");
+  return useMemo(
+    () =>
+      memberStories.map((story) => ({
+        ...story,
+        name: tx(t, `memberStories.stories.${story.slug}.name`, story.name),
+        quote: tx(t, `memberStories.stories.${story.slug}.quote`, story.quote),
+        title: story.title
+          ? tx(t, `memberStories.stories.${story.slug}.title`, story.title)
+          : story.title,
+        body: story.body
+          ? tx(t, `memberStories.stories.${story.slug}.body`, story.body)
+          : story.body,
+        categories: story.categories.map((key) =>
+          tx(t, `memberStories.categories.${key}`, memberStoryCategoryLabels[key] ?? key),
+        ),
+      })),
+    [t],
+  );
+}
+
+export function useTranslatedMemberStory(slug: string, fallback: MemberStory): MemberStory {
+  const { t } = useTranslation("media");
+  const source = getMemberStory(slug) ?? fallback;
+  return {
+    ...source,
+    name: tx(t, `memberStories.stories.${slug}.name`, source.name),
+    quote: tx(t, `memberStories.stories.${slug}.quote`, source.quote),
+    title: source.title
+      ? tx(t, `memberStories.stories.${slug}.title`, source.title)
+      : source.title,
+    body: source.body ? tx(t, `memberStories.stories.${slug}.body`, source.body) : source.body,
+    categories: source.categories.map((key) =>
+      tx(t, `memberStories.categories.${key}`, memberStoryCategoryLabels[key] ?? key),
+    ),
   };
 }
 
