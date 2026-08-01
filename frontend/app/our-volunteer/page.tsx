@@ -12,6 +12,9 @@ import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
 import { TriMark } from "@/components/brand/TriMark";
 import { SiteLayout } from "@/components/site/site-layout";
+import { LiveActivityBadge } from "@/components/volunteer/live-activity-badge";
+import { VolunteerFaqAccordion } from "@/components/volunteer/volunteer-faq-accordion";
+import { VolunteerStoryCarousel } from "@/components/volunteer/volunteer-story-carousel";
 import { api, type VolunteerActivity } from "@/lib/api";
 import {
   availabilityOptions,
@@ -121,20 +124,6 @@ const socialPosts = [
 ];
 
 // Replace with a real, consented volunteer story before this goes live.
-const volunteerStories = [
-  {
-    quote: "I signed up for one Saturday shift because a friend dragged me along. Eighteen months later I'm on the events committee.",
-    name: "[Volunteer name], class volunteer since 2024",
-  },
-  {
-    quote: "My daughter has Down syndrome, and I never expected to be the one coaching football. Now I can't imagine my Saturdays without it.",
-    name: "[Volunteer name], parent & sports volunteer",
-  },
-  {
-    quote: "Our team came for one CSR morning. Half of us still show up monthly, on our own time.",
-    name: "[Company name], corporate partner",
-  },
-];
 
 // Candid, in-the-field moments — placeholder paths.
 const galleryStrip = [
@@ -142,13 +131,6 @@ const galleryStrip = [
   { src: "/images/get-involved/gallery-2.jpeg", alt: "Volunteers helping run a cooking workshop", shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]" },
   { src: "/images/get-involved/gallery-3.jpg", alt: "A high-five between a volunteer and a member at swim class", shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]" },
   { src: "/images/get-involved/gallery-4.jpg", alt: "A corporate volunteer team on-site", shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]" },
-];
-
-const faqs = [
-  { q: "Do I need experience to volunteer?", a: "No. Most of our volunteers have never worked with neurodiverse members before their first shift. Coaches brief you on-site, every time." },
-  { q: "What if I need to cancel a shift?", a: "Life happens — cancel or swap through the member app up to 24 hours ahead, no penalty. We'd just ask you not to no-show, since a role sitting empty means a class runs short-staffed." },
-  { q: "Is training provided?", a: "Yes. Every new volunteer gets a short on-site briefing before their first shift, plus a returning volunteer paired alongside them for support." },
-  { q: "Can I bring a friend, or volunteer as a group?", a: "Absolutely — group and friend sign-ups are common, especially for the community dinners & trips crew and corporate days." },
 ];
 
 // ---- One-pager generator -------------------------------------------------
@@ -212,125 +194,6 @@ function generateCsrOnePager() {
 // ---------------------------------------------------------------------------
 // Small components
 // ---------------------------------------------------------------------------
-
-function useCountUp(target: number, durationMs = 1400) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    let start: number | null = null;
-    let raf: number;
-
-    function step(ts: number) {
-      if (start === null) start = ts;
-      const progress = Math.min((ts - start) / durationMs, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(eased * target));
-      if (progress < 1) raf = requestAnimationFrame(step);
-    }
-
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [target, durationMs]);
-
-  return value;
-}
-
-// Live-stat card. Sits in normal page flow now (left column, under the hero
-// buttons) rather than floating over the photo. Swap the two target numbers
-// for a real Supabase count() query once that's wired up.
-function LiveActivityBadge() {
-  const volunteers = useCountUp(214, 1400);
-  const shiftsToday = useCountUp(6, 1000);
-
-  return (
-    <div className="mt-8 inline-flex w-full items-center gap-4 rounded-2xl border border-brand-light bg-white p-4 shadow-sm shadow-black/5 sm:w-auto">
-      <span className="relative flex h-2.5 w-2.5 shrink-0">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-red opacity-60" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-red" />
-      </span>
-      <div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="font-serif-display text-2xl leading-none text-brand-dark">{volunteers}</span>
-          <span className="text-xs text-brand-dark/60">volunteers active this month</span>
-        </div>
-        <div className="mt-1.5 flex items-baseline gap-1.5 border-t border-dashed border-brand-dark/15 pt-1.5">
-          <span className="font-serif-display text-lg leading-none text-brand-dark">{shiftsToday}</span>
-          <span className="text-xs text-brand-dark/50">shifts running today</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VolunteerStoryCarousel() {
-  const [index, setIndex] = useState(0);
-  const [fade, setFade] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setIndex((i) => (i + 1) % volunteerStories.length);
-        setFade(true);
-      }, 200);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
-
-  function go(next: number) {
-    setFade(false);
-    setTimeout(() => {
-      setIndex((next + volunteerStories.length) % volunteerStories.length);
-      setFade(true);
-    }, 200);
-  }
-
-  const active = volunteerStories[index];
-
-  return (
-    <div>
-      <div className={`transition-opacity duration-300 motion-reduce:transition-none ${fade ? "opacity-100" : "opacity-0"}`}>
-        <blockquote className="font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">"{active.quote}"</blockquote>
-        <p className="mt-5 text-sm font-semibold text-brand-dark/60">{active.name}</p>
-      </div>
-      <div className="mt-6 flex items-center gap-3">
-        <TriMark className="h-2 w-7 text-brand-red/40" />
-        <div className="flex gap-1.5">
-          {volunteerStories.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => go(i)}
-              aria-label={`Show story ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-brand-red" : "w-1.5 bg-brand-dark/20"}`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function FaqAccordion() {
-  const [open, setOpen] = useState<number | null>(0);
-  return (
-    <div className="divide-y divide-brand-light">
-      {faqs.map((item, i) => {
-        const isOpen = open === i;
-        return (
-          <div key={item.q} className="py-5">
-            <button onClick={() => setOpen(isOpen ? null : i)} className="flex w-full items-center justify-between gap-6 text-left" aria-expanded={isOpen}>
-              <span className="font-serif-display text-lg text-brand-dark sm:text-xl">{item.q}</span>
-              <span className={`shrink-0 text-2xl text-brand-red transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`} aria-hidden="true">+</span>
-            </button>
-            <div className={`grid overflow-hidden transition-all duration-300 ease-out ${isOpen ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-              <p className="overflow-hidden text-brand-dark/70">{item.a}</p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 // ---- AI Volunteer Match — wired to backend /ai/volunteer/match ----------------
 
@@ -1025,7 +888,7 @@ function VolunteerContent() {
           <Eyebrow>Before you sign up</Eyebrow>
           <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Questions people actually ask</h2>
           <div className="mt-8 rounded-3xl bg-white px-6 sm:px-8">
-            <FaqAccordion />
+            <VolunteerFaqAccordion />
           </div>
         </div>
       </section>

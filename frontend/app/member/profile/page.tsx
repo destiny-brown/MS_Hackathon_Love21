@@ -3,11 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
-import { signOutToLogin, useRequireRoles } from "@/lib/auth";
+import { useCurrentUser } from "@/lib/auth";
 import { useEffect, useState } from "react";
 
 export default function MemberProfilePage() {
-  const { user, loading, error } = useRequireRoles("member");
+  const { user, loading } = useCurrentUser();
   const [profileStatus, setProfileStatus] = useState("");
 
   useEffect(() => {
@@ -17,10 +17,10 @@ export default function MemberProfilePage() {
       .catch((err) => setProfileStatus(err instanceof Error ? err.message : "Could not load member profile"));
   }, [user]);
 
-  if (loading || !user || user.role !== "member") {
+  if (loading || !user) {
     return (
-      <main className="flex min-h-screen items-center justify-center px-4 py-10">
-        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Checking member access...</p>
+      <main className="flex min-h-[40vh] items-center justify-center px-4 py-10">
+        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Loading member profile…</p>
       </main>
     );
   }
@@ -28,15 +28,10 @@ export default function MemberProfilePage() {
   return (
     <main className="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl space-y-6">
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Member profile</h1>
-            <p className="text-sm text-muted-foreground">Signed in as {user.email} · {user.role}</p>
-          </div>
-          <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
+        <header>
+          <h1 className="text-3xl font-bold tracking-tight">Member profile</h1>
+          <p className="text-sm text-muted-foreground">Signed in as {user.email}. This is your programme member account — separate from the public members enquiry page.</p>
         </header>
-
-        {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
 
         <Card>
           <CardHeader>
