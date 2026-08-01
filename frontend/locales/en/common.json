@@ -15,6 +15,11 @@
     "members": "Members",
     "contactUs": "Contact Us"
   },
+  "account": "Account",
+  "dashboard": "Dashboard",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
+  "staffLogin": "Staff login",
   "footer": {
     "tagline": "Empowering the Down syndrome and autistic community in Hong Kong through sport, nutrition, and holistic support.",
     "explore": "Explore",

@@ -536,56 +536,69 @@ function VolunteerContent() {
     <>
       {/* ---------- HERO ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8">
-        <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
-        <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div>
-            <Eyebrow>Get Involved · Volunteers</Eyebrow>
-            <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-dark sm:text-5xl">
-              Come be part of a{" "}
-              <span className="relative text-brand-red">
-                so much ability
-                <svg
-                  viewBox="0 0 200 14"
-                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-red/50"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
+        <section className="relative overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8">
+          <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
+          <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div>
+              <Eyebrow>Get Involved · Volunteers</Eyebrow>
+              <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-dark sm:text-5xl">
+                Come be part of a{" "}
+                <span className="relative text-brand-red">
+                  so much ability
+                  <svg
+                    viewBox="0 0 200 14"
+                    className="absolute -bottom-1 left-0 h-3 w-full text-brand-red/50"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 9c20-8 40-8 60 0s40 8 60 0 40-8 60 0 12 3 14 2"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeDasharray="1 8"
+                    />
+                  </svg>
+                </span>{" "}
+                community.
+              </h1>
+              <p className="mt-5 max-w-lg text-brand-dark/75">
+                No email chains, no waiting on the office. Pick an opening
+                across sport, nutrition, family support or a corporate day, and
+                you&apos;re confirmed straight away.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-4">
+                <a
+                  href="#opportunities"
+                  className="rounded-full bg-brand-red px-7 py-3.5 text-sm font-semibold text-white hover:bg-black"
                 >
-                  <path
-                    d="M2 9c20-8 40-8 60 0s40 8 60 0 40-8 60 0 12 3 14 2"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeDasharray="1 8"
-                  />
-                </svg>
-              </span>{" "}
-              community.
-            </h1>
-            <p className="mt-5 max-w-lg text-brand-dark/75">
-              No email chains, no waiting on the office. Pick an opening across sport, nutrition,
-              family support or a corporate day, and you&apos;re confirmed straight away.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-4">
-              <a href="#opportunities" className="rounded-full bg-brand-red px-7 py-3.5 text-sm font-semibold text-white hover:bg-black">
-                See open roles
-              </a>
-              <a href="#match" className="rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-brand-dark hover:border-black">
-                Not sure where to start?
-              </a>
+                  See open roles
+                </a>
+                <a
+                  href="#match"
+                  className="rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-brand-dark hover:border-black"
+                >
+                  Not sure where to start?
+                </a>
+              </div>
+              <LiveActivityBadge />
             </div>
-            <LiveActivityBadge />
-          </div>
-          <div className="relative">
-            <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-light lg:aspect-[3/4]">
-              {/* Swap for a real photo of a volunteer mid-shift — energetic, not posed. */}
-              <Image src="/images/get-involved/hero-image.png" alt="A volunteer coaching alongside a Love 21 member" fill priority className="object-cover" />
+            <div className="relative">
+              <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-light lg:aspect-[3/4]">
+                {/* Swap for a real photo of a volunteer mid-shift — energetic, not posed. */}
+                <Image
+                  src="/images/get-involved/hero-image.png"
+                  alt="A volunteer coaching alongside a Love 21 member"
+                  fill
+                  priority
+                  className="object-cover"
+                />
+              </div>
             </div>
           </div>
-        </div>
-{/* 
+          {/* 
         <div className="relative mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
             { value: "600+", label: "Families supported every month" },
@@ -599,31 +612,43 @@ function VolunteerContent() {
             </div>
           ))}
         </div> */}
-      </section>
+        </section>
       </Reveal>
 
       {/* ---------- START YOUR OWN CAMPAIGN ---------- */}
       <Reveal>
-      <section className="border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-red/40 bg-white p-7">
-          <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-light">
-              <IconFlag className="h-5 w-5 text-brand-red" />
+        <section className="border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 rounded-2xl border border-dashed border-brand-red/40 bg-white p-6">
+            <div className="flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-light">
+                <IconFlag className="h-5 w-5 text-brand-red" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
+                  Another way to help
+                </p>
+                <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-dark sm:text-2xl">
+                  Can&apos;t commit to a shift? Start your own fundraising
+                  campaign instead.
+                </h3>
+                <p className="mt-2 max-w-md text-sm text-brand-dark/70">
+                  Run a marathon, host a birthday fundraiser, or rally your
+                  friends — set up a peer-to-peer page in minutes and raise
+                  funds on your own schedule.
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">Another way to help</p>
-              <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-dark sm:text-2xl">
-                Can&apos;t commit to a shift? Start your own fundraising campaign instead.
-              </h3>
-              <p className="mt-2 max-w-md text-sm text-brand-dark/70">
-                Run a marathon, host a birthday fundraiser, or rally your friends — set up a
-                peer-to-peer page in minutes and raise funds on your own schedule.
-              </p>
-            </div>
+            <a
+              href="/contact-us"
+              className="relative inline-flex shrink-0 items-center justify-center rounded-full bg-brand-red px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-brand-red/90 hover:shadow-lg active:scale-95 animate-[heartbeat_1.5s_ease-in-out_infinite]"
+            >
+              <span className="relative z-10">
+                Contact us to start a campaign
+              </span>
+              <span className="absolute inset-0 rounded-full bg-brand-red/30 blur-md animate-[pulse-ring_1.5s_ease-out_infinite]" />
+            </a>
           </div>
-          <CtaButton href="/campaigns/new">Start a campaign</CtaButton>
-        </div>
-      </section>
+        </section>
       </Reveal>
 
       {/* ---------- URGENCY STRIP ---------- */}
@@ -635,7 +660,11 @@ function VolunteerContent() {
               Going fast
             </span>
             {urgentItems.map((item) => (
-              <a key={item.id} href="#opportunities" className="text-white/80 hover:text-white">
+              <a
+                key={item.id}
+                href="#opportunities"
+                className="text-white/80 hover:text-white"
+              >
                 {item.title} — {item.filled}/{item.total} filled
               </a>
             ))}
@@ -644,15 +673,21 @@ function VolunteerContent() {
       )}
 
       {/* ---------- OPPORTUNITIES BOARD ---------- */}
-      <section id="opportunities" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section
+        id="opportunities"
+        className="bg-white px-4 py-16 sm:px-6 lg:px-8"
+      >
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Eyebrow>The board</Eyebrow>
-              <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Open opportunities</h2>
+              <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">
+                Open opportunities
+              </h2>
             </div>
             <p className="max-w-md text-sm text-brand-dark/70">
-              Every role sits under one of our four programme pillars. Pick the one that fits you.
+              Every role sits under one of our four programme pillars. Pick the
+              one that fits you.
             </p>
           </div>
 
@@ -699,7 +734,9 @@ function VolunteerContent() {
                   }`}
                 >
                   {categoryMeta[key].label}
-                  <span className="hidden text-xs font-normal text-brand-dark/50 lg:block">{categoryMeta[key].blurb}</span>
+                  <span className="hidden text-xs font-normal text-brand-dark/50 lg:block">
+                    {categoryMeta[key].blurb}
+                  </span>
                 </button>
               ))}
             </div>
@@ -708,7 +745,9 @@ function VolunteerContent() {
               {displayedItems.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-brand-dark/20 p-10 text-center">
                   <p className="text-sm text-brand-dark/60">
-                    No roles match {searchQuery ? `“${searchQuery}”` : "this filter"} right now.
+                    No roles match{" "}
+                    {searchQuery ? `“${searchQuery}”` : "this filter"} right
+                    now.
                   </p>
                   <button
                     onClick={() => {
@@ -723,27 +762,56 @@ function VolunteerContent() {
               ) : (
                 <div className="grid gap-5 sm:grid-cols-2">
                   {displayedItems.map((item, i) => {
-                    const pct = item.total && item.filled !== undefined ? Math.round((item.filled / item.total) * 100) : null;
+                    const pct =
+                      item.total && item.filled !== undefined
+                        ? Math.round((item.filled / item.total) * 100)
+                        : null;
                     return (
                       <Reveal key={item.id} delay={i * 0.06}>
-                        <BrandCard as="article" className="h-full rounded-2xl p-6 transition hover:-translate-y-0.5 hover:shadow-md sm:p-6">
-                          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-light text-lg">{item.icon}</div>
-                          <h3 className="text-xl text-brand-dark">{item.title}</h3>
-                          <p className="mt-2 text-sm text-brand-dark/70">{item.desc}</p>
+                        <BrandCard
+                          as="article"
+                          className="h-full rounded-2xl p-6 transition hover:-translate-y-0.5 hover:shadow-md sm:p-6"
+                        >
+                          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-light text-lg">
+                            {item.icon}
+                          </div>
+                          <h3 className="text-xl text-brand-dark">
+                            {item.title}
+                          </h3>
+                          <p className="mt-2 text-sm text-brand-dark/70">
+                            {item.desc}
+                          </p>
                           <div className="mt-4 flex flex-col gap-1 text-xs text-brand-dark/60">
-                            <span><b className="font-semibold text-brand-dark">When:</b> {item.when}</span>
-                            <span><b className="font-semibold text-brand-dark">Where:</b> {item.where}</span>
+                            <span>
+                              <b className="font-semibold text-brand-dark">
+                                When:
+                              </b>{" "}
+                              {item.when}
+                            </span>
+                            <span>
+                              <b className="font-semibold text-brand-dark">
+                                Where:
+                              </b>{" "}
+                              {item.where}
+                            </span>
                           </div>
 
                           {pct !== null ? (
                             <div className="mt-4 flex items-center gap-2">
                               <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-light">
-                                <div className="h-full rounded-full bg-brand-red" style={{ width: `${pct}%` }} />
+                                <div
+                                  className="h-full rounded-full bg-brand-red"
+                                  style={{ width: `${pct}%` }}
+                                />
                               </div>
-                              <span className="whitespace-nowrap text-xs text-brand-slate">{item.filled} / {item.total} filled</span>
+                              <span className="whitespace-nowrap text-xs text-brand-slate">
+                                {item.filled} / {item.total} filled
+                              </span>
                             </div>
                           ) : (
-                            <div className="mt-4 text-xs text-brand-slate">{item.note}</div>
+                            <div className="mt-4 text-xs text-brand-slate">
+                              {item.note}
+                            </div>
                           )}
 
                           <button
@@ -753,14 +821,15 @@ function VolunteerContent() {
                             {item.ctaLabel}
                           </button>
 
-                          {item.category === "csr" && item.id === "corporate-day" && (
-                            <button
-                              onClick={generateCsrOnePager}
-                              className="mt-2 w-full rounded-full border border-brand-slate/40 py-2.5 text-xs font-semibold text-brand-dark hover:border-brand-dark"
-                            >
-                              Generate a one-pager for your HR/CSR team
-                            </button>
-                          )}
+                          {item.category === "csr" &&
+                            item.id === "corporate-day" && (
+                              <button
+                                onClick={generateCsrOnePager}
+                                className="mt-2 w-full rounded-full border border-brand-slate/40 py-2.5 text-xs font-semibold text-brand-dark hover:border-brand-dark"
+                              >
+                                Generate a one-pager for your HR/CSR team
+                              </button>
+                            )}
                         </BrandCard>
                       </Reveal>
                     );
@@ -774,8 +843,13 @@ function VolunteerContent() {
                     onClick={() => setShowAllRoles((v) => !v)}
                     className="inline-flex items-center gap-2 rounded-full border border-dashed border-brand-dark/25 px-6 py-3 text-sm font-semibold text-brand-dark transition hover:border-black hover:border-solid"
                   >
-                    {showAllRoles ? "Show fewer roles" : `View ${hiddenCount} more role${hiddenCount === 1 ? "" : "s"}`}
-                    <span aria-hidden="true" className={`inline-block transition-transform duration-300 ${showAllRoles ? "rotate-180" : ""}`}>
+                    {showAllRoles
+                      ? "Show fewer roles"
+                      : `View ${hiddenCount} more role${hiddenCount === 1 ? "" : "s"}`}
+                    <span
+                      aria-hidden="true"
+                      className={`inline-block transition-transform duration-300 ${showAllRoles ? "rotate-180" : ""}`}
+                    >
                       ↓
                     </span>
                   </button>
@@ -797,8 +871,15 @@ function VolunteerContent() {
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {galleryStrip.map((photo, i) => (
               <Reveal key={photo.src} delay={i * 0.08}>
-                <div className={`relative aspect-square w-full overflow-hidden bg-brand-light ${photo.shape}`}>
-                  <Image src={photo.src} alt={photo.alt} fill className="object-cover" />
+                <div
+                  className={`relative aspect-square w-full overflow-hidden bg-brand-light ${photo.shape}`}
+                >
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </Reveal>
             ))}
@@ -808,114 +889,168 @@ function VolunteerContent() {
 
       {/* ---------- AS SEEN ON SOCIAL ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden border-t border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-40" />
-        <div className="relative mx-auto max-w-6xl">
-          <Eyebrow>From our feed</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">As featured this week</h2>
-          <div className="mt-8 grid gap-5 sm:grid-cols-3">
-            {socialPosts.map((post) => (
-              <a key={post.caption} href={post.href} className="block rounded-2xl border border-brand-light p-5 transition hover:border-black/20">
-                <div className="text-xs font-semibold uppercase tracking-wide text-brand-red">{post.platform}</div>
-                <p className="mt-3 text-sm text-brand-dark/80">{post.caption}</p>
-                <div className="mt-4 text-xs text-brand-dark/50">{post.date}</div>
-              </a>
-            ))}
+        <section className="relative overflow-hidden border-t border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8">
+          <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-40" />
+          <div className="relative mx-auto max-w-6xl">
+            <Eyebrow>From our feed</Eyebrow>
+            <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">
+              As featured this week
+            </h2>
+            <div className="mt-8 grid gap-5 sm:grid-cols-3">
+              {socialPosts.map((post) => (
+                <a
+                  key={post.caption}
+                  href={post.href}
+                  className="block rounded-2xl border border-brand-light p-5 transition hover:border-black/20"
+                >
+                  <div className="text-xs font-semibold uppercase tracking-wide text-brand-red">
+                    {post.platform}
+                  </div>
+                  <p className="mt-3 text-sm text-brand-dark/80">
+                    {post.caption}
+                  </p>
+                  <div className="mt-4 text-xs text-brand-dark/50">
+                    {post.date}
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </Reveal>
-
 
       {/* ---------- RECOGNITION ---------- */}
       <Reveal>
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <Eyebrow>Hours & recognition</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">Every hour counts, and it shows</h2>
+        <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <Eyebrow>Hours & recognition</Eyebrow>
+            <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">
+              Every hour counts, and it shows
+            </h2>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { tier: "1", title: "First cap", body: "Your first logged shift. Welcome to the roster." },
-              { tier: "10", title: "Season regular", body: "10 hours in — you've got a standing spot on the schedule." },
-              { tier: "50", title: "Community favourite", body: "50 hours of showing up. Featured in our volunteer spotlight." },
-              { tier: "100", title: "Team captain", body: "100+ hours. Invited to help lead new volunteer onboarding." },
-            ].map((m) => (
-              <BrandCard key={m.tier} className="rounded-2xl p-6 sm:p-6">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-dark text-sm font-semibold text-white">{m.tier}</div>
-                <h3 className="text-base text-brand-dark">{m.title}</h3>
-                <p className="mt-2 text-xs text-brand-dark/60">{m.body}</p>
-              </BrandCard>
-            ))}
-          </div>
-
-          <div className="mt-8 flex flex-wrap items-center gap-6 rounded-2xl bg-brand-light p-7">
-            <div className="font-serif-display text-3xl text-brand-dark">32<span className="text-sm font-sans font-normal text-brand-dark/60"> hrs</span></div>
-            <div className="h-2.5 flex-1 min-w-[200px] overflow-hidden rounded-full bg-white">
-              <div className="h-full w-[64%] rounded-full bg-brand-red" />
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                {
+                  tier: "1",
+                  title: "First cap",
+                  body: "Your first logged shift. Welcome to the roster.",
+                },
+                {
+                  tier: "10",
+                  title: "Season regular",
+                  body: "10 hours in — you've got a standing spot on the schedule.",
+                },
+                {
+                  tier: "50",
+                  title: "Community favourite",
+                  body: "50 hours of showing up. Featured in our volunteer spotlight.",
+                },
+                {
+                  tier: "100",
+                  title: "Team captain",
+                  body: "100+ hours. Invited to help lead new volunteer onboarding.",
+                },
+              ].map((m) => (
+                <BrandCard key={m.tier} className="rounded-2xl p-6 sm:p-6">
+                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-dark text-sm font-semibold text-white">
+                    {m.tier}
+                  </div>
+                  <h3 className="text-base text-brand-dark">{m.title}</h3>
+                  <p className="mt-2 text-xs text-brand-dark/60">{m.body}</p>
+                </BrandCard>
+              ))}
             </div>
-            <div className="text-xs text-brand-dark/60">18 hours to your Community Favourite ribbon</div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-6 rounded-2xl bg-brand-light p-7">
+              <div className="font-serif-display text-3xl text-brand-dark">
+                32
+                <span className="text-sm font-sans font-normal text-brand-dark/60">
+                  {" "}
+                  hrs
+                </span>
+              </div>
+              <div className="h-2.5 flex-1 min-w-[200px] overflow-hidden rounded-full bg-white">
+                <div className="h-full w-[64%] rounded-full bg-brand-red" />
+              </div>
+              <div className="text-xs text-brand-dark/60">
+                18 hours to your Community Favourite ribbon
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </Reveal>
 
       {/* ---------- CORPORATE NUDGE ---------- */}
       <Reveal>
-      <section className="bg-white px-4 pb-16 sm:px-6 lg:px-8">
-        <BrandCard className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border-l-4 border-l-brand-red p-8 sm:p-8">
-          <div>
-            <h3 className="max-w-lg text-xl text-brand-dark">Know a company that could sponsor a class of 15?</h3>
-            <p className="mt-2 max-w-md text-sm text-brand-dark/70">
-              Volunteers are often the first link to a new corporate partner — a quick introduction goes a long way.
-            </p>
-          </div>
-          <button
-            onClick={generateCsrOnePager}
-            className="rounded-full bg-brand-light px-6 py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
-          >
-            Generate one-pager to introduce them
-          </button>
-        </BrandCard>
-      </section>
+        <section className="bg-white px-4 pb-16 sm:px-6 lg:px-8">
+          <BrandCard className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border-l-4 border-l-brand-red p-8 sm:p-8">
+            <div>
+              <h3 className="max-w-lg text-xl text-brand-dark">
+                Know a company that could sponsor a class of 15?
+              </h3>
+              <p className="mt-2 max-w-md text-sm text-brand-dark/70">
+                Volunteers are often the first link to a new corporate partner —
+                a quick introduction goes a long way.
+              </p>
+            </div>
+            <button
+              onClick={generateCsrOnePager}
+              className="rounded-full bg-brand-light px-6 py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
+            >
+              Generate one-pager to introduce them
+            </button>
+          </BrandCard>
+        </section>
       </Reveal>
 
       {/* ---------- FAQ ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
-        <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
-        <div className="relative mx-auto max-w-3xl">
-          <Eyebrow>Before you sign up</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Questions people actually ask</h2>
-          <div className="mt-8 rounded-3xl bg-white px-6 sm:px-8">
-            <VolunteerFaqAccordion />
+        <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
+          <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
+          <div className="relative mx-auto max-w-3xl">
+            <Eyebrow>Before you sign up</Eyebrow>
+            <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">
+              Questions people actually ask
+            </h2>
+            <div className="mt-8 rounded-3xl bg-white px-6 sm:px-8">
+              <VolunteerFaqAccordion />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </Reveal>
 
       {/*---------- AI VOLUNTEER MATCH ----------*/}
       <Reveal>
-      <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
-        <Blob className="-left-20 top-0 h-72 w-72 bg-brand-red/15" />
-        <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-red/10" />
-        <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={selectRoleAndScroll} />
-      </section>
+        <section
+          id="match"
+          className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8"
+        >
+          <Blob className="-left-20 top-0 h-72 w-72 bg-brand-red/15" />
+          <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-red/10" />
+          <AiVolunteerMatch
+            rosterItems={rosterItems}
+            onSelectRole={selectRoleAndScroll}
+          />
+        </section>
       </Reveal>
 
       {/* ---------- FINAL CTA ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-brand-light px-4 py-16 text-center sm:px-6 lg:px-8">
-        <Blob className="left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-[#F8DCDA] opacity-50" />
-        <div className="relative">
-          <TriMark className="mx-auto h-2.5 w-9 text-brand-red" />
-          <h2 className="mt-4 font-serif-display text-3xl text-brand-dark sm:text-4xl">Every shift starts with someone saying yes.</h2>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            {/* <CtaButton href="#opportunities">Browse open roles</CtaButton> */}
-            <CtaButton href="/donate" variant="outline">Prefer to give instead?</CtaButton>
+        <section className="relative overflow-hidden bg-brand-light px-4 py-16 text-center sm:px-6 lg:px-8">
+          <Blob className="left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-[#F8DCDA] opacity-50" />
+          <div className="relative">
+            <TriMark className="mx-auto h-2.5 w-9 text-brand-red" />
+            <h2 className="mt-4 font-serif-display text-3xl text-brand-dark sm:text-4xl">
+              Every shift starts with someone saying yes.
+            </h2>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+              {/* <CtaButton href="#opportunities">Browse open roles</CtaButton> */}
+              <CtaButton href="/donate" variant="outline">
+                Prefer to give instead?
+              </CtaButton>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </Reveal>
     </>
   );

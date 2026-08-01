@@ -20,18 +20,17 @@ import { NewsletterForm } from "@/components/site/newsletter-form";
 import { SiteLayout } from "@/components/site/site-layout";
 import { WallOfGratitude } from "@/components/site/wall-of-gratitude";
 import { Button } from "@/components/ui/button";
-import {
-  fourDoors,
-  impactStats,
-  programmes,
-  storySpotlight,
-} from "@/lib/site-data";
+import { useTranslation } from "react-i18next";
+import { useTranslatedProgrammes } from "@/lib/i18n/translated-data";
+import { storySpotlight } from "@/lib/site-data";
 
 const scrollViewport = { once: false, amount: 0.2 } as const;
 
 // The "21 Years in Hong Kong" marquee band from the Get Involved page,
 // placed here between the hero and the impact dashboard. Uses brand-red.
 function YearsMarquee() {
+  const { t } = useTranslation("home");
+
   return (
     <div className="relative overflow-hidden border-y border-brand-slate/30 bg-[#FBEAEA] py-3">
       <Blob className="left-1/4 top-1/2 h-24 w-24 -translate-y-1/2 bg-white/40" />
@@ -41,13 +40,16 @@ function YearsMarquee() {
         {[0, 1].map((rep) => (
           <div key={rep} className="flex shrink-0 items-center">
             {Array.from({ length: 8 }).map((_, i) => (
-              <span key={i} className="mx-5 flex items-center gap-2.5 whitespace-nowrap">
+              <span
+                key={i}
+                className="mx-5 flex items-center gap-2.5 whitespace-nowrap"
+              >
                 <span className="font-serif-display text-sm text-brand-dark sm:text-base">
-                  21 Years in Hong Kong
+                  {t("marquee.years")}
                 </span>
                 <TriMark className="h-1.5 w-5 text-brand-red/50" />
                 <span className="text-[10px] uppercase tracking-[0.2em] text-brand-slate">
-                  Celebrating Ability
+                  {t("marquee.celebrating")}
                 </span>
               </span>
             ))}
@@ -101,6 +103,12 @@ function ImpactDashboard() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, scrollViewport);
   const cardTilts = ["-rotate-1", "rotate-0", "rotate-1"];
+  const { t } = useTranslation("home");
+  const stats = [
+    { target: 600, suffix: "+", label: t("impact.families") },
+    { target: 1000, suffix: "+", label: t("impact.activities") },
+    { target: 1000, suffix: "+", label: t("impact.volunteerHours") },
+  ];
 
   return (
     <section
@@ -116,10 +124,10 @@ function ImpactDashboard() {
           className="mb-8 flex items-center justify-center gap-2.5 text-center text-sm font-semibold uppercase tracking-[0.2em] text-brand-red"
         >
           <TriMark className="h-2 w-7" />
-          Live Impact Dashboard
+          {t("impact.eyebrow")}
         </motion.p>
         <div className="grid gap-8 sm:grid-cols-3">
-          {impactStats.map((stat, index) => (
+          {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 18 }}
@@ -155,7 +163,16 @@ function ImpactDashboard() {
 
 function IconTrophy({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M13 8h14v8c0 4-3 8-7 8s-7-4-7-8V8Z" />
       <path d="M13 10H8c0 4 2 7 5 7" />
       <path d="M27 10h5c0 4-2 7-5 7" />
@@ -167,7 +184,16 @@ function IconTrophy({ className = "" }: { className?: string }) {
 }
 function IconLeaf({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M9 30c0-12 8-19 21-19-1 13-8 21-21 21" />
       <path d="M9 30c4-6 9-10 15-13" />
     </svg>
@@ -175,14 +201,32 @@ function IconLeaf({ className = "" }: { className?: string }) {
 }
 function IconHeart({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M20 33S6 24 6 14.5C6 9.8 9.6 7 13.5 7c2.9 0 5.3 1.6 6.5 4 1.2-2.4 3.6-4 6.5-4C30.4 7 34 9.8 34 14.5 34 24 20 33 20 33Z" />
     </svg>
   );
 }
 function IconHands({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M6 20l6-6 7 2 9-3 6 4-8 8-8-1-6 3" />
       <path d="M12 14l6 6" />
       <path d="M28 21l-8 9" />
@@ -202,6 +246,8 @@ function HolisticModel() {
   const [active, setActive] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, scrollViewport);
+  const { t } = useTranslation("home");
+  const translatedProgrammes = useTranslatedProgrammes();
 
   return (
     <section
@@ -219,19 +265,18 @@ function HolisticModel() {
         >
           <p className="flex items-center gap-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-brand-red">
             <TriMark className="h-2 w-7" />
-            One Whole-Person Model
+            {t("philosophy.eyebrow")}
           </p>
           <h2 className="mt-2 max-w-xl font-serif-display text-4xl text-brand-dark sm:text-5xl">
-            Four parts. One potential.
+            {t("fourDoors.title")}
           </h2>
           <p className="mt-4 max-w-2xl text-brand-slate">
-            Sport alone was never going to be enough. Real, lasting change comes from treating the
-            whole person and the whole family — here&rsquo;s how the four pieces fit together.
+            {t("fourDoors.subtitle")}
           </p>
         </motion.div>
 
         <div className="mt-12 divide-y divide-brand-slate/20 border-y border-brand-slate/20">
-          {programmes.map((programme, i) => {
+          {translatedProgrammes.map((programme, i) => {
             const isOpen = active === i;
             const Icon = pillarIcon(programme.title);
             return (
@@ -256,7 +301,9 @@ function HolisticModel() {
                   </span>
                   <span
                     className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                      isOpen ? "border-brand-red bg-brand-red/10 text-brand-red" : "border-brand-slate/30 text-brand-slate"
+                      isOpen
+                        ? "border-brand-red bg-brand-red/10 text-brand-red"
+                        : "border-brand-slate/30 text-brand-slate"
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -271,7 +318,9 @@ function HolisticModel() {
                   <span
                     aria-hidden="true"
                     className={`shrink-0 text-2xl transition-transform duration-300 ${
-                      isOpen ? "rotate-45 text-brand-red" : "rotate-0 text-brand-slate/50"
+                      isOpen
+                        ? "rotate-45 text-brand-red"
+                        : "rotate-0 text-brand-slate/50"
                     }`}
                   >
                     +
@@ -280,16 +329,20 @@ function HolisticModel() {
 
                 <div
                   className={`grid overflow-hidden transition-all duration-300 ease-out ${
-                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    isOpen
+                      ? "grid-rows-[1fr] opacity-100"
+                      : "grid-rows-[0fr] opacity-0"
                   }`}
                 >
                   <div className="overflow-hidden pb-7 pl-14 pr-4 sm:pl-[4.75rem] sm:pr-8">
-                    <p className="max-w-2xl text-brand-slate">{programme.description}</p>
+                    <p className="max-w-2xl text-brand-slate">
+                      {programme.description}
+                    </p>
                     <Link
                       href="/get-involved#programmes"
                       className="mt-4 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-brand-red transition hover:text-brand-crimson"
                     >
-                      See it in action <ArrowRight className="h-4 w-4" />
+                      {t("actions.explore")} <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
                 </div>
@@ -303,7 +356,35 @@ function HolisticModel() {
 }
 
 function FourDoors() {
-  const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-crimson", "bg-brand-dark"];
+  const cardAccents = [
+    "bg-brand-red",
+    "bg-brand-dark",
+    "bg-brand-crimson",
+    "bg-brand-dark",
+  ];
+  const { t } = useTranslation("home");
+  const cards = [
+    {
+      title: t("fourDoors.education.title"),
+      description: t("fourDoors.education.description"),
+      href: "/our-programmes",
+    },
+    {
+      title: t("fourDoors.donate.title"),
+      description: t("fourDoors.donate.description"),
+      href: "/donate",
+    },
+    {
+      title: t("fourDoors.volunteer.title"),
+      description: t("fourDoors.volunteer.description"),
+      href: "/our-volunteer",
+    },
+    {
+      title: t("fourDoors.calendar.title"),
+      description: t("fourDoors.calendar.description"),
+      href: "/our-programmes",
+    },
+  ];
 
   return (
     <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
@@ -316,7 +397,7 @@ function FourDoors() {
           transition={{ duration: 0.45 }}
           className="mb-3 text-center font-serif-display text-4xl text-brand-dark sm:text-5xl"
         >
-Choose what you need
+          {t("fourDoors.title")}
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -325,10 +406,10 @@ Choose what you need
           transition={{ duration: 0.45, delay: 0.05 }}
           className="mx-auto mb-10 max-w-2xl text-center text-brand-slate"
         >
-          Pick one clear path. You can browse, donate, volunteer, and learn without creating an account.
+          {t("fourDoors.subtitle")}
         </motion.p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {fourDoors.map((door, index) => (
+          {cards.map((door, index) => (
             <motion.div
               key={door.title}
               initial={{ opacity: 0, y: 24 }}
@@ -352,7 +433,7 @@ Choose what you need
                   {door.description}
                 </p>
                 <span className="relative mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-brand-red">
-                  Enter <ArrowRight className="h-4 w-4" />
+                  {t("actions.enter")} <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
             </motion.div>
@@ -369,6 +450,7 @@ function StoryCarousel() {
   const count = storySpotlight.length;
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, scrollViewport);
+  const { t } = useTranslation("home");
 
   function prev() {
     setIndex((current) => (current - 1 + count) % count);
@@ -392,10 +474,10 @@ function StoryCarousel() {
             transition={{ duration: 0.45 }}
           >
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-red">
-              Featured Stories
+              {t("stories.eyebrow")}
             </p>
             <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">
-              Ability in motion
+              {t("stories.title")}
             </h2>
           </motion.div>
         </div>
@@ -404,7 +486,7 @@ function StoryCarousel() {
           <motion.button
             type="button"
             onClick={prev}
-            aria-label="Previous story"
+            aria-label={t("actions.previousStory")}
             initial={{ opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
             transition={{ duration: 0.4, delay: 0.08 }}
@@ -482,7 +564,8 @@ function StoryCarousel() {
                       href={story.href}
                       className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-red transition hover:text-brand-crimson"
                     >
-                      Read Story <ArrowRight className="h-4 w-4" />
+                      {t("actions.readStory")}{" "}
+                      <ArrowRight className="h-4 w-4" />
                     </Link>
                   </motion.div>
                 </div>
@@ -493,7 +576,7 @@ function StoryCarousel() {
           <motion.button
             type="button"
             onClick={next}
-            aria-label="Next story"
+            aria-label={t("actions.nextStory")}
             initial={{ opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
             transition={{ duration: 0.4, delay: 0.08 }}
@@ -515,12 +598,14 @@ function StoryCarousel() {
             <motion.button
               key={item.name}
               type="button"
-              aria-label={`Go to story ${i + 1}`}
+              aria-label={t("actions.goToStory", { number: i + 1 })}
               onClick={() => setIndex(i)}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
               className={`h-2.5 w-2.5 rounded-full transition ${
-                i === index ? "bg-brand-red" : "bg-brand-slate/50 hover:bg-brand-slate"
+                i === index
+                  ? "bg-brand-red"
+                  : "bg-brand-slate/50 hover:bg-brand-slate"
               }`}
             />
           ))}
@@ -531,6 +616,8 @@ function StoryCarousel() {
 }
 
 export default function HomePage() {
+  const { t } = useTranslation("home");
+
   return (
     <SiteLayout>
       {/* Keyframes for the "21 Years in Hong Kong" marquee. */}
@@ -592,9 +679,7 @@ export default function HomePage() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-6 max-w-2xl text-lg text-white/95 drop-shadow-sm sm:text-xl"
           >
-            Empowering people with Down syndrome, autism, and neurodiversity in
-            Hong Kong through sport, nutrition, family support, and holistic
-            community care.
+            {t("hero.subtitle")}
           </motion.p>
 
           <motion.div
@@ -609,7 +694,7 @@ export default function HomePage() {
               className="bg-brand-red text-white hover:bg-brand-crimson"
             >
               <Link href="/our-story">
-                Learn about Love 21 <ArrowRight className="ml-2 h-4 w-4" />
+                {t("hero.cta")} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
@@ -645,52 +730,50 @@ export default function HomePage() {
 
       {/* Section 5: Celebrating Ability Philosophy */}
       <Reveal>
-      <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
-        <Blob className="left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-brand-red/5" />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={scrollViewport}
-          transition={{ duration: 0.6 }}
-          className="relative mx-auto max-w-4xl text-center"
-        >
-          <p className="flex items-center justify-center gap-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-brand-red">
-            <TriMark className="h-2 w-7" />
-            Celebrating Ability
-          </p>
-          <p className="mt-5 font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">
-            This is an ABILITY story — an opportunity story, straight from
-            #SoMuchAbility, Love 21&apos;s own campaign hashtag. We celebrate what
-            people can do and open more places for every ability to shine.
-          </p>
-          <Link
-            href="/get-involved"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-slate transition hover:text-brand-red"
+        <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
+          <Blob className="left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-brand-red/5" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={scrollViewport}
+            transition={{ duration: 0.6 }}
+            className="relative mx-auto max-w-4xl text-center"
           >
-            Explore programmes <ArrowRight className="h-4 w-4" />
-          </Link>
-        </motion.div>
-      </section>
+            <p className="flex items-center justify-center gap-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-brand-red">
+              <TriMark className="h-2 w-7" />
+              {t("philosophy.eyebrow")}
+            </p>
+            <p className="mt-5 font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">
+              {t("philosophy.body")}
+            </p>
+            <Link
+              href="/get-involved"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-slate transition hover:text-brand-red"
+            >
+              {t("philosophy.cta")} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
+        </section>
       </Reveal>
 
       <WallOfGratitude />
 
       {/* Section 6: Newsletter (unchanged structure) */}
       <Reveal>
-      <section className="relative overflow-hidden bg-brand-dark px-4 py-16 text-brand-light sm:px-6 lg:px-8">
-        <Blob className="right-0 top-0 h-64 w-64 translate-x-1/3 -translate-y-1/3 bg-brand-red/10" />
-        <div className="relative mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-brand-red">
-              Subscribe to our eNews
-            </p>
-            <h2 className="mt-2 font-serif-display text-4xl sm:text-5xl">
-              Stay close to the mission
-            </h2>
+        <section className="relative overflow-hidden bg-brand-dark px-4 py-16 text-brand-light sm:px-6 lg:px-8">
+          <Blob className="right-0 top-0 h-64 w-64 translate-x-1/3 -translate-y-1/3 bg-brand-red/10" />
+          <div className="relative mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em] text-brand-red">
+                {t("newsletter.eyebrow")}
+              </p>
+              <h2 className="mt-2 font-serif-display text-4xl sm:text-5xl">
+                {t("newsletter.title")}
+              </h2>
+            </div>
+            <NewsletterForm dark />
           </div>
-          <NewsletterForm dark />
-        </div>
-      </section>
+        </section>
       </Reveal>
     </SiteLayout>
   );
