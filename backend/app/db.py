@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine, text
+from sqlalchemy import select
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.core.config import get_settings
@@ -39,3 +40,22 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def ensure_bootstrap_admin() -> None:
+    email = (settings.bootstrap_admin_email or "").strip().lower()
+    password = settings.bootstrap_admin_password or ""
+    if not email or not password:
+        return
+
+    from app.core.security import hash_password
+    from app.models.user import Role, User
+
+    with SessionLocal() as db:
+        existing = db.scalar(select(User).where(User.email == email))
+        if existing is None:
+            db.add(User(email=email, hashed_password=hash_password(password), role=Role.ADMIN))
+        else:
+            existing.role = Role.ADMIN
+            existing.hashed_password = hash_password(password)
+        db.commit()

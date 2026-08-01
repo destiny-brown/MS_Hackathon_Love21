@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     newsletter_from_email: str = "Love 21 Foundation <newsletter@love21foundation.com>"
     anthropic_api_key: str | None = None
     youtube_api_key: str | None = None
+    bootstrap_admin_email: str | None = None
+    bootstrap_admin_password: str | None = None
     model_enabled: bool = False
     model_base_url: str | None = None
     model_api_key: str | None = None
