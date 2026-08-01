@@ -6,7 +6,7 @@ export const mainNav: NavItem[] = [
   { label: "Impact", href: "/impact-dashboard" },
   { label: "Stories", href: "/stories-media" },
   { label: "About Us", href: "/about-governance" },
-  { label: "Wishlist", href: "/shop" },
+  { label: "Wishlist", href: "/wishlist" },
 ];
 
 export const footerNav: NavItem[] = [

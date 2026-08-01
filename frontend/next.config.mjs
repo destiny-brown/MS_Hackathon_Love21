@@ -20,6 +20,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/shop",
+        destination: "/wishlist",
+        permanent: true,
+      },
+      {
         source: "/learn-play/daily-myth-buster",
         destination: "/learn-play/21-moves",
         permanent: true,

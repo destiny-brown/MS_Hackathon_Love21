@@ -6,7 +6,7 @@ export default function AdminDonationsPage() {
     <>
       <AdminPageHeader
         title="Donations & wishlist"
-        description="Manage campaigns, ongoing causes, and wishlist needs shown on Donate, Shop, and supporter pages."
+        description="Manage campaigns, ongoing causes, and wishlist needs shown on Donate, Wishlist, and supporter pages."
       />
       <SupportOpportunityManager />
     </>

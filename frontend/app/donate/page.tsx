@@ -179,7 +179,7 @@ export default async function DonatePage({
         title="Donate"
         subtitle="Choose one clear way to help. Your gift supports sports, nutrition, family programmes, and everyday care for Love 21 members."
         primaryAction={{ label: "Start donation", href: "#donation-form" }}
-        secondaryAction={{ label: "See wishlist", href: "/shop" }}
+        secondaryAction={{ label: "See wishlist", href: "/wishlist" }}
       />
       {/* Tier cards and the mock donation form share one DonationAmountProvider
           so clicking a tier above always drives the form below — single
