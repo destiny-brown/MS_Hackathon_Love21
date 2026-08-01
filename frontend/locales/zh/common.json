@@ -47,5 +47,8 @@
     "previousStory": "上一个故事",
     "nextStory": "下一个故事",
     "goToStory": "前往故事 {{number}}"
+  },
+  "sectionNav": {
+    "ariaLabel": "本页导航"
   }
 }

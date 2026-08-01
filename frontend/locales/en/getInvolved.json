@@ -158,5 +158,11 @@
     "closingBody": "You can donate or find a volunteer shift today — both take less than five minutes.",
     "donate": "Donate",
     "volunteer": "Volunteer"
+  },
+  "sectionNav": {
+    "join": "Join",
+    "categories": "Categories",
+    "activities": "Activities",
+    "faq": "FAQ"
   }
 }

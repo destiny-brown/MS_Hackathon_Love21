@@ -46,8 +46,9 @@ export function ImpactPillars() {
 
   return (
     <section
+      id="impact-pillars"
       ref={ref}
-      className="border-b border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:max-h-[100dvh] lg:overflow-hidden lg:px-8 lg:py-6"
+      className="scroll-mt-24 border-b border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:max-h-[100dvh] lg:overflow-hidden lg:px-8 lg:py-6"
     >
       <div className="mx-auto flex max-w-6xl flex-col lg:h-[calc(100dvh-5.5rem)]">
         <motion.div

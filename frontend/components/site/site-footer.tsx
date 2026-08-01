@@ -5,8 +5,8 @@ import { footerNav, mainNav } from "@/lib/site-data";
 export function SiteFooter() {
   return (
     <footer className="border-t border-brand-light bg-brand-light px-4 py-12 pb-28 sm:px-6 lg:px-8 lg:pb-12">
-      <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-3">
-        <div>
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-10 lg:grid-cols-3">
+        <div className="col-span-2 lg:col-span-1">
           <p className="text-lg font-semibold uppercase tracking-[0.2em] text-brand-red">Love 21 Foundation</p>
           <p className="mt-3 text-sm text-brand-dark/70">
             Empowering the Down syndrome and autistic community in Hong Kong through sport, nutrition, and holistic support.
@@ -40,9 +40,6 @@ export function SiteFooter() {
       <div className="mx-auto mt-10 flex max-w-6xl flex-col items-start justify-between gap-3 border-t border-brand-slate/30 pt-6 text-sm text-brand-dark/70 sm:flex-row">
         <p>© 2019–2026 Love 21 Foundation Limited</p>
         <div className="flex gap-5">
-          <Link href="/donate" className="rounded-md font-semibold uppercase tracking-[0.11em] text-brand-red transition hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-            Donate
-          </Link>
           <Link href="/contact-us" className="rounded-md transition hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
             Contact
           </Link>

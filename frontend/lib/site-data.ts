@@ -11,11 +11,8 @@ export const mainNav: NavItem[] = [
 
 export const footerNav: NavItem[] = [
   { label: "Volunteers", href: "/our-volunteer" },
-  { label: "Donate", href: "/donate" },
   { label: "Join Us", href: "/join-us" },
-  { label: "Our Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
-  { label: "Wishlist: Help Us", href: "/shop" },
   { label: "Members", href: "/members" },
   { label: "Contact Us", href: "/contact-us" },
 ];

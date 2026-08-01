@@ -158,5 +158,11 @@
     "closingBody": "你今天就可以捐款或寻找志愿者时段——两者都只需不到五分钟。",
     "donate": "捐款",
     "volunteer": "做志愿者"
+  },
+  "sectionNav": {
+    "join": "加入",
+    "categories": "分类",
+    "activities": "活动",
+    "faq": "常见问题"
   }
 }

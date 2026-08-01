@@ -47,5 +47,8 @@
     "previousStory": "Previous story",
     "nextStory": "Next story",
     "goToStory": "Go to story {{number}}"
+  },
+  "sectionNav": {
+    "ariaLabel": "On this page"
   }
 }
