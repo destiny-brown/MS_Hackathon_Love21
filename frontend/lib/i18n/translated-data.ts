@@ -13,6 +13,7 @@ import type { QuizQuestion } from "@/lib/learn-quiz-data";
 import { mythVsFactQuestions } from "@/lib/learn-quiz-data";
 import type { MemberStory } from "@/lib/member-stories";
 import { getMemberStory, memberStories, memberStoryCategoryLabels } from "@/lib/member-stories";
+import { useMemberStories } from "@/lib/use-member-stories";
 import type { BoardMember } from "@/lib/site-data";
 import { boardMembers, programmes } from "@/lib/site-data";
 import type { RosterItem } from "@/lib/volunteer-roster";
@@ -259,9 +260,10 @@ export function useTranslatedBoardMember(slug: string, fallback: BoardMember): B
 
 export function useTranslatedMemberStories(): MemberStory[] {
   const { t } = useTranslation("media");
+  const stories = useMemberStories();
   return useMemo(
     () =>
-      memberStories.map((story) => ({
+      stories.map((story) => ({
         ...story,
         name: tx(t, `memberStories.stories.${story.slug}.name`, story.name),
         quote: tx(t, `memberStories.stories.${story.slug}.quote`, story.quote),
@@ -275,13 +277,14 @@ export function useTranslatedMemberStories(): MemberStory[] {
           tx(t, `memberStories.categories.${key}`, memberStoryCategoryLabels[key] ?? key),
         ),
       })),
-    [t],
+    [stories, t],
   );
 }
 
 export function useTranslatedMemberStory(slug: string, fallback: MemberStory): MemberStory {
   const { t } = useTranslation("media");
-  const source = getMemberStory(slug) ?? fallback;
+  const stories = useMemberStories();
+  const source = stories.find((story) => story.slug === slug) ?? getMemberStory(slug) ?? fallback;
   return {
     ...source,
     name: tx(t, `memberStories.stories.${slug}.name`, source.name),

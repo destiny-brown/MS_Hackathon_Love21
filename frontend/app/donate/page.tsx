@@ -4,6 +4,7 @@ import { BrandCard } from "@/components/brand/BrandCard";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
+import { DONATION_TIERS } from "@/lib/donation-tiers";
 import { DonationAmountProvider } from "@/components/site/donation-amount-context";
 import { DonationOpportunities } from "@/components/site/donation-opportunities";
 import { DonationTierGrid } from "@/components/site/donation-tier-grid";
@@ -180,7 +181,6 @@ export default async function DonatePage({
         primaryAction={{ label: "Start donation", href: "#donation-form" }}
         secondaryAction={{ label: "See wishlist", href: "/shop" }}
       />
-
       {/* Tier cards and the mock donation form share one DonationAmountProvider
           so clicking a tier above always drives the form below — single
           source of truth, no amount hardcoded in more than one place. */}

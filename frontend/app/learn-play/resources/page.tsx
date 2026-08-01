@@ -2,15 +2,17 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
+import { fetchLearnResourcesForAudience } from "@/lib/learn-content";
 import { getStoryLearnConnections } from "@/lib/learn-connections";
 import {
   getExternalResourcesForAudience,
   getLove21LearnStories,
+  type MediaPost,
   type StoryAudience,
 } from "@/lib/media-stories";
 
@@ -30,8 +32,15 @@ function ResourcesContent() {
   const filter: FilterOption =
     audienceParam === "teachers" || audienceParam === "parents" ? audienceParam : "all-filter";
 
-  const love21Stories = useMemo(() => getLove21LearnStories(filter), [filter]);
-  const externalResources = useMemo(() => getExternalResourcesForAudience(filter), [filter]);
+  const [love21Stories, setLove21Stories] = useState<MediaPost[]>(() => getLove21LearnStories(filter));
+  const [externalResources, setExternalResources] = useState<MediaPost[]>(() => getExternalResourcesForAudience(filter));
+
+  useEffect(() => {
+    void fetchLearnResourcesForAudience(filter).then(({ love21Stories: love21, externalResources: external }) => {
+      setLove21Stories(love21);
+      setExternalResources(external);
+    });
+  }, [filter]);
 
   return (
     <>

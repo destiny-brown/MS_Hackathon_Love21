@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
-import { SiteHeader } from "@/components/site/site-header";
+import { AdminShell } from "@/components/admin/admin-shell";
 import { useRequireRoles } from "@/lib/auth";
 
 type AdminLayoutProps = {
@@ -14,29 +12,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-brand-cream">
-        <SiteHeader />
-        <main className="flex min-h-[50vh] items-center justify-center px-4 py-16">
-          <p className="text-sm text-muted-foreground" role="status">
-            Verifying staff access…
-          </p>
-        </main>
+      <div className="flex min-h-screen items-center justify-center bg-brand-cream px-4">
+        <p className="text-sm text-muted-foreground" role="status">
+          Verifying staff access…
+        </p>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-brand-cream">
-      <SiteHeader />
-      <div className="border-b border-brand-sand bg-white/80 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 text-sm">
-          <p className="font-medium text-brand-ink">Staff admin</p>
-          <Link href="/" className="text-brand-coral hover:underline">
-            Back to site
-          </Link>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
+  return <AdminShell user={user}>{children}</AdminShell>;
 }
