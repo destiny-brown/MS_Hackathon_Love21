@@ -80,7 +80,7 @@ def create_mock_donation(
         if opportunity is None or opportunity.status != "active":
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Support opportunity not found")
 
-    supporter = current_user if current_user and current_user.role == Role.SUPPORTER else None
+    supporter = current_user if current_user and Role.canonical(current_user.role) == Role.SUPPORTER else None
     donor_email = supporter.email if supporter else payload.donor_email
     if donor_email is None:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Guest donations need an email address")
@@ -126,7 +126,7 @@ def list_activities(
 ) -> list[ActivityRead]:
     activities = db.scalars(select(Activity).order_by(Activity.starts_at)).all()
     signed_up_ids: set[int] = set()
-    if current_user and current_user.role == Role.SUPPORTER:
+    if current_user and Role.canonical(current_user.role) == Role.SUPPORTER:
         signed_up_ids = set(
             db.scalars(
                 select(ActivitySignup.activity_id).where(

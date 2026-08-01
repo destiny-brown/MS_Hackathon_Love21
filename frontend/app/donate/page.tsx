@@ -182,30 +182,6 @@ export default async function DonatePage({
         secondaryAction={{ label: "See wishlist", href: "/shop" }}
       />
 
-      <Reveal>
-        <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
-          <div className="relative mx-auto max-w-6xl">
-            <Eyebrow>Donor transparency</Eyebrow>
-            <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Where your gift goes</h2>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {DONATION_TIERS.map((tier, i) => (
-                <Reveal key={tier.amount} delay={i * 0.08}>
-                  <BrandCard
-                    className={`rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6 ${i % 2 === 0 ? "sm:-rotate-1" : "sm:rotate-1"}`}
-                  >
-                    <div className="font-serif-display text-2xl text-brand-red">{tier.label}</div>
-                    <p className="mt-3 text-sm text-brand-dark/70">{tier.impact}</p>
-                  </BrandCard>
-                </Reveal>
-              ))}
-            </div>
-            <div className="mt-8">
-              <CtaButton href="#donation-form">Choose your tier</CtaButton>
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
       {/* Tier cards and the mock donation form share one DonationAmountProvider
           so clicking a tier above always drives the form below — single
           source of truth, no amount hardcoded in more than one place. */}

@@ -106,7 +106,7 @@ export const trailStops: TrailStop[] = [
     badge: "coach",
     badgeLabel: "Coach",
     storySlug: "beyond-limits-banquet",
-    programmeHref: "/events-campaigns",
+    programmeHref: "/get-involved",
     handoffTitle: "Beyond Limits — tables and seats open",
     handoffQuote: "Celebrating ability on stage and at the table.",
   },

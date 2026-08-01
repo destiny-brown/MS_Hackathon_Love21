@@ -10,6 +10,7 @@ from app.core.config import get_settings
 from app.db import get_db
 from app.deps import require_roles
 from app.models.activity import Activity, ActivitySignup
+from app.models.learn_content import LearnQuestion, LearnResource, LearnVideo
 from app.models.newsletter import NewsletterDelivery, NewsletterSubscriber
 from app.models.user import Role, User
 from app.models.volunteer_activity import VolunteerActivity
@@ -60,6 +61,9 @@ def admin_overview(_: User = Depends(require_roles(Role.ADMIN)), db: Session = D
         volunteer_program_count=db.scalar(select(func.count()).select_from(VolunteerActivity)) or 0,
         subscriber_count=subscriber_count,
         active_subscriber_count=active_subscriber_count,
+        learn_question_count=db.scalar(select(func.count()).select_from(LearnQuestion)) or 0,
+        learn_resource_count=db.scalar(select(func.count()).select_from(LearnResource)) or 0,
+        learn_video_count=db.scalar(select(func.count()).select_from(LearnVideo)) or 0,
     )
 
 

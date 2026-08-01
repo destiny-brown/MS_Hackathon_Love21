@@ -75,8 +75,7 @@ function LoginForm() {
     try {
       const response = await api.login(email, password);
       setToken(response.access_token);
-      const currentUser = await api.me();
-      router.push(resolvePostLoginPath(currentUser.role, nextPath));
+      router.push(resolvePostLoginPath(response.user.role, nextPath));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

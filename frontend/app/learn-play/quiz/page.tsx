@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { MythFactQuizCard, QuizResultBadge } from "@/components/learn/myth-fact-quiz-card";
 import { MythFactPlayMore } from "@/components/learn/myth-fact-play-more";
@@ -9,13 +9,15 @@ import { RelatedStories } from "@/components/learn/related-stories";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { Button } from "@/components/ui/button";
-import { getQuizRelatedStories, mythVsFactQuestions, type QuizAnswer } from "@/lib/learn-quiz-data";
+import { fetchQuizQuestions } from "@/lib/learn-content";
+import { getQuizRelatedStories, mythVsFactQuestions, type QuizAnswer, type QuizQuestion } from "@/lib/learn-quiz-data";
 import type { MediaPost } from "@/lib/media-stories";
 import { getStoriesBySlugs } from "@/lib/media-stories";
 
 type QuizPhase = "intro" | "playing" | "finished";
 
 export default function MythVsFactQuizPage() {
+  const [questions, setQuestions] = useState<QuizQuestion[]>(mythVsFactQuestions);
   const [phase, setPhase] = useState<QuizPhase>("intro");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -24,8 +26,12 @@ export default function MythVsFactQuizPage() {
   const [usedStorySlugs, setUsedStorySlugs] = useState<Set<string>>(new Set());
   const [relatedStory, setRelatedStory] = useState<MediaPost | null>(null);
 
-  const question = mythVsFactQuestions[currentIndex];
-  const total = mythVsFactQuestions.length;
+  useEffect(() => {
+    void fetchQuizQuestions().then(setQuestions);
+  }, []);
+
+  const question = questions[currentIndex];
+  const total = questions.length;
 
   const questionStories = useMemo(
     () => (relatedStory ? [relatedStory] : []),

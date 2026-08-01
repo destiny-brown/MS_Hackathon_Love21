@@ -4,7 +4,7 @@ import { footerNav, mainNav } from "@/lib/site-data";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-brand-light bg-brand-light px-4 py-12 sm:px-6 lg:px-8">
+    <footer className="border-t border-brand-light bg-brand-light px-4 py-12 pb-28 sm:px-6 lg:px-8 lg:pb-12">
       <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <p className="text-lg font-semibold uppercase tracking-[0.2em] text-brand-red">Love 21 Foundation</p>

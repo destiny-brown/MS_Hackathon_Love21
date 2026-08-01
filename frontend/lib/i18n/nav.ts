@@ -3,7 +3,6 @@ export const navKeyByHref: Record<string, string> = {
   "/get-involved": "nav.getInvolved",
   "/impact-dashboard": "nav.impact",
   "/stories-media": "nav.stories",
-  "/events-campaigns": "nav.events",
   "/about-governance": "nav.aboutUs",
   "/our-volunteer": "nav.volunteers",
   "/donate": "nav.donate",

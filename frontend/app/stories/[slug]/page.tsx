@@ -1,7 +1,5 @@
-import { notFound } from "next/navigation";
-
-import { MemberStoryDetail } from "@/components/site/member-story-detail";
-import { getMemberStory, memberStories } from "@/lib/member-stories";
+import { MemberStoryPageClient } from "@/app/stories/[slug]/member-story-page-client";
+import { memberStories } from "@/lib/member-stories";
 
 export function generateStaticParams() {
   return memberStories.map((story) => ({ slug: story.slug }));
@@ -9,9 +7,5 @@ export function generateStaticParams() {
 
 export default async function MemberStoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const story = getMemberStory(slug);
-
-  if (!story) notFound();
-
-  return <MemberStoryDetail story={story} />;
+  return <MemberStoryPageClient slug={slug} />;
 }
