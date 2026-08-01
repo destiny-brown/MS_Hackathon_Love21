@@ -1,32 +1,12 @@
 # hackkit
 
-A production-lean full-stack hackathon starter kit for shipping a first feature fast: FastAPI + SQLAlchemy + JWT auth + SQLite/Postgres + Next.js App Router + Tailwind + shadcn/ui-style components + Docker + Render/Vercel notes.
+A production-lean full-stack starter for shipping quickly: FastAPI + SQLAlchemy + JWT auth + Alembic migrations + SQLite/Postgres + Next.js App Router + Tailwind.
 
 Built for a 4–5 day hackathon: clone, seed, run, and start copying the `Item` resource.
 
 ## 60-second local quickstart
 
-### Option A: Docker
-
-```bash
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env.local
-docker compose up --build
-```
-
-Then seed once in another terminal:
-
-```bash
-docker compose exec backend python seed.py
-```
-
-Open:
-
-- Frontend: http://localhost:3000
-- Backend health: http://localhost:8000/health
-- API docs: http://localhost:8000/docs
-
-### Option B: Non-Docker
+### Option A: Non-Docker (recommended)
 
 Terminal 1 — backend:
 
@@ -36,6 +16,7 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
+python -m scripts.migrate
 python seed.py
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
@@ -49,6 +30,26 @@ cp .env.example .env.local
 npm run dev
 ```
 
+Open:
+
+- Frontend: http://localhost:3000
+- Backend health: http://localhost:8000/health
+- API docs: http://localhost:8000/docs
+
+### Option B: Docker (optional)
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+docker compose up --build
+```
+
+Then seed once in another terminal:
+
+```bash
+docker compose exec backend python seed.py
+```
+
 ## Demo logins
 
 All demo users use password `demo1234`:
@@ -58,6 +59,11 @@ All demo users use password `demo1234`:
 - Supporter: `supporter@love21.demo` — includes giving history, impact, activity sign-ups, and volunteer hours
 
 Legacy `donor@love21.demo` and `volunteer@love21.demo` rows are converted to the `supporter` role if they already exist in a local database.
+
+You can also bootstrap an admin account at backend startup with:
+
+- `BOOTSTRAP_ADMIN_EMAIL`
+- `BOOTSTRAP_ADMIN_PASSWORD`
 
 ## Managing donations and the wishlist
 
@@ -120,6 +126,22 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `POST /auth/register`
 - `POST /auth/login`
 - `GET /auth/me`
+- `GET /admin/overview`
+- `GET /admin/activities`
+- `POST /admin/activities`
+- `PATCH /admin/activities/{activity_id}`
+- `DELETE /admin/activities/{activity_id}`
+- `GET /admin/volunteer-activities`
+- `POST /admin/volunteer-activities`
+- `PATCH /admin/volunteer-activities/{activity_id}`
+- `DELETE /admin/volunteer-activities/{activity_id}`
+- `GET /admin/newsletter/subscribers`
+- `POST /admin/newsletter/subscribers`
+- `PATCH /admin/newsletter/subscribers/{subscriber_id}`
+- `DELETE /admin/newsletter/subscribers/{subscriber_id}`
+- `GET /admin/newsletter/deliveries`
+- `POST /admin/newsletter/preview`
+- `POST /admin/newsletter/send`
 - `GET /admin/metrics` — admin-only role-protection template
 - `GET /supporter/recurring-donation` — supporter recurring-support template
 - `GET /supporter/dashboard` — supporter giving, impact, activities, and volunteer hours
@@ -139,6 +161,16 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `POST /support-opportunities` — admin creation
 - `PATCH /support-opportunities/admin/{id}` — admin update or archive
 - `POST /ai/ask` — no-ops clearly when `ANTHROPIC_API_KEY` is missing
+- `GET /volunteer/activities`
+- `POST /volunteer/match`
+- `POST /captain/chat`
+- `POST /trail/debrief`
+- `POST /newsletter/subscribe`
+- `POST /newsletter/unsubscribe/{token}`
+- `GET /gratitude-entries/public`
+- `POST /gratitude-entries/member`
+- `GET /gratitude-entries/admin/pending`
+- `PATCH /gratitude-entries/admin/{entry_id}`
 
 ## Environment variables
 
@@ -149,16 +181,25 @@ DATABASE_URL=sqlite:///./hackkit.db
 SECRET_KEY=change-me
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ANTHROPIC_API_KEY=
+BOOTSTRAP_ADMIN_EMAIL=
+BOOTSTRAP_ADMIN_PASSWORD=
 MODEL_ENABLED=false
 MODEL_BASE_URL=https://destiny-brown--love21-qwen-modelserver.us-east.modal.direct/v1
 MODEL_API_KEY=
 MODEL_NAME=qwen3-8b
+MODEL_TIMEOUT_SECONDS=45
+MODEL_ENHANCE_TIMEOUT_SECONDS=12
+SITE_URL=http://localhost:3000
+RESEND_API_KEY=
+NEWSLETTER_FROM_EMAIL=Love 21 Foundation <newsletter@love21foundation.com>
 ```
 
 Frontend (`frontend/.env.local`):
 
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:8000
+SITE_URL=http://localhost:3000
+RESEND_API_KEY=
 ```
 
 ## Database
@@ -169,7 +210,14 @@ SQLite is the default and needs no setup. To use Postgres, set one env var:
 DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/hackkit
 ```
 
-Tables are created on app startup with SQLAlchemy metadata. There is intentionally no migration tool in this starter.
+Migrations are managed with Alembic. For local development after model changes:
+
+```bash
+cd backend
+alembic revision --autogenerate -m "describe the change"
+python -m scripts.migrate
+alembic check
+```
 
 ## Deployment
 
@@ -187,9 +235,13 @@ alembic upgrade head
 alembic check
 ```
 
-The backend container applies pending migrations before starting Uvicorn. Its
-migration launcher also stamps complete databases created by older versions of
-the project before applying newer migrations.
+The backend container applies pending migrations before starting Uvicorn via
+`python -m scripts.migrate`. The migration launcher also stamps complete
+databases created by older versions of the project before applying newer
+migrations.
+
+Recent migration hardening includes idempotent handling for partially applied
+`gratitude_entries` schema changes on Postgres.
 
 ### Model on Modal
 
@@ -227,8 +279,8 @@ managed PostgreSQL database.
 	`https://your-app.vercel.app`.
 4. Set `MODEL_BASE_URL` to the Modal server URL plus `/v1`, and set
 	`MODEL_API_KEY` to the same token stored in the Modal `love21-model` secret.
-5. Set `ANTHROPIC_API_KEY` and `YOUTUBE_API_KEY` only when those integrations
-	are enabled. Render generates `SECRET_KEY` and connects `DATABASE_URL`.
+5. Set `ANTHROPIC_API_KEY` only when that integration is enabled. Render
+	generates `SECRET_KEY` and connects `DATABASE_URL`.
 
 The backend Dockerfile is also a fallback for any container host:
 
@@ -256,3 +308,13 @@ Then set `DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres:5432/hack
 ## Notes on auth storage
 
 The frontend stores the JWT in `localStorage` because it is the fastest hackathon path and simple to inspect/debug. Tradeoff: it is more exposed to XSS than an HttpOnly cookie. If your app handles sensitive data, switch to a cookie-based session before production.
+
+## Troubleshooting
+
+- `Unauthorized` in browser while local API login works:
+	- Clear `localStorage` token for `localhost:3000`.
+	- Restart both frontend and backend dev servers.
+	- Confirm frontend points to `NEXT_PUBLIC_API_URL=http://localhost:8000`.
+- Render deploy fails with `DuplicateTable` for `gratitude_entries`:
+	- Update to the latest migration file `c3f9d2a1e4b7` and redeploy.
+	- This migration now skips table creation if it already exists and only fills missing indexes.

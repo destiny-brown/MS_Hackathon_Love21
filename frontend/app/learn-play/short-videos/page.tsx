@@ -7,12 +7,8 @@ import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { api, type YouTubeVideo } from "@/lib/api";
+import { type YouTubeVideo } from "@/lib/api";
 import { curatedVideos, filterCuratedVideos } from "@/lib/curated-videos";
-
-const DEFAULT_TOPIC_QUERY = "autism OR down syndrome OR neurodivergence inclusive education";
-
-type VideoSource = "curated" | "youtube";
 
 function getYouTubeThumbnail(video: YouTubeVideo): string {
   if (video.thumbnail_url) return video.thumbnail_url;
@@ -25,62 +21,16 @@ function formatPublishedDate(value: string) {
 
 export default function ShortVideosPage() {
   const [query, setQuery] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
   const [videos, setVideos] = useState<YouTubeVideo[]>(curatedVideos);
-  const [source, setSource] = useState<VideoSource>("curated");
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorText, setErrorText] = useState<string | null>(null);
-
-  async function runYouTubeSearch(searchQuery: string) {
-    setIsLoading(true);
-    setErrorText(null);
-    setSubmittedQuery(searchQuery);
-
-    try {
-      const response = await api.searchYouTube(searchQuery, 20, 5);
-      if (!response.enabled) {
-        setVideos(filterCuratedVideos(query));
-        setSource("curated");
-        setErrorText(response.error || "YouTube search is currently unavailable. Showing curated picks.");
-        return;
-      }
-      if (response.items.length === 0) {
-        setVideos(filterCuratedVideos(query));
-        setSource("curated");
-        setErrorText(response.error || "No videos found. Showing curated picks instead.");
-        return;
-      }
-      setVideos(response.items);
-      setSource("youtube");
-    } catch (error) {
-      setVideos(filterCuratedVideos(query));
-      setSource("curated");
-      const message = error instanceof Error ? error.message : "Unable to search YouTube right now.";
-      setErrorText(`${message} Showing curated picks instead.`);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  function handleSearch() {
-    const trimmed = query.trim();
-    const effectiveQuery = trimmed || DEFAULT_TOPIC_QUERY;
-    void runYouTubeSearch(effectiveQuery);
-  }
 
   function handleReset() {
     setQuery("");
-    setSubmittedQuery("");
     setVideos(curatedVideos);
-    setSource("curated");
-    setErrorText(null);
   }
 
   function handleQueryChange(value: string) {
     setQuery(value);
-    if (source === "curated") {
-      setVideos(filterCuratedVideos(value));
-    }
+    setVideos(filterCuratedVideos(value));
   }
 
   const rankedVideos = useMemo(() => {
@@ -106,8 +56,6 @@ export default function ShortVideosPage() {
   }, [query, videos]);
 
   const hasQuery = query.trim().length > 0;
-  const isQuotaError = errorText?.includes("429") ?? false;
-
   return (
     <SiteLayout>
       <PageHero
@@ -125,7 +73,7 @@ export default function ShortVideosPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-coral">Video library</p>
               <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">Choose one topic at a time</h2>
               <p className="mt-4 text-sm leading-6 text-brand-ink/70">
-                Curated picks load first to keep the page fast and focused. Search YouTube only when you need a fresh topic.
+                Curated picks are selected to keep this page fast, focused, and safe for families.
               </p>
 
               <div className="mt-6 space-y-3 rounded-2xl bg-brand-cream p-4 text-sm text-brand-ink/75">
@@ -144,53 +92,26 @@ export default function ShortVideosPage() {
                     id="learn-query"
                     value={query}
                     onChange={(event) => handleQueryChange(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") handleSearch();
-                    }}
                     placeholder="Try: autism in school, Down syndrome support"
                     className="bg-white"
                   />
-                  <Button onClick={handleSearch} disabled={isLoading}>
-                    {isLoading ? "Searching…" : "Search YouTube"}
-                  </Button>
-                  {source === "youtube" ? (
+                  {query.trim() ? (
                     <Button variant="outline" onClick={handleReset}>
                       Reset
                     </Button>
                   ) : null}
                 </div>
                 <p className="mt-3 text-xs leading-5 text-brand-ink/65">
-                  Showing curated, trusted clips by default. YouTube search uses the project API quota.
+                  Filter applies to curated titles and channels only.
                 </p>
               </div>
 
               <div aria-live="polite" className="space-y-3">
-                {source === "curated" && !errorText ? (
-                  <p className="text-sm text-brand-ink/70">
-                    Showing {rankedVideos.length} curated video{rankedVideos.length === 1 ? "" : "s"} from trusted organisations.
-                  </p>
-                ) : null}
+                <p className="text-sm text-brand-ink/70">
+                  Showing {rankedVideos.length} curated video{rankedVideos.length === 1 ? "" : "s"} from trusted organisations.
+                </p>
 
-                {source === "youtube" && submittedQuery ? (
-                  <p className="text-sm text-brand-ink/70">
-                    YouTube results for: <span className="font-medium text-brand-ink">{submittedQuery}</span>
-                  </p>
-                ) : null}
-
-                {isLoading ? <p className="text-sm text-brand-ink/70" role="status">Searching YouTube videos…</p> : null}
-
-                {errorText ? (
-                  <div className="rounded-2xl border border-brand-coral/30 bg-brand-coral/5 p-4" role="alert">
-                    <p className="text-sm text-brand-coral">{errorText}</p>
-                    {isQuotaError ? (
-                      <p className="mt-2 text-xs text-brand-ink/65">
-                        Your YouTube API key has a limit of <strong>100 search queries per day</strong>. It resets at midnight Pacific Time.
-                      </p>
-                    ) : null}
-                  </div>
-                ) : null}
-
-                {!isLoading && rankedVideos.length === 0 ? (
+                {rankedVideos.length === 0 ? (
                   <p className="rounded-2xl border border-brand-sand bg-white p-4 text-sm text-brand-ink/70" role="status">
                     No videos match your filter. Try a different keyword or reset to see all curated picks.
                   </p>
@@ -223,11 +144,11 @@ export default function ShortVideosPage() {
                         <span className="inline-flex rounded-full bg-brand-coral/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-brand-coral">
                           Recommended
                         </span>
-                      ) : source === "curated" ? (
+                      ) : (
                         <span className="inline-flex rounded-full bg-brand-sea/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-brand-sea">
                           Curated
                         </span>
-                      ) : null}
+                      )}
                       <span className="inline-flex rounded-full bg-brand-cream px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-brand-ink/60">
                         {formatPublishedDate(video.published_at)}
                       </span>

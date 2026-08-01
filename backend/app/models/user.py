@@ -11,6 +11,15 @@ class Role(StrEnum):
     SUPPORTER = "supporter"
     MEMBER = "member"
     ADMIN = "admin"
+    DONOR = "donor"
+    VOLUNTEER = "volunteer"
+
+    @classmethod
+    def canonical(cls, role: "Role | str") -> "Role":
+        normalized = cls(role)
+        if normalized in (cls.DONOR, cls.VOLUNTEER):
+            return cls.SUPPORTER
+        return normalized
 
 
 class User(Base):

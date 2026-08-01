@@ -124,7 +124,6 @@ export type GratitudeEntryInput = {
   message: string;
   photo_url?: string | null;
 };
-export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
 export type VolunteerMatchRequest = {
   interest: "hands-on" | "food" | "people" | "skills";
   availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
@@ -297,24 +296,43 @@ export function resolvePostLoginPath(role: Role, nextPath: string | null) {
 
 type ApiRequestInit = RequestInit & { redirectOnUnauthorized?: boolean };
 
+function parseApiError(data: unknown, status: number): string {
+  if (typeof data === "object" && data !== null && "detail" in data) {
+    const detail = (data as { detail?: unknown }).detail;
+    if (typeof detail === "string") return detail;
+    if (Array.isArray(detail)) {
+      const messages = detail
+        .map((entry) => (typeof entry === "object" && entry !== null && "msg" in entry ? String(entry.msg) : ""))
+        .filter(Boolean);
+      if (messages.length > 0) return messages.join(", ");
+    }
+  }
+  return `Request failed: ${status}`;
+}
+
 async function request<T>(path: string, options: ApiRequestInit = {}): Promise<T> {
   const { redirectOnUnauthorized = true, ...requestOptions } = options;
   const token = getToken();
   const headers = new Headers(requestOptions.headers);
   headers.set("Content-Type", "application/json");
-  if (token) headers.set("Authorization", `Bearer ${token}`);
+  const isPublicAuthRequest = path === "/auth/login" || path === "/auth/register";
+  if (token && !isPublicAuthRequest) headers.set("Authorization", `Bearer ${token}`);
 
   const response = await fetch(`${API_URL}${path}`, { ...requestOptions, headers });
 
-  if (response.status === 401 && typeof window !== "undefined") {
-    clearToken();
-    if (redirectOnUnauthorized) window.location.href = "/login";
-    throw new Error("Unauthorized");
-  }
-
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
-    throw new Error(data.detail || `Request failed: ${response.status}`);
+    const message = parseApiError(data, response.status);
+
+    if (response.status === 401 && typeof window !== "undefined") {
+      clearToken();
+      if (redirectOnUnauthorized) {
+        window.location.href = "/login";
+        throw new Error("Unauthorized");
+      }
+    }
+
+    throw new Error(message);
   }
 
   if (response.status === 204) return undefined as T;
@@ -328,9 +346,17 @@ export async function getCurrentUserWithRole() {
 
 export const api = {
   register: (email: string, password: string, role: Exclude<Role, "admin"> = "supporter") =>
-    request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify({ email, password, role }) }),
+    request<AuthResponse>("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password, role }),
+      redirectOnUnauthorized: false,
+    }),
   login: (email: string, password: string) =>
-    request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
+    request<AuthResponse>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      redirectOnUnauthorized: false,
+    }),
   me: () => request<User>("/auth/me"),
   currentUser: () => request<User>("/auth/me", { redirectOnUnauthorized: false }),
   listItems: () => request<Item[]>("/items"),
@@ -375,10 +401,6 @@ export const api = {
   supporterDashboard: () => request<SupporterDashboard>("/supporter/dashboard"),
   logVolunteerHours: (payload: { activity_id?: number | null; hours: number; notes?: string | null }) =>
     request<VolunteerHour>("/supporter/hours", { method: "POST", body: JSON.stringify(payload) }),
-  searchYouTube: (query: string, maxResults = 20, maxDurationMinutes = 5) =>
-    request<YouTubeSearchResponse>(
-      `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
-    ),
   matchVolunteer: (payload: VolunteerMatchRequest) =>
     request<VolunteerMatchResponse>("/ai/volunteer/match", {
       method: "POST",

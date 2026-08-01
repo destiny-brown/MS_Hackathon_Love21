@@ -57,7 +57,11 @@ def ensure_role_enum_compatibility() -> None:
         )
 
     with engine.begin() as connection:
-        connection.execute(text("UPDATE users SET role = 'supporter' WHERE role IN ('donor', 'volunteer')"))
+        # Cast to text so PostgreSQL accepts the comparison after the enum
+        # was narrowed to supporter/member/admin (donor/volunteer are invalid literals).
+        connection.execute(
+            text("UPDATE users SET role = 'supporter' WHERE role::text IN ('donor', 'volunteer')")
+        )
 
 
 def get_db():
@@ -66,6 +70,33 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+DEMO_USERS = [
+    ("admin@love21.demo", "admin"),
+    ("member@love21.demo", "member"),
+    ("supporter@love21.demo", "supporter"),
+]
+DEMO_PASSWORD = "demo1234"
+
+
+def ensure_demo_users() -> None:
+    if not settings.demo_users_enabled:
+        return
+
+    from app.core.security import hash_password
+    from app.models.user import Role, User
+
+    with SessionLocal() as db:
+        for email, role_value in DEMO_USERS:
+            role = Role(role_value)
+            user = db.scalar(select(User).where(User.email == email))
+            if user is None:
+                db.add(User(email=email, hashed_password=hash_password(DEMO_PASSWORD), role=role))
+            else:
+                user.role = role
+                user.hashed_password = hash_password(DEMO_PASSWORD)
+        db.commit()
 
 
 def ensure_bootstrap_admin() -> None:

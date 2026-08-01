@@ -22,6 +22,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     bind = op.get_bind()
+    inspector = sa.inspect(bind)
     gratitude_status_pg = postgresql.ENUM(
         "pending",
         "approved",
@@ -37,24 +38,31 @@ def upgrade() -> None:
     else:
         gratitude_status_col = sa.Enum("pending", "approved", "rejected", name="gratitudeentrystatus")
 
-    op.create_table(
-        "gratitude_entries",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("author_id", sa.Integer(), nullable=False),
-        sa.Column("display_name", sa.String(length=120), nullable=True),
-        sa.Column("message", sa.Text(), nullable=False),
-        sa.Column("photo_url", sa.String(length=500), nullable=True),
-        sa.Column("status", gratitude_status_col, nullable=False),
-        sa.Column("submitted_at", sa.DateTime(timezone=True), nullable=False),
-        sa.Column("moderated_at", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("moderator_id", sa.Integer(), nullable=True),
-        sa.ForeignKeyConstraint(["author_id"], ["users.id"]),
-        sa.ForeignKeyConstraint(["moderator_id"], ["users.id"]),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index(op.f("ix_gratitude_entries_author_id"), "gratitude_entries", ["author_id"], unique=False)
-    op.create_index(op.f("ix_gratitude_entries_id"), "gratitude_entries", ["id"], unique=False)
-    op.create_index(op.f("ix_gratitude_entries_status"), "gratitude_entries", ["status"], unique=False)
+    table_exists = inspector.has_table("gratitude_entries")
+    if not table_exists:
+        op.create_table(
+            "gratitude_entries",
+            sa.Column("id", sa.Integer(), nullable=False),
+            sa.Column("author_id", sa.Integer(), nullable=False),
+            sa.Column("display_name", sa.String(length=120), nullable=True),
+            sa.Column("message", sa.Text(), nullable=False),
+            sa.Column("photo_url", sa.String(length=500), nullable=True),
+            sa.Column("status", gratitude_status_col, nullable=False),
+            sa.Column("submitted_at", sa.DateTime(timezone=True), nullable=False),
+            sa.Column("moderated_at", sa.DateTime(timezone=True), nullable=True),
+            sa.Column("moderator_id", sa.Integer(), nullable=True),
+            sa.ForeignKeyConstraint(["author_id"], ["users.id"]),
+            sa.ForeignKeyConstraint(["moderator_id"], ["users.id"]),
+            sa.PrimaryKeyConstraint("id"),
+        )
+
+    existing_indexes = {index["name"] for index in inspector.get_indexes("gratitude_entries")}
+    if op.f("ix_gratitude_entries_author_id") not in existing_indexes:
+        op.create_index(op.f("ix_gratitude_entries_author_id"), "gratitude_entries", ["author_id"], unique=False)
+    if op.f("ix_gratitude_entries_id") not in existing_indexes:
+        op.create_index(op.f("ix_gratitude_entries_id"), "gratitude_entries", ["id"], unique=False)
+    if op.f("ix_gratitude_entries_status") not in existing_indexes:
+        op.create_index(op.f("ix_gratitude_entries_status"), "gratitude_entries", ["status"], unique=False)
 
 
 def downgrade() -> None:

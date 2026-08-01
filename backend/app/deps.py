@@ -32,7 +32,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 def require_roles(*allowed: Role) -> Callable[[User], User]:
     def dependency(current_user: User = Depends(get_current_user)) -> User:
-        if current_user.role not in allowed:
+        normalized_role = Role.canonical(current_user.role)
+        normalized_allowed = {Role.canonical(role) for role in allowed}
+        if normalized_role not in normalized_allowed:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient role")
         return current_user
 
