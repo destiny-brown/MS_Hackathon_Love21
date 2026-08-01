@@ -42,8 +42,31 @@ const BUBBLE_PROMPT_FALLBACKS = [
   "Do you want to volunteer?",
 ];
 const BUBBLE_DISMISSED_KEY = "love21-captain-bubble-dismissed";
+const CAPTAIN_HISTORY_KEY = "love21-captain-chat-history";
+const CAPTAIN_PENDING_NOTE_KEY = "love21-captain-pending-note";
+const MAX_PERSISTED_MESSAGES = 30;
+const NAVIGATION_DELAY_MS = 1500;
 const BUBBLE_INITIAL_DELAY_MS = 4500;
 const BUBBLE_ROTATE_MS = 5500;
+
+function sanitizePersistedMessages(value: unknown): CaptainChatMessage[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item): item is CaptainChatMessage => {
+      if (!item || typeof item !== "object") return false;
+      const candidate = item as CaptainChatMessage;
+      return (candidate.role === "user" || candidate.role === "assistant") && typeof candidate.content === "string";
+    })
+    .slice(-MAX_PERSISTED_MESSAGES);
+}
+
+function buildNavigationSummary(path: string, links: CaptainChatMessage["links"]): string {
+  const match = links?.find((link) => link.href === path);
+  if (match) {
+    return `I have navigated you to ${match.title} where you can ${match.description.toLowerCase()}`;
+  }
+  return `I have navigated you to ${path} where you can continue this journey.`;
+}
 
 export function CaptainChatWidget() {
   const ui = useLearnUi();
@@ -55,6 +78,7 @@ export function CaptainChatWidget() {
   const liveRegionId = useId();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pendingNavigationRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const starterText = t("ui.captainStarter", {
     name: CAPTAIN21_NAME,
@@ -116,6 +140,51 @@ export function CaptainChatWidget() {
     if (typeof window !== "undefined" && window.sessionStorage.getItem(BUBBLE_DISMISSED_KEY)) {
       setBubbleDismissed(true);
     }
+
+    if (typeof window !== "undefined") {
+      const raw = window.localStorage.getItem(CAPTAIN_HISTORY_KEY);
+      const pendingNote = window.sessionStorage.getItem(CAPTAIN_PENDING_NOTE_KEY);
+      if (pendingNote) {
+        window.sessionStorage.removeItem(CAPTAIN_PENDING_NOTE_KEY);
+      }
+
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw) as unknown;
+          const restored = sanitizePersistedMessages(parsed);
+          if (restored.length > 0) {
+            setMessages(
+              pendingNote
+                ? [...restored, { role: "assistant", content: pendingNote }]
+                : restored,
+            );
+          } else if (pendingNote) {
+            setMessages((prev) => [...prev, { role: "assistant", content: pendingNote }]);
+          }
+        } catch {
+          window.localStorage.removeItem(CAPTAIN_HISTORY_KEY);
+          if (pendingNote) {
+            setMessages((prev) => [...prev, { role: "assistant", content: pendingNote }]);
+          }
+        }
+      } else if (pendingNote) {
+        setMessages((prev) => [...prev, { role: "assistant", content: pendingNote }]);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || typeof window === "undefined") return;
+    window.localStorage.setItem(CAPTAIN_HISTORY_KEY, JSON.stringify(messages.slice(-MAX_PERSISTED_MESSAGES)));
+  }, [messages, mounted]);
+
+  useEffect(() => {
+    return () => {
+      if (pendingNavigationRef.current) {
+        clearTimeout(pendingNavigationRef.current);
+        pendingNavigationRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -204,7 +273,12 @@ export function CaptainChatWidget() {
     try {
       const history = messages.filter((m) => m.role === "user" || m.role === "assistant").slice(-8);
       const response = await api.captainChat({ message: text, history, locale });
-      const actionNotes = runTools(response.tool_calls ?? []);
+      const toolCalls = response.tool_calls ?? [];
+      const navigationCall = toolCalls.find(
+        (call) => call.name === "navigate_to_page" && typeof call.arguments.path === "string" && call.arguments.path.length > 0,
+      );
+      const immediateToolCalls = toolCalls.filter((call) => call !== navigationCall);
+      const actionNotes = runTools(immediateToolCalls);
       const actionNote = actionNotes.length > 0 ? actionNotes.join(" ") : undefined;
       setMessages([
         ...nextHistory,
@@ -215,6 +289,24 @@ export function CaptainChatWidget() {
           actionNote,
         },
       ]);
+
+      if (navigationCall) {
+        if (pendingNavigationRef.current) {
+          clearTimeout(pendingNavigationRef.current);
+        }
+        pendingNavigationRef.current = setTimeout(() => {
+          if (typeof window !== "undefined") {
+            window.sessionStorage.setItem(
+              CAPTAIN_PENDING_NOTE_KEY,
+              buildNavigationSummary(navigationCall.arguments.path, response.links),
+            );
+          }
+          runTools([navigationCall]);
+          setOpen(false);
+          pendingNavigationRef.current = null;
+        }, NAVIGATION_DELAY_MS);
+      }
+
       if (response.message && !response.enabled) {
         setError(response.message);
       }
@@ -235,11 +327,11 @@ export function CaptainChatWidget() {
   return (
     <>
       {!open && (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+        <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
           {mounted && bubbleVisible && (
             <div
               key={bubbleIndex}
-              className="relative max-w-[15rem] animate-[fadeUp_0.35s_ease-out]"
+              className="pointer-events-auto relative max-w-[15rem] animate-[fadeUp_0.35s_ease-out]"
             >
               <button
                 type="button"
@@ -265,7 +357,7 @@ export function CaptainChatWidget() {
           <button
             type="button"
             onClick={openChat}
-            className={`group rounded-full border-0 bg-transparent p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral focus-visible:ring-offset-2 ${floatClass}`}
+            className={`pointer-events-auto group rounded-full border-0 bg-transparent p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral focus-visible:ring-offset-2 ${floatClass}`}
             aria-label={captainOpenAria}
           >
             <CaptainMascot

@@ -4,10 +4,8 @@ import { BrandCard } from "@/components/brand/BrandCard";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
-import { DONATION_TIERS } from "@/lib/donation-tiers";
 import { DonationAmountProvider } from "@/components/site/donation-amount-context";
 import { DonationOpportunities } from "@/components/site/donation-opportunities";
-import { getWishlistItem } from "@/lib/wishlist-items";
 import { DonationTierGrid } from "@/components/site/donation-tier-grid";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
@@ -174,8 +172,8 @@ export default async function DonatePage({
   searchParams: Promise<{ amount?: string; item?: string }>;
 }) {
   const { amount, item } = await searchParams;
-  const wishlistItem = getWishlistItem(item);
-  const suggestedAmount = Number(amount) || wishlistItem?.unitCost;
+  const suggestedAmount = Number(amount) || undefined;
+
   return (
     <SiteLayout>
       <PageHero
@@ -184,31 +182,6 @@ export default async function DonatePage({
         primaryAction={{ label: "Start donation", href: "#donation-form" }}
         secondaryAction={{ label: "See wishlist", href: "/wishlist" }}
       />
-
-      <Reveal>
-        <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
-          <div className="relative mx-auto max-w-6xl">
-            <Eyebrow>Donor transparency</Eyebrow>
-            <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Where your gift goes</h2>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {DONATION_TIERS.map((tier, i) => (
-                <Reveal key={tier.amount} delay={i * 0.08}>
-                  <BrandCard
-                    className={`rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6 ${i % 2 === 0 ? "sm:-rotate-1" : "sm:rotate-1"}`}
-                  >
-                    <div className="font-serif-display text-2xl text-brand-red">{tier.label}</div>
-                    <p className="mt-3 text-sm text-brand-dark/70">{tier.impact}</p>
-                  </BrandCard>
-                </Reveal>
-              ))}
-            </div>
-            <div className="mt-8">
-              <CtaButton href="#donation-form">Choose your tier</CtaButton>
-            </div>
-          </div>
-        </section>
-      </Reveal>
-
       {/* Tier cards and the mock donation form share one DonationAmountProvider
           so clicking a tier above always drives the form below — single
           source of truth, no amount hardcoded in more than one place. */}
@@ -399,7 +372,7 @@ export default async function DonatePage({
                 </BrandCard>
               </div>
 
-              <DonationOpportunities initialWishlistItemId={wishlistItem?.id ?? item ?? null} />
+              <DonationOpportunities initialItemSlug={item} />
 
               <div className="border-t border-brand-light pt-10 text-brand-dark/80">
                 <h2 className="font-serif-display text-3xl text-brand-dark">

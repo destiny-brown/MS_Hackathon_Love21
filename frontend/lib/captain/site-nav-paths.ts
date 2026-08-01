@@ -13,7 +13,6 @@ export const SITE_NAV_PATHS = [
   "/wishlist",
   "/stories-media",
   "/impact-dashboard",
-  "/events-campaigns",
   "/contact-us",
   "/members",
   "/join-us",

@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from app.data.captain_tools import ALLOWED_LOCALES, ALLOWED_NAV_PATHS, TOOL_NAMES, TOOLS_PROMPT
 from app.services.captain_link_router import pick_site_links
 from app.services.captain_rag import format_context
-from app.services.ollama_client import chat_json, chat_text
+from app.services.model_client import chat_json, chat_text
 
 router = APIRouter(prefix="/ai/captain", tags=["ai"])
 
@@ -200,12 +200,12 @@ def captain_chat(payload: CaptainChatRequest) -> CaptainChatResponse:
 
     if not enabled:
         # Plain-text fallback when JSON agent mode is unavailable
-        ollama_messages = [
+        model_messages = [
             {"role": message.role, "content": message.content}
             for message in payload.history[-6:]
         ]
-        ollama_messages.append({"role": "user", "content": payload.message})
-        text_reply = chat_text(system=system, messages=ollama_messages, num_predict=120)
+        model_messages.append({"role": "user", "content": payload.message})
+        text_reply = chat_text(system=system, messages=model_messages, num_predict=120)
         if text_reply:
             reply = text_reply
             enabled = True
@@ -218,5 +218,5 @@ def captain_chat(payload: CaptainChatRequest) -> CaptainChatResponse:
         links=links,
         tool_calls=tool_calls,
         sources=[chunk.title for chunk in chunks],
-        message=None if enabled else "Ollama is unavailable — showing site links with a short guide.",
+        message=None if enabled else "The AI assistant is unavailable — showing site links with a short guide.",
     )

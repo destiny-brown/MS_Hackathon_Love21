@@ -1,8 +1,6 @@
 "use client";
 
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { LookerStudioEmbed } from "@/components/looker-studio-embed";
 
 const LOOKER_STUDIO_REPORT_URL =
@@ -10,46 +8,27 @@ const LOOKER_STUDIO_REPORT_URL =
 
 export default function AdminAnalyticsPage() {
   return (
-    <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">
-                Analytics Dashboard
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Website traffic, engagement, and impact metrics
-              </p>
-            </div>
-            <Link
-              href="/admin"
-              className="text-sm text-[#d4a373] hover:underline flex items-center gap-1"
-            >
-              ← Back to Admin
-            </Link>
-          </div>
+    <>
+      <AdminPageHeader
+        title="Analytics"
+        description="Website traffic, engagement, and impact metrics from Google Analytics via Looker Studio."
+      />
 
-          <div className="space-y-6">
-            <LookerStudioEmbed
-              reportUrl={LOOKER_STUDIO_REPORT_URL}
-              title="Website Traffic Overview"
-              height="700px"
-            />
+      <div className="space-y-6">
+        <LookerStudioEmbed
+          reportUrl={LOOKER_STUDIO_REPORT_URL}
+          title="Website Traffic Overview"
+          height="700px"
+        />
 
-            <div className="rounded-lg border border-[#edebe7] bg-white/90 p-6 shadow-sm">
-              <h3 className="mb-4 text-lg font-semibold text-[#1e2b2f]">
-                <i className="fas fa-info-circle mr-2 text-[#d4a373]"></i>
-                About This Data
-              </h3>
-              <p className="text-sm text-[#4a4a4a]">
-                This analytics dashboard shows Love 21 Foundation website
-                traffic, including visitor demographics, page views, and
-                engagement metrics. Data is updated automatically from Google
-                Analytics via Looker Studio.
-              </p>
-            </div>
-          </div>
+        <div className="rounded-2xl border border-brand-sand bg-white/90 p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-brand-ink">About this data</h2>
+          <p className="mt-3 text-sm leading-6 text-brand-ink/70">
+            This dashboard shows Love 21 Foundation website traffic, including visitor demographics, page views,
+            and engagement metrics. Data is updated automatically from Google Analytics via Looker Studio.
+          </p>
         </div>
-      </main>
+      </div>
+    </>
   );
 }

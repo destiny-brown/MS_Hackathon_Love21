@@ -17,8 +17,8 @@ export default function WishlistPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Practical support</p>
             <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">Help remove a barrier</h2>
             <p className="mt-4 max-w-3xl leading-7 text-brand-ink/75">
-              Choose a wishlist need and contribute toward the exact item. This demo uses hardcoded wishlist totals,
-              so Love 21 can connect a guest donation to the selected item without requiring an account.
+              You can buy an item directly when a supplier link is available, or contribute any amount toward the goal.
+              Love 21 updates each total as items and contributions are secured.
             </p>
           </div>
           <div id="wishlist-items" className="scroll-mt-24">

@@ -21,12 +21,15 @@ class Settings(BaseSettings):
     resend_api_key: str | None = None
     newsletter_from_email: str = "Love 21 Foundation <newsletter@love21foundation.com>"
     anthropic_api_key: str | None = None
-    youtube_api_key: str | None = None
-    ollama_enabled: bool = True
-    ollama_base_url: str = "http://127.0.0.1:11434"
-    ollama_model: str = "llama3.2"
-    ollama_timeout_seconds: int = 30
-    ollama_enhance_timeout_seconds: int = 8
+    bootstrap_admin_email: str | None = None
+    bootstrap_admin_password: str | None = None
+    demo_users_enabled: bool = True
+    model_enabled: bool = False
+    model_base_url: str | None = None
+    model_api_key: str | None = None
+    model_name: str = "qwen3-8b"
+    model_timeout_seconds: int = 45
+    model_enhance_timeout_seconds: int = 12
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILES,
@@ -45,7 +48,15 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
+        origins: list[str] = []
+        for origin in self.cors_origins.split(","):
+            cleaned = origin.strip().rstrip("/")
+            if cleaned and cleaned not in origins:
+                origins.append(cleaned)
+        site_url = self.site_url.strip().rstrip("/")
+        if site_url and site_url not in origins:
+            origins.append(site_url)
+        return origins
 
 
 @lru_cache
