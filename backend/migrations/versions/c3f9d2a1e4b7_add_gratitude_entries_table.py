@@ -20,6 +20,18 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    bind = op.get_bind()
+    gratitude_status = sa.Enum(
+        "pending",
+        "approved",
+        "rejected",
+        name="gratitudeentrystatus",
+        create_type=False,
+    )
+
+    if bind.dialect.name == "postgresql":
+        gratitude_status.create(bind, checkfirst=True)
+
     op.create_table(
         "gratitude_entries",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -27,11 +39,7 @@ def upgrade() -> None:
         sa.Column("display_name", sa.String(length=120), nullable=True),
         sa.Column("message", sa.Text(), nullable=False),
         sa.Column("photo_url", sa.String(length=500), nullable=True),
-        sa.Column(
-            "status",
-            sa.Enum("pending", "approved", "rejected", name="gratitudeentrystatus"),
-            nullable=False,
-        ),
+        sa.Column("status", gratitude_status, nullable=False),
         sa.Column("submitted_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("moderated_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("moderator_id", sa.Integer(), nullable=True),
@@ -45,7 +53,19 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    bind = op.get_bind()
+    gratitude_status = sa.Enum(
+        "pending",
+        "approved",
+        "rejected",
+        name="gratitudeentrystatus",
+        create_type=False,
+    )
+
     op.drop_index(op.f("ix_gratitude_entries_status"), table_name="gratitude_entries")
     op.drop_index(op.f("ix_gratitude_entries_id"), table_name="gratitude_entries")
     op.drop_index(op.f("ix_gratitude_entries_author_id"), table_name="gratitude_entries")
     op.drop_table("gratitude_entries")
+
+    if bind.dialect.name == "postgresql":
+        gratitude_status.drop(bind, checkfirst=True)
