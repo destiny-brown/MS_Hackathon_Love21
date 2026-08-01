@@ -6,7 +6,13 @@ import { BrandCard } from "@/components/brand/BrandCard";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
+import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
+
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "about-us", label: "Company", labelKey: "sectionNav.company" },
+  { id: "ready-to-connect", label: "Contact", labelKey: "sectionNav.contact" },
+];
 
 const sections = [
   {
@@ -40,8 +46,20 @@ const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-light", "bg-bran
 export default function AboutGovernancePage() {
   return (
     <SiteLayout>
+      {/* Sentinel for section-nav reveal — not a nav target. */}
+      <div id="about-governance-nav-sentinel" className="h-px w-full" aria-hidden="true" />
+
+      <PageSectionNav
+        items={sectionNavItems}
+        ns="governance"
+        heroSelector="#about-governance-nav-sentinel"
+      />
+
       <Reveal>
-        <section className="relative overflow-hidden border-b border-brand-light bg-white px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pb-20 lg:pt-16">
+        <section
+          id="about-us"
+          className="relative scroll-mt-24 overflow-hidden border-b border-brand-light bg-white px-4 pb-16 pt-14 sm:px-6 lg:px-8 lg:pb-20 lg:pt-16"
+        >
           <Blob className="-right-16 -top-10 h-72 w-72 bg-[#F8DCDA] opacity-40" />
           <Blob className="-left-20 bottom-0 h-56 w-56 bg-[#B8C5E8]/30" />
           <div className="relative z-10 mx-auto max-w-6xl">
@@ -101,7 +119,10 @@ export default function AboutGovernancePage() {
       </section>
 
       <Reveal>
-        <section className="border-t border-brand-light bg-white px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <section
+          id="ready-to-connect"
+          className="scroll-mt-24 border-t border-brand-light bg-white px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
+        >
           <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-brand-dark px-8 py-12 text-center text-white sm:px-12 sm:py-14">
             <div
               className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-brand-red/10"

@@ -51,8 +51,9 @@ export function FinancialRoots() {
 
   return (
     <section
+      id="impact-financials"
       ref={ref}
-      className="border-b border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8"
+      className="scroll-mt-24 border-b border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-6xl">
         <motion.div

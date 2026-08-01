@@ -124,5 +124,12 @@
     "getInvolved": "Get Involved →",
     "browseStories": "Browse all stories in Learn →",
     "viewArchive": "View full media archive →"
+  },
+  "sectionNav": {
+    "ability": "Ability",
+    "stories": "Stories",
+    "press": "Press",
+    "social": "Social",
+    "youtube": "Youtube"
   }
 }

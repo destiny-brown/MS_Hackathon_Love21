@@ -146,5 +146,11 @@
     "thankYou": "谢谢你——我们会尽快联系你。",
     "funded": "已筹得 {{pct}}%",
     "of": "{{current}} / {{total}}"
+  },
+  "sectionNav": {
+    "growth": "成长",
+    "financials": "财务",
+    "pillars": "五大支柱",
+    "stories": "故事"
   }
 }

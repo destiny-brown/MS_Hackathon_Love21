@@ -58,5 +58,12 @@
   "newsletter": {
     "eyebrow": "Subscribe to our eNews",
     "title": "Stay close to the mission"
+  },
+  "sectionNav": {
+    "home": "Home",
+    "impact": "Impact",
+    "categories": "Categories",
+    "stories": "Stories",
+    "gratitude": "Gratitude"
   }
 }

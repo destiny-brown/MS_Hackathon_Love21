@@ -58,5 +58,12 @@
   "newsletter": {
     "eyebrow": "訂閱電子通訊",
     "title": "緊貼我們的使命"
+  },
+  "sectionNav": {
+    "home": "主頁",
+    "impact": "影響力",
+    "categories": "分類",
+    "stories": "故事",
+    "gratitude": "感謝"
   }
 }

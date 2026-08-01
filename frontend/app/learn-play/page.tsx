@@ -1,8 +1,12 @@
 import Link from "next/link";
 
-import { CommunityQuotesWall } from "@/components/learn/community-quotes-wall";
-import { PageHero } from "@/components/site/page-hero";
+import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
+
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "learn-hero", label: "Learn", labelKey: "sectionNav.learn" },
+  { id: "explore", label: "Explore", labelKey: "sectionNav.explore" },
+];
 
 // ---------------------------------------------------------------------------
 // Signature mark — same three-dot motif used across the site (Love 21 exists
@@ -75,9 +79,15 @@ const ACCENTS = {
 export default function LearnPlayPage() {
   return (
     <SiteLayout>
+      {/* Sentinel for section-nav reveal — not a nav target. */}
+      <div id="learn-nav-sentinel" className="h-px w-full" aria-hidden="true" />
+
       {/* Hero — warm cream background, ink serif heading, single red accent.
           Eyebrow no longer repeats the page title itself. */}
-      <section className="relative overflow-hidden bg-brand-cream px-4 pb-12 pt-16 sm:px-6 lg:px-8">
+      <section
+        id="learn-hero"
+        className="relative scroll-mt-24 overflow-hidden bg-brand-cream px-4 pb-12 pt-16 sm:px-6 lg:px-8"
+      >
         <Blob className="-right-16 -top-16 h-72 w-72 bg-[#EF233C] opacity-[0.06]" />
         <Blob className="-left-10 bottom-0 h-40 w-40 bg-black opacity-[0.04]" />
         <div className="relative mx-auto max-w-6xl">
@@ -94,6 +104,8 @@ export default function LearnPlayPage() {
           <div className="mt-8 h-[3px] w-20 rounded-full bg-gradient-to-r from-[#EF233C] to-brand-ink" />
         </div>
       </section>
+
+      <PageSectionNav items={sectionNavItems} ns="learn" heroSelector="#learn-nav-sentinel" />
 
      {/* Community — single featured quote in a soft cream card, matching
           the warmth of the rest of the page instead of standing apart as a
@@ -148,7 +160,7 @@ export default function LearnPlayPage() {
           "Where will you begin?" module: a folded corner, a large faint
           serial number, and a clean ENTER-style link. No icons, no pastel
           noise-texture headers, no blue. */}
-      <section className="bg-brand-cream px-4 pb-24 sm:px-6 lg:px-8">
+      <section id="explore" className="scroll-mt-24 bg-brand-cream px-4 pb-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="relative">
             {/* Faint connecting line — a quiet "journey" motif echoed across
