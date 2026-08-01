@@ -89,14 +89,14 @@ export default function LearnPlayPage() {
             Learn &amp; <em className="text-[#EF233C]">Play</em>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-brand-ink/70">
-            Educate through shared experiences — bust myths, hear from the community, and go deeper
-            with real stories.
+            Educate through shared experiences — bust myths, hear from the
+            community, and go deeper with real stories.
           </p>
           <div className="mt-8 h-[3px] w-20 rounded-full bg-gradient-to-r from-[#EF233C] to-brand-ink" />
         </div>
       </section>
 
-     {/* Community — single featured quote in a soft cream card, matching
+      {/* Community — single featured quote in a soft cream card, matching
           the warmth of the rest of the page instead of standing apart as a
           dark/navy anchor block. */}
       <section className="bg-brand-cream px-4 pb-16 sm:px-6 lg:px-8">
@@ -113,7 +113,10 @@ export default function LearnPlayPage() {
 
               <blockquote className="mt-6 max-w-3xl font-serif text-3xl font-medium leading-snug text-brand-ink sm:text-4xl lg:text-[42px]">
                 &ldquo;Those with Down&apos;s syndrome and autism are{" "}
-                <em className="text-[#EF233C]">ready for purposeful employment</em>.&rdquo;
+                <em className="text-[#EF233C]">
+                  ready for purposeful employment
+                </em>
+                .&rdquo;
               </blockquote>
 
               <p className="mt-5 text-sm text-brand-ink/50">
@@ -121,13 +124,22 @@ export default function LearnPlayPage() {
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-6 text-sm font-semibold">
-                <Link href="#" className="text-[#EF233C] transition-colors hover:text-brand-ink">
+                <Link
+                  href="https://www.scmp.com/news/hong-kong/society/article/3341192/hong-kong-charity-helping-neurodivergent-people-eat-better-exercise-more-and-belong"
+                  className="text-[#EF233C] transition-colors hover:text-brand-ink"
+                >
                   Read the full story →
                 </Link>
-                <Link href="#" className="text-brand-ink/50 transition-colors hover:text-brand-ink">
+                <Link
+                  href=""
+                  className="text-brand-ink/50 transition-colors hover:text-brand-ink"
+                >
                   Play today&apos;s 21 Moves
                 </Link>
-                <Link href="#" className="text-brand-ink/50 transition-colors hover:text-brand-ink">
+                <Link
+                  href="/get-involved"
+                  className="text-brand-ink/50 transition-colors hover:text-brand-ink"
+                >
                   Get involved →
                 </Link>
               </div>
@@ -146,7 +158,7 @@ export default function LearnPlayPage() {
       </section>
 
       {/* CTA bar */}
-      <section className="bg-brand-cream px-4 py-10 text-center sm:px-6 lg:px-8">
+      {/* {<section className="bg-brand-cream px-4 py-10 text-center sm:px-6 lg:px-8">
         <p className="mx-auto max-w-xl text-base leading-relaxed text-brand-ink/70">
           Every myth we bust connects to a real Love 21 story — and a way to{" "}
           <Link
@@ -157,7 +169,7 @@ export default function LearnPlayPage() {
           </Link>
           .
         </p>
-      </section>
+      </section>} */}
 
       {/* Explore More — rebuilt as numbered "door" cards in the spirit of the
           "Where will you begin?" module: a folded corner, a large faint
@@ -207,22 +219,33 @@ export default function LearnPlayPage() {
                     />
 
                     <div className="flex items-start justify-between">
-                      <span className={`font-serif text-5xl font-semibold leading-none ${accent.number}`}>
+                      <span
+                        className={`font-serif text-5xl font-semibold leading-none ${accent.number}`}
+                      >
                         {r.number}
                       </span>
-                      <span className={`mt-1 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] ${accent.badge}`}>
+                      <span
+                        className={`mt-1 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] ${accent.badge}`}
+                      >
                         {r.badge}
                       </span>
                     </div>
 
-                    <h3 className="mt-5 font-serif text-2xl font-semibold text-brand-ink">{r.title}</h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-ink/70">{r.description}</p>
+                    <h3 className="mt-5 font-serif text-2xl font-semibold text-brand-ink">
+                      {r.title}
+                    </h3>
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-ink/70">
+                      {r.description}
+                    </p>
 
                     <Link
                       href={r.href}
                       className={`mt-6 inline-flex items-center gap-1.5 border-t border-brand-ink/10 pt-5 text-xs font-bold uppercase tracking-[0.18em] transition-all group-hover:gap-2.5 ${accent.link}`}
                     >
-                      Enter <span className="transition-transform group-hover:translate-x-1">→</span>
+                      Enter{" "}
+                      <span className="transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
                     </Link>
                   </article>
                 );

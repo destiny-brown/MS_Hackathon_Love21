@@ -4,7 +4,11 @@ const nextConfig = {
   allowedDevOrigins: ["127.0.0.1", "localhost"],
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "love21foundation.com", pathname: "/wp-content/uploads/**" },
+      {
+        protocol: "https",
+        hostname: "love21foundation.com",
+        pathname: "/wp-content/uploads/**",
+      },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: "autisticandunapologetic.com" },
