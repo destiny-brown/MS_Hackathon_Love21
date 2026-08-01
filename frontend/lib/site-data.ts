@@ -5,8 +5,8 @@ export const mainNav: NavItem[] = [
   { label: "Get Involved", href: "/get-involved" },
   { label: "Impact", href: "/impact-dashboard" },
   { label: "Stories", href: "/stories-media" },
-  { label: "Events", href: "/events-campaigns" },
   { label: "About Us", href: "/about-governance" },
+  { label: "Wishlist", href: "/shop" },
 ];
 
 export const footerNav: NavItem[] = [
@@ -66,24 +66,24 @@ export const heroGallery = [
 /** Four-door homepage navigation cards. */
 export const fourDoors = [
   {
-    title: "Education & Support",
-    description: "Grow life skills, join inclusive programmes, and access family care across sport, nutrition, and support.",
-    href: "/get-involved",
+    title: "Join programmes",
+    description: "Find sport, nutrition, and family support for Love 21 members.",
+    href: "/our-programmes",
   },
   {
-    title: "Donate & Partner",
-    description: "Fund nutrition packs, blood testing, coaching sessions, and day-to-day community care.",
+    title: "Donate",
+    description: "Give once or monthly to support classes, coaching, and care.",
     href: "/donate",
   },
   {
     title: "Volunteer",
-    description: "Share your time supporting weekly classes, family sessions, and inclusive community events.",
+    description: "Share your time at weekly classes, family sessions, and events.",
     href: "/our-volunteer",
   },
   {
-    title: "Activity Calendar",
-    description: "Find upcoming sports, nutrition workshops, family programmes, and community gatherings.",
-    href: "/events-campaigns",
+    title: "Explore programmes",
+    description: "See sports, nutrition workshops, family support, and community activities.",
+    href: "/our-programmes",
   },
 ];
 
@@ -99,31 +99,40 @@ export type StorySpotlight = {
 /** Featured Story Spotlight carousel cards (homepage). */
 export const storySpotlight: StorySpotlight[] = [
   {
-    name: "Jamie",
-    tag: "TEDx Speaker & Self-Advocate",
+    name: "Yuk Lam",
+    tag: "Yuk Lam's Story",
     quote:
-      "Delivering my first TEDx talk proved to everyone that having Down syndrome never limits what you can express and contribute.",
-    href: "/stories-media",
-    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1000&q=80",
-    alt: "Self-advocate presenting on stage at a public speaking event",
+      "I would use the word 'home' to describe Love 21,\" said Yuk Lam's mother, \"Every coach and staff member at Love 21 treats Yuk Lam like a sibling.",
+    href: "/stories/yuk-lam",
+    image: "/images/yuklam.png",
+    alt: "Yuk Lam",
   },
   {
-    name: "Chris",
-    tag: "Purposeful Employment Milestone",
+    name: "Siu Kei",
+    tag: "Siu Kei's Story (By Siu Kei's Mother)",
     quote:
-      "Working independently in food service and community outreach, gaining confidence and financial independence.",
-    href: "/our-story",
-    image: "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1000&q=80",
-    alt: "Young adult thriving at purposeful employment in a community workplace",
+      "He took on assistant roles across multiple departments, which significantly enhanced his social interaction skills, sense of responsibility, and ability to adapt knowledge to real-world scenarios.",
+    href: "/stories/siu-kei",
+    image: "/images/siukei.png",
+    alt: "Siu Kei",
   },
   {
-    name: "Mei",
-    tag: "Holistic Health & Sports Champion",
+    name: "Brian Ngan",
+    tag: "Brian Ngan's Story (By Brian's Father)",
     quote:
-      "Overcoming health challenges through tailored nutrition and sports classes, now mentoring younger neurodiverse peers.",
-    href: "/get-involved",
-    image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1000&q=80",
-    alt: "Community champion mentoring peers after holistic health progress",
+      "Since childhood Brian was quite protected and did not think he had any strengths and abilities. Fortunately after joining Love 21 we have quickly learnt how capable and talented he truly is.",
+    href: "/stories/brian-ngan",
+    image: "/images/brianngan.png",
+    alt: "Brian Ngan",
+  },
+  {
+    name: "Marissa",
+    tag: "Marissa's Story (By Marissa's Mom)",
+    quote:
+      "Sports development programme. Staff offered invaluable guidance, specialised fitness training and bocce classes.",
+    href: "/stories/marissa",
+    image: "/images/marissa.png",
+    alt: "Marissa",
   },
 ];
 

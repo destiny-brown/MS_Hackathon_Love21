@@ -15,7 +15,7 @@ export const memberStoryCategoryLabels: Record<string, string> = {
   sports: "Sports",
   fitness: "Fitness",
   "family-support": "Family Support",
-  "employment-development": "Employment & Development Programs",
+  "employment-development": "Employment Programs",
   "community-education": "Community and Education",
 };
 
@@ -38,7 +38,7 @@ export const memberStories: MemberStory[] = [
   {
     slug: "siu-kei",
     name: "Siu Kei",
-    title: "Siu Kei's Story (By Siu Kei's Mother / 紹歧媽媽)",
+    title: "Siu Kei's Story (By Siu Kei's Mother)",
     categories: ["employment-development", "community-education"],
     quote:
       "He took on assistant roles across multiple departments, which significantly enhanced his social interaction skills, sense of responsibility, and ability to adapt knowledge to real-world scenarios.",
@@ -52,7 +52,7 @@ export const memberStories: MemberStory[] = [
   {
     slug: "brian-ngan",
     name: "Brian Ngan",
-    title: "Brian Ngan's Story (By Brian's Father / 健希爸爸)",
+    title: "Brian Ngan's Story (By Brian's Father)",
     categories: ["employment-development", "family-support"],
     quote:
       "Since childhood Brian was quite protected and did not think he had any strengths and abilities. Fortunately after joining Love 21 we have quickly learnt how capable and talented he truly is.",

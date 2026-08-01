@@ -21,3 +21,4 @@ npm-debug.log*
 # Local data
 backend/hackkit.db
 backend/*.db
+frontend/tsconfig.tsbuildinfo

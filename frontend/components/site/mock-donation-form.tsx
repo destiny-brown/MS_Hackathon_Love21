@@ -4,14 +4,14 @@ import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { CheckCircle2, HeartHandshake } from "lucide-react";
 
+import { useDonationAmount } from "@/components/site/donation-amount-context";
 import { formatHkd } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api, DonationFrequency, DonationReceipt, SupportOpportunity } from "@/lib/api";
 import { useCurrentUser } from "@/lib/auth";
-
-const presetAmounts = [100, 300, 500, 1000];
+import { DONATION_TIERS } from "@/lib/donation-tiers";
 
 export function MockDonationForm({
   opportunities,
@@ -21,8 +21,10 @@ export function MockDonationForm({
   initialOpportunitySlug?: string | null;
 }) {
   const { user } = useCurrentUser();
-  const [selectedAmount, setSelectedAmount] = useState(500);
-  const [customAmount, setCustomAmount] = useState("");
+  // Amount state is shared (via DonationAmountProvider, wrapping this form and
+  // the tier cards further up the page) so choosing a tier there and editing
+  // the amount here always reflect the same single source of truth.
+  const { amountText, amount, selectTier, setAmountText, isTierSelected } = useDonationAmount();
   const [frequency, setFrequency] = useState<DonationFrequency>("one_time");
   const initialOpportunity = opportunities.find((entry) => entry.slug === initialOpportunitySlug) ?? opportunities[0];
   const [opportunityId, setOpportunityId] = useState<number | null>(initialOpportunity?.id ?? null);
@@ -33,7 +35,6 @@ export function MockDonationForm({
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const amount = customAmount ? Number(customAmount) : selectedAmount;
   const selectedOpportunity = useMemo(
     () => opportunities.find((entry) => entry.id === opportunityId) ?? opportunities[0] ?? null,
     [opportunities, opportunityId],
@@ -86,36 +87,33 @@ export function MockDonationForm({
         <fieldset>
           <legend className="text-sm font-semibold text-brand-ink">Choose an amount</legend>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {presetAmounts.map((preset) => (
+            {DONATION_TIERS.map((tier) => (
               <label
-                key={preset}
-                className="flex cursor-pointer items-center justify-center rounded-2xl border border-brand-sand px-4 py-3 text-sm font-semibold text-brand-ink transition hover:bg-brand-cream focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+                key={tier.amount}
+                className="flex cursor-pointer items-center justify-center rounded-2xl border border-brand-sand px-4 py-3 text-sm font-semibold text-brand-ink transition hover:bg-brand-cream has-[:checked]:border-brand-red has-[:checked]:bg-brand-cream focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
               >
                 <input
                   type="radio"
                   name="preset-amount"
-                  value={preset}
-                  checked={!customAmount && selectedAmount === preset}
-                  onChange={() => {
-                    setSelectedAmount(preset);
-                    setCustomAmount("");
-                  }}
+                  value={tier.amount}
+                  checked={isTierSelected(tier)}
+                  onChange={() => selectTier(tier.amount)}
                   className="sr-only"
                 />
-                {formatHkd(preset)}
+                {tier.openEnded ? tier.label : formatHkd(tier.amount)}
               </label>
             ))}
           </div>
           <div className="mt-4 max-w-xs space-y-2">
-            <Label htmlFor="custom-amount">Custom amount (HKD)</Label>
+            <Label htmlFor="custom-amount">Amount (HKD)</Label>
             <Input
               id="custom-amount"
               type="number"
               min={1}
               step={1}
-              value={customAmount}
-              onChange={(event) => setCustomAmount(event.target.value)}
-              placeholder="Enter another amount"
+              value={amountText}
+              onChange={(event) => setAmountText(event.target.value)}
+              placeholder="Enter an amount"
             />
           </div>
         </fieldset>

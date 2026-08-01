@@ -34,3 +34,8 @@ class User(Base):
     donations: Mapped[list["Donation"]] = relationship(back_populates="supporter")
     activity_signups: Mapped[list["ActivitySignup"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")
     volunteer_hours: Mapped[list["VolunteerHour"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")
+    gratitude_entries: Mapped[list["GratitudeEntry"]] = relationship(
+        back_populates="author",
+        cascade="all, delete-orphan",
+        foreign_keys="GratitudeEntry.author_id",
+    )

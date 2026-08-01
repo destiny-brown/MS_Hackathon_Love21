@@ -5,6 +5,7 @@ import { CaptainToolsProvider } from "@/components/captain/captain-tools-provide
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { useTranslation } from "react-i18next";
+import { FloatingCta } from "@/components/site/floating-cta";
 
 function SiteLayoutInner({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation("common");
@@ -28,5 +29,7 @@ function SiteLayoutInner({ children }: { children: React.ReactNode }) {
 }
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
-  return <SiteLayoutInner>{children}</SiteLayoutInner>;
+  return <SiteLayoutInner>{children}
+      <FloatingCta />
+  </SiteLayoutInner>;
 }

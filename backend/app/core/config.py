@@ -22,11 +22,14 @@ class Settings(BaseSettings):
     newsletter_from_email: str = "Love 21 Foundation <newsletter@love21foundation.com>"
     anthropic_api_key: str | None = None
     youtube_api_key: str | None = None
-    ollama_enabled: bool = True
-    ollama_base_url: str = "http://127.0.0.1:11434"
-    ollama_model: str = "llama3.2"
-    ollama_timeout_seconds: int = 30
-    ollama_enhance_timeout_seconds: int = 8
+    bootstrap_admin_email: str | None = None
+    bootstrap_admin_password: str | None = None
+    model_enabled: bool = False
+    model_base_url: str | None = None
+    model_api_key: str | None = None
+    model_name: str = "qwen3-8b"
+    model_timeout_seconds: int = 45
+    model_enhance_timeout_seconds: int = 12
 
     model_config = SettingsConfigDict(
         env_file=ENV_FILES,
