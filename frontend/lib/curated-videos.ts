@@ -60,15 +60,15 @@ export const curatedVideos: YouTubeVideo[] = [
   },
 ];
 
-export function filterCuratedVideos(query: string): YouTubeVideo[] {
+export function filterCuratedVideos(query: string, source: YouTubeVideo[] = curatedVideos): YouTubeVideo[] {
   const tokens = query
     .toLowerCase()
     .split(/\s+/)
     .filter(Boolean);
 
-  if (tokens.length === 0) return curatedVideos;
+  if (tokens.length === 0) return source;
 
-  return curatedVideos.filter((video) => {
+  return source.filter((video) => {
     const haystack = `${video.title} ${video.channel_title}`.toLowerCase();
     return tokens.some((token) => haystack.includes(token));
   });

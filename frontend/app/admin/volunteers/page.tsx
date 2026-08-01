@@ -1,9 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
 import { Plus, Trash2, Edit, Heart, Users } from "lucide-react";
 
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -132,21 +132,15 @@ export default function AdminVolunteersPage() {
   const totalSlots = programs.reduce((sum, pg) => sum + (pg.total_spots ?? 0), 0);
 
   return (
-    <main className="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Manage Volunteer Programs</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Create, edit, and track volunteer sign-ups</p>
-          </div>
-          <Link href="/admin" className="text-sm text-[#d4a373] hover:underline flex items-center gap-1">
-            ← Back to Admin
-          </Link>
-        </div>
+    <>
+      <AdminPageHeader
+        title="Volunteer programmes"
+        description="Create, edit, and track volunteer opportunities shown on the public site."
+      />
 
-        {error ? <p className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</p> : null}
+      {error ? <p className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</p> : null}
 
-        <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-3">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
@@ -278,7 +272,6 @@ export default function AdminVolunteersPage() {
             </Card>
           ))}
         </div>
-      </div>
-    </main>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { type YouTubeVideo } from "@/lib/api";
 import { curatedVideos, filterCuratedVideos } from "@/lib/curated-videos";
+import { fetchLearnVideos } from "@/lib/learn-content";
 
 function getYouTubeThumbnail(video: YouTubeVideo): string {
   if (video.thumbnail_url) return video.thumbnail_url;
@@ -21,16 +22,24 @@ function formatPublishedDate(value: string) {
 
 export default function ShortVideosPage() {
   const [query, setQuery] = useState("");
+  const [catalog, setCatalog] = useState<YouTubeVideo[]>(curatedVideos);
   const [videos, setVideos] = useState<YouTubeVideo[]>(curatedVideos);
+
+  useEffect(() => {
+    void fetchLearnVideos().then((loaded) => {
+      setCatalog(loaded);
+      setVideos(loaded);
+    });
+  }, []);
 
   function handleReset() {
     setQuery("");
-    setVideos(curatedVideos);
+    setVideos(catalog);
   }
 
   function handleQueryChange(value: string) {
     setQuery(value);
-    setVideos(filterCuratedVideos(value));
+    setVideos(filterCuratedVideos(value, catalog));
   }
 
   const rankedVideos = useMemo(() => {

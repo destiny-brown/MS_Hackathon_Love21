@@ -98,3 +98,6 @@ class AdminOverviewRead(BaseModel):
     volunteer_program_count: int
     subscriber_count: int
     active_subscriber_count: int
+    learn_question_count: int = 0
+    learn_resource_count: int = 0
+    learn_video_count: int = 0
