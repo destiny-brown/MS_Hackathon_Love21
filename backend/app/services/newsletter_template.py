@@ -4,7 +4,8 @@ import html
 import re
 from pathlib import Path
 
-TEMPLATE_PATH = Path(__file__).resolve().parents[3] / "newsletter.html"
+# Keep body parsing in sync with frontend preview, which renders this template via POST /admin/newsletter/preview.
+TEMPLATE_PATH = Path(__file__).resolve().parents[1] / "templates" / "newsletter.html"
 
 
 def _paragraphs_to_html(content: str) -> str:
@@ -23,23 +24,15 @@ def _paragraphs_to_html(content: str) -> str:
                 parts.append(f'<div class="card"><p>{html.escape(line)}</p></div>')
             parts.append("</div>")
         else:
-            parts.append(f'<div class="hero"><p>{html.escape(" ".join(lines))}</p></div>')
+            parts.append(f"<p>{html.escape(' '.join(lines))}</p>")
     return "\n".join(parts)
 
 
 def render_newsletter_html(subject: str, content: str, unsubscribe_url: str) -> str:
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
     body_html = _paragraphs_to_html(content)
-    rendered = template.replace(
-        "<h1>A Summer Update from Love 21</h1>",
-        f"<h1>{html.escape(subject)}</h1>",
+    return (
+        template.replace("{{SUBJECT}}", html.escape(subject))
+        .replace("{{BODY}}", body_html)
+        .replace("{{UNSUBSCRIBE_URL}}", html.escape(unsubscribe_url, quote=True))
     )
-    rendered = re.sub(
-        r'<div class="hero">.*?</div>\s*<div class="section">',
-        body_html + '\n    <div class="section" style="display:none">',
-        rendered,
-        count=1,
-        flags=re.DOTALL,
-    )
-    rendered = rendered.replace('<a href="#">Unsubscribe</a>', f'<a href="{html.escape(unsubscribe_url)}">Unsubscribe</a>')
-    return rendered

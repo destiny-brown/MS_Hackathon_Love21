@@ -401,6 +401,11 @@ export const api = {
     }) }),
   deleteNewsletterSubscriber: (id: number) => request<void>(`/admin/newsletter/subscribers/${id}`, { method: "DELETE" }),
   listNewsletterDeliveries: () => request<NewsletterDelivery[]>("/admin/newsletter/deliveries"),
+  previewNewsletter: (payload: { subject: string; content: string; unsubscribe_url?: string }) =>
+    request<{ html: string }>("/admin/newsletter/preview", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   sendNewsletter: (payload: { subject: string; content: string }) =>
     request<{ success: boolean; message: string; sent_count: number }>("/admin/newsletter/send", {
       method: "POST",

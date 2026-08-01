@@ -43,6 +43,12 @@ class NewsletterSendRequest(BaseModel):
     content: str = Field(min_length=1)
 
 
+class NewsletterPreviewRequest(BaseModel):
+    subject: str = Field(min_length=1, max_length=300)
+    content: str = Field(min_length=1)
+    unsubscribe_url: str | None = Field(default=None, max_length=500)
+
+
 class NewsletterDeliveryRead(BaseModel):
     id: int
     subject: str
@@ -57,3 +63,7 @@ class NewsletterUnsubscribeResponse(BaseModel):
     email: str
     status: str
     message: str
+
+
+class NewsletterPreviewResponse(BaseModel):
+    html: str

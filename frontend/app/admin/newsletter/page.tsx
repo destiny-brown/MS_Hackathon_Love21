@@ -221,7 +221,7 @@ export default function AdminNewsletterPage() {
                   <Label htmlFor="subject">Subject Line</Label>
                   <Input id="subject" value={subject} onChange={(e) => setSubject(e.target.value)} className="mt-1" />
                 </div>
-                {showPreview ? <NewsletterPreview content={generatedContent} /> : null}
+                {showPreview ? <NewsletterPreview subject={subject} content={generatedContent} /> : null}
                 <div className="max-h-[240px] overflow-auto rounded-lg border p-4 whitespace-pre-wrap bg-white text-sm">{generatedContent}</div>
                 <Button onClick={sendNewsletter} disabled={sending || activeCount === 0} className="bg-green-600 hover:bg-green-700">
                   <Send className="mr-2 h-4 w-4" />

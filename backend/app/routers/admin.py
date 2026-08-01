@@ -24,6 +24,8 @@ from app.schemas.admin import (
 )
 from app.schemas.newsletter import (
     NewsletterDeliveryRead,
+    NewsletterPreviewRequest,
+    NewsletterPreviewResponse,
     NewsletterSendRequest,
     NewsletterSubscriberCreate,
     NewsletterSubscriberRead,
@@ -249,6 +251,18 @@ def list_newsletter_deliveries(
 ) -> list[NewsletterDeliveryRead]:
     deliveries = db.scalars(select(NewsletterDelivery).order_by(NewsletterDelivery.sent_at.desc())).all()
     return [NewsletterDeliveryRead.model_validate(delivery) for delivery in deliveries]
+
+
+@router.post("/newsletter/preview", response_model=NewsletterPreviewResponse)
+def preview_newsletter(
+    payload: NewsletterPreviewRequest,
+    _: User = Depends(require_roles(Role.ADMIN)),
+) -> NewsletterPreviewResponse:
+    settings = get_settings()
+    unsubscribe_url = payload.unsubscribe_url or f"{settings.site_url.rstrip('/')}/newsletter/unsubscribe/preview"
+    return NewsletterPreviewResponse(
+        html=render_newsletter_html(payload.subject, payload.content, unsubscribe_url)
+    )
 
 
 @router.post("/newsletter/send")
