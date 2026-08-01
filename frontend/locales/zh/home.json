@@ -58,5 +58,12 @@
   "newsletter": {
     "eyebrow": "订阅电子通讯",
     "title": "紧贴我们的使命"
+  },
+  "sectionNav": {
+    "home": "主页",
+    "impact": "影响力",
+    "categories": "分类",
+    "stories": "故事",
+    "gratitude": "感谢"
   }
 }

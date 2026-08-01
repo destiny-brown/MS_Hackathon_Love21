@@ -16,11 +16,11 @@ import karateImage from "./assets/asian-karate-medals.png";
 import scmpImage from "./assets/scmp-feature.png";
 
 const sectionNavItems: PageSectionNavItem[] = [
-  { id: "so-much-ability", label: "Ability" },
-  { id: "member-stories", label: "Stories" },
-  { id: "press-moments", label: "Press" },
-  { id: "social-feed", label: "Social" },
-  { id: "youtube", label: "Youtube" },
+  { id: "so-much-ability", label: "Ability", labelKey: "sectionNav.ability" },
+  { id: "member-stories", label: "Stories", labelKey: "sectionNav.stories" },
+  { id: "press-moments", label: "Press", labelKey: "sectionNav.press" },
+  { id: "social-feed", label: "Social", labelKey: "sectionNav.social" },
+  { id: "youtube", label: "Youtube", labelKey: "sectionNav.youtube" },
 ];
 
 const abilityCards = [
@@ -98,100 +98,100 @@ export default function StoriesMediaPage() {
         <PageHero id="stories-media-hero" title="Stories & Media" className="border-b-0 pb-8" />
       </Reveal>
 
-      <PageSectionNav items={sectionNavItems} heroSelector="#stories-media-hero" />
+      <PageSectionNav items={sectionNavItems} ns="media" heroSelector="#stories-media-hero" />
 
       <Reveal>
-      <section id="so-much-ability" className="scroll-mt-24 bg-white px-4 pb-12 pt-2 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
-              <Trophy className="h-6 w-6" aria-hidden="true" />
+        <section id="so-much-ability" className="scroll-mt-24 bg-white px-4 pb-12 pt-2 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-6 flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
+                <Trophy className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">So Much Ability</h2>
+              <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
             </div>
-            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">So Much Ability</h2>
-            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
-          </div>
-          <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
-            Not a disability story — an{" "}
-            <span className="font-serif-display italic text-brand-red">opportunity</span>{" "}
-            story, straight from{" "}
-            <span className="font-serif-display italic text-brand-red">#SoMuchAbility</span>, Love 21&apos;s own campaign
-            hashtag.
-          </p>
+            <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
+              An <span className="font-serif-display italic text-brand-red">opportunity</span> story
+            </p>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {abilityCards.map((card) => (
-              <article
-                key={card.id}
-                className="group overflow-hidden rounded-3xl border border-brand-light bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-              >
-                <div className="relative h-52 w-full bg-brand-light">
-                  <Image src={card.image} alt={card.title} fill className="object-cover" />
-                  <div className="absolute -top-1 left-4 flex h-14 w-10 items-start justify-center bg-brand-red pt-2 shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]">
-                    <BadgeIcon badge={card.badge} />
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {abilityCards.map((card) => (
+                <article
+                  key={card.id}
+                  className="group overflow-hidden rounded-3xl border border-brand-light bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                >
+                  <div className="relative h-52 w-full bg-brand-light">
+                    <Image src={card.image} alt={card.title} fill className="object-cover" />
+                    <div className="absolute -top-1 left-4 flex h-14 w-10 items-start justify-center bg-brand-red pt-2 shadow-md [clip-path:polygon(0_0,100%_0,100%_100%,50%_78%,0_100%)]">
+                      <BadgeIcon badge={card.badge} />
+                    </div>
                   </div>
-                </div>
-                <div className="p-5 sm:p-6">
-                  <h3 className="mb-2 text-lg font-semibold text-brand-dark">{card.title}</h3>
-                  <p className="text-sm leading-relaxed text-brand-dark/70">{card.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="member-stories" className="scroll-mt-24 bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
-              <HeartHandshake className="h-6 w-6" aria-hidden="true" />
+                  <div className="p-5 sm:p-6">
+                    <h3 className="mb-2 text-lg font-semibold text-brand-dark">{card.title}</h3>
+                    <p className="text-sm leading-relaxed text-brand-dark/70">{card.description}</p>
+                  </div>
+                </article>
+              ))}
             </div>
-            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Member Stories</h2>
-            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
           </div>
-          <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
-            Voices from{" "}
-            <span className="font-serif-display italic text-brand-red">families and members</span>
-            {" "}— the everyday moments that make Love 21 feel like{" "}
-            <span className="font-serif-display italic text-brand-red">home</span>.
-          </p>
+        </section>
+      </Reveal>
 
-          <TestimonialCarousel />
-        </div>
-      </section>
-
-      <section id="press-moments" className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
-              <Newspaper className="h-6 w-6" aria-hidden="true" />
+      <Reveal>
+        <section id="member-stories" className="scroll-mt-24 bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-6 flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
+                <HeartHandshake className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Member Stories</h2>
+              <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
             </div>
-            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Press &amp; Moments</h2>
-            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
-          </div>
+            <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
+              Voices from{" "}
+              <span className="font-serif-display italic text-brand-red">families and members</span>
+              {" "}— the everyday moments that make Love 21 feel like{" "}
+              <span className="font-serif-display italic text-brand-red">home</span>.
+            </p>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {pressCards.map((card) => (
-              <a
-                key={card.id}
-                href={card.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group overflow-hidden rounded-3xl border border-brand-light bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-              >
-                <div className="relative h-36 w-full overflow-hidden bg-brand-light">
-                  <Image src={card.image} alt={card.title} fill className="object-cover transition group-hover:scale-105" />
-                </div>
-                <div className="flex flex-1 flex-col p-4 sm:p-5">
-                  <span className="mb-1.5 text-xs font-bold uppercase tracking-wider text-brand-red/80">{card.date}</span>
-                  <h3 className="mb-2 line-clamp-2 text-sm font-semibold text-brand-dark">{card.title}</h3>
-                  <span className="mt-auto text-xs font-semibold text-brand-red group-hover:underline">Read the story →</span>
-                </div>
-              </a>
-            ))}
+            <TestimonialCarousel />
           </div>
-        </div>
-      </section>
+        </section>
+      </Reveal>
+
+      <Reveal>
+        <section id="press-moments" className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-6 flex items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
+                <Newspaper className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Press &amp; Moments</h2>
+              <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {pressCards.map((card) => (
+                <a
+                  key={card.id}
+                  href={card.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group overflow-hidden rounded-3xl border border-brand-light bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                >
+                  <div className="relative h-36 w-full overflow-hidden bg-brand-light">
+                    <Image src={card.image} alt={card.title} fill className="object-cover transition group-hover:scale-105" />
+                  </div>
+                  <div className="flex flex-1 flex-col p-4 sm:p-5">
+                    <span className="mb-1.5 text-xs font-bold uppercase tracking-wider text-brand-red/80">{card.date}</span>
+                    <h3 className="mb-2 line-clamp-2 text-sm font-semibold text-brand-dark">{card.title}</h3>
+                    <span className="mt-auto text-xs font-semibold text-brand-red group-hover:underline">Read the story →</span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
       </Reveal>
 
       <Reveal>
@@ -225,32 +225,31 @@ export default function StoriesMediaPage() {
       </Reveal>
 
       <Reveal>
-      <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-brand-dark px-8 py-12 text-center text-white sm:px-12 sm:py-14">
-            <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-brand-red/10" aria-hidden="true" />
-            <div className="relative z-10">
-              <HandHeart className="mx-auto h-10 w-10 text-brand-red" aria-hidden="true" />
-              <h2 className="mt-4 font-serif-display text-2xl sm:text-3xl">Ready to Make a Difference?</h2>
-              <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/70">
-                Volunteer, donate, or partner with us — there&apos;s a place for you.
-              </p>
-              <Link
-                href="/get-involved"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-red px-8 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-brand-dark"
-              >
-                Get Involved →
-              </Link>
+        <section className="bg-white px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-white px-8 py-12 text-center text-brand-dark sm:px-12 sm:py-14">
+              <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-brand-red/10" aria-hidden="true" />
+              <div className="relative z-10">
+                <HandHeart className="mx-auto h-10 w-10 text-brand-red" aria-hidden="true" />
+                <h2 className="mt-4 font-serif-display text-2xl sm:text-3xl">Ready to Make a Difference?</h2>
+                <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-brand-dark/70">
+                  Volunteer, donate, or partner with us — there&apos;s a place for you.
+                </p>
+                <Link
+                  href="/get-involved"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-red px-8 py-3 text-sm font-semibold text-white transition hover:bg-brand-dark"
+                >
+                  Get Involved →
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
       </Reveal>
 
       <Reveal>
-      <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl space-y-12">
-          <div className="rounded-2xl border border-brand-red/30 bg-brand-light/60 p-6 sm:p-8">
+        <section className="bg-white px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
             <h2 className="font-serif-display text-2xl text-brand-dark">Learn through real experiences</h2>
             <p className="mt-2 text-brand-dark/75">
               These stories come from Love 21&apos;s media archive — press coverage, interviews, and community events.
@@ -261,8 +260,12 @@ export default function StoriesMediaPage() {
               to connect facts with lived experience.
             </p>
           </div>
+        </section>
+      </Reveal>
 
-          <div>
+      <Reveal>
+        <section className="bg-white px-4 pb-12 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
             <h2 className="font-serif-display text-3xl text-brand-dark">Press &amp; Interviews</h2>
             <p className="mt-1 text-sm text-brand-dark/65">Click any cover to read the original article.</p>
             <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -271,23 +274,28 @@ export default function StoriesMediaPage() {
               ))}
             </div>
           </div>
+        </section>
+      </Reveal>
 
-          <div>
-            <h2 className="font-serif-display text-3xl text-brand-dark">Community Events</h2>
-            <div className="mt-5 grid gap-5 sm:grid-cols-2">
-              {communityStories.map((post) => (
-                <MediaStoryCard key={post.slug} post={post} />
-              ))}
+      <Reveal>
+        <section className="bg-white px-4 pb-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl space-y-12">
+            <div>
+              <h2 className="font-serif-display text-3xl text-brand-dark">Community Events</h2>
+              <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                {communityStories.map((post) => (
+                  <MediaStoryCard key={post.slug} post={post} />
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <Link href="/learn-play/resources" className="text-sm font-semibold text-brand-red hover:underline">
+                Browse all stories in Learn →
+              </Link>
             </div>
           </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <Link href="/learn-play/resources" className="text-sm font-semibold text-brand-red hover:underline">
-              Browse all stories in Learn →
-            </Link>
-          </div>
-        </div>
-      </section>
+        </section>
       </Reveal>
     </SiteLayout>
   );
