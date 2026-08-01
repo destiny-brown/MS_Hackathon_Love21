@@ -75,6 +75,18 @@ class ActivitySignupRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class VolunteerActivityRegistrationRead(BaseModel):
+    id: int
+    user_id: int
+    activity_id: int
+    activity_slug: str
+    activity_name: str
+    status: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class VolunteerHourCreate(BaseModel):
     activity_id: int | None = None
     hours: float = Field(gt=0, le=24)

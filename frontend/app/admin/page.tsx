@@ -5,15 +5,29 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { adminNavItems } from "@/lib/admin-nav";
-import { api, AdminOverview } from "@/lib/api";
+import { api, AdminOverview, AdminVolunteerActivityRegistration } from "@/lib/api";
 
 export default function AdminDashboardPage() {
   const [overview, setOverview] = useState<AdminOverview | null>(null);
+  const [registrations, setRegistrations] = useState<AdminVolunteerActivityRegistration[]>([]);
+
+  async function loadDashboard() {
+    const [overviewData, registrationData] = await Promise.all([
+      api.adminOverview(),
+      api.listAdminVolunteerActivityRegistrations(),
+    ]);
+    setOverview(overviewData);
+    setRegistrations(registrationData);
+  }
 
   useEffect(() => {
-    api.adminOverview().then(setOverview).catch(() => setOverview(null));
+    loadDashboard().catch(() => {
+      setOverview(null);
+      setRegistrations([]);
+    });
   }, []);
 
   const workspaceItems = adminNavItems.filter((item) => !item.exact);
@@ -60,6 +74,52 @@ export default function AdminDashboardPage() {
           <CardContent className="pt-6">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-ink/50">Learn resources</p>
             <p className="mt-2 text-3xl font-semibold text-brand-ink">{overview?.learn_resource_count ?? "—"}</p>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section aria-label="Activity registrations" className="mb-8">
+        <Card className="border-brand-sand bg-white">
+          <CardContent className="pt-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-ink/55">Activity registrations</h2>
+                <p className="mt-2 text-sm text-brand-ink/65">Recent volunteer activity signups from the public volunteering page.</p>
+              </div>
+              <div className="flex gap-2">
+                <Button type="button" variant="outline" onClick={() => loadDashboard().catch(() => undefined)}>Refresh</Button>
+                <Button asChild type="button" variant="outline">
+                  <Link href="/admin/volunteers">View all</Link>
+                </Button>
+              </div>
+            </div>
+            {registrations.length === 0 ? (
+              <p className="mt-5 rounded-lg border border-dashed border-brand-sand p-5 text-sm text-brand-ink/60">No activity registrations yet.</p>
+            ) : (
+              <div className="mt-5 overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="border-b text-xs uppercase tracking-wide text-brand-ink/45">
+                    <tr>
+                      <th className="px-3 py-2 font-medium">Who</th>
+                      <th className="px-3 py-2 font-medium">Activity</th>
+                      <th className="px-3 py-2 font-medium">When</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registrations.slice(0, 5).map((registration) => (
+                      <tr key={registration.id} className="border-b last:border-0">
+                        <td className="px-3 py-3">
+                          <div className="font-medium text-brand-ink">{registration.user_email}</div>
+                          <div className="text-xs capitalize text-brand-ink/50">{registration.user_role}</div>
+                        </td>
+                        <td className="px-3 py-3 text-brand-ink/75">{registration.activity_name}</td>
+                        <td className="px-3 py-3 text-brand-ink/60">{new Date(registration.created_at).toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </section>

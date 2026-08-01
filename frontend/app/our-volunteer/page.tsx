@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Blob } from "@/components/brand/Blob";
 import { BrandCard } from "@/components/brand/BrandCard";
@@ -15,7 +15,7 @@ import { SiteLayout } from "@/components/site/site-layout";
 import { LiveActivityBadge } from "@/components/volunteer/live-activity-badge";
 import { VolunteerFaqAccordion } from "@/components/volunteer/volunteer-faq-accordion";
 import { VolunteerStoryCarousel } from "@/components/volunteer/volunteer-story-carousel";
-import { api, type VolunteerActivity } from "@/lib/api";
+import { api, getCurrentUserWithRole, type VolunteerActivity, type User } from "@/lib/api";
 import {
   availabilityOptions,
   categoryMeta,
@@ -113,6 +113,7 @@ function mapActivityToRosterItem(activity: VolunteerActivity): RosterItem {
     total: activity.total ?? undefined,
     note: activity.note ?? undefined,
     ctaLabel: activity.cta_label ?? "I'm interested",
+    signedUp: activity.signed_up,
   };
 }
 
@@ -208,7 +209,7 @@ function AiVolunteerMatch({
   onSelectRole,
 }: {
   rosterItems: RosterItem[];
-  onSelectRole: (title: string) => void;
+  onSelectRole: (item: RosterItem) => void;
 }) {
   const [interest, setInterest] = useState<Interest | null>(null);
   const [availability, setAvailability] = useState<Availability | null>(null);
@@ -432,10 +433,10 @@ function AiVolunteerMatch({
 
           <div className="mt-7 flex flex-wrap gap-3">
             <button
-              onClick={() => onSelectRole(active.item.title)}
+              onClick={() => onSelectRole(active.item)}
               className="rounded-full bg-brand-red px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
             >
-              Sign me up for this
+              {active.item.signedUp ? "You're registered" : "Sign me up for this"}
             </button>
             {results.length > 1 && (
               <button
@@ -469,31 +470,40 @@ export default function VolunteerPage() {
 const ROLES_PREVIEW_COUNT = 4;
 
 function VolunteerContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const requestedCategory = searchParams.get("category");
+  const requestedSignup = searchParams.get("signup");
   const initialFilter: Category | "all" = requestedCategory && requestedCategory in categoryMeta ? (requestedCategory as Category) : "all";
 
   const [rosterItems, setRosterItems] = useState<RosterItem[]>(fallbackRosterItems);
   const [filter, setFilter] = useState<Category | "all">(initialFilter);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllRoles, setShowAllRoles] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<string>(fallbackRosterItems[0].title);
-  const [submitted, setSubmitted] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUserLoading, setCurrentUserLoading] = useState(true);
+  const [registrationMessage, setRegistrationMessage] = useState("");
+  const [registrationError, setRegistrationError] = useState("");
+  const [registeringSlug, setRegisteringSlug] = useState<string | null>(null);
+  const [handledRedirectSignup, setHandledRedirectSignup] = useState(false);
+
+  async function loadVolunteerActivities() {
+    try {
+      const activities = await api.listVolunteerActivities();
+      if (activities.length === 0) return;
+      const mapped = activities.map(mapActivityToRosterItem);
+      setRosterItems(mapped);
+    } catch {
+      // Keep local fallback roster if backend is unavailable.
+    }
+  }
 
   useEffect(() => {
-    api
-      .listVolunteerActivities()
-      .then((activities) => {
-        if (activities.length === 0) return;
-        const mapped = activities.map(mapActivityToRosterItem);
-        setRosterItems(mapped);
-        setSelectedOpportunity((current) =>
-          mapped.some((item) => item.title === current) ? current : mapped[0].title,
-        );
-      })
-      .catch(() => {
-        // Keep local fallback roster if backend is unavailable.
-      });
+    getCurrentUserWithRole()
+      .then(setCurrentUser)
+      .catch(() => setCurrentUser(null))
+      .finally(() => setCurrentUserLoading(false));
+    loadVolunteerActivities();
   }, []);
 
   const visibleItems = useMemo(() => {
@@ -527,10 +537,38 @@ function VolunteerContent() {
     [rosterItems],
   );
 
-  function selectRoleAndScroll(title: string) {
-    setSelectedOpportunity(title);
-    document.getElementById("signup")?.scrollIntoView({ behavior: "smooth" });
+  async function registerForRole(item: RosterItem) {
+    setRegistrationMessage("");
+    setRegistrationError("");
+
+    if (!currentUser) {
+      router.push(`/login?role=supporter&next=${encodeURIComponent(`/our-volunteer?signup=${item.id}`)}`);
+      return;
+    }
+
+    setRegisteringSlug(item.id);
+    try {
+      const registration = await api.signUpForVolunteerActivity(item.id);
+      setRosterItems((items) =>
+        items.map((role) => (role.id === registration.activity_slug ? { ...role, signedUp: true } : role)),
+      );
+      setRegistrationMessage(`You're registered for ${registration.activity_name}.`);
+      await loadVolunteerActivities();
+    } catch (err) {
+      setRegistrationError(err instanceof Error ? err.message : "Could not register for this activity");
+    } finally {
+      setRegisteringSlug(null);
+    }
   }
+
+  useEffect(() => {
+    if (handledRedirectSignup || currentUserLoading || !currentUser || !requestedSignup) return;
+    const item = rosterItems.find((role) => role.id === requestedSignup);
+    if (!item) return;
+    setHandledRedirectSignup(true);
+    registerForRole(item);
+    router.replace("/our-volunteer", { scroll: false });
+  }, [currentUser, currentUserLoading, handledRedirectSignup, requestedSignup, rosterItems, router]);
 
   return (
     <>
@@ -705,6 +743,17 @@ function VolunteerContent() {
             </div>
 
             <div>
+              {registrationMessage ? (
+                <p className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-800" role="status">
+                  {registrationMessage}
+                </p>
+              ) : null}
+              {registrationError ? (
+                <p className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-3 text-sm font-semibold text-red-700" role="alert">
+                  {registrationError}
+                </p>
+              ) : null}
+
               {displayedItems.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-brand-dark/20 p-10 text-center">
                   <p className="text-sm text-brand-dark/60">
@@ -747,10 +796,11 @@ function VolunteerContent() {
                           )}
 
                           <button
-                            onClick={() => selectRoleAndScroll(item.title)}
-                            className="mt-5 w-full rounded-full bg-brand-light py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
+                            onClick={() => registerForRole(item)}
+                            disabled={registeringSlug === item.id || item.signedUp}
+                            className="mt-5 w-full rounded-full bg-brand-light py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-brand-light disabled:hover:text-brand-dark"
                           >
-                            {item.ctaLabel}
+                            {item.signedUp ? "You're registered" : registeringSlug === item.id ? "Registering..." : item.ctaLabel}
                           </button>
 
                           {item.category === "csr" && item.id === "corporate-day" && (
@@ -899,7 +949,7 @@ function VolunteerContent() {
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-0 h-72 w-72 bg-brand-red/15" />
         <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-red/10" />
-        <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={selectRoleAndScroll} />
+        <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={registerForRole} />
       </section>
       </Reveal>
 

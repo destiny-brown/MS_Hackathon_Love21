@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import get_settings
 from app.db import get_db
@@ -13,7 +13,7 @@ from app.models.activity import Activity, ActivitySignup
 from app.models.learn_content import LearnQuestion, LearnResource, LearnVideo
 from app.models.newsletter import NewsletterDelivery, NewsletterSubscriber
 from app.models.user import Role, User
-from app.models.volunteer_activity import VolunteerActivity
+from app.models.volunteer_activity import VolunteerActivity, VolunteerActivityRegistration
 from app.schemas.admin import (
     ActivityAdminCreate,
     ActivityAdminRead,
@@ -22,6 +22,7 @@ from app.schemas.admin import (
     VolunteerActivityAdminCreate,
     VolunteerActivityAdminRead,
     VolunteerActivityAdminUpdate,
+    VolunteerActivityRegistrationAdminRead,
 )
 from app.schemas.newsletter import (
     NewsletterDeliveryRead,
@@ -40,6 +41,18 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 def serialize_activity(activity: Activity, registration_count: int) -> ActivityAdminRead:
     return ActivityAdminRead.model_validate({**activity.__dict__, "registration_count": registration_count})
+
+
+def serialize_volunteer_activity_registration(
+    registration: VolunteerActivityRegistration,
+) -> VolunteerActivityRegistrationAdminRead:
+    return VolunteerActivityRegistrationAdminRead.model_validate(
+        {
+            **registration.__dict__,
+            "user_email": registration.user.email,
+            "user_role": Role.canonical(registration.user.role).value,
+        }
+    )
 
 
 def registration_count(db: Session, activity_id: int) -> int:
@@ -124,6 +137,19 @@ def list_admin_volunteer_activities(
 ) -> list[VolunteerActivityAdminRead]:
     activities = db.scalars(select(VolunteerActivity).order_by(VolunteerActivity.display_order)).all()
     return [VolunteerActivityAdminRead.model_validate(activity) for activity in activities]
+
+
+@router.get("/volunteer-activity-registrations", response_model=list[VolunteerActivityRegistrationAdminRead])
+def list_admin_volunteer_activity_registrations(
+    _: User = Depends(require_roles(Role.ADMIN)),
+    db: Session = Depends(get_db),
+) -> list[VolunteerActivityRegistrationAdminRead]:
+    registrations = db.scalars(
+        select(VolunteerActivityRegistration)
+        .options(selectinload(VolunteerActivityRegistration.user), selectinload(VolunteerActivityRegistration.activity))
+        .order_by(VolunteerActivityRegistration.created_at.desc())
+    ).all()
+    return [serialize_volunteer_activity_registration(registration) for registration in registrations]
 
 
 @router.post("/volunteer-activities", response_model=VolunteerActivityAdminRead, status_code=status.HTTP_201_CREATED)

@@ -159,6 +159,16 @@ export type VolunteerActivity = {
   total?: number | null;
   note?: string | null;
   cta_label?: string;
+  signed_up: boolean;
+};
+export type VolunteerActivityRegistration = {
+  id: number;
+  user_id: number;
+  activity_id: number;
+  activity_slug: string;
+  activity_name: string;
+  status: string;
+  created_at: string;
 };
 export type TrailDebriefRequest = {
   captain_name?: string;
@@ -235,6 +245,17 @@ export type AdminVolunteerActivity = {
   cta_label: string;
   status: string;
   display_order: number;
+  created_at: string;
+};
+export type AdminVolunteerActivityRegistration = {
+  id: number;
+  user_id: number;
+  user_email: string;
+  user_role: Role;
+  activity_id: number;
+  activity_slug: string;
+  activity_name: string;
+  status: string;
   created_at: string;
 };
 export type NewsletterSubscriber = {
@@ -522,6 +543,8 @@ export const api = {
       body: JSON.stringify(payload),
     }),
   listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  signUpForVolunteerActivity: (slug: string) =>
+    request<VolunteerActivityRegistration>(`/ai/volunteer/activities/${slug}/signup`, { method: "POST", body: JSON.stringify({}) }),
   trailDebrief: (payload: TrailDebriefRequest) =>
     request<TrailDebriefResponse>("/ai/trail/debrief", {
       method: "POST",
@@ -540,6 +563,8 @@ export const api = {
     request<AdminActivity>(`/admin/activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteAdminActivity: (id: number) => request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
   listAdminVolunteerActivities: () => request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
+  listAdminVolunteerActivityRegistrations: () =>
+    request<AdminVolunteerActivityRegistration[]>("/admin/volunteer-activity-registrations"),
   createAdminVolunteerActivity: (payload: Omit<AdminVolunteerActivity, "id" | "created_at">) =>
     request<AdminVolunteerActivity>("/admin/volunteer-activities", { method: "POST", body: JSON.stringify(payload) }),
   updateAdminVolunteerActivity: (id: number, payload: Partial<Omit<AdminVolunteerActivity, "id" | "created_at">>) =>

@@ -6,7 +6,7 @@ from app.models.learn_content import LearnQuestion, LearnResource, LearnVideo
 from app.models.newsletter import NewsletterDelivery, NewsletterSubscriber
 from app.models.support_opportunity import SupportOpportunity
 from app.models.user import User
-from app.models.volunteer_activity import VolunteerActivity
+from app.models.volunteer_activity import VolunteerActivity, VolunteerActivityRegistration
 
 __all__ = [
     "Activity",
@@ -22,5 +22,6 @@ __all__ = [
     "SupportOpportunity",
     "User",
     "VolunteerActivity",
+    "VolunteerActivityRegistration",
     "VolunteerHour",
 ]
