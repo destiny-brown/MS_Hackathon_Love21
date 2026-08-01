@@ -6,7 +6,8 @@ from app.models.learn_content import LearnQuestion, LearnResource, LearnVideo
 from app.models.newsletter import NewsletterDelivery, NewsletterSubscriber
 from app.models.support_opportunity import SupportOpportunity
 from app.models.user import User
-from app.models.volunteer_activity import VolunteerActivity, VolunteerActivityRegistration
+from app.models.user_play_state import CaptainGreetingCache, UserPlayState
+from app.models.volunteer_activity import VolunteerActivity
 
 __all__ = [
     "Activity",
@@ -21,6 +22,8 @@ __all__ = [
     "NewsletterSubscriber",
     "SupportOpportunity",
     "User",
+    "UserPlayState",
+    "CaptainGreetingCache",
     "VolunteerActivity",
     "VolunteerActivityRegistration",
     "VolunteerHour",

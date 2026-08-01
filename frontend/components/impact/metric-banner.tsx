@@ -70,7 +70,7 @@ function GrowthLineChart({
         <h2 className="max-w-md font-serif-display text-2xl leading-snug text-brand-dark sm:text-3xl">
           {category.title}
         </h2>
-        <div className="text-right">
+        <div className="ml-auto shrink-0 text-right">
           <p className="font-serif-display text-3xl text-brand-red sm:text-4xl">
             {current.value.toLocaleString()}
           </p>
@@ -187,15 +187,16 @@ export function MetricBanner() {
 
   return (
     <section
+      id="impact-growth"
       ref={ref}
-      className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8"
+      className="relative scroll-mt-24 overflow-hidden bg-white px-4 pt-8 pb-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20"
     >
       <div className="relative mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
           transition={{ duration: 0.45 }}
-          className="mb-16 flex flex-col items-start gap-5 sm:flex-row sm:items-end sm:justify-between"
+          className="mb-10 flex flex-col items-start gap-5 sm:mb-16 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
             <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand-red">

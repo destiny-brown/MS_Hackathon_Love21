@@ -11,6 +11,7 @@ import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
 import { TriMark } from "@/components/brand/TriMark";
+import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
 import { LiveActivityBadge } from "@/components/volunteer/live-activity-badge";
 import { VolunteerFaqAccordion } from "@/components/volunteer/volunteer-faq-accordion";
@@ -30,6 +31,15 @@ import {
   type Interest,
   type RosterItem,
 } from "@/lib/volunteer-roster";
+
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "our-volunteer-hero", label: "Roles", labelKey: "sectionNav.roles" },
+  { id: "campaign", label: "Campaign", labelKey: "sectionNav.campaign" },
+  { id: "opportunities", label: "Opportunities", labelKey: "sectionNav.opportunities" },
+  { id: "life-on-shift", label: "Life", labelKey: "sectionNav.life" },
+  { id: "faq", label: "FAQ", labelKey: "sectionNav.faq" },
+  { id: "match", label: "AI Match", labelKey: "sectionNav.match" },
+];
 
 // ---------------------------------------------------------------------------
 // Page-local decorative helpers (WaveDivider / icons stay here).
@@ -572,10 +582,15 @@ function VolunteerContent() {
 
   return (
     <>
+      {/* Sentinel for section-nav reveal — not a nav target. */}
+      <div id="our-volunteer-nav-sentinel" className="h-px w-full" aria-hidden="true" />
+
       {/* ---------- HERO ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8">
-        <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
+      <section
+        id="our-volunteer-hero"
+        className="relative scroll-mt-24 overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8"
+      >        <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
         <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <Eyebrow>Get Involved · Volunteers</Eyebrow>
@@ -640,9 +655,11 @@ function VolunteerContent() {
       </section>
       </Reveal>
 
+      <PageSectionNav items={sectionNavItems} ns="volunteer" heroSelector="#our-volunteer-nav-sentinel" />
+
       {/* ---------- START YOUR OWN CAMPAIGN ---------- */}
       <Reveal>
-      <section className="border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
+      <section id="campaign" className="scroll-mt-24 border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-red/40 bg-white p-7">
           <div className="flex items-start gap-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-light">
@@ -682,7 +699,7 @@ function VolunteerContent() {
       )}
 
       {/* ---------- OPPORTUNITIES BOARD ---------- */}
-      <section id="opportunities" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section id="opportunities" className="scroll-mt-24 bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -839,7 +856,7 @@ function VolunteerContent() {
       <WaveDivider color="#EDF2F4" />
 
       {/* ---------- GALLERY ---------- */}
-      <section className="bg-brand-light px-4 pb-20 sm:px-6 lg:px-8">
+      <section id="life-on-shift" className="scroll-mt-24 bg-brand-light px-4 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-dark/50">
             <IconHeart className="h-4 w-4" /> Life on shift
@@ -932,7 +949,7 @@ function VolunteerContent() {
 
       {/* ---------- FAQ ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
+      <section id="faq" className="relative scroll-mt-24 overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
         <div className="relative mx-auto max-w-3xl">
           <Eyebrow>Before you sign up</Eyebrow>
@@ -946,7 +963,7 @@ function VolunteerContent() {
 
       {/*---------- AI VOLUNTEER MATCH ----------*/}
       <Reveal>
-      <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
+      <section id="match" className="relative scroll-mt-24 overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
         <Blob className="-left-20 top-0 h-72 w-72 bg-brand-red/15" />
         <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-red/10" />
         <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={registerForRole} />

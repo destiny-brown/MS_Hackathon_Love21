@@ -10,8 +10,16 @@ import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
 import { TriMark } from "@/components/brand/TriMark";
+import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
 import { programmes } from "@/lib/site-data";
+
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "get-involved-hero", label: "Join", labelKey: "sectionNav.join" },
+  { id: "programmes", label: "Categories", labelKey: "sectionNav.categories" },
+  { id: "activities", label: "Activities", labelKey: "sectionNav.activities" },
+  { id: "faq", label: "FAQ", labelKey: "sectionNav.faq" },
+];
 
 // ---------------------------------------------------------------------------
 // Decorative primitives — used sparingly, one or two per section, never as
@@ -284,10 +292,15 @@ export default function GetInvolvedPage() {
           every page automatically — see components/site/floating-cta.tsx.
           It's intentionally not re-declared or re-rendered here. */}
 
+      {/* Sentinel for section-nav reveal — not a nav target. */}
+      <div id="get-involved-nav-sentinel" className="h-px w-full" aria-hidden="true" />
+
       {/* ---------- STORY HERO ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-white px-4 pb-16 pt-14 sm:px-6 lg:px-8">
-        <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
+      <section
+        id="get-involved-hero"
+        className="relative scroll-mt-24 overflow-hidden bg-white px-4 pb-16 pt-14 sm:px-6 lg:px-8"
+      >        <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pr-16">
           <div className="relative">
             <Eyebrow>Celebrating Ability</Eyebrow>
@@ -339,6 +352,8 @@ export default function GetInvolvedPage() {
       </section>
       </Reveal>
 
+      <PageSectionNav items={sectionNavItems} ns="getInvolved" heroSelector="#get-involved-nav-sentinel" />
+
       {/* ---------- MARQUEE: 21 YEARS IN HONG KONG ---------- */}
       <div className="relative overflow-hidden border-y border-black/5 bg-[#FBEAEA] py-3">
         <Blob className="left-1/4 top-1/2 h-24 w-24 -translate-y-1/2 bg-white/40" />
@@ -384,7 +399,7 @@ export default function GetInvolvedPage() {
         <div className="pointer-events-none absolute left-[9%] top-[4%] hidden h-2.5 w-2.5 rounded-full bg-brand-red shadow-md lg:block" />
         <div className="pointer-events-none absolute left-[89%] top-[76%] hidden h-2.5 w-2.5 rounded-full bg-brand-red shadow-md lg:block" />
 
-        <section id="programmes" className="relative px-4 py-16 sm:px-6 lg:px-8 lg:pr-24">
+        <section id="programmes" className="relative scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:pr-24">
           <Reveal>
           <div className="mx-auto max-w-6xl">
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
@@ -448,7 +463,7 @@ export default function GetInvolvedPage() {
 
       {/* ---------- WEEKLY RHYTHM ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-[#EAF6F2] px-4 py-16 sm:px-6 lg:px-8">
+      <section id="activities" className="relative scroll-mt-24 overflow-hidden bg-[#EAF6F2] px-4 py-16 sm:px-6 lg:px-8">
         <Blob className="right-8 top-8 h-36 w-36 bg-white/50" />
         <div className="relative mx-auto max-w-6xl">
           <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
@@ -559,7 +574,7 @@ export default function GetInvolvedPage() {
 
       {/* ---------- FAQ ---------- */}
       <Reveal>
-      <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
+      <section id="faq" className="relative scroll-mt-24 overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
         <div className="relative mx-auto max-w-3xl">
           <Eyebrow>Before you reach out</Eyebrow>
@@ -624,22 +639,6 @@ export default function GetInvolvedPage() {
                 </button>
               </form>
             </div>
-
-            {/* A quiet closing prompt for people who are ready to act right now,
-                rather than a second big CTA block competing with the form. */}
-            <BrandCard className="border-brand-slate/20 bg-brand-light p-7 sm:p-7">
-              <TriMark className="h-2 w-7 text-brand-red" />
-              <p className="mt-4 font-serif-display text-xl text-brand-dark">
-                Not ready to wait for the next update?
-              </p>
-              <p className="mt-2 text-sm text-brand-dark/70">
-                You can donate or find a volunteer shift today — both take less than five minutes.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <CtaButton href="/donate">Donate</CtaButton>
-                <CtaButton href="/our-volunteer" variant="outline">Volunteer</CtaButton>
-              </div>
-            </BrandCard>
           </div>
         </div>
       </section>

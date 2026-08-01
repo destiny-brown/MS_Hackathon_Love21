@@ -89,5 +89,9 @@
     "contactMiddle": "）及 Maggie（",
     "contactAfter": "）。",
     "availability": "我们全年接受申请，实习计划可按你的时间表调整。请在申请中告知你的可用时间。"
+  },
+  "sectionNav": {
+    "company": "机构",
+    "contact": "联系"
   }
 }

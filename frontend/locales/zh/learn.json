@@ -633,5 +633,9 @@
         }
       }
     }
+  },
+  "sectionNav": {
+    "learn": "学习",
+    "explore": "探索"
   }
 }

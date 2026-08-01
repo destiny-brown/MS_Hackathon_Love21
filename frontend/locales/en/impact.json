@@ -146,5 +146,11 @@
     "thankYou": "Thank you — we'll be in touch shortly.",
     "funded": "{{pct}}% funded",
     "of": "{{current}} of {{total}}"
+  },
+  "sectionNav": {
+    "growth": "Growth",
+    "financials": "Financials",
+    "pillars": "5 Pillars",
+    "stories": "Stories"
   }
 }

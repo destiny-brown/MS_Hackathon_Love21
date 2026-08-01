@@ -1,18 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
+import { MobileSiteMenu } from "@/components/site/mobile-site-menu";
 import { cn } from "@/lib/utils";
 
 export type PageSectionNavItem = {
   id: string;
+  /** English fallback when no translation key is provided. */
   label: string;
+  /** i18n key within `ns` (e.g. `sectionNav.home`). */
+  labelKey?: string;
 };
 
 export type PageSectionNavProps = {
   items: PageSectionNavItem[];
   /** CSS selector for the hero element that must leave the viewport before the nav appears. */
   heroSelector: string;
+  /** i18n namespace used to resolve `labelKey` on each item. */
+  ns?: string;
   ariaLabel?: string;
   className?: string;
 };
@@ -20,9 +29,13 @@ export type PageSectionNavProps = {
 export function PageSectionNav({
   items,
   heroSelector,
-  ariaLabel = "On this page",
+  ns = "common",
+  ariaLabel,
   className,
 }: PageSectionNavProps) {
+  const { t } = useTranslation(ns);
+  const { t: tCommon } = useTranslation("common");
+  const resolvedAriaLabel = ariaLabel ?? tCommon("sectionNav.ariaLabel");
   const [visible, setVisible] = useState(false);
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
 
@@ -94,30 +107,43 @@ export function PageSectionNav({
       aria-hidden={!visible}
       inert={visible ? undefined : true}
     >
-      <nav aria-label={ariaLabel} className="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
-        <ul className="flex items-center justify-between gap-0.5 py-1.5 sm:justify-start sm:gap-1 sm:py-2">
-          {items.map((item) => {
-            const isActive = activeId === item.id;
-            return (
-              <li key={item.id} className="min-w-0 shrink">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection(item.id)}
-                  aria-current={isActive ? "true" : undefined}
-                  className={cn(
-                    "inline-flex min-h-9 items-center justify-center border-b-2 px-1.5 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-red/40 sm:min-h-11 sm:px-3 sm:text-sm",
-                    isActive
-                      ? "border-brand-red text-brand-dark"
-                      : "border-transparent text-brand-slate hover:text-brand-dark",
-                  )}
-                >
-                  {item.label}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      <div className="mx-auto flex max-w-6xl items-center gap-1 px-2 sm:gap-2 sm:px-6 lg:px-8">
+        <Link href="/" className="inline-flex shrink-0 items-center" aria-label="Love 21 home">
+          <Image
+            src="/images/love21_logo.png"
+            alt="Love 21 Foundation"
+            width={120}
+            height={40}
+            className="h-7 w-auto sm:h-8"
+          />
+        </Link>
+        <nav aria-label={resolvedAriaLabel} className="min-w-0 flex-1">
+          <ul className="flex items-center justify-center gap-0.5 py-1.5 sm:justify-start sm:gap-1 sm:py-2">
+            {items.map((item) => {
+              const isActive = activeId === item.id;
+              const label = item.labelKey ? t(item.labelKey, { defaultValue: item.label }) : item.label;
+              return (
+                <li key={item.id} className="min-w-0 shrink">
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection(item.id)}
+                    aria-current={isActive ? "true" : undefined}
+                    className={cn(
+                      "inline-flex min-h-9 items-center justify-center border-b-2 px-1.5 text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-red/40 sm:min-h-11 sm:px-3 sm:text-sm",
+                      isActive
+                        ? "border-brand-red text-brand-dark"
+                        : "border-transparent text-brand-slate hover:text-brand-dark",
+                    )}
+                  >
+                    {label}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+        <MobileSiteMenu />
+      </div>
     </div>
   );
 }

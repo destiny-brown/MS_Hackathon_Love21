@@ -9,132 +9,20 @@ import { DragonBoatStage } from "@/components/learn/trail-map/dragon-boat-stage"
 import { EventAnimationStage } from "@/components/learn/trail-map/event-animation-stage";
 import { SiteLayout } from "@/components/site/site-layout";
 import { getLocationForDayNumber, LOCATION_DAYS } from "@/lib/day-locations-data";
+import {
+  DEFAULT_LOCAL_PROGRESS,
+  DEFAULT_LOCAL_STREAK,
+  loadPlayStateForUser,
+  persistPlayState,
+  saveLocalStreak,
+  type LocalProgress,
+  type LocalStreak,
+} from "@/lib/twenty-one-moves-sync";
 
 import "./event-animations.css";
 
 const STORAGE_KEY = "love21_trail_progress_v2";
 const STREAK_STORAGE_KEY = "love21_21_moves_streak_v1";
-
-interface StoredProgress {
-  dayNumber: number;
-  eventIndex: number;
-  correctCount: number;
-  totalAnswered: number;
-}
-
-interface StreakStats {
-  totalPlays: number;
-  currentStreak: number;
-  bestStreak: number;
-}
-
-const DEFAULT_PROGRESS: StoredProgress = {
-  dayNumber: 1,
-  eventIndex: 0,
-  correctCount: 0,
-  totalAnswered: 0,
-};
-
-const DEFAULT_STREAK: StreakStats = {
-  totalPlays: 0,
-  currentStreak: 0,
-  bestStreak: 0,
-};
-
-function toSafeCount(value: unknown) {
-  return typeof value === "number" && Number.isFinite(value) && value > 0
-    ? Math.floor(value)
-    : 0;
-}
-
-function loadProgress(): StoredProgress {
-  if (typeof window === "undefined") return DEFAULT_PROGRESS;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_PROGRESS;
-    const parsed = JSON.parse(raw) as Partial<StoredProgress>;
-    return { ...DEFAULT_PROGRESS, ...parsed };
-  } catch {
-    return DEFAULT_PROGRESS;
-  }
-}
-
-function loadStreak(): StreakStats {
-  if (typeof window === "undefined") return DEFAULT_STREAK;
-  try {
-    const raw = window.localStorage.getItem(STREAK_STORAGE_KEY);
-    if (!raw) return DEFAULT_STREAK;
-    const parsed = JSON.parse(raw) as Partial<StreakStats>;
-    const currentStreak = toSafeCount(parsed.currentStreak);
-    const bestStreak = Math.max(toSafeCount(parsed.bestStreak), currentStreak);
-
-    return {
-      totalPlays: toSafeCount(parsed.totalPlays),
-      currentStreak,
-      bestStreak,
-    };
-  } catch {
-    // If localStorage is unavailable or blocked, the hook keeps the streak in React state for this session.
-    return DEFAULT_STREAK;
-  }
-}
-
-function saveStreak(streak: StreakStats) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify(streak));
-  } catch {
-    // localStorage can fail in private or embedded contexts; the in-memory React state remains the fallback.
-  }
-}
-
-function clearStoredStreak() {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.removeItem(STREAK_STORAGE_KEY);
-  } catch {
-    // Keep reset working in-memory even when localStorage cannot be accessed.
-  }
-}
-
-function useStreak() {
-  const [streak, setStreak] = useState<StreakStats>(DEFAULT_STREAK);
-  const [hasLoadedStreak, setHasLoadedStreak] = useState(false);
-  const skipNextSaveRef = useRef(false);
-
-  useEffect(() => {
-    setStreak(loadStreak());
-    setHasLoadedStreak(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hasLoadedStreak) return;
-    if (skipNextSaveRef.current) {
-      skipNextSaveRef.current = false;
-      return;
-    }
-    saveStreak(streak);
-  }, [hasLoadedStreak, streak]);
-
-  function recordPlay() {
-    setStreak((prev) => {
-      const currentStreak = prev.currentStreak + 1;
-      return {
-        totalPlays: prev.totalPlays + 1,
-        currentStreak,
-        bestStreak: Math.max(prev.bestStreak, currentStreak),
-      };
-    });
-  }
-
-  function resetStreak() {
-    skipNextSaveRef.current = true;
-    clearStoredStreak();
-    setStreak(DEFAULT_STREAK);
-  }
-
-  return { streak, recordPlay, resetStreak };
-}
 
 const LOCATION_ICONS: Record<string, string> = {
   stadium: "🏟️",
@@ -155,24 +43,44 @@ const LOCATION_LABELS: Record<string, string> = {
 };
 
 export default function TwentyOneMovesPage() {
-  const [progress, setProgress] = useState<StoredProgress | null>(null);
+  const [progress, setProgress] = useState<LocalProgress | null>(null);
+  const [streak, setStreak] = useState<LocalStreak>(DEFAULT_LOCAL_STREAK);
   const [dayJustCompleted, setDayJustCompleted] = useState(false);
   const [scoreBump, setScoreBump] = useState(false);
   const prevCorrectRef = useRef<number | null>(null);
-  const { streak, recordPlay, resetStreak } = useStreak();
 
   useEffect(() => {
-    setProgress(loadProgress());
+    let cancelled = false;
+    void loadPlayStateForUser().then((loaded) => {
+      if (cancelled) return;
+      setProgress(loaded.progress);
+      setStreak(loaded.streak);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
-    if (!progress || typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-    } catch {
-      // Progress still works in memory if localStorage is unavailable.
-    }
-  }, [progress]);
+    if (!progress) return;
+    void persistPlayState(progress, streak);
+  }, [progress, streak]);
+
+  function recordPlay() {
+    setStreak((prev) => {
+      const currentStreak = prev.currentStreak + 1;
+      return {
+        totalPlays: prev.totalPlays + 1,
+        currentStreak,
+        bestStreak: Math.max(prev.bestStreak, currentStreak),
+      };
+    });
+  }
+
+  function resetStreak() {
+    setStreak(DEFAULT_LOCAL_STREAK);
+    saveLocalStreak(DEFAULT_LOCAL_STREAK);
+  }
 
   useEffect(() => {
     if (!progress) return;
@@ -204,7 +112,7 @@ export default function TwentyOneMovesPage() {
     setProgress((prev) => {
       if (!prev || !location) return prev;
       const nextEventIndex = prev.eventIndex + 1;
-      const updated: StoredProgress = {
+      const updated: LocalProgress = {
         ...prev,
         correctCount: prev.correctCount + (correct ? 1 : 0),
         totalAnswered: prev.totalAnswered + 1,
@@ -247,6 +155,7 @@ export default function TwentyOneMovesPage() {
 
     try {
       window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(STREAK_STORAGE_KEY);
     } catch {
       // Keep reset working in-memory even when localStorage cannot be accessed.
     }
@@ -255,7 +164,11 @@ export default function TwentyOneMovesPage() {
     prevCorrectRef.current = null;
     setScoreBump(false);
 
-    setProgress(DEFAULT_PROGRESS);
+    const resetProgressState = DEFAULT_LOCAL_PROGRESS;
+    const resetStreakState = DEFAULT_LOCAL_STREAK;
+    setProgress(resetProgressState);
+    setStreak(resetStreakState);
+    void persistPlayState(resetProgressState, resetStreakState);
   }
 
 
