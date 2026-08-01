@@ -223,11 +223,11 @@ function StoryCarousel() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-y border-brand-slate/30 bg-brand-light px-4 py-16 sm:px-6 lg:px-8"
+      className="relative border-y border-brand-slate/30 bg-brand-light px-14 py-16 sm:px-16 lg:px-14"
     >
       <Blob className="-left-16 top-1/4 h-56 w-56 bg-brand-red/10" />
       <div className="relative mx-auto max-w-5xl">
-        <div className="mb-8 flex items-end justify-between gap-4">
+        <div className="mb-8">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
@@ -240,107 +240,111 @@ function StoryCarousel() {
               Ability in motion
             </h2>
           </motion.div>
-          <motion.div
+        </div>
+
+        <div className="relative">
+          <motion.button
+            type="button"
+            onClick={prev}
+            aria-label="Previous story"
             initial={{ opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
             transition={{ duration: 0.4, delay: 0.08 }}
-            className="flex gap-2"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            className="absolute left-0 top-1/2 z-10 inline-flex h-10 w-10 -translate-x-[calc(100%+0.75rem)] -translate-y-1/2 items-center justify-center rounded-full border border-brand-slate/60 bg-transparent text-brand-dark transition hover:border-brand-red hover:text-brand-red"
           >
-            <motion.button
-              type="button"
-              onClick={prev}
-              aria-label="Previous story"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-slate/60 bg-white text-brand-dark transition hover:border-brand-red hover:text-brand-red"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </motion.button>
-            <motion.button
-              type="button"
-              onClick={next}
-              aria-label="Next story"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-slate/60 bg-white text-brand-dark transition hover:border-brand-red hover:text-brand-red"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </motion.button>
-          </motion.div>
-        </div>
+            <ChevronLeft className="h-5 w-5" />
+          </motion.button>
 
-        <div className="relative overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.article
-              key={story.name}
-              initial={{ opacity: 0, x: 48 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -48 }}
-              transition={{ duration: 0.35 }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -80) next();
-                if (info.offset.x > 80) prev();
-              }}
-              whileHover={{ y: -4 }}
-              className="grid overflow-hidden rounded-2xl border border-brand-slate/40 bg-white shadow-[0_18px_45px_rgba(43,45,66,0.08)] lg:grid-cols-[1.1fr_0.9fr]"
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.45 }}
-                className="relative min-h-[240px] lg:min-h-[360px]"
+          <div className="relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={story.name}
+                initial={{ opacity: 0, x: 48 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -48 }}
+                transition={{ duration: 0.35 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x < -80) next();
+                  if (info.offset.x > 80) prev();
+                }}
+                whileHover={{ y: -4 }}
+                className="grid h-[600px] overflow-hidden rounded-2xl border border-brand-slate/40 bg-white shadow-[0_18px_45px_rgba(43,45,66,0.08)] sm:h-[620px] lg:h-[400px] lg:grid-cols-[1.1fr_0.9fr]"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={story.image}
-                  alt={story.alt}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  draggable={false}
-                />
-              </motion.div>
-              <div className="flex flex-col justify-center p-7 sm:p-9">
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.08 }}
-                  className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-red"
-                >
-                  {story.tag}
-                </motion.p>
-                <motion.blockquote
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.14 }}
-                  className="mt-4 font-serif-display text-2xl leading-snug text-brand-dark sm:text-3xl"
-                >
-                  “{story.quote}”
-                </motion.blockquote>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.2 }}
-                  className="mt-5 text-sm font-medium text-brand-slate"
-                >
-                  {story.name}
-                </motion.p>
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.26 }}
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.45 }}
+                  className="relative h-[240px] shrink-0 lg:h-auto lg:min-h-0"
                 >
-                  <Link
-                    href={story.href}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-red transition hover:text-brand-crimson"
-                  >
-                    Read Story <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={story.image}
+                    alt={story.alt}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    draggable={false}
+                  />
                 </motion.div>
-              </div>
-            </motion.article>
-          </AnimatePresence>
+                <div className="flex min-h-0 flex-col justify-center overflow-hidden p-7 sm:p-9">
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.08 }}
+                    className="line-clamp-2 text-sm font-semibold uppercase tracking-[0.16em] text-brand-red"
+                  >
+                    {story.tag}
+                  </motion.p>
+                  <motion.blockquote
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.14 }}
+                    className="mt-4 line-clamp-6 font-serif-display text-2xl leading-snug text-brand-dark lg:line-clamp-5 sm:text-3xl"
+                  >
+                    “{story.quote}”
+                  </motion.blockquote>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.2 }}
+                    className="mt-5 shrink-0 text-sm font-medium text-brand-slate"
+                  >
+                    {story.name}
+                  </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.26 }}
+                    className="shrink-0"
+                  >
+                    <Link
+                      href={story.href}
+                      className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-red transition hover:text-brand-crimson"
+                    >
+                      Read Story <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </motion.div>
+                </div>
+              </motion.article>
+            </AnimatePresence>
+          </div>
+
+          <motion.button
+            type="button"
+            onClick={next}
+            aria-label="Next story"
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.4, delay: 0.08 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            className="absolute right-0 top-1/2 z-10 inline-flex h-10 w-10 translate-x-[calc(100%+0.75rem)] -translate-y-1/2 items-center justify-center rounded-full border border-brand-slate/60 bg-transparent text-brand-dark transition hover:border-brand-red hover:text-brand-red"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </motion.button>
         </div>
 
         <motion.div

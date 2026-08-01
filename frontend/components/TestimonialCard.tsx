@@ -44,21 +44,22 @@ export function TestimonialCard({
           sizes="(max-width: 640px) 17rem, (max-width: 1024px) 20rem, 24rem"
         />
 
-        {categories.length > 0 ? (
-          <ul className="absolute left-3 top-3 z-10 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-1.5">
-            {categories.map((category) => (
-              <li
-                key={category}
-                className="rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md"
-              >
-                {category}
-              </li>
-            ))}
-          </ul>
-        ) : null}
-
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-12">
-          <h3 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">{name}</h3>
+          <div className="flex items-end justify-between gap-2">
+            <h3 className="min-w-0 text-xl font-semibold tracking-tight text-white sm:text-2xl">{name}</h3>
+            {categories.length > 0 ? (
+              <ul className="flex max-w-[55%] shrink-0 flex-wrap justify-end gap-1.5">
+                {categories.map((category) => (
+                  <li
+                    key={category}
+                    className="rounded-full border border-white/20 bg-black/40 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-md sm:text-xs sm:px-3"
+                  >
+                    {category}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
         </div>
       </div>
 
