@@ -18,6 +18,7 @@ import { TriMark } from "@/components/brand/TriMark";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { SiteLayout } from "@/components/site/site-layout";
+import { WallOfGratitude } from "@/components/site/wall-of-gratitude";
 import { Button } from "@/components/ui/button";
 import {
   fourDoors,
@@ -315,7 +316,7 @@ function FourDoors() {
           transition={{ duration: 0.45 }}
           className="mb-3 text-center font-serif-display text-4xl text-brand-dark sm:text-5xl"
         >
-          Where will you begin?
+Choose what you need
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -324,8 +325,7 @@ function FourDoors() {
           transition={{ duration: 0.45, delay: 0.05 }}
           className="mx-auto mb-10 max-w-2xl text-center text-brand-slate"
         >
-          Four doors into Love 21 — choose the path that matches how you want to
-          support our Down syndrome, autistic, and neurodiverse community.
+          Pick one clear path. You can browse, donate, volunteer, and learn without creating an account.
         </motion.p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {fourDoors.map((door, index) => (
@@ -605,7 +605,7 @@ export default function HomePage() {
               className="bg-brand-red text-white hover:bg-brand-crimson"
             >
               <Link href="/our-story">
-                Discover More <ArrowRight className="ml-2 h-4 w-4" />
+                Learn about Love 21 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
@@ -655,18 +655,21 @@ export default function HomePage() {
             Celebrating Ability
           </p>
           <p className="mt-5 font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">
-            We focus entirely on what our community CAN do — unlocking potential
-            through sports, nutrition, and lifelong empowerment.
+            This is an ABILITY story — an opportunity story, straight from
+            #SoMuchAbility, Love 21&apos;s own campaign hashtag. We celebrate what
+            people can do and open more places for every ability to shine.
           </p>
           <Link
             href="/get-involved"
             className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-slate transition hover:text-brand-red"
           >
-            Explore Education & Support <ArrowRight className="h-4 w-4" />
+            Explore programmes <ArrowRight className="h-4 w-4" />
           </Link>
         </motion.div>
       </section>
       </Reveal>
+
+      <WallOfGratitude />
 
       {/* Section 6: Newsletter (unchanged structure) */}
       <Reveal>

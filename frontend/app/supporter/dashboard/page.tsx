@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api, Activity, SupporterDashboard } from "@/lib/api";
-import { useCurrentUser } from "@/lib/auth";
+import { signOutToLogin, useRequireRoles } from "@/lib/auth";
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-HK", {
@@ -73,7 +73,7 @@ function ActivityCalendar({ activities }: { activities: Activity[] }) {
 }
 
 export default function SupporterDashboardPage() {
-  const { user, loading } = useCurrentUser();
+  const { user, loading, error: authError } = useRequireRoles("supporter");
   const [dashboard, setDashboard] = useState<SupporterDashboard | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [hoursActivityId, setHoursActivityId] = useState<string>("");
@@ -133,10 +133,10 @@ export default function SupporterDashboardPage() {
     }
   }
 
-  if (loading || !user) {
+  if (loading || !user || user.role !== "supporter") {
     return (
-      <main className="flex min-h-[40vh] items-center justify-center px-4 py-10">
-        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Loading your dashboard…</p>
+      <main className="flex min-h-screen items-center justify-center px-4 py-10">
+        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Checking supporter access…</p>
       </main>
     );
   }
@@ -153,8 +153,10 @@ export default function SupporterDashboardPage() {
               <a href="/our-volunteer" className="text-brand-coral underline-offset-2 hover:underline">Our Volunteer</a>.
             </p>
           </div>
+          <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
         </header>
 
+        {authError ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{authError}</p> : null}
         {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
 
         {!dashboard ? (

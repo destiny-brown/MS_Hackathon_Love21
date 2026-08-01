@@ -392,7 +392,7 @@ export default function GetInvolvedPage() {
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
               <div>
                 <Eyebrow>Programmes</Eyebrow>
-                <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">What We Do</h2>
+                <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">What we do</h2>
               </div>
               <p className="max-w-2xl text-sm text-brand-dark/70">
                 A whole-person model — sport, nutrition, and family support — because reaching full
@@ -413,8 +413,13 @@ export default function GetInvolvedPage() {
                       className={`absolute right-0 top-0 h-16 w-16 -translate-y-8 translate-x-8 rotate-45 opacity-10 transition-opacity group-hover:opacity-20 ${cardAccents[i % cardAccents.length]}`}
                       aria-hidden="true"
                     />
-                    <h3 className="font-serif-display text-2xl text-brand-dark">{programme.title}</h3>
-                    <p className="mt-3 text-sm text-brand-dark/75">{programme.description}</p>
+                    <h3 className="font-serif-display text-2xl text-brand-ink">{programme.title}</h3>
+                    <p className="mt-3 text-sm text-brand-ink/75">{programme.description}</p>
+                    <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                      <Link href="/members" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Join as a member</Link>
+                      <Link href="/our-volunteer" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Volunteer</Link>
+                      <Link href="/donate" className="rounded-md font-semibold text-brand-red hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Donate</Link>
+                    </div>
                   </BrandCard>
                 </Reveal>
               ))}

@@ -40,7 +40,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="whitespace-nowrap transition-colors hover:text-brand-red"
+                className="whitespace-nowrap rounded-md transition-colors hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {key ? t(key) : item.label}
               </Link>
@@ -49,7 +49,7 @@ export function SiteHeader() {
           {user?.role === "admin" ? (
             <Link
               href="/admin"
-              className="whitespace-nowrap font-semibold text-[#d4a373] transition-colors hover:text-brand-red"
+              className="whitespace-nowrap rounded-md font-semibold text-[#d4a373] transition-colors hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Admin
             </Link>
