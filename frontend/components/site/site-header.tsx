@@ -12,11 +12,9 @@ import { AccessibilityOptionsPanel } from "@/components/site/accessibility-optio
 import { LanguageSwitcherInline } from "@/components/site/language-switcher-inline";
 import { SiteAccountNav } from "@/components/site/site-account-nav";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/lib/auth";
 import { navKeyByHref } from "@/lib/i18n/nav";
 import { mainNav } from "@/lib/site-data";
-
-// Import user context/hook - you'll need to add this
-// import { useUser } from "@/lib/hooks/useUser"; // Example import
 
 export function SiteHeader() {
   const { t } = useTranslation("common");
@@ -25,11 +23,7 @@ export function SiteHeader() {
   const drawerRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  
-  // Get user data - you'll need to implement this
-  // const { user } = useUser();
-  // For now, using a placeholder - replace with your actual user hook
-  const user = null; // Placeholder
+  const { user } = useCurrentUser();
 
   useEffect(() => {
     setMounted(true);
@@ -109,7 +103,6 @@ export function SiteHeader() {
                       </li>
                     );
                   })}
-                  {/* Admin link in mobile menu - only show if user is admin */}
                   {user?.role === "admin" && (
                     <li>
                       <Link
@@ -166,7 +159,6 @@ export function SiteHeader() {
               </Link>
             );
           })}
-          {/* Admin link in desktop nav - only show if user is admin */}
           {user?.role === "admin" && (
             <Link
               href="/admin"
