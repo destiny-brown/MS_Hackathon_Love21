@@ -23,17 +23,9 @@ export function SiteAccountNav() {
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <Button asChild size="sm" variant="outline" className="border-brand-coral/40 font-semibold">
-        <Link href="/login">Log in</Link>
-      </Button>
-    );
-  }
-
-  if (!user) {
-    return (
-      <Button asChild size="sm" variant="outline" className="border-brand-coral font-semibold text-brand-coral hover:bg-brand-coral/10">
         <Link href="/login">Log in</Link>
       </Button>
     );
