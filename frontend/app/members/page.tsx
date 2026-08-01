@@ -16,18 +16,10 @@ export default function MembersPage() {
     <SiteLayout>
       <PageHero
         title="Join as a Member"
-        subtitle="Public enquiry page for people and families interested in Love 21 programmes. Already registered? Use member login to open your account profile."
+        subtitle="For people and families who want to take part in Love 21 programmes. Start with a short enquiry — browsing the website does not require login. Already registered? Use member login to open your account profile."
+        primaryAction={{ label: "Start enquiry", href: "#member-enquiry" }}
+        secondaryAction={{ label: "Member login", href: "/login?role=member" }}
       />
-      <div className="border-b border-brand-light bg-white px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap gap-3">
-          <Button asChild>
-            <Link href="#member-enquiry">Start enquiry</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/login?role=member">Member login</Link>
-          </Button>
-        </div>
-      </div>
       <section id="member-enquiry" className="scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.8fr_1fr]">
           <aside className="rounded-3xl border border-brand-sand bg-white p-6 sm:p-8">

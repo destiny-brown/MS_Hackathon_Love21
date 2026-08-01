@@ -52,7 +52,7 @@ export function SiteAccountNav() {
           role="menu"
           className="absolute right-0 z-50 mt-2 w-52 rounded-xl border border-brand-sand bg-white py-1 shadow-lg"
         >
-          <p className="border-b border-brand-sand px-3 py-2 text-xs text-muted-foreground truncate">{user.email}</p>
+          <p className="truncate border-b border-brand-sand px-3 py-2 text-xs text-muted-foreground">{user.email}</p>
           <Link
             href={dashboardHref}
             role="menuitem"

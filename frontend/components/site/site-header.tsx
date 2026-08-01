@@ -15,6 +15,9 @@ import { Button } from "@/components/ui/button";
 import { navKeyByHref } from "@/lib/i18n/nav";
 import { mainNav } from "@/lib/site-data";
 
+// Import user context/hook - you'll need to add this
+// import { useUser } from "@/lib/hooks/useUser"; // Example import
+
 export function SiteHeader() {
   const { t } = useTranslation("common");
   const drawerId = useId();
@@ -22,6 +25,11 @@ export function SiteHeader() {
   const drawerRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  
+  // Get user data - you'll need to implement this
+  // const { user } = useUser();
+  // For now, using a placeholder - replace with your actual user hook
+  const user = null; // Placeholder
 
   useEffect(() => {
     setMounted(true);
@@ -101,15 +109,18 @@ export function SiteHeader() {
                       </li>
                     );
                   })}
-                  <li>
-                    <Link
-                      href="/admin"
-                      onClick={closeMenu}
-                      className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#d4a373] transition hover:bg-brand-light"
-                    >
-                      Admin
-                    </Link>
-                  </li>
+                  {/* Admin link in mobile menu - only show if user is admin */}
+                  {user?.role === "admin" && (
+                    <li>
+                      <Link
+                        href="/admin"
+                        onClick={closeMenu}
+                        className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#d4a373] transition hover:bg-brand-light"
+                      >
+                        Admin
+                      </Link>
+                    </li>
+                  )}
                 </ul>
 
                 <div className="mt-4 border-t border-brand-light px-3 pt-4">
@@ -149,12 +160,21 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="whitespace-nowrap transition-colors hover:text-brand-red"
+                className="whitespace-nowrap rounded-md transition-colors hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {key ? t(key) : item.label}
               </Link>
             );
           })}
+          {/* Admin link in desktop nav - only show if user is admin */}
+          {user?.role === "admin" && (
+            <Link
+              href="/admin"
+              className="whitespace-nowrap rounded-md font-semibold text-[#d4a373] transition-colors hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              Admin
+            </Link>
+          )}
         </nav>
 
         <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">

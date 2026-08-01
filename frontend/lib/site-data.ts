@@ -1,23 +1,23 @@
 export type NavItem = { label: string; href: string };
 
 export const mainNav: NavItem[] = [
-  { label: "Learn", href: "/learn-play" },
+  { label: "About Love 21", href: "/our-story" },
+  { label: "Programmes", href: "/our-programmes" },
   { label: "Get Involved", href: "/get-involved" },
   { label: "Impact", href: "/impact-dashboard" },
   { label: "Stories", href: "/stories-media" },
-  { label: "Events", href: "/events-campaigns" },
-  { label: "About Us", href: "/about-governance" },
+  { label: "Wishlist", href: "/shop" },
 ];
 
 export const footerNav: NavItem[] = [
-  { label: "Volunteers", href: "/our-volunteer" },
-  { label: "Donate", href: "/donate" },
-  { label: "Join Us", href: "/join-us" },
-  { label: "Our Reports", href: "/our-finance" },
+  { label: "Volunteer", href: "/our-volunteer" },
+  { label: "Join as a Member", href: "/members" },
+  { label: "Partner with Us", href: "/join-us" },
+  { label: "Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
   { label: "Wishlist: Help Us", href: "/shop" },
   { label: "Members", href: "/members" },
-  { label: "Contact Us", href: "/contact-us" },
+  { label: "Contact", href: "/contact-us" },
 ];
 
 export const stats = [
@@ -66,24 +66,24 @@ export const heroGallery = [
 /** Four-door homepage navigation cards. */
 export const fourDoors = [
   {
-    title: "Education & Support",
-    description: "Grow life skills, join inclusive programmes, and access family care across sport, nutrition, and support.",
-    href: "/get-involved",
+    title: "Join programmes",
+    description: "Find sport, nutrition, and family support for Love 21 members.",
+    href: "/our-programmes",
   },
   {
-    title: "Donate & Partner",
-    description: "Fund nutrition packs, blood testing, coaching sessions, and day-to-day community care.",
+    title: "Donate",
+    description: "Give once or monthly to support classes, coaching, and care.",
     href: "/donate",
   },
   {
     title: "Volunteer",
-    description: "Share your time supporting weekly classes, family sessions, and inclusive community events.",
+    description: "Share your time at weekly classes, family sessions, and events.",
     href: "/our-volunteer",
   },
   {
-    title: "Activity Calendar",
-    description: "Find upcoming sports, nutrition workshops, family programmes, and community gatherings.",
-    href: "/events-campaigns",
+    title: "Explore programmes",
+    description: "See sports, nutrition workshops, family support, and community activities.",
+    href: "/our-programmes",
   },
 ];
 
