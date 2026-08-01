@@ -40,12 +40,6 @@ export function SiteFooter() {
       <div className="mx-auto mt-10 flex max-w-6xl flex-col items-start justify-between gap-3 border-t border-brand-slate/30 pt-6 text-sm text-brand-dark/70 sm:flex-row">
         <p>© 2019–2026 Love 21 Foundation Limited</p>
         <div className="flex gap-5">
-          <Link href="/donate" className="rounded-md font-semibold uppercase tracking-[0.11em] text-brand-red transition hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-            Donate
-          </Link>
-          <Link href="/contact-us" className="rounded-md transition hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-            Contact
-          </Link>
           <Link href="/login?role=admin" className="rounded-md text-brand-ink/45 transition hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
             Staff login
           </Link>
