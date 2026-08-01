@@ -86,11 +86,10 @@ export default function LearnPlayPage() {
             Celebrating Ability
           </p>
           <h1 className="mt-3 font-serif text-6xl font-medium tracking-tight text-brand-ink sm:text-7xl lg:text-8xl">
-            Learn &amp; <em className="text-[#EF233C]">Play</em>
+            Learn
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-brand-ink/70">
-            Educate through shared experiences — bust myths, hear from the community, and go deeper
-            with real stories.
+            Learn through shared experiences, hear from the community, and explore real stories.
           </p>
           <div className="mt-8 h-[3px] w-20 rounded-full bg-gradient-to-r from-[#EF233C] to-brand-ink" />
         </div>
@@ -145,39 +144,12 @@ export default function LearnPlayPage() {
         </div>
       </section>
 
-      {/* CTA bar */}
-      <section className="bg-brand-cream px-4 py-10 text-center sm:px-6 lg:px-8">
-        <p className="mx-auto max-w-xl text-base leading-relaxed text-brand-ink/70">
-          Every myth we bust connects to a real Love 21 story — and a way to{" "}
-          <Link
-            href="/get-involved"
-            className="font-semibold text-[#EF233C] underline decoration-[#EF233C] underline-offset-4 transition-colors hover:text-black hover:decoration-black"
-          >
-            get involved
-          </Link>
-          .
-        </p>
-      </section>
-
       {/* Explore More — rebuilt as numbered "door" cards in the spirit of the
           "Where will you begin?" module: a folded corner, a large faint
           serial number, and a clean ENTER-style link. No icons, no pastel
           noise-texture headers, no blue. */}
       <section className="bg-brand-cream px-4 pb-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-12">
-            <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-[#EF233C]">
-              <TriMark className="h-2 w-7" />
-              Three ways to go deeper
-            </p>
-            <h2 className="mt-2 font-serif text-4xl font-medium text-brand-ink sm:text-5xl">
-              Explore <em className="text-[#EF233C]">More</em>
-            </h2>
-            <p className="mt-2 text-brand-ink/60">
-              Three ways to learn, play, and grow with the Love 21 community.
-            </p>
-          </div>
-
           <div className="relative">
             {/* Faint connecting line — a quiet "journey" motif echoed across
                 the site, not a full path illustration. */}
