@@ -107,7 +107,23 @@ export type YouTubeVideo = {
   published_at: string;
   thumbnail_url: string | null;
 };
-export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
+export type GratitudeEntryStatus = "pending" | "approved" | "rejected";
+export type GratitudeEntry = {
+  id: number;
+  author_id: number;
+  display_name: string | null;
+  message: string;
+  photo_url: string | null;
+  status: GratitudeEntryStatus | string;
+  submitted_at: string;
+  moderated_at: string | null;
+  moderator_id: number | null;
+};
+export type GratitudeEntryInput = {
+  display_name?: string | null;
+  message: string;
+  photo_url?: string | null;
+};
 export type VolunteerMatchRequest = {
   interest: "hands-on" | "food" | "people" | "skills";
   availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
@@ -191,6 +207,58 @@ export type CaptainChatResponse = {
   sources: string[];
   message: string | null;
 };
+export type AdminActivity = {
+  id: number;
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  location: string;
+  description: string;
+  max_capacity: number | null;
+  category: string | null;
+  status: string;
+  registration_count: number;
+  created_at: string;
+};
+export type AdminVolunteerActivity = {
+  id: number;
+  slug: string;
+  icon: string;
+  title: string;
+  description: string;
+  schedule_label: string;
+  location_label: string;
+  category: string;
+  filled_count: number | null;
+  total_spots: number | null;
+  note: string | null;
+  cta_label: string;
+  status: string;
+  display_order: number;
+  created_at: string;
+};
+export type NewsletterSubscriber = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string | null;
+  status: string;
+  subscribed_at: string;
+};
+export type NewsletterDelivery = {
+  id: number;
+  subject: string;
+  content_text: string;
+  recipient_count: number;
+  sent_at: string;
+};
+export type AdminOverview = {
+  event_count: number;
+  volunteer_program_count: number;
+  subscriber_count: number;
+  active_subscriber_count: number;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -210,7 +278,7 @@ export function clearToken() {
 export function landingPathForRole(role: Role) {
   switch (role) {
     case "admin":
-      return "/dashboard";
+      return "/admin";
     case "member":
       return "/member/profile";
     case "supporter":
@@ -219,23 +287,52 @@ export function landingPathForRole(role: Role) {
   }
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = getToken();
-  const headers = new Headers(options.headers);
-  headers.set("Content-Type", "application/json");
-  if (token) headers.set("Authorization", `Bearer ${token}`);
-
-  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
-
-  if (response.status === 401 && typeof window !== "undefined") {
-    clearToken();
-    window.location.href = "/login";
-    throw new Error("Unauthorized");
+export function resolvePostLoginPath(role: Role, nextPath: string | null) {
+  if (nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") && nextPath !== "/login") {
+    return nextPath;
   }
+  return landingPathForRole(role);
+}
+
+type ApiRequestInit = RequestInit & { redirectOnUnauthorized?: boolean };
+
+function parseApiError(data: unknown, status: number): string {
+  if (typeof data === "object" && data !== null && "detail" in data) {
+    const detail = (data as { detail?: unknown }).detail;
+    if (typeof detail === "string") return detail;
+    if (Array.isArray(detail)) {
+      const messages = detail
+        .map((entry) => (typeof entry === "object" && entry !== null && "msg" in entry ? String(entry.msg) : ""))
+        .filter(Boolean);
+      if (messages.length > 0) return messages.join(", ");
+    }
+  }
+  return `Request failed: ${status}`;
+}
+
+async function request<T>(path: string, options: ApiRequestInit = {}): Promise<T> {
+  const { redirectOnUnauthorized = true, ...requestOptions } = options;
+  const token = getToken();
+  const headers = new Headers(requestOptions.headers);
+  headers.set("Content-Type", "application/json");
+  const isPublicAuthRequest = path === "/auth/login" || path === "/auth/register";
+  if (token && !isPublicAuthRequest) headers.set("Authorization", `Bearer ${token}`);
+
+  const response = await fetch(`${API_URL}${path}`, { ...requestOptions, headers });
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
-    throw new Error(data.detail || `Request failed: ${response.status}`);
+    const message = parseApiError(data, response.status);
+
+    if (response.status === 401 && typeof window !== "undefined") {
+      clearToken();
+      if (redirectOnUnauthorized) {
+        window.location.href = "/login";
+        throw new Error("Unauthorized");
+      }
+    }
+
+    throw new Error(message);
   }
 
   if (response.status === 204) return undefined as T;
@@ -244,15 +341,24 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export async function getCurrentUserWithRole() {
   if (!getToken()) return null;
-  return api.me();
+  return api.currentUser();
 }
 
 export const api = {
   register: (email: string, password: string, role: Exclude<Role, "admin"> = "supporter") =>
-    request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify({ email, password, role }) }),
+    request<AuthResponse>("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password, role }),
+      redirectOnUnauthorized: false,
+    }),
   login: (email: string, password: string) =>
-    request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
+    request<AuthResponse>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      redirectOnUnauthorized: false,
+    }),
   me: () => request<User>("/auth/me"),
+  currentUser: () => request<User>("/auth/me", { redirectOnUnauthorized: false }),
   listItems: () => request<Item[]>("/items"),
   createItem: (payload: Pick<Item, "title" | "description">) =>
     request<Item>("/items", { method: "POST", body: JSON.stringify(payload) }),
@@ -262,6 +368,15 @@ export const api = {
   adminMetrics: () => request<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number }>("/admin/metrics"),
   recurringDonation: () => request<{ email: string; status: string }>("/supporter/recurring-donation"),
   memberProfile: () => request<{ email: string; profile_status: string }>("/member/profile"),
+  listPublicGratitudeEntries: () => request<GratitudeEntry[]>("/gratitude-entries/public"),
+  submitGratitudeEntry: (payload: GratitudeEntryInput) =>
+    request<GratitudeEntry>("/gratitude-entries/member", { method: "POST", body: JSON.stringify(payload) }),
+  listPendingGratitudeEntries: () => request<GratitudeEntry[]>("/gratitude-entries/admin/pending"),
+  moderateGratitudeEntry: (id: number, status: "approved" | "rejected") =>
+    request<GratitudeEntry>(`/gratitude-entries/admin/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
   listSupportOpportunities: (kind?: OpportunityKind) =>
     request<SupportOpportunity[]>(`/support-opportunities${kind ? `?kind=${kind}` : ""}`),
   listAdminSupportOpportunities: () => request<SupportOpportunity[]>("/support-opportunities/admin"),
@@ -286,10 +401,6 @@ export const api = {
   supporterDashboard: () => request<SupporterDashboard>("/supporter/dashboard"),
   logVolunteerHours: (payload: { activity_id?: number | null; hours: number; notes?: string | null }) =>
     request<VolunteerHour>("/supporter/hours", { method: "POST", body: JSON.stringify(payload) }),
-  searchYouTube: (query: string, maxResults = 20, maxDurationMinutes = 5) =>
-    request<YouTubeSearchResponse>(
-      `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
-    ),
   matchVolunteer: (payload: VolunteerMatchRequest) =>
     request<VolunteerMatchResponse>("/ai/volunteer/match", {
       method: "POST",
@@ -306,4 +417,50 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  adminOverview: () => request<AdminOverview>("/admin/overview"),
+  listAdminActivities: () => request<AdminActivity[]>("/admin/activities"),
+  createAdminActivity: (payload: Omit<AdminActivity, "id" | "registration_count" | "created_at">) =>
+    request<AdminActivity>("/admin/activities", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminActivity: (id: number, payload: Partial<Omit<AdminActivity, "id" | "registration_count" | "created_at">>) =>
+    request<AdminActivity>(`/admin/activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminActivity: (id: number) => request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
+  listAdminVolunteerActivities: () => request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
+  createAdminVolunteerActivity: (payload: Omit<AdminVolunteerActivity, "id" | "created_at">) =>
+    request<AdminVolunteerActivity>("/admin/volunteer-activities", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminVolunteerActivity: (id: number, payload: Partial<Omit<AdminVolunteerActivity, "id" | "created_at">>) =>
+    request<AdminVolunteerActivity>(`/admin/volunteer-activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminVolunteerActivity: (id: number) => request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
+  listNewsletterSubscribers: () => request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
+  createNewsletterSubscriber: (payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">) =>
+    request<NewsletterSubscriber>("/admin/newsletter/subscribers", { method: "POST", body: JSON.stringify({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone_number: payload.phone_number,
+      status: payload.status,
+    }) }),
+  updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
+    request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, { method: "PATCH", body: JSON.stringify({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone_number: payload.phone_number,
+      status: payload.status,
+    }) }),
+  deleteNewsletterSubscriber: (id: number) => request<void>(`/admin/newsletter/subscribers/${id}`, { method: "DELETE" }),
+  listNewsletterDeliveries: () => request<NewsletterDelivery[]>("/admin/newsletter/deliveries"),
+  previewNewsletter: (payload: { subject: string; content: string; unsubscribe_url?: string }) =>
+    request<{ html: string }>("/admin/newsletter/preview", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  sendNewsletter: (payload: { subject: string; content: string }) =>
+    request<{ success: boolean; message: string; sent_count: number }>("/admin/newsletter/send", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  subscribeNewsletter: (payload: { first_name: string; last_name: string; email: string; phone_number?: string | null }) =>
+    request<NewsletterSubscriber>("/newsletter/subscribe", { method: "POST", body: JSON.stringify(payload) }),
+  unsubscribeNewsletter: (token: string) =>
+    request<{ email: string; status: string; message: string }>(`/newsletter/unsubscribe/${token}`, { method: "POST" }),
 };

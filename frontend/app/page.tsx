@@ -18,10 +18,12 @@ import { TriMark } from "@/components/brand/TriMark";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { SiteLayout } from "@/components/site/site-layout";
+import { WallOfGratitude } from "@/components/site/wall-of-gratitude";
 import { Button } from "@/components/ui/button";
 import {
   fourDoors,
   impactStats,
+  programmes,
   storySpotlight,
 } from "@/lib/site-data";
 
@@ -143,6 +145,163 @@ function ImpactDashboard() {
   );
 }
 
+// ---------------------------------------------------------------------------
+// Holistic Model — the same four programmes shown as cards on Get Involved
+// ("What We Do"), reimagined here as a vertical, editorial accordion so the
+// homepage doesn't just repeat that layout. One pillar open at a time, a
+// large faded index number that ignites red when active, and a thin icon
+// badge per pillar rather than the corner-triangle card treatment.
+// ---------------------------------------------------------------------------
+
+function IconTrophy({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M13 8h14v8c0 4-3 8-7 8s-7-4-7-8V8Z" />
+      <path d="M13 10H8c0 4 2 7 5 7" />
+      <path d="M27 10h5c0 4-2 7-5 7" />
+      <path d="M20 24v5" />
+      <path d="M14 33h12" />
+      <path d="M16 29h8l1 4H15l1-4Z" />
+    </svg>
+  );
+}
+function IconLeaf({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 30c0-12 8-19 21-19-1 13-8 21-21 21" />
+      <path d="M9 30c4-6 9-10 15-13" />
+    </svg>
+  );
+}
+function IconHeart({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20 33S6 24 6 14.5C6 9.8 9.6 7 13.5 7c2.9 0 5.3 1.6 6.5 4 1.2-2.4 3.6-4 6.5-4C30.4 7 34 9.8 34 14.5 34 24 20 33 20 33Z" />
+    </svg>
+  );
+}
+function IconHands({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M6 20l6-6 7 2 9-3 6 4-8 8-8-1-6 3" />
+      <path d="M12 14l6 6" />
+      <path d="M28 21l-8 9" />
+    </svg>
+  );
+}
+
+function pillarIcon(title: string) {
+  const key = title.toLowerCase();
+  if (key.includes("nutrition")) return IconLeaf;
+  if (key.includes("famil")) return IconHeart;
+  if (key.includes("csr") || key.includes("corporate")) return IconHands;
+  return IconTrophy; // sport / default
+}
+
+function HolisticModel() {
+  const [active, setActive] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, scrollViewport);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden border-t border-brand-slate/20 bg-white px-4 py-20 sm:px-6 lg:px-8"
+    >
+      <Blob className="-left-24 top-1/3 h-64 w-64 bg-brand-red/5" />
+      <Blob className="-right-16 bottom-0 h-48 w-48 bg-brand-light" />
+
+      <div className="relative mx-auto max-w-4xl">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ duration: 0.45 }}
+        >
+          <p className="flex items-center gap-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-brand-red">
+            <TriMark className="h-2 w-7" />
+            One Whole-Person Model
+          </p>
+          <h2 className="mt-2 max-w-xl font-serif-display text-4xl text-brand-dark sm:text-5xl">
+            Four parts. One potential.
+          </h2>
+          <p className="mt-4 max-w-2xl text-brand-slate">
+            Sport alone was never going to be enough. Real, lasting change comes from treating the
+            whole person and the whole family — here&rsquo;s how the four pieces fit together.
+          </p>
+        </motion.div>
+
+        <div className="mt-12 divide-y divide-brand-slate/20 border-y border-brand-slate/20">
+          {programmes.map((programme, i) => {
+            const isOpen = active === i;
+            const Icon = pillarIcon(programme.title);
+            return (
+              <motion.div
+                key={programme.title}
+                initial={{ opacity: 0, y: 14 }}
+                animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+                transition={{ duration: 0.4, delay: i * 0.06 }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setActive(isOpen ? -1 : i)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center gap-4 py-6 text-left sm:gap-5"
+                >
+                  <span
+                    className={`w-10 shrink-0 font-serif-display text-3xl transition-colors sm:w-12 sm:text-4xl ${
+                      isOpen ? "text-brand-red" : "text-brand-dark/15"
+                    }`}
+                  >
+                    0{i + 1}
+                  </span>
+                  <span
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                      isOpen ? "border-brand-red bg-brand-red/10 text-brand-red" : "border-brand-slate/30 text-brand-slate"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span
+                    className={`flex-1 font-serif-display text-2xl transition-colors sm:text-3xl ${
+                      isOpen ? "text-brand-dark" : "text-brand-dark/55"
+                    }`}
+                  >
+                    {programme.title}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className={`shrink-0 text-2xl transition-transform duration-300 ${
+                      isOpen ? "rotate-45 text-brand-red" : "rotate-0 text-brand-slate/50"
+                    }`}
+                  >
+                    +
+                  </span>
+                </button>
+
+                <div
+                  className={`grid overflow-hidden transition-all duration-300 ease-out ${
+                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="overflow-hidden pb-7 pl-14 pr-4 sm:pl-[4.75rem] sm:pr-8">
+                    <p className="max-w-2xl text-brand-slate">{programme.description}</p>
+                    <Link
+                      href="/get-involved#programmes"
+                      className="mt-4 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-brand-red transition hover:text-brand-crimson"
+                    >
+                      See it in action <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FourDoors() {
   const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-crimson", "bg-brand-dark"];
 
@@ -157,7 +316,7 @@ function FourDoors() {
           transition={{ duration: 0.45 }}
           className="mb-3 text-center font-serif-display text-4xl text-brand-dark sm:text-5xl"
         >
-          Where will you begin?
+Choose what you need
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -166,8 +325,7 @@ function FourDoors() {
           transition={{ duration: 0.45, delay: 0.05 }}
           className="mx-auto mb-10 max-w-2xl text-center text-brand-slate"
         >
-          Four doors into Love 21 — choose the path that matches how you want to
-          support our Down syndrome, autistic, and neurodiverse community.
+          Pick one clear path. You can browse, donate, volunteer, and learn without creating an account.
         </motion.p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {fourDoors.map((door, index) => (
@@ -223,11 +381,11 @@ function StoryCarousel() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-y border-brand-slate/30 bg-brand-light px-4 py-16 sm:px-6 lg:px-8"
+      className="relative border-y border-brand-slate/30 bg-brand-light px-14 py-16 sm:px-16 lg:px-14"
     >
       <Blob className="-left-16 top-1/4 h-56 w-56 bg-brand-red/10" />
       <div className="relative mx-auto max-w-5xl">
-        <div className="mb-8 flex items-end justify-between gap-4">
+        <div className="mb-8">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
@@ -240,107 +398,111 @@ function StoryCarousel() {
               Ability in motion
             </h2>
           </motion.div>
-          <motion.div
+        </div>
+
+        <div className="relative">
+          <motion.button
+            type="button"
+            onClick={prev}
+            aria-label="Previous story"
             initial={{ opacity: 0, y: 12 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
             transition={{ duration: 0.4, delay: 0.08 }}
-            className="flex gap-2"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            className="absolute left-0 top-1/2 z-10 inline-flex h-10 w-10 -translate-x-[calc(100%+0.75rem)] -translate-y-1/2 items-center justify-center rounded-full border border-brand-slate/60 bg-transparent text-brand-dark transition hover:border-brand-red hover:text-brand-red"
           >
-            <motion.button
-              type="button"
-              onClick={prev}
-              aria-label="Previous story"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-slate/60 bg-white text-brand-dark transition hover:border-brand-red hover:text-brand-red"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </motion.button>
-            <motion.button
-              type="button"
-              onClick={next}
-              aria-label="Next story"
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-slate/60 bg-white text-brand-dark transition hover:border-brand-red hover:text-brand-red"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </motion.button>
-          </motion.div>
-        </div>
+            <ChevronLeft className="h-5 w-5" />
+          </motion.button>
 
-        <div className="relative overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.article
-              key={story.name}
-              initial={{ opacity: 0, x: 48 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -48 }}
-              transition={{ duration: 0.35 }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -80) next();
-                if (info.offset.x > 80) prev();
-              }}
-              whileHover={{ y: -4 }}
-              className="grid overflow-hidden rounded-2xl border border-brand-slate/40 bg-white shadow-[0_18px_45px_rgba(43,45,66,0.08)] lg:grid-cols-[1.1fr_0.9fr]"
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 1.04 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.45 }}
-                className="relative min-h-[240px] lg:min-h-[360px]"
+          <div className="relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={story.name}
+                initial={{ opacity: 0, x: 48 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -48 }}
+                transition={{ duration: 0.35 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x < -80) next();
+                  if (info.offset.x > 80) prev();
+                }}
+                whileHover={{ y: -4 }}
+                className="grid h-[600px] overflow-hidden rounded-2xl border border-brand-slate/40 bg-white shadow-[0_18px_45px_rgba(43,45,66,0.08)] sm:h-[620px] lg:h-[400px] lg:grid-cols-[1.1fr_0.9fr]"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={story.image}
-                  alt={story.alt}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  draggable={false}
-                />
-              </motion.div>
-              <div className="flex flex-col justify-center p-7 sm:p-9">
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.08 }}
-                  className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-red"
-                >
-                  {story.tag}
-                </motion.p>
-                <motion.blockquote
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.14 }}
-                  className="mt-4 font-serif-display text-2xl leading-snug text-brand-dark sm:text-3xl"
-                >
-                  “{story.quote}”
-                </motion.blockquote>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.2 }}
-                  className="mt-5 text-sm font-medium text-brand-slate"
-                >
-                  {story.name}
-                </motion.p>
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.26 }}
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.45 }}
+                  className="relative h-[240px] shrink-0 lg:h-auto lg:min-h-0"
                 >
-                  <Link
-                    href={story.href}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-red transition hover:text-brand-crimson"
-                  >
-                    Read Story <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={story.image}
+                    alt={story.alt}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    draggable={false}
+                  />
                 </motion.div>
-              </div>
-            </motion.article>
-          </AnimatePresence>
+                <div className="flex min-h-0 flex-col justify-center overflow-hidden p-7 sm:p-9">
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.08 }}
+                    className="line-clamp-2 text-sm font-semibold uppercase tracking-[0.16em] text-brand-red"
+                  >
+                    {story.tag}
+                  </motion.p>
+                  <motion.blockquote
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.14 }}
+                    className="mt-4 line-clamp-6 font-serif-display text-2xl leading-snug text-brand-dark lg:line-clamp-5 sm:text-3xl"
+                  >
+                    “{story.quote}”
+                  </motion.blockquote>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.2 }}
+                    className="mt-5 shrink-0 text-sm font-medium text-brand-slate"
+                  >
+                    {story.name}
+                  </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: 0.26 }}
+                    className="shrink-0"
+                  >
+                    <Link
+                      href={story.href}
+                      className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-red transition hover:text-brand-crimson"
+                    >
+                      Read Story <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </motion.div>
+                </div>
+              </motion.article>
+            </AnimatePresence>
+          </div>
+
+          <motion.button
+            type="button"
+            onClick={next}
+            aria-label="Next story"
+            initial={{ opacity: 0, y: 12 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+            transition={{ duration: 0.4, delay: 0.08 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            className="absolute right-0 top-1/2 z-10 inline-flex h-10 w-10 translate-x-[calc(100%+0.75rem)] -translate-y-1/2 items-center justify-center rounded-full border border-brand-slate/60 bg-transparent text-brand-dark transition hover:border-brand-red hover:text-brand-red"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </motion.button>
         </div>
 
         <motion.div
@@ -447,7 +609,7 @@ export default function HomePage() {
               className="bg-brand-red text-white hover:bg-brand-crimson"
             >
               <Link href="/our-story">
-                Discover More <ArrowRight className="ml-2 h-4 w-4" />
+                Learn about Love 21 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
@@ -463,6 +625,12 @@ export default function HomePage() {
       {/* Section 2: Live Impact Public Dashboard */}
       <Reveal>
         <ImpactDashboard />
+      </Reveal>
+
+      {/* Section 2.5: Holistic Model — the four programmes as a vertical
+          accordion, directly under the dashboard as requested. */}
+      <Reveal>
+        <HolisticModel />
       </Reveal>
 
       {/* Section 3: Four-Door Navigation */}
@@ -491,18 +659,21 @@ export default function HomePage() {
             Celebrating Ability
           </p>
           <p className="mt-5 font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">
-            We focus entirely on what our community CAN do — unlocking potential
-            through sports, nutrition, and lifelong empowerment.
+            This is an ABILITY story — an opportunity story, straight from
+            #SoMuchAbility, Love 21&apos;s own campaign hashtag. We celebrate what
+            people can do and open more places for every ability to shine.
           </p>
           <Link
             href="/get-involved"
             className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-slate transition hover:text-brand-red"
           >
-            Explore Education & Support <ArrowRight className="h-4 w-4" />
+            Explore programmes <ArrowRight className="h-4 w-4" />
           </Link>
         </motion.div>
       </section>
       </Reveal>
+
+      <WallOfGratitude />
 
       {/* Section 6: Newsletter (unchanged structure) */}
       <Reveal>

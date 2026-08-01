@@ -1,6 +1,12 @@
+databases:
+  - name: love21-db
+    plan: free
+    databaseName: love21
+    user: love21
+
 services:
   - type: web
-    name: hackkit-backend
+    name: love21-backend
     runtime: docker
     rootDir: backend
     plan: free
@@ -9,12 +15,26 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: DATABASE_URL
-        value: sqlite:///./hackkit.db
+        fromDatabase:
+          name: love21-db
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS
-        value: http://localhost:3000
+        sync: false
+      - key: SITE_URL
+        sync: false
+      - key: DEMO_USERS_ENABLED
+        value: "true"
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: YOUTUBE_API_KEY
         sync: false
+      - key: MODEL_ENABLED
+        value: "true"
+      - key: MODEL_BASE_URL
+        value: https://destiny-brown--love21-qwen-modelserver.us-east.modal.direct/v1
+      - key: MODEL_API_KEY
+        sync: false
+      - key: MODEL_NAME
+        value: qwen3-8b

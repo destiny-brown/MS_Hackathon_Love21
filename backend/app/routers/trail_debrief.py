@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
 from app.core.config import get_settings
-from app.services.ollama_client import chat_json
+from app.services.model_client import chat_json
 
 router = APIRouter(prefix="/ai/trail", tags=["ai"])
 
@@ -52,7 +52,7 @@ def _fallback_debrief(payload: TrailDebriefRequest) -> TrailDebriefResponse:
             "I don't think that's true — here's what I've learned.",
         ],
         upgrade_message=upgrade,
-        message="Rule-based debrief. Ollama can polish this when running locally.",
+        message="Rule-based debrief. The AI coach can polish this when available.",
     )
 
 
@@ -61,7 +61,7 @@ def trail_debrief(payload: TrailDebriefRequest) -> TrailDebriefResponse:
     settings = get_settings()
     fallback = _fallback_debrief(payload)
 
-    if not settings.ollama_enabled:
+    if not settings.model_enabled:
         return fallback
 
     myth_context = (
@@ -94,7 +94,7 @@ def trail_debrief(payload: TrailDebriefRequest) -> TrailDebriefResponse:
             "Write a short encouragement, one friend myth-busting prompt, three brief reply chips, "
             "and an upgrade message (full if myth won, partial if attempted, base if not played)."
         ),
-        timeout_seconds=settings.ollama_enhance_timeout_seconds,
+        timeout_seconds=settings.model_enhance_timeout_seconds,
     )
 
     if not parsed:

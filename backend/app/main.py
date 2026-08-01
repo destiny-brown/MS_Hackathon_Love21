@@ -4,12 +4,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
-from app.db import create_db_and_tables
+from app.db import create_db_and_tables, ensure_bootstrap_admin, ensure_demo_users, ensure_role_enum_compatibility
 from app.routers import (
+    admin,
     ai,
     auth,
     captain_chat,
+    gratitude_entries,
     items,
+    newsletter,
     role_examples,
     support_opportunities,
     supporter,
@@ -21,6 +24,9 @@ from app.routers import (
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
+    ensure_role_enum_compatibility()
+    ensure_demo_users()
+    ensure_bootstrap_admin()
     yield
 
 
@@ -49,4 +55,7 @@ app.include_router(captain_chat.router)
 app.include_router(trail_debrief.router)
 app.include_router(support_opportunities.router)
 app.include_router(supporter.router)
+app.include_router(gratitude_entries.router)
 app.include_router(role_examples.router)
+app.include_router(newsletter.router)
+app.include_router(admin.router)

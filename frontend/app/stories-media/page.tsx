@@ -1,17 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Award, Briefcase, HandHeart, Medal, Newspaper, Share2, Trophy } from "lucide-react";
+import { Award, Briefcase, HandHeart, HeartHandshake, Medal, Newspaper, Share2, Trophy, Youtube } from "lucide-react";
 
 import { Reveal } from "@/components/brand/Reveal";
 import { ElfsightFeeds } from "@/components/media/elfsight-feeds";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { PageHero } from "@/components/site/page-hero";
+import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
+import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { mediaPosts } from "@/lib/media-stories";
 
 import badmintonImage from "./assets/badminton-medals.png";
 import karateImage from "./assets/asian-karate-medals.png";
 import scmpImage from "./assets/scmp-feature.png";
+
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "so-much-ability", label: "Ability" },
+  { id: "member-stories", label: "Stories" },
+  { id: "press-moments", label: "Press" },
+  { id: "social-feed", label: "Social" },
+  { id: "youtube", label: "Youtube" },
+];
 
 const abilityCards = [
   {
@@ -45,32 +55,28 @@ const pressCards = [
     id: "beyond-limits",
     title: "Tables & Seats Now Open for Beyond Limits Banquet",
     date: "May 2026",
-    image:
-      "https://love21foundation.com/wp-content/uploads/2026/05/bey0nd-limit_sz-1-1024x604.png",
+    image: "/images/press/beyondlimits.png",
     link: "https://love21foundation.com/beyond-limits-banquet/",
   },
   {
     id: "raffle-2025",
     title: "Love 21 Foundation Charity Raffle 2025",
     date: "Nov 2025",
-    image:
-      "https://love21foundation.com/wp-content/uploads/2025/11/raffleinstagram_nologo-1024x1024.png",
+    image: "/images/press/rafflebanner.png",
     link: "https://love21foundation.com/raffle2025-2/",
   },
   {
     id: "dragon-boat",
     title: "HK Yacht Club & Love 21 Team Up for Dragon Boating",
     date: "Sep 2021",
-    image:
-      "https://love21foundation.com/wp-content/uploads/2022/06/Screenshot-2022-06-06-at-11.51.15.png",
+    image: "/images/press/dragonboat.png",
     link: "https://love21foundation.com/hong-kong-yacht-club-and-charity-team-up-to-help-special-needs-teens-learn-dragon-boating/",
   },
   {
     id: "long-happy-life",
     title: "Love 21's Open Secret to a Long, Happy Life",
     date: "Nov 2021",
-    image:
-      "https://love21foundation.com/wp-content/uploads/2022/06/Screenshot-2022-06-06-at-11.59.49.png",
+    image: "/images/press/longhappylife.png",
     link: "https://love21foundation.com/love-21s-open-secret-to-a-long-happy-life/",
   },
 ];
@@ -89,14 +95,13 @@ export default function StoriesMediaPage() {
   return (
     <SiteLayout>
       <Reveal>
-        <PageHero
-          title="Stories & Media"
-          subtitle="Stories, sports, nutrition and community — achievements, press coverage, and lived experiences in one place."
-        />
+        <PageHero id="stories-media-hero" title="Stories & Media" className="border-b-0 pb-8" />
       </Reveal>
 
+      <PageSectionNav items={sectionNavItems} heroSelector="#stories-media-hero" />
+
       <Reveal>
-      <section className="px-4 pt-16 pb-8 sm:px-6 lg:px-8">
+      <section id="so-much-ability" className="scroll-mt-24 bg-white px-4 pb-12 pt-2 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-center gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
@@ -106,7 +111,10 @@ export default function StoriesMediaPage() {
             <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
           </div>
           <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
-            Not a disability story — an opportunity story, straight from #SoMuchAbility, Love 21&apos;s own campaign
+            Not a disability story — an{" "}
+            <span className="font-serif-display italic text-brand-red">opportunity</span>{" "}
+            story, straight from{" "}
+            <span className="font-serif-display italic text-brand-red">#SoMuchAbility</span>, Love 21&apos;s own campaign
             hashtag.
           </p>
 
@@ -132,7 +140,27 @@ export default function StoriesMediaPage() {
         </div>
       </section>
 
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
+      <section id="member-stories" className="scroll-mt-24 bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
+              <HeartHandshake className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Member Stories</h2>
+            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
+          </div>
+          <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
+            Voices from{" "}
+            <span className="font-serif-display italic text-brand-red">families and members</span>
+            {" "}— the everyday moments that make Love 21 feel like{" "}
+            <span className="font-serif-display italic text-brand-red">home</span>.
+          </p>
+
+          <TestimonialCarousel />
+        </div>
+      </section>
+
+      <section id="press-moments" className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-center gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
@@ -167,7 +195,7 @@ export default function StoriesMediaPage() {
       </Reveal>
 
       <Reveal>
-      <section className="border-t border-brand-light bg-brand-light/40 px-4 py-8 sm:px-6 lg:px-8">
+      <section id="social-feed" className="scroll-mt-24 border-t border-brand-light bg-white px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-6 flex items-center gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
@@ -176,7 +204,22 @@ export default function StoriesMediaPage() {
             <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Social Feed</h2>
             <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
           </div>
-          <ElfsightFeeds />
+          <ElfsightFeeds platforms={["instagram"]} />
+        </div>
+      </section>
+      </Reveal>
+
+      <Reveal>
+      <section id="youtube" className="scroll-mt-24 bg-white px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
+              <Youtube className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Youtube</h2>
+            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
+          </div>
+          <ElfsightFeeds platforms={["youtube"]} />
         </div>
       </section>
       </Reveal>

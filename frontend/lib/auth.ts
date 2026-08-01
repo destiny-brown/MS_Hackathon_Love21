@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { clearToken, getCurrentUserWithRole, landingPathForRole, Role, User } from "@/lib/api";
+import { clearToken, getCurrentUserWithRole, landingPathForRole, resolvePostLoginPath, Role, User } from "@/lib/api";
 
 export type AuthState = {
   user: User | null;
@@ -68,4 +68,4 @@ export function signOutToLogin() {
   window.location.href = "/login";
 }
 
-export { landingPathForRole };
+export { landingPathForRole, resolvePostLoginPath };

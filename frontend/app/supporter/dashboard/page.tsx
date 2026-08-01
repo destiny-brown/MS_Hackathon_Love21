@@ -148,7 +148,10 @@ export default function SupporterDashboardPage() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Supporter dashboard</p>
             <h1 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Your Love 21 impact</h1>
-            <p className="mt-2 text-sm text-brand-ink/75">Signed in as {user.email} · giving and volunteering in one supporter account</p>
+            <p className="mt-2 text-sm text-brand-ink/75">
+              Signed in as {user.email} · track donations, volunteer hours, and activity sign-ups here. Browse open roles on{" "}
+              <a href="/our-volunteer" className="text-brand-coral underline-offset-2 hover:underline">Our Volunteer</a>.
+            </p>
           </div>
           <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
         </header>

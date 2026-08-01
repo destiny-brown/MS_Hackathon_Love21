@@ -11,6 +11,15 @@ class Role(StrEnum):
     SUPPORTER = "supporter"
     MEMBER = "member"
     ADMIN = "admin"
+    DONOR = "donor"
+    VOLUNTEER = "volunteer"
+
+    @classmethod
+    def canonical(cls, role: "Role | str") -> "Role":
+        normalized = cls(role)
+        if normalized in (cls.DONOR, cls.VOLUNTEER):
+            return cls.SUPPORTER
+        return normalized
 
 
 class User(Base):
@@ -34,3 +43,8 @@ class User(Base):
     donations: Mapped[list["Donation"]] = relationship(back_populates="supporter")
     activity_signups: Mapped[list["ActivitySignup"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")
     volunteer_hours: Mapped[list["VolunteerHour"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")
+    gratitude_entries: Mapped[list["GratitudeEntry"]] = relationship(
+        back_populates="author",
+        cascade="all, delete-orphan",
+        foreign_keys="GratitudeEntry.author_id",
+    )

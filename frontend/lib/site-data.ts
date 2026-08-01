@@ -5,8 +5,8 @@ export const mainNav: NavItem[] = [
   { label: "Get Involved", href: "/get-involved" },
   { label: "Impact", href: "/impact-dashboard" },
   { label: "Stories", href: "/stories-media" },
-  { label: "Events", href: "/events-campaigns" },
   { label: "About Us", href: "/about-governance" },
+  { label: "Wishlist", href: "/shop" },
 ];
 
 export const footerNav: NavItem[] = [
@@ -15,7 +15,7 @@ export const footerNav: NavItem[] = [
   { label: "Join Us", href: "/join-us" },
   { label: "Our Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
-  { label: "Shop", href: "/shop" },
+  { label: "Wishlist: Help Us", href: "/shop" },
   { label: "Members", href: "/members" },
   { label: "Contact Us", href: "/contact-us" },
 ];
@@ -66,24 +66,24 @@ export const heroGallery = [
 /** Four-door homepage navigation cards. */
 export const fourDoors = [
   {
-    title: "Education & Support",
-    description: "Grow life skills, join inclusive programmes, and access family care across sport, nutrition, and support.",
-    href: "/get-involved",
+    title: "Join programmes",
+    description: "Find sport, nutrition, and family support for Love 21 members.",
+    href: "/our-programmes",
   },
   {
-    title: "Donate & Partner",
-    description: "Fund nutrition packs, blood testing, coaching sessions, and day-to-day community care.",
+    title: "Donate",
+    description: "Give once or monthly to support classes, coaching, and care.",
     href: "/donate",
   },
   {
     title: "Volunteer",
-    description: "Share your time supporting weekly classes, family sessions, and inclusive community events.",
+    description: "Share your time at weekly classes, family sessions, and events.",
     href: "/our-volunteer",
   },
   {
-    title: "Activity Calendar",
-    description: "Find upcoming sports, nutrition workshops, family programmes, and community gatherings.",
-    href: "/events-campaigns",
+    title: "Explore programmes",
+    description: "See sports, nutrition workshops, family support, and community activities.",
+    href: "/our-programmes",
   },
 ];
 
@@ -99,31 +99,40 @@ export type StorySpotlight = {
 /** Featured Story Spotlight carousel cards (homepage). */
 export const storySpotlight: StorySpotlight[] = [
   {
-    name: "Jamie",
-    tag: "TEDx Speaker & Self-Advocate",
+    name: "Yuk Lam",
+    tag: "Yuk Lam's Story",
     quote:
-      "Delivering my first TEDx talk proved to everyone that having Down syndrome never limits what you can express and contribute.",
-    href: "/stories-media",
-    image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1000&q=80",
-    alt: "Self-advocate presenting on stage at a public speaking event",
+      "I would use the word 'home' to describe Love 21,\" said Yuk Lam's mother, \"Every coach and staff member at Love 21 treats Yuk Lam like a sibling.",
+    href: "/stories/yuk-lam",
+    image: "/images/yuklam.png",
+    alt: "Yuk Lam",
   },
   {
-    name: "Chris",
-    tag: "Purposeful Employment Milestone",
+    name: "Siu Kei",
+    tag: "Siu Kei's Story (By Siu Kei's Mother)",
     quote:
-      "Working independently in food service and community outreach, gaining confidence and financial independence.",
-    href: "/our-story",
-    image: "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1000&q=80",
-    alt: "Young adult thriving at purposeful employment in a community workplace",
+      "He took on assistant roles across multiple departments, which significantly enhanced his social interaction skills, sense of responsibility, and ability to adapt knowledge to real-world scenarios.",
+    href: "/stories/siu-kei",
+    image: "/images/siukei.png",
+    alt: "Siu Kei",
   },
   {
-    name: "Mei",
-    tag: "Holistic Health & Sports Champion",
+    name: "Brian Ngan",
+    tag: "Brian Ngan's Story (By Brian's Father)",
     quote:
-      "Overcoming health challenges through tailored nutrition and sports classes, now mentoring younger neurodiverse peers.",
-    href: "/get-involved",
-    image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1000&q=80",
-    alt: "Community champion mentoring peers after holistic health progress",
+      "Since childhood Brian was quite protected and did not think he had any strengths and abilities. Fortunately after joining Love 21 we have quickly learnt how capable and talented he truly is.",
+    href: "/stories/brian-ngan",
+    image: "/images/brianngan.png",
+    alt: "Brian Ngan",
+  },
+  {
+    name: "Marissa",
+    tag: "Marissa's Story (By Marissa's Mom)",
+    quote:
+      "Sports development programme. Staff offered invaluable guidance, specialised fitness training and bocce classes.",
+    href: "/stories/marissa",
+    image: "/images/marissa.png",
+    alt: "Marissa",
   },
 ];
 
@@ -158,67 +167,102 @@ export const annualReports = [
   { year: "2022-2023", href: "#" },
 ];
 
-export type BoardMember = { slug: string; name: string; bio: string };
+export type BoardMember = {
+  slug: string;
+  name: string;
+  bio: string;
+  /** Display role on the board grid. Defaults to "Board Member". */
+  role?: string;
+  /** Public path under `/images/board/`. Falls back to template icon when missing. */
+  image?: string;
+};
+
+const BOARD_IMAGE_FALLBACK = "/images/board/templateicon.png";
+
+export function boardMemberImage(member: Pick<BoardMember, "image">): string {
+  return member.image || BOARD_IMAGE_FALLBACK;
+}
 
 export const boardMembers: BoardMember[] = [
   {
     slug: "carol-chan",
     name: "Carol Chan",
+    role: "Board Member",
     bio: "Carol has a passion for sports and healthy lifestyle, and embraces a mission in developing the young and promoting healthy family functioning. Professionally, Carol is experienced in nonprofit governance as a seasoned administrator serving one of the leading local NGOs supporting children and youth in Hong Kong.",
   },
   {
     slug: "dan-maley",
     name: "Dan Maley",
+    role: "Board Member",
+    image: "/images/board/dan.png",
     bio: "Dan has resided in Hong Kong since 2019. He is married to his wife Milk and father to Max. Dan is a global citizen who began volunteering at Love 21 Foundation in 2020, initially attending fitness classes and eventually helping teach a weekly boxing class.",
   },
   {
     slug: "dr-ruby-ng",
     name: "Dr. Ruby Ng",
+    role: "Board Member",
     bio: "Dr. Ruby Ng is a Biofeedback Specialist at Stanford Medicine Children's Health in San Francisco, California. Born and raised in Hong Kong, Dr. Ng pursued her education and built her medical career overseas. She is now actively reconnecting with Hong Kong through community service and nonprofit leadership.",
   },
   {
     slug: "edith-chen",
     name: "Edith Chen",
+    role: "Board Member",
+    image: "/images/board/edith.png",
     bio: "Edith Chen brings over 27 years of executive expertise in driving business transformation, multi-market expansion, brand development and governance across the Asia-Pacific region. Having served as President of De Beers APAC, CEO of Brooks Brothers APAC, and Managing Director of Calvin Klein Asia.",
   },
   {
     slug: "elenisymeonidou",
     name: "Eleni Symeonidou",
+    role: "Board Member",
+    image: "/images/board/eleni.png",
     bio: "Eleni, originally from Greece, has lived in Asia since 2013. Her career has been dedicated to developing people in various capacities, driven by a deep commitment to fostering inclusive communities. She has over 25 years of volunteer experience in mental health, homelessness, and supporting minority groups.",
   },
   {
     slug: "james-barrett",
     name: "James Barrett",
+    role: "Board Member",
+    image: "/images/board/james.png",
     bio: "Originally from Australia, James has lived in Hong Kong since 2008. His commitment to the neurodiverse community is deeply personal; his family's involvement dates back to 1953, when his great-grandmother co-founded a kindergarten for children with Down syndrome.",
   },
   {
     slug: "jeff-sayed",
     name: "Jeff Sayed",
+    role: "Board Member",
+    image: "/images/board/jeff.png",
     bio: "Jeff has lived in Hong Kong since 2005. He is married to Wendy and father to Benton and Olivia. Jeff works for Bank of America Merrill Lynch and is currently Compliance & Operational Risk Executive responsible for overseeing the Compliance and Operational Risk framework for APAC Global Technology & Operations.",
   },
   {
     slug: "kevin-wong",
     name: "Kevin Wong",
+    role: "Treasurer",
     bio: "As the treasurer on the Love 21 board, Kevin brings his experience in accounting and finance to ensure the continual and sustained growth of Love 21. Kevin's efforts in developing and maintaining a consolidated and transparent accounting system for Love 21 has been instrumental in our development.",
   },
   {
     slug: "lobo-cheung",
     name: "Lobo Cheung",
+    role: "Board Member",
+    image: "/images/board/lobo.png",
     bio: "Lobo grew up in Hong Kong and went to the United Kingdom for college in 1994. After building a stable career in the tech sector, he decided in 2016 to pursue an Executive MBA and MA in Christian Studies. Lobo has always felt a calling towards building a better future for those in the Down Syndrome and Autism Spectrum Disorder community.",
   },
   {
     slug: "matthew-hosford",
     name: "Matthew Hosford",
+    role: "Board Member",
+    image: "/images/board/matthew.png",
     bio: "Matthew has lived in Hong Kong with his family for 27 years. He has built a career in financial services in Asia including 17 years with Santander, seven years with PwC in their Risk Management Advisory practice, and most recently with the International Finance Corporation.",
   },
   {
     slug: "raymond-tam",
     name: "Raymond Tam",
+    role: "Board Member",
+    image: "/images/board/raymond.png",
     bio: "Raymond is a seasoned financial executive with nearly 30 years of leadership experience in digital wealth, pension, and asset management at Manulife, Value Partners, BlackRock, and Merrill Lynch. He is dedicated to contributing his governance and financial expertise to support community and social impact initiatives.",
   },
   {
     slug: "young-sook-stewart",
     name: "Young-Sook Stewart",
+    role: "Board Member",
+    image: "/images/board/young-sook.png",
     bio: "As the APAC Leader of Talent Function for EY Financial Services Organisation, Young-Sook manages operations across Oceania, Greater China, Japan, Korea, and ASEAN. Her dynamic team has been instrumental in driving APAC FSO's robust business growth via talent acquisition, retention, and development.",
   },
 ];

@@ -76,71 +76,6 @@ function IconTrophy({ className = "" }: { className?: string }) {
     </svg>
   );
 }
-function IconHands({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M6 20l6-6 7 2 9-3 6 4-8 8-8-1-6 3" />
-      <path d="M12 14l6 6" />
-      <path d="M28 21l-8 9" />
-    </svg>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Floating CTA rail — a two-way rail (Donate + Volunteer) pinned to the edge
-// of the viewport. Collapsed to a circular icon by default; expands to
-// reveal its label on hover/focus. Swaps to a bottom bar on small screens.
-// ---------------------------------------------------------------------------
-
-function FloatingCta() {
-  return (
-    <>
-      {/* Desktop / tablet: vertical rail pinned to the right edge */}
-      <div className="pointer-events-none fixed inset-y-0 right-0 z-40 hidden items-center sm:flex">
-        <div className="pointer-events-auto flex flex-col gap-3 pr-3 lg:pr-4">
-          <Link
-            href="/donate"
-            className="group flex items-center rounded-full bg-brand-red text-white shadow-lg shadow-black/20 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/25"
-          >
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center">
-              <IconHeart className="h-6 w-6" />
-            </span>
-            <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-all duration-300 group-hover:max-w-[110px]">
-              Donate
-            </span>
-          </Link>
-          <Link
-            href="/our-volunteer"
-            className="group flex items-center rounded-full border border-black/10 bg-white text-brand-dark shadow-lg shadow-black/10 transition-[padding,box-shadow] duration-300 hover:pr-5 hover:shadow-xl hover:shadow-black/15"
-          >
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center">
-              <IconHands className="h-6 w-6" />
-            </span>
-            <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-all duration-300 group-hover:max-w-[110px]">
-              Volunteer
-            </span>
-          </Link>
-        </div>
-      </div>
-
-      {/* Mobile: fixed bottom bar instead of a side rail */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex gap-px border-t border-black/10 bg-white/95 backdrop-blur sm:hidden">
-        <Link
-          href="/donate"
-          className="flex flex-1 items-center justify-center gap-2 bg-brand-red py-3.5 text-sm font-semibold text-white"
-        >
-          <IconHeart className="h-4 w-4" /> Donate
-        </Link>
-        <Link
-          href="/our-volunteer"
-          className="flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-semibold text-brand-dark"
-        >
-          <IconHands className="h-4 w-4" /> Volunteer
-        </Link>
-      </div>
-    </>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Data
@@ -345,8 +280,9 @@ export default function GetInvolvedPage() {
         }
       `}</style>
 
-      {/* Floating Donate / Volunteer rail — stays pinned across the whole page */}
-      <FloatingCta />
+      {/* The Donate / Volunteer rail now lives in SiteLayout so it renders on
+          every page automatically — see components/site/floating-cta.tsx.
+          It's intentionally not re-declared or re-rendered here. */}
 
       {/* ---------- STORY HERO ---------- */}
       <Reveal>
@@ -456,7 +392,7 @@ export default function GetInvolvedPage() {
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
               <div>
                 <Eyebrow>Programmes</Eyebrow>
-                <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">What We Do</h2>
+                <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">What we do</h2>
               </div>
               <p className="max-w-2xl text-sm text-brand-dark/70">
                 A whole-person model — sport, nutrition, and family support — because reaching full
@@ -477,8 +413,13 @@ export default function GetInvolvedPage() {
                       className={`absolute right-0 top-0 h-16 w-16 -translate-y-8 translate-x-8 rotate-45 opacity-10 transition-opacity group-hover:opacity-20 ${cardAccents[i % cardAccents.length]}`}
                       aria-hidden="true"
                     />
-                    <h3 className="font-serif-display text-2xl text-brand-dark">{programme.title}</h3>
-                    <p className="mt-3 text-sm text-brand-dark/75">{programme.description}</p>
+                    <h3 className="font-serif-display text-2xl text-brand-ink">{programme.title}</h3>
+                    <p className="mt-3 text-sm text-brand-ink/75">{programme.description}</p>
+                    <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                      <Link href="/members" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Join as a member</Link>
+                      <Link href="/our-volunteer" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Volunteer</Link>
+                      <Link href="/donate" className="rounded-md font-semibold text-brand-red hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Donate</Link>
+                    </div>
                   </BrandCard>
                 </Reveal>
               ))}

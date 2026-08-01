@@ -84,6 +84,18 @@
   .font-serif-display {
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
   }
+
+  .story-bubble {
+    animation: story-bubble-float 7s ease-in-out infinite;
+  }
+
+  .story-bubble-delay {
+    animation-delay: 1.4s;
+  }
+
+  .story-bubble-delay-2 {
+    animation-delay: 2.8s;
+  }
 }
 
 @keyframes stamp {
@@ -115,5 +127,15 @@
   }
   50% {
     transform: translateY(-6px);
+  }
+}
+
+@keyframes story-bubble-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
