@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { CalendarDays, Clock3, Gift, HeartHandshake, Plus, Users } from "lucide-react";
 
 import { SupportProgress, formatHkd } from "@/components/site/support-progress";
+import { CaptainsCorner } from "@/components/supporter/captains-corner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -153,8 +155,15 @@ export default function SupporterDashboardPage() {
               <a href="/our-volunteer" className="text-brand-coral underline-offset-2 hover:underline">Our Volunteer</a>.
             </p>
           </div>
-          <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Button asChild variant="outline">
+              <Link href="/">Back to site</Link>
+            </Button>
+            <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
+          </div>
         </header>
+
+        <CaptainsCorner />
 
         {authError ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{authError}</p> : null}
         {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}

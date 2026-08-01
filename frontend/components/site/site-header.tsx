@@ -14,7 +14,6 @@ import { mainNav } from "@/lib/site-data";
 
 export function SiteHeader() {
   const { t } = useTranslation("common");
-  const { user } = useCurrentUser();
 
   return (
     <header className="relative z-50 border-b border-brand-light/80 bg-brand-light/90 backdrop-blur-sm">

@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -17,13 +17,22 @@ from app.routers.support_opportunities import serialize as serialize_opportunity
 from app.schemas.supporter import (
     ActivityRead,
     ActivitySignupRead,
+    CaptainsCornerRead,
     DonationCreate,
     DonationRead,
     DonationReceipt,
     ImpactItem,
     SupporterDashboardRead,
+    UserPlayStateRead,
+    UserPlayStateUpdate,
     VolunteerHourCreate,
     VolunteerHourRead,
+)
+from app.services.captain_greeting import (
+    build_trail_snapshot,
+    generate_greeting,
+    get_or_create_play_state,
+    load_supporter_context,
 )
 
 router = APIRouter(tags=["supporter"])
@@ -244,3 +253,68 @@ def supporter_dashboard(
         volunteer_hours=[serialize_hour(hour) for hour in hours],
         total_volunteer_hours=round(sum(hour.hours for hour in hours), 2),
     )
+
+
+def serialize_play_state(state) -> UserPlayStateRead:
+    trail = build_trail_snapshot(state)
+    return UserPlayStateRead(
+        day_number=state.day_number,
+        event_index=state.event_index,
+        correct_count=state.correct_count,
+        total_answered=state.total_answered,
+        current_streak=state.current_streak,
+        best_streak=state.best_streak,
+        total_plays=state.total_plays,
+        location_id=trail.location_id,
+        location_label=trail.location_label,
+        events_total=trail.events_total,
+        events_remaining=trail.events_remaining,
+        last_played_at=state.last_played_at,
+        updated_at=state.updated_at,
+    )
+
+
+@router.get("/supporter/captains-corner", response_model=CaptainsCornerRead)
+def captains_corner(
+    current_user: User = Depends(require_roles(Role.SUPPORTER)),
+    db: Session = Depends(get_db),
+) -> CaptainsCornerRead:
+    state = get_or_create_play_state(db, current_user.id)
+    trail = build_trail_snapshot(state)
+    context = load_supporter_context(db, current_user.id)
+    message, ai_enhanced = generate_greeting(db, current_user, trail, context, date.today())
+    return CaptainsCornerRead(
+        play_state=serialize_play_state(state),
+        captain_message=message,
+        ai_enhanced=ai_enhanced,
+    )
+
+
+@router.get("/supporter/play-state", response_model=UserPlayStateRead)
+def get_play_state(
+    current_user: User = Depends(require_roles(Role.SUPPORTER)),
+    db: Session = Depends(get_db),
+) -> UserPlayStateRead:
+    state = get_or_create_play_state(db, current_user.id)
+    return serialize_play_state(state)
+
+
+@router.put("/supporter/play-state", response_model=UserPlayStateRead)
+def upsert_play_state(
+    payload: UserPlayStateUpdate,
+    current_user: User = Depends(require_roles(Role.SUPPORTER)),
+    db: Session = Depends(get_db),
+) -> UserPlayStateRead:
+    state = get_or_create_play_state(db, current_user.id)
+    state.day_number = payload.day_number
+    state.event_index = payload.event_index
+    state.correct_count = payload.correct_count
+    state.total_answered = payload.total_answered
+    state.current_streak = payload.current_streak
+    state.best_streak = max(payload.best_streak, payload.current_streak, state.best_streak)
+    state.total_plays = payload.total_plays
+    state.last_played_at = datetime.now(timezone.utc)
+    state.updated_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(state)
+    return serialize_play_state(state)

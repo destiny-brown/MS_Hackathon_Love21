@@ -48,3 +48,12 @@ class User(Base):
         cascade="all, delete-orphan",
         foreign_keys="GratitudeEntry.author_id",
     )
+    play_state: Mapped["UserPlayState | None"] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+    captain_greetings: Mapped[list["CaptainGreetingCache"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
