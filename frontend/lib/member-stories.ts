@@ -82,3 +82,7 @@ export const memberStories: MemberStory[] = [
 export function getMemberStory(slug: string): MemberStory | undefined {
   return memberStories.find((story) => story.slug === slug);
 }
+
+export function getMemberStoryCategories(): string[] {
+  return Object.keys(memberStoryCategoryLabels);
+}

@@ -258,6 +258,121 @@ export type AdminOverview = {
   volunteer_program_count: number;
   subscriber_count: number;
   active_subscriber_count: number;
+  learn_question_count: number;
+  learn_resource_count: number;
+  learn_video_count: number;
+};
+export type LearnContentStatus = "draft" | "published" | "archived";
+export type LearnQuestionKind = "quiz" | "daily" | "trail";
+export type LearnQuestion = {
+  id: number;
+  external_id: string | null;
+  kind: LearnQuestionKind | string;
+  status: LearnContentStatus | string;
+  statement: string;
+  answer: string;
+  explanation: string;
+  hint: string | null;
+  topic: string | null;
+  question_type: string | null;
+  options_json: Record<string, unknown>[] | null;
+  image_url: string | null;
+  image_credit: string | null;
+  source: string | null;
+  related_story_slugs: string[];
+  audience: string;
+  display_order: number;
+  trail_location_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+export type LearnQuestionInput = {
+  external_id?: string | null;
+  kind?: string;
+  status?: string;
+  statement: string;
+  answer: string;
+  explanation: string;
+  hint?: string | null;
+  topic?: string | null;
+  question_type?: string | null;
+  options_json?: Record<string, unknown>[] | null;
+  image_url?: string | null;
+  image_credit?: string | null;
+  source?: string | null;
+  related_story_slugs?: string[];
+  audience?: string;
+  display_order?: number;
+  trail_location_id?: string | null;
+};
+export type LearnQuestionGenerateRequest = {
+  topic: string;
+  count?: number;
+  kind?: string;
+  guidance?: string | null;
+};
+export type LearnQuestionGenerateResponse = {
+  enabled: boolean;
+  message: string | null;
+  questions: LearnQuestion[];
+};
+export type LearnResource = {
+  id: number;
+  slug: string;
+  title: string;
+  date_label: string;
+  cover_image_url: string;
+  source_url: string;
+  source_label: string;
+  topics: string[];
+  learning_hook: string;
+  audience: string;
+  resource_type: string;
+  origin: string;
+  show_on_learn: boolean;
+  show_on_stories: boolean;
+  status: LearnContentStatus | string;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+};
+export type LearnResourceInput = {
+  slug: string;
+  title: string;
+  date_label: string;
+  cover_image_url: string;
+  source_url: string;
+  source_label: string;
+  topics?: string[];
+  learning_hook: string;
+  audience?: string;
+  resource_type?: string;
+  origin?: string;
+  show_on_learn?: boolean;
+  show_on_stories?: boolean;
+  status?: string;
+  display_order?: number;
+};
+export type LearnVideo = {
+  id: number;
+  video_id: string;
+  title: string;
+  channel_title: string;
+  published_at: string;
+  thumbnail_url: string | null;
+  status: LearnContentStatus | string;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+};
+export type LearnVideoInput = {
+  video_id: string;
+  title: string;
+  channel_title: string;
+  published_at: string;
+  thumbnail_url?: string | null;
+  status?: string;
+  display_order?: number;
 };
 
 export function getToken() {
@@ -463,4 +578,38 @@ export const api = {
     request<NewsletterSubscriber>("/newsletter/subscribe", { method: "POST", body: JSON.stringify(payload) }),
   unsubscribeNewsletter: (token: string) =>
     request<{ email: string; status: string; message: string }>(`/newsletter/unsubscribe/${token}`, { method: "POST" }),
+  listPublishedLearnQuestions: (kind?: string) =>
+    request<LearnQuestion[]>(`/learn/questions${kind ? `?kind=${kind}` : ""}`),
+  listPublishedLearnResources: (audience?: string) =>
+    request<LearnResource[]>(`/learn/resources${audience ? `?audience=${audience}` : ""}`),
+  listPublishedLearnVideos: () => request<LearnVideo[]>("/learn/videos"),
+  listAdminLearnQuestions: (params?: { status?: string; kind?: string }) => {
+    const search = new URLSearchParams();
+    if (params?.status) search.set("status", params.status);
+    if (params?.kind) search.set("kind", params.kind);
+    const query = search.toString();
+    return request<LearnQuestion[]>(`/admin/learn/questions${query ? `?${query}` : ""}`);
+  },
+  createAdminLearnQuestion: (payload: LearnQuestionInput) =>
+    request<LearnQuestion>("/admin/learn/questions", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminLearnQuestion: (id: number, payload: Partial<LearnQuestionInput>) =>
+    request<LearnQuestion>(`/admin/learn/questions/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminLearnQuestion: (id: number) => request<void>(`/admin/learn/questions/${id}`, { method: "DELETE" }),
+  generateAdminLearnQuestions: (payload: LearnQuestionGenerateRequest) =>
+    request<LearnQuestionGenerateResponse>("/admin/learn/questions/generate", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  listAdminLearnResources: () => request<LearnResource[]>("/admin/learn/resources"),
+  createAdminLearnResource: (payload: LearnResourceInput) =>
+    request<LearnResource>("/admin/learn/resources", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminLearnResource: (id: number, payload: Partial<LearnResourceInput>) =>
+    request<LearnResource>(`/admin/learn/resources/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminLearnResource: (id: number) => request<void>(`/admin/learn/resources/${id}`, { method: "DELETE" }),
+  listAdminLearnVideos: () => request<LearnVideo[]>("/admin/learn/videos"),
+  createAdminLearnVideo: (payload: LearnVideoInput) =>
+    request<LearnVideo>("/admin/learn/videos", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminLearnVideo: (id: number, payload: Partial<LearnVideoInput>) =>
+    request<LearnVideo>(`/admin/learn/videos/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminLearnVideo: (id: number) => request<void>(`/admin/learn/videos/${id}`, { method: "DELETE" }),
 };
