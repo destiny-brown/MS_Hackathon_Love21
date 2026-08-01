@@ -1,8 +1,11 @@
 import Link from "next/link";
 
-import { footerNav, mainNav } from "@/lib/site-data";
+import { footerNav } from "@/lib/site-data";
 
 export function SiteFooter() {
+  const exploreLinks = footerNav.filter((item) => ["/join-us", "/our-finance", "/members"].includes(item.href));
+  const moreLinks = footerNav.filter((item) => ["/donate", "/our-volunteer", "/newsletter", "/contact-us"].includes(item.href));
+
   return (
     <footer className="border-t border-brand-light bg-brand-light px-4 py-12 pb-28 sm:px-6 lg:px-8 lg:pb-12">
       <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -15,7 +18,7 @@ export function SiteFooter() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-slate">Explore</p>
           <ul className="mt-4 space-y-2 text-sm">
-            {mainNav.map((item) => (
+            {exploreLinks.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="rounded-md text-brand-ink/70 transition hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                   {item.label}
@@ -27,7 +30,7 @@ export function SiteFooter() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-slate">More</p>
           <ul className="mt-4 space-y-2 text-sm">
-            {footerNav.map((item) => (
+            {moreLinks.map((item) => (
               <li key={item.href}>
                 <Link href={item.href} className="rounded-md text-brand-ink/70 transition hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                   {item.label}
