@@ -108,3 +108,37 @@ class SupporterDashboardRead(BaseModel):
     signed_up_activities: list[ActivitySignupRead]
     volunteer_hours: list[VolunteerHourRead]
     total_volunteer_hours: float
+
+
+class UserPlayStateRead(BaseModel):
+    day_number: int
+    event_index: int
+    correct_count: int
+    total_answered: int
+    current_streak: int
+    best_streak: int
+    total_plays: int
+    location_id: str
+    location_label: str
+    events_total: int
+    events_remaining: int
+    last_played_at: datetime | None
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserPlayStateUpdate(BaseModel):
+    day_number: int = Field(ge=1, le=10_000)
+    event_index: int = Field(ge=0, le=100)
+    correct_count: int = Field(ge=0, le=1_000_000)
+    total_answered: int = Field(ge=0, le=1_000_000)
+    current_streak: int = Field(ge=0, le=10_000)
+    best_streak: int = Field(ge=0, le=10_000)
+    total_plays: int = Field(ge=0, le=10_000)
+
+
+class CaptainsCornerRead(BaseModel):
+    play_state: UserPlayStateRead
+    captain_message: str
+    ai_enhanced: bool

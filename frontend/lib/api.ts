@@ -100,6 +100,35 @@ export type SupporterDashboard = {
   volunteer_hours: VolunteerHour[];
   total_volunteer_hours: number;
 };
+export type UserPlayState = {
+  day_number: number;
+  event_index: number;
+  correct_count: number;
+  total_answered: number;
+  current_streak: number;
+  best_streak: number;
+  total_plays: number;
+  location_id: string;
+  location_label: string;
+  events_total: number;
+  events_remaining: number;
+  last_played_at: string | null;
+  updated_at: string;
+};
+export type UserPlayStateUpdate = {
+  day_number: number;
+  event_index: number;
+  correct_count: number;
+  total_answered: number;
+  current_streak: number;
+  best_streak: number;
+  total_plays: number;
+};
+export type CaptainsCorner = {
+  play_state: UserPlayState;
+  captain_message: string;
+  ai_enhanced: boolean;
+};
 export type YouTubeVideo = {
   video_id: string;
   title: string;
@@ -514,6 +543,10 @@ export const api = {
   signUpForActivity: (id: number) =>
     request<ActivitySignup>(`/activities/${id}/signup`, { method: "POST", body: JSON.stringify({}) }),
   supporterDashboard: () => request<SupporterDashboard>("/supporter/dashboard"),
+  getCaptainsCorner: () => request<CaptainsCorner>("/supporter/captains-corner"),
+  getSupporterPlayState: () => request<UserPlayState>("/supporter/play-state"),
+  saveSupporterPlayState: (payload: UserPlayStateUpdate) =>
+    request<UserPlayState>("/supporter/play-state", { method: "PUT", body: JSON.stringify(payload) }),
   logVolunteerHours: (payload: { activity_id?: number | null; hours: number; notes?: string | null }) =>
     request<VolunteerHour>("/supporter/hours", { method: "POST", body: JSON.stringify(payload) }),
   matchVolunteer: (payload: VolunteerMatchRequest) =>
