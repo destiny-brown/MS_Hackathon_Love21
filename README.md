@@ -149,6 +149,10 @@ DATABASE_URL=sqlite:///./hackkit.db
 SECRET_KEY=change-me
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ANTHROPIC_API_KEY=
+MODEL_ENABLED=false
+MODEL_BASE_URL=https://destiny-brown--love21-qwen-modelserver.us-east.modal.direct/v1
+MODEL_API_KEY=
+MODEL_NAME=qwen3-8b
 ```
 
 Frontend (`frontend/.env.local`):
@@ -169,6 +173,42 @@ Tables are created on app startup with SQLAlchemy metadata. There is intentional
 
 ## Deployment
 
+Pull requests and pushes to `main` run backend tests, migration drift checks,
+and a production frontend build through GitHub Actions.
+
+### Database migrations
+
+Schema changes are managed with Alembic. After changing a SQLAlchemy model:
+
+```bash
+cd backend
+alembic revision --autogenerate -m "describe the change"
+alembic upgrade head
+alembic check
+```
+
+The backend container applies pending migrations before starting Uvicorn. Its
+migration launcher also stamps complete databases created by older versions of
+the project before applying newer migrations.
+
+### Model on Modal
+
+The shared AI client uses an authenticated OpenAI-compatible Qwen3-8B endpoint
+on Modal. Create one bearer token and use the same value for the Modal secret
+and the backend's `MODEL_API_KEY`:
+
+```bash
+pip install modal
+python3 -m modal setup
+python3 -m modal secret create love21-model MODEL_API_KEY=replace-with-a-long-random-token
+cd backend
+python3 -m modal deploy modal_llm.py
+```
+
+Copy the deployed server URL, append `/v1`, and set it as `MODEL_BASE_URL`.
+Modal scales the L4 container to zero after five idle minutes, so the first
+request after an idle period can be slower while Qwen starts.
+
 ### Frontend on Vercel
 
 1. Import the repo in Vercel.
@@ -178,12 +218,17 @@ Tables are created on app startup with SQLAlchemy metadata. There is intentional
 
 ### Backend on Render
 
-This repo includes `render.yaml` for a Docker-based Render web service.
+This repo includes `render.yaml` for a Docker-based Render web service and a
+managed PostgreSQL database.
 
 1. Push the repo to GitHub.
 2. In Render, create a Blueprint from the repo.
-3. Set `SECRET_KEY` and `CORS_ORIGINS` in Render.
-4. Optional: add a Render Postgres database and set `DATABASE_URL`.
+3. Set `CORS_ORIGINS` to the deployed frontend origin, for example
+	`https://your-app.vercel.app`.
+4. Set `MODEL_BASE_URL` to the Modal server URL plus `/v1`, and set
+	`MODEL_API_KEY` to the same token stored in the Modal `love21-model` secret.
+5. Set `ANTHROPIC_API_KEY` and `YOUTUBE_API_KEY` only when those integrations
+	are enabled. Render generates `SECRET_KEY` and connects `DATABASE_URL`.
 
 The backend Dockerfile is also a fallback for any container host:
 

@@ -104,13 +104,13 @@ def test_volunteer_match_ai_skills_flexible(monkeypatch):
     assert any("Skills-based" in title or "Corporate" in title for title in titles)
 
 
-def test_volunteer_match_requires_ollama(monkeypatch):
+def test_volunteer_match_handles_hosted_model_unavailable(monkeypatch):
     monkeypatch.setattr(
         volunteer_match,
         "match_volunteer_with_ai",
         lambda *_args, **_kwargs: (
             None,
-            "Start Ollama with `llama3.2` to enable Smart Matching (ollama pull llama3.2, then ollama serve).",
+            "The hosted `qwen3-8b` model is unavailable. Please try again shortly.",
         ),
     )
     response = client.post(
@@ -125,7 +125,7 @@ def test_volunteer_match_requires_ollama(monkeypatch):
     assert response.status_code == 200
     data = response.json()
     assert data["enabled"] is False
-    assert "Ollama" in (data["message"] or "")
+    assert "unavailable" in (data["message"] or "")
 
 
 def test_list_volunteer_activities():

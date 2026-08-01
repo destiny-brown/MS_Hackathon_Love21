@@ -155,19 +155,13 @@ export function SiteHeader() {
               </Link>
             );
           })}
-          <Link
-            href="/admin"
-            className="whitespace-nowrap font-semibold text-[#d4a373] transition-colors hover:text-brand-red"
-          >
-            Admin
-          </Link>
         </nav>
 
         <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
           <AccessibilityMenu />
           <LanguageSwitcherInline />
           <SiteAccountNav />
-          <Button asChild size="sm" className="shrink-0">
+          <Button asChild size="sm" className="shrink-0 font-semibold">
             <Link href="/donate">{t("nav.donate")}</Link>
           </Button>
           <button

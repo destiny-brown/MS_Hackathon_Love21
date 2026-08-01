@@ -16,7 +16,7 @@ export default function MembersPage() {
     <SiteLayout>
       <PageHero
         title="Join as a Member"
-        subtitle="For people and families who want to take part in Love 21 programmes. Start with a short enquiry — browsing the website does not require login."
+        subtitle="Public enquiry page for people and families interested in Love 21 programmes. Already registered? Use member login to open your account profile."
       />
       <div className="border-b border-brand-light bg-white px-4 py-6 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-wrap gap-3">
