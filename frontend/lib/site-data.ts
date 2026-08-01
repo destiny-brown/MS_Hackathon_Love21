@@ -15,7 +15,7 @@ export const footerNav: NavItem[] = [
   { label: "Join Us", href: "/join-us" },
   { label: "Our Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
-  { label: "Wishlist: Help Us", href: "/shop" },
+  // { label: "Wishlist: Help Us", href: "/shop" },
   { label: "Members", href: "/members" },
   { label: "Contact Us", href: "/contact-us" },
 ];

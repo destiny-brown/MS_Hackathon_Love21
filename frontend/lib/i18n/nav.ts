@@ -9,7 +9,7 @@ export const navKeyByHref: Record<string, string> = {
   "/join-us": "nav.joinUs",
   "/our-finance": "nav.ourReports",
   "/newsletter": "nav.newsletter",
-  "/shop": "nav.shop",
+  "/shop": "nav.wishlist",
   "/members": "nav.members",
   "/contact-us": "nav.contactUs",
 };
