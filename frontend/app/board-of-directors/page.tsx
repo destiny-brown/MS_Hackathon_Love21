@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import { PageHero } from "@/components/site/page-hero";
+import { BoardMemberCard } from "@/components/site/board-member-card";
 import { SiteLayout } from "@/components/site/site-layout";
 import { boardMembers } from "@/lib/site-data";
 
@@ -12,16 +11,9 @@ export default function BoardOfDirectorsPage() {
         subtitle="Our Board of Directors is comprised of caring individuals from diverse professional backgrounds in Hong Kong, who bring their various talents and passion to support and strengthen Love 21."
       />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {boardMembers.map((member) => (
-            <Link
-              key={member.slug}
-              href={`/board-of-directors/${member.slug}`}
-              className="rounded-2xl border border-brand-light bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <h2 className="text-xl font-semibold text-brand-dark">{member.name}</h2>
-              <p className="mt-2 text-sm text-brand-dark/70">{member.bio.slice(0, 120)}…</p>
-            </Link>
+            <BoardMemberCard key={member.slug} member={member} />
           ))}
         </div>
       </section>
