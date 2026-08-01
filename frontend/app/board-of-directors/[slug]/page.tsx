@@ -16,17 +16,17 @@ export default async function BoardMemberPage({ params }: { params: Promise<{ sl
 
   return (
     <SiteLayout>
-      <section className="border-b border-brand-sand bg-white px-4 py-14 sm:px-6 lg:px-8">
+      <section className="border-b border-brand-light bg-white px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <Link href="/board-of-directors" className="text-sm text-brand-coral hover:underline">
+          <Link href="/board-of-directors" className="text-sm text-brand-red hover:underline">
             ← Board of Directors
           </Link>
-          <h1 className="mt-4 font-serif-display text-4xl text-brand-ink">{member.name}</h1>
+          <h1 className="mt-4 font-serif-display text-4xl text-brand-dark">{member.name}</h1>
         </div>
       </section>
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <div className="space-y-6 text-lg leading-relaxed text-brand-ink/80">
+          <div className="space-y-6 text-lg leading-relaxed text-brand-dark/80">
             {member.bio.split("\n\n").map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}

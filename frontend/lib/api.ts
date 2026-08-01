@@ -108,6 +108,89 @@ export type YouTubeVideo = {
   thumbnail_url: string | null;
 };
 export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
+export type VolunteerMatchRequest = {
+  interest: "hands-on" | "food" | "people" | "skills";
+  availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
+  commitment: "one-off" | "weekly" | "long-term";
+  group_size: "solo" | "friend" | "team";
+};
+export type VolunteerMatchItem = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  score: number;
+  reasons: string[];
+};
+export type VolunteerMatchResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  matches: VolunteerMatchItem[];
+  message: string | null;
+};
+export type VolunteerActivity = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  filled?: number | null;
+  total?: number | null;
+  note?: string | null;
+  cta_label?: string;
+};
+export type TrailDebriefRequest = {
+  captain_name?: string;
+  stop_title: string;
+  ability_line: string;
+  sections_completed: number;
+  trail_streak: number;
+  myth_completed_today: boolean;
+  myth_won_today: boolean;
+  myth_statement?: string;
+};
+export type TrailDebriefResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  encouragement: string;
+  friend_prompt: string;
+  suggested_replies: string[];
+  upgrade_message: string;
+  message: string | null;
+};
+export type CaptainSiteLink = {
+  title: string;
+  href: string;
+  description: string;
+};
+export type CaptainToolCall = {
+  name: string;
+  arguments: Record<string, string>;
+};
+export type CaptainChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+  links?: CaptainSiteLink[];
+  actionNote?: string;
+};
+export type CaptainChatRequest = {
+  message: string;
+  history?: CaptainChatMessage[];
+  locale?: "en" | "yue" | "zh";
+};
+export type CaptainChatResponse = {
+  enabled: boolean;
+  reply: string;
+  links: CaptainSiteLink[];
+  tool_calls: CaptainToolCall[];
+  sources: string[];
+  message: string | null;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -207,4 +290,20 @@ export const api = {
     request<YouTubeSearchResponse>(
       `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
     ),
+  matchVolunteer: (payload: VolunteerMatchRequest) =>
+    request<VolunteerMatchResponse>("/ai/volunteer/match", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  trailDebrief: (payload: TrailDebriefRequest) =>
+    request<TrailDebriefResponse>("/ai/trail/debrief", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  captainChat: (payload: CaptainChatRequest) =>
+    request<CaptainChatResponse>("/ai/captain/chat", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 };

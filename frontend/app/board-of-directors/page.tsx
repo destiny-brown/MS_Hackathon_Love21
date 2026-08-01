@@ -17,10 +17,10 @@ export default function BoardOfDirectorsPage() {
             <Link
               key={member.slug}
               href={`/board-of-directors/${member.slug}`}
-              className="rounded-2xl border border-brand-sand bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-md"
+              className="rounded-2xl border border-brand-light bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <h2 className="text-xl font-semibold text-brand-ink">{member.name}</h2>
-              <p className="mt-2 text-sm text-brand-ink/70">{member.bio.slice(0, 120)}…</p>
+              <h2 className="text-xl font-semibold text-brand-dark">{member.name}</h2>
+              <p className="mt-2 text-sm text-brand-dark/70">{member.bio.slice(0, 120)}…</p>
             </Link>
           ))}
         </div>

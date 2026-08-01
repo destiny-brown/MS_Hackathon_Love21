@@ -36,7 +36,7 @@ function DonutChart() {
       />
       <div className="absolute inset-[22%] flex flex-col items-center justify-center rounded-full bg-white text-center">
         <p className="font-serif-display text-3xl text-[#2A7A7B]">86%</p>
-        <p className="px-2 text-[10px] uppercase tracking-[0.12em] text-brand-ink/60">
+        <p className="px-2 text-[10px] uppercase tracking-[0.12em] text-brand-dark/60">
           To programmes
         </p>
       </div>
@@ -52,7 +52,7 @@ export function FinancialRoots() {
   return (
     <section
       ref={ref}
-      className="border-b border-brand-sand bg-white px-4 py-16 sm:px-6 lg:px-8"
+      className="border-b border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
@@ -61,11 +61,11 @@ export function FinancialRoots() {
           transition={{ duration: 0.45 }}
           className="mb-10"
         >
-          <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-brand-sea">
+          <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-brand-slate">
             <Sprout className="h-4 w-4" />
             Deep Financial Roots
           </p>
-          <h2 className="mt-3 font-serif-display text-3xl text-brand-ink sm:text-4xl">
+          <h2 className="mt-3 font-serif-display text-3xl text-brand-dark sm:text-4xl">
             Financial Transparency & Beneficiary Impact
           </h2>
         </motion.div>
@@ -76,7 +76,7 @@ export function FinancialRoots() {
             animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
             transition={{ duration: 0.5, delay: 0.08 }}
           >
-            <div className="overflow-hidden rounded-2xl border border-brand-sand shadow-sm">
+            <div className="overflow-hidden rounded-2xl border border-brand-light shadow-sm">
               <div
                 className="px-6 py-7 text-white sm:px-8"
                 style={{
@@ -94,7 +94,7 @@ export function FinancialRoots() {
                 </p>
               </div>
 
-              <div className="bg-brand-cream/40 px-4 py-6 sm:px-6 sm:py-8">
+              <div className="bg-brand-light/40 px-4 py-6 sm:px-6 sm:py-8">
                 <DonutChart />
                 <ul className="mt-6 space-y-2">
                   {financialBreakdown.map((item) => (
@@ -102,14 +102,14 @@ export function FinancialRoots() {
                       key={item.name}
                       className="flex items-center justify-between gap-3 text-sm"
                     >
-                      <span className="flex items-center gap-2 text-brand-ink/80">
+                      <span className="flex items-center gap-2 text-brand-dark/80">
                         <span
                           className="h-2.5 w-2.5 shrink-0 rounded-full"
                           style={{ backgroundColor: item.color }}
                         />
                         {item.name}
                       </span>
-                      <span className="font-semibold text-brand-ink">
+                      <span className="font-semibold text-brand-dark">
                         {item.value}% · {item.amount}
                       </span>
                     </li>
@@ -125,11 +125,11 @@ export function FinancialRoots() {
             transition={{ duration: 0.5, delay: 0.14 }}
             className="space-y-6"
           >
-            <blockquote className="rounded-2xl border border-brand-sand bg-brand-cream p-6 font-serif-display text-xl leading-snug text-brand-ink">
+            <blockquote className="rounded-2xl border border-brand-light bg-brand-light p-6 font-serif-display text-xl leading-snug text-brand-dark">
               &ldquo;{financialRootsQuote}&rdquo;
             </blockquote>
 
-            <div className="space-y-3 text-brand-ink/75">
+            <div className="space-y-3 text-brand-dark/75">
               <p>
                 Donor gifts are the deep roots of Love 21&apos;s forest —
                 channelled into nutrition, fitness, sports, family support, and
@@ -141,16 +141,16 @@ export function FinancialRoots() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-brand-sand bg-white px-4">
+            <div className="rounded-2xl border border-brand-light bg-white px-4">
               <button
                 type="button"
                 aria-expanded={reportsOpen}
                 onClick={() => setReportsOpen((open) => !open)}
-                className="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-brand-ink transition hover:text-brand-coral"
+                className="flex w-full items-center justify-between py-4 text-left text-sm font-semibold text-brand-dark transition hover:text-brand-red"
               >
                 View Audited Financial Reports
                 <ChevronDown
-                  className={`h-4 w-4 shrink-0 text-brand-ink/50 transition-transform ${
+                  className={`h-4 w-4 shrink-0 text-brand-dark/50 transition-transform ${
                     reportsOpen ? "rotate-180" : ""
                   }`}
                 />
@@ -170,7 +170,7 @@ export function FinancialRoots() {
                           key={report.label}
                           asChild
                           variant="outline"
-                          className="justify-start border-brand-sand"
+                          className="justify-start border-brand-light"
                         >
                           <Link href={report.href}>
                             <Download className="mr-2 h-4 w-4" />

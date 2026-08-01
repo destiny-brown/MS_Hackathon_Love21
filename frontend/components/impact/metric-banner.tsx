@@ -63,19 +63,19 @@ function GrowthLineChart({
 
   return (
     <div>
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-ink">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-dark">
         {category.unit}
       </p>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
-        <h2 className="max-w-md font-serif-display text-2xl leading-snug text-brand-ink sm:text-3xl">
+        <h2 className="max-w-md font-serif-display text-2xl leading-snug text-brand-dark sm:text-3xl">
           {category.title}
         </h2>
         <div className="text-right">
-          <p className="font-serif-display text-3xl text-brand-coral sm:text-4xl">
+          <p className="font-serif-display text-3xl text-brand-red sm:text-4xl">
             {current.value.toLocaleString()}
           </p>
           {growthPct !== null ? (
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-ink/50">
+            <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-brand-dark/50">
               +{growthPct}% vs prior year
             </p>
           ) : null}
@@ -155,7 +155,7 @@ function GrowthLineChart({
                 x={point.x}
                 y={CHART.height - 12}
                 textAnchor="middle"
-                className="fill-brand-ink/55"
+                className="fill-brand-dark/55"
                 fontSize="12"
                 fontWeight="600"
               >
@@ -165,7 +165,7 @@ function GrowthLineChart({
                 x={point.x}
                 y={point.y - 14}
                 textAnchor="middle"
-                className="fill-brand-ink"
+                className="fill-brand-dark"
                 fontSize="12"
                 fontWeight="700"
               >
@@ -198,15 +198,15 @@ export function MetricBanner() {
           className="mb-16 flex flex-col items-start gap-5 sm:flex-row sm:items-end sm:justify-between"
         >
           <div>
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand-coral">
+            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand-red">
               <Trees className="h-4 w-4" />
               The Growing Forest
             </p>
-            <h1 className="mt-4 font-serif-display text-4xl text-brand-ink sm:text-5xl">
+            <h1 className="mt-4 font-serif-display text-4xl text-brand-dark sm:text-5xl">
               Our Growth
             </h1>
           </div>
-          <p className="max-w-md text-sm leading-relaxed text-brand-ink/60 sm:text-right">
+          <p className="max-w-md text-sm leading-relaxed text-brand-dark/60 sm:text-right">
             Seed to canopy — measuring how Love 21&apos;s community grows in
             reach, care, and capability.
           </p>
@@ -236,7 +236,7 @@ export function MetricBanner() {
                   <span
                     className={cn(
                       "block text-xs font-bold uppercase tracking-[0.2em]",
-                      selected ? "text-brand-coral" : "text-brand-ink/35",
+                      selected ? "text-brand-red" : "text-brand-dark/35",
                     )}
                   >
                     {category.unit}
@@ -245,8 +245,8 @@ export function MetricBanner() {
                     className={cn(
                       "mt-2 block text-sm leading-snug",
                       selected
-                        ? "font-medium text-brand-ink"
-                        : "text-brand-ink/45",
+                        ? "font-medium text-brand-dark"
+                        : "text-brand-dark/45",
                     )}
                   >
                     {category.title}
@@ -263,7 +263,7 @@ export function MetricBanner() {
           initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
           transition={{ duration: 0.55, delay: 0.35, ease: "easeOut" }}
-          className="mt-20 max-w-3xl font-serif-display text-xl leading-snug text-brand-ink/80 sm:text-2xl"
+          className="mt-20 max-w-3xl font-serif-display text-xl leading-snug text-brand-dark/80 sm:text-2xl"
         >
           &ldquo;{growingForestQuote}&rdquo;
         </motion.blockquote>

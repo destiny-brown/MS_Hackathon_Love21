@@ -1,0 +1,68 @@
+{
+  "hero": {
+    "title": "Back Their Potential",
+    "subtitle": "Choose the campaign or cause that speaks to you and help create more opportunities for every ability to shine."
+  },
+  "transparency": {
+    "eyebrow": "Donor transparency",
+    "title": "Where your gift goes",
+    "cta": "Choose your tier"
+  },
+  "tiers": {
+    "t100": { "amount": "HKD$100", "impact": "Provides sports equipment for one member for a month" },
+    "t250": { "amount": "HKD$250", "impact": "Funds one vocational training workshop session" },
+    "t500": { "amount": "HKD$500", "impact": "Supports a member's participation in community activities for 3 months" },
+    "t1000": { "amount": "HKD$1,000+", "impact": "Helps run a full day of inclusive sports programs" }
+  },
+  "body": {
+    "title": "Ability deserves opportunity",
+    "p1": "Love 21 members bring talent, ambition, and determination. Your gift helps remove the barriers that prevent those strengths from being fully seen in sport, work, family life, and the wider community.",
+    "p2": "For donations of HKD$100 or above, an official receipt will be issued and mailed to you upon request. Please contact Maggie at Maggie@love21foundation.com for enquiries."
+  },
+  "aside": {
+    "eyebrow": "Give your way",
+    "title": "One gift or lasting support",
+    "body": "Choose one-time, weekly, monthly, quarterly, semiannual, or annual giving securely through MoonClerk."
+  },
+  "other": {
+    "title": "Donate by other means",
+    "paymeTitle": "Donate with PayMe",
+    "paymeBody": "Open PayMe and scan Love 21's official QR code to make a donation.",
+    "paymeNote": "PayMe donations are reflected in campaign progress after Love 21 staff reconcile them.",
+    "bankTitle": "Bank transfer, FPS, or cheque",
+    "chequeNote": "Cheques can be written out to \"Love 21 Foundation Limited\" and mailed to:"
+  },
+  "shop": {
+    "title": "Wishlist",
+    "subtitle": "Give practical tools that help Love 21 members train, learn, create, and show what they can do.",
+    "eyebrow": "Practical support",
+    "heading": "Help remove a barrier",
+    "body": "Purchase a requested item directly when a supplier link is available, or contribute any amount toward the goal. Love 21 updates each total as items and contributions are secured."
+  },
+  "opportunities": {
+    "loading": "Loading opportunities…",
+    "error": "Could not load donation opportunities",
+    "unavailableTitle": "Donation opportunities are temporarily unavailable.",
+    "empty": "No active campaigns right now.",
+    "emptySoon": "New opportunities will be shared here soon.",
+    "support": "Support this {{kind}}",
+    "remarkHelper": "Add a note for Love 21 (optional)",
+    "remarkMoonclerk": "Please write \"{{title}}\" in the MoonClerk Remarks field so Love 21 can designate your gift.",
+    "campaignEyebrow": "Time-bound opportunities",
+    "campaignTitle": "Current Campaigns",
+    "causeEyebrow": "Sustained impact",
+    "causeTitle": "Champion Their Potential"
+  },
+  "wishlist": {
+    "loading": "Loading wishlist…",
+    "error": "Could not load the wishlist",
+    "empty": "No wishlist items right now.",
+    "emptySoon": "Love 21's current needs will be shared here soon.",
+    "unavailableTitle": "The wishlist is temporarily unavailable.",
+    "buy": "Buy this item",
+    "contribute": "Contribute any amount",
+    "secured": "{{count}} secured",
+    "securedOf": "{{secured}} of {{needed}} secured",
+    "remarkMoonclerk": "Add \"{{title}}\" in the MoonClerk Remarks field to designate your contribution."
+  }
+}

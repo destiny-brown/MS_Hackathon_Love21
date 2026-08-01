@@ -1,0 +1,22 @@
+{
+  "contact": {
+    "formLabel": "Contact form",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "phone": "Contact No.",
+    "message": "Message",
+    "send": "Send Message"
+  },
+  "newsletter": {
+    "formLabel": "Newsletter form",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address *",
+    "phone": "Phone Number",
+    "subscribe": "Subscribe",
+    "frequency": "Frequency",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
+  }
+}

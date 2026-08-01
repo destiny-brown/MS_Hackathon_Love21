@@ -159,7 +159,7 @@ export default function MythVsFactQuizPage() {
                   <Link href="/learn-play/resources">Browse Resources</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/learn-play/daily-myth-buster">Daily Myth Buster</Link>
+                  <Link href="/learn-play/21-moves">Play 21 Moves</Link>
                 </Button>
               </div>
             </div>

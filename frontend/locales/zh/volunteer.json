@@ -1,0 +1,322 @@
+{
+  "categories": {
+    "sport": {
+      "label": "运动",
+      "blurb": "足球、游泳、空手道等"
+    },
+    "nutrition": {
+      "label": "营养",
+      "blurb": "烹饪、营养师日"
+    },
+    "family": {
+      "label": "家庭",
+      "blurb": "辅导、导师计划、活动"
+    },
+    "csr": {
+      "label": "CSR",
+      "blurb": "企业志愿者"
+    }
+  },
+  "roles": {
+    "football-basketball": {
+      "title": "足球及篮球教练",
+      "desc": "协助每周球类课堂——无需教练证书，只需活力和耐心。",
+      "when": "星期六早上",
+      "where": "新蒲岗中心",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "swimming-dragonboat": {
+      "title": "游泳及龙舟结伴同行",
+      "desc": "支持水上课堂——一次划桨，增添一分自信。",
+      "when": "星期日早上",
+      "where": "维多利亚公园泳池",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "trampoline-karate": {
+      "title": "蹦床及空手道课堂助手",
+      "desc": "为曾在亚洲残疾空手道赛事夺奖的会员加油打气。",
+      "when": "星期三晚上",
+      "where": "新蒲岗中心",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "cooking-workshop": {
+      "title": "烹饪工作坊助手",
+      "desc": "协助每月健康烹饪班，会员与家长一同学习食谱。",
+      "when": "每月一个星期日",
+      "where": "新蒲岗厨房",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "dietician-day": {
+      "title": "营养师日及健康积分助手",
+      "desc": "迎接家庭参加每月一对一营养咨询，并协助记录他们赚取的健康积分。",
+      "when": "工作日下午",
+      "where": "新蒲岗中心",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "family-counselling": {
+      "title": "家庭辅导支持",
+      "desc": "在家长辅导课堂提供前台支持——迎接家庭，而非提供辅导服务。",
+      "when": "工作日上午",
+      "where": "新蒲岗中心",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "mentorship-buddy": {
+      "title": "导师计划结伴同行",
+      "desc": "与一位会员一对一配对，并肩朝每周共同活动目标努力。",
+      "when": "每周，按你的时间",
+      "where": "视活动而定",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "community-dinners": {
+      "title": "社区晚宴及外游团队",
+      "desc": "协助举办晚宴、外出活动及远足，让整个 Love 21 大家庭保持紧密联系。",
+      "when": "不定期晚上/周末",
+      "where": "视活动而定",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    },
+    "corporate-day": {
+      "title": "企业志愿者日",
+      "desc": "带你的团队到新蒲岗中心参与实践日——无需经验，只需齐心出席。",
+      "when": "为你的团队预约日期",
+      "where": "新蒲岗中心",
+      "note": "本季已预约 2 个日期",
+      "ctaLabel": "预约日期"
+    },
+    "skills-based": {
+      "title": "技能专才志愿者",
+      "desc": "提供你的专业技能——设计、市场推广、法律等——义务服务，按你的时间安排。",
+      "when": "弹性",
+      "where": "远程或现场",
+      "note": "",
+      "ctaLabel": "我有兴趣"
+    }
+  },
+  "matcher": {
+    "interests": {
+      "hands-on": {
+        "label": "动手实践及活跃",
+        "blurb": "运动、教练、动起来"
+      },
+      "food": {
+        "label": "饮食及身心健康",
+        "blurb": "烹饪、营养、健康咨询"
+      },
+      "people": {
+        "label": "人际及联结",
+        "blurb": "辅导支持、导师计划、活动"
+      },
+      "skills": {
+        "label": "我的专业技能",
+        "blurb": "设计、市场推广、法律、企业日"
+      }
+    },
+    "availability": {
+      "weekday-am": {
+        "label": "工作日上午"
+      },
+      "weekday-pm": {
+        "label": "工作日下午/晚上"
+      },
+      "weekend-am": {
+        "label": "周末早上"
+      },
+      "flexible": {
+        "label": "弹性——视情况而定"
+      }
+    },
+    "commitment": {
+      "one-off": {
+        "label": "一次性或偶尔",
+        "blurb": "单一日期，非固定时段"
+      },
+      "weekly": {
+        "label": "固定每周时段",
+        "blurb": "同一日子，大多数周次"
+      },
+      "long-term": {
+        "label": "弹性及持续",
+        "blurb": "按自己的时间安排，长期参与"
+      }
+    },
+    "groupSize": {
+      "solo": {
+        "label": "只有我",
+        "blurb": "乐于独自参与"
+      },
+      "friend": {
+        "label": "与朋友一起",
+        "blurb": "欢迎两人或小组的角色"
+      },
+      "team": {
+        "label": "团队 / 企业小组",
+        "blurb": "带同事一同参与"
+      }
+    }
+  },
+  "page": {
+    "defaultCta": "我有兴趣",
+    "hero": {
+      "eyebrow": "参与我们 · 志愿者",
+      "titleBefore": "来加入这个",
+      "titleHighlight": "充满能力",
+      "titleAfter": "的社区。",
+      "body": "无需电邮来回、无需等待办公室回复。选择运动、营养、家庭支持或企业义工日等空缺，即可即时确认。",
+      "ctaRoles": "查看空缺职位",
+      "ctaMatcher": "不知从何开始？",
+      "imageAlt": "志愿者与 Love 21 成员一起训练",
+      "volunteersActive": "本月活跃志愿者",
+      "shiftsToday": "今日进行中的班次"
+    },
+    "campaign": {
+      "eyebrow": "另一种帮助方式",
+      "title": "无法固定参与班次？不如发起自己的筹款活动。",
+      "body": "跑马拉松、举办生日筹款，或号召朋友——几分钟内设立点对点筹款页面，按自己的节奏筹集善款。",
+      "cta": "发起筹款活动"
+    },
+    "urgency": {
+      "label": "名额紧俏",
+      "filled": "已填 {{filled}}/{{total}}"
+    },
+    "board": {
+      "eyebrow": "职位板",
+      "title": "开放机会",
+      "subtitle": "每个职位都属于我们四大计划支柱之一。选择最适合你的。",
+      "searchPlaceholder": "搜索职位——试试「周六」、「烹饪」或「CSR」",
+      "clearSearch": "清除搜索",
+      "allRoles": "全部职位",
+      "when": "时间：",
+      "where": "地点：",
+      "filled": "{{filled}} / {{total}} 已填",
+      "noMatchQuery": "目前没有符合「{{query}}」的职位。",
+      "noMatchFilter": "目前没有符合此筛选条件的职位。",
+      "clearFilters": "清除搜索及筛选",
+      "showFewer": "显示较少职位",
+      "viewMore": "查看更多 {{count}} 个职位",
+      "viewMore_plural": "查看更多 {{count}} 个职位",
+      "csrOnePager": "为 HR/CSR 团队生成一页简介"
+    },
+    "gallery": {
+      "label": "班次实况",
+      "items": {
+        "1": { "alt": "志愿者指导足球训练" },
+        "2": { "alt": "志愿者协助烹饪工作坊" },
+        "3": { "alt": "游泳课上志愿者与成员击掌" },
+        "4": { "alt": "企业志愿者团队在现场" }
+      }
+    },
+    "social": {
+      "eyebrow": "来自我们的动态",
+      "title": "本周精选",
+      "posts": {
+        "1": { "platform": "Instagram", "caption": "周六足球队努力训练中 ⚽", "date": "2 天前" },
+        "2": { "platform": "Instagram", "caption": "为下月龙舟赛加紧练习 🐉", "date": "5 天前" },
+        "3": { "platform": "Facebook", "caption": "感谢本季的企业志愿者团队！", "date": "1 周前" }
+      }
+    },
+    "stories": {
+      "showLabel": "显示故事 {{number}}",
+      "items": {
+        "1": {
+          "quote": "朋友拉我来了一个周六班次。十八个月后，我加入了活动委员会。",
+          "name": "[志愿者姓名]，2024 年起担任课堂志愿者"
+        },
+        "2": {
+          "quote": "女儿有唐氏综合征，我从未想过自己会教足球。现在无法想象没有周六训练的日子。",
+          "name": "[志愿者姓名]，家长兼运动志愿者"
+        },
+        "3": {
+          "quote": "团队来参加一次 CSR 上午活动。一半人至今仍每月自愿参与。",
+          "name": "[公司名称]，企业伙伴"
+        }
+      }
+    },
+    "recognition": {
+      "eyebrow": "工时与认可",
+      "title": "每一小时都有意义，有目共睹",
+      "tiers": {
+        "1": { "title": "首次出勤", "body": "第一次记录班次。欢迎加入名册。" },
+        "2": { "title": "季度常客", "body": "累计 10 小时——你已在日程上有固定位置。" },
+        "3": { "title": "社区宠儿", "body": "50 小时坚持出席。入选志愿者焦点故事。" },
+        "4": { "title": "团队队长", "body": "100+ 小时。受邀协助带领新志愿者入职。" }
+      },
+      "hoursUnit": "小时",
+      "progressLabel": "距离社区宠儿丝带还差 18 小时"
+    },
+    "corporate": {
+      "title": "认识可赞助 15 人课堂的企业吗？",
+      "body": "志愿者往往是新企业伙伴的第一环——一句介绍就能带来很大影响。",
+      "cta": "生成一页简介介绍他们"
+    },
+    "faq": {
+      "eyebrow": "报名前须知",
+      "title": "大家真正会问的问题",
+      "items": {
+        "experience": {
+          "q": "做志愿者需要经验吗？",
+          "a": "不需要。大多数志愿者在第一次班次前都未接触过神经多样性成员。教练每次都会在现场 briefing。"
+        },
+        "cancel": {
+          "q": "如需取消班次怎么办？",
+          "a": "生活总有意外——可在会员 app 提前 24 小时取消或调换，不设惩罚。请勿无故缺席，空缺职位会导致课堂人手不足。"
+        },
+        "training": {
+          "q": "有培训吗？",
+          "a": "有。每位新志愿者在首次班次前会有简短现场 briefing，并有资深志愿者陪同支持。"
+        },
+        "group": {
+          "q": "可以带朋友或组队参与吗？",
+          "a": "当然可以——团体和朋友报名很常见，尤其是社区晚宴及外游团队和企业义工日。"
+        }
+      }
+    },
+    "matcher": {
+      "eyebrow": "AI · 智能配对",
+      "startOver": "重新开始",
+      "title": "不确定适合哪里？让 AI 帮你找班次。",
+      "subtitle": "四个简单问题，本地 AI（Ollama）会阅读所有开放职位，根据兴趣、时间、投入程度及人数为你配对。",
+      "step1": "1. 什么吸引你？",
+      "step2": "2. 你通常何时有空？",
+      "step3": "3. 你能多常参与？",
+      "step4": "4. 独自前来还是结伴？",
+      "submit": "请 AI 为我配对 →",
+      "thinking": "Ollama 正在阅读所有开放职位并权衡你的答案…",
+      "bestMatch": "最佳配对",
+      "aiMatched": "AI 配对",
+      "matchPercent": "{{score}}% 匹配",
+      "signUp": "帮我报名这个",
+      "anotherMatch": "查看另一个配对",
+      "unavailable": "AI 配对暂时不可用。请稍后再试。",
+      "mapFailed": "无法将配对结果对应到开放职位。请重试。",
+      "backendError": "配对失败。后端是否在 port 8000 运行？"
+    },
+    "finalCta": {
+      "title": "每个班次都始于有人愿意说「好」。",
+      "donate": "想改为捐款？"
+    },
+    "csrOnePager": {
+      "tag": "带上你的团队",
+      "title": "Love 21 Foundation 企业义工日",
+      "intro": "与 HR 或 CSR 团队分享——他们需要说「好」的一切都在此页。",
+      "statFamilies": "每月支持的家庭",
+      "statClasses": "每月运行的课堂",
+      "statYears": "在香港建设此社区",
+      "whatIs": "是什么：",
+      "whatIsBody": "在新蒲岗中心与成员共度实操一天——无需经验。过往团队曾协助运动课、营养工作坊及社区活动。",
+      "whyMatters": "对团队的意义：",
+      "whyMattersBody": "员工获得直接、以能力为本的神经多样性理解——不是讲座，而是真实共处的下午。",
+      "nextStep": "下一步：",
+      "nextStepBody": "回复此电邮或访问我们的参与页面，为团队选择日期。",
+      "cta": "联络 partnerships@love21.org.hk 预订团队日期。",
+      "footer": "Love 21 Foundation · 九龙新蒲岗 · 由志愿者访问 love21.org.hk/our-volunteer 生成",
+      "print": "打印 / 保存为 PDF"
+    }
+  }
+}

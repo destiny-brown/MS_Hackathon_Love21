@@ -8,7 +8,7 @@ export default function StaffPage() {
     <SiteLayout>
       <PageHero title="STAFF" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl space-y-10 text-brand-ink/80">
+        <div className="mx-auto max-w-5xl space-y-10 text-brand-dark/80">
           <div className="space-y-4">
             <p>
               Love 21 Foundation is a registered charity under Section 88 of the Inland Revenue Ordinance in Hong Kong.
@@ -19,8 +19,8 @@ export default function StaffPage() {
             </p>
           </div>
 
-          <article className="rounded-2xl border border-brand-sand bg-white p-6">
-            <div className="overflow-hidden rounded-xl border border-brand-sand bg-brand-cream">
+          <article className="rounded-2xl border border-brand-light bg-white p-6">
+            <div className="overflow-hidden rounded-xl border border-brand-light bg-brand-light">
               <Image
                 src="/images/love21-organisation-chart.jpg"
                 alt="Love 21 Foundation organisation chart"

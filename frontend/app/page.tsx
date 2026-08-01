@@ -12,6 +12,9 @@ import {
 } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
+import { Blob } from "@/components/brand/Blob";
+import { Reveal } from "@/components/brand/Reveal";
+import { TriMark } from "@/components/brand/TriMark";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { SiteLayout } from "@/components/site/site-layout";
@@ -23,6 +26,35 @@ import {
 } from "@/lib/site-data";
 
 const scrollViewport = { once: false, amount: 0.2 } as const;
+
+// The "21 Years in Hong Kong" marquee band from the Get Involved page,
+// placed here between the hero and the impact dashboard. Uses brand-red.
+function YearsMarquee() {
+  return (
+    <div className="relative overflow-hidden border-y border-brand-slate/30 bg-[#FBEAEA] py-3">
+      <Blob className="left-1/4 top-1/2 h-24 w-24 -translate-y-1/2 bg-white/40" />
+      <Blob className="right-1/4 top-1/2 h-16 w-16 -translate-y-1/2 bg-brand-red/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FBEAEA] via-transparent to-[#FBEAEA]" />
+      <div className="l21-marquee-track">
+        {[0, 1].map((rep) => (
+          <div key={rep} className="flex shrink-0 items-center">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i} className="mx-5 flex items-center gap-2.5 whitespace-nowrap">
+                <span className="font-serif-display text-sm text-brand-dark sm:text-base">
+                  21 Years in Hong Kong
+                </span>
+                <TriMark className="h-1.5 w-5 text-brand-red/50" />
+                <span className="text-[10px] uppercase tracking-[0.2em] text-brand-slate">
+                  Celebrating Ability
+                </span>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function CountUp({
   target,
@@ -66,19 +98,22 @@ function CountUp({
 function ImpactDashboard() {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, scrollViewport);
+  const cardTilts = ["-rotate-1", "rotate-0", "rotate-1"];
 
   return (
     <section
       ref={ref}
-      className="border-y border-lavender/40 bg-platinum px-4 py-14 sm:px-6 lg:px-8"
+      className="relative overflow-hidden border-y border-brand-slate/40 bg-brand-light px-4 py-14 sm:px-6 lg:px-8"
     >
-      <div className="mx-auto max-w-6xl">
+      <Blob className="-top-16 left-1/2 h-64 w-64 -translate-x-1/2 bg-white/50" />
+      <div className="relative mx-auto max-w-6xl">
         <motion.p
           initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
           transition={{ duration: 0.4 }}
-          className="mb-8 text-center text-sm font-semibold uppercase tracking-[0.2em] text-punch"
+          className="mb-8 flex items-center justify-center gap-2.5 text-center text-sm font-semibold uppercase tracking-[0.2em] text-brand-red"
         >
+          <TriMark className="h-2 w-7" />
           Live Impact Dashboard
         </motion.p>
         <div className="grid gap-8 sm:grid-cols-3">
@@ -88,16 +123,16 @@ function ImpactDashboard() {
               initial={{ opacity: 0, y: 18 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
               transition={{ duration: 0.45, delay: index * 0.08 }}
-              className="text-center"
+              className={`rounded-[28px] bg-white/70 px-6 py-9 text-center shadow-sm shadow-brand-dark/5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:rotate-0 hover:shadow-md ${cardTilts[index % cardTilts.length]}`}
             >
-              <p className="font-serif-display text-5xl text-indigo sm:text-6xl">
+              <p className="font-serif-display text-5xl text-brand-dark sm:text-6xl">
                 <CountUp
                   target={stat.target}
                   suffix={stat.suffix}
                   inView={inView}
                 />
               </p>
-              <p className="mt-3 text-sm uppercase tracking-[0.13em] text-lavender">
+              <p className="mt-3 text-sm uppercase tracking-[0.13em] text-brand-slate">
                 {stat.label}
               </p>
             </motion.div>
@@ -109,15 +144,18 @@ function ImpactDashboard() {
 }
 
 function FourDoors() {
+  const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-crimson", "bg-brand-dark"];
+
   return (
-    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <Blob className="-right-20 top-10 h-56 w-56 bg-brand-red/5" />
+      <div className="relative mx-auto max-w-6xl">
         <motion.h2
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={scrollViewport}
           transition={{ duration: 0.45 }}
-          className="mb-3 text-center font-serif-display text-4xl text-indigo sm:text-5xl"
+          className="mb-3 text-center font-serif-display text-4xl text-brand-dark sm:text-5xl"
         >
           Where will you begin?
         </motion.h2>
@@ -126,7 +164,7 @@ function FourDoors() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={scrollViewport}
           transition={{ duration: 0.45, delay: 0.05 }}
-          className="mx-auto mb-10 max-w-2xl text-center text-lavender"
+          className="mx-auto mb-10 max-w-2xl text-center text-brand-slate"
         >
           Four doors into Love 21 — choose the path that matches how you want to
           support our Down syndrome, autistic, and neurodiverse community.
@@ -143,15 +181,19 @@ function FourDoors() {
             >
               <Link
                 href={door.href}
-                className="flex h-full flex-col rounded-2xl border border-lavender/50 bg-platinum p-6 transition-shadow hover:shadow-[0_16px_40px_rgba(43,45,66,0.1)]"
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-brand-slate/50 bg-brand-light p-6 transition-shadow hover:shadow-[0_16px_40px_rgba(43,45,66,0.1)]"
               >
-                <h3 className="font-serif-display text-2xl text-indigo">
+                <span
+                  aria-hidden="true"
+                  className={`absolute right-0 top-0 h-14 w-14 -translate-y-7 translate-x-7 rotate-45 opacity-10 transition-opacity group-hover:opacity-20 ${cardAccents[index % cardAccents.length]}`}
+                />
+                <h3 className="relative font-serif-display text-2xl text-brand-dark">
                   {door.title}
                 </h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-lavender">
+                <p className="relative mt-3 flex-1 text-sm leading-relaxed text-brand-slate">
                   {door.description}
                 </p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-punch">
+                <span className="relative mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-brand-red">
                   Enter <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
@@ -181,19 +223,20 @@ function StoryCarousel() {
   return (
     <section
       ref={sectionRef}
-      className="border-y border-lavender/30 bg-platinum px-4 py-16 sm:px-6 lg:px-8"
+      className="relative overflow-hidden border-y border-brand-slate/30 bg-brand-light px-4 py-16 sm:px-6 lg:px-8"
     >
-      <div className="mx-auto max-w-5xl">
+      <Blob className="-left-16 top-1/4 h-56 w-56 bg-brand-red/10" />
+      <div className="relative mx-auto max-w-5xl">
         <div className="mb-8 flex items-end justify-between gap-4">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
             transition={{ duration: 0.45 }}
           >
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-punch">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-red">
               Featured Stories
             </p>
-            <h2 className="mt-2 font-serif-display text-4xl text-indigo sm:text-5xl">
+            <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">
               Ability in motion
             </h2>
           </motion.div>
@@ -209,7 +252,7 @@ function StoryCarousel() {
               aria-label="Previous story"
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-punch hover:text-punch"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-slate/60 bg-white text-brand-dark transition hover:border-brand-red hover:text-brand-red"
             >
               <ChevronLeft className="h-5 w-5" />
             </motion.button>
@@ -219,7 +262,7 @@ function StoryCarousel() {
               aria-label="Next story"
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.94 }}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-lavender/60 bg-white text-indigo transition hover:border-punch hover:text-punch"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-slate/60 bg-white text-brand-dark transition hover:border-brand-red hover:text-brand-red"
             >
               <ChevronRight className="h-5 w-5" />
             </motion.button>
@@ -242,7 +285,7 @@ function StoryCarousel() {
                 if (info.offset.x > 80) prev();
               }}
               whileHover={{ y: -4 }}
-              className="grid overflow-hidden rounded-2xl border border-lavender/40 bg-white shadow-[0_18px_45px_rgba(43,45,66,0.08)] lg:grid-cols-[1.1fr_0.9fr]"
+              className="grid overflow-hidden rounded-2xl border border-brand-slate/40 bg-white shadow-[0_18px_45px_rgba(43,45,66,0.08)] lg:grid-cols-[1.1fr_0.9fr]"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 1.04 }}
@@ -263,7 +306,7 @@ function StoryCarousel() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: 0.08 }}
-                  className="text-sm font-semibold uppercase tracking-[0.16em] text-punch"
+                  className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-red"
                 >
                   {story.tag}
                 </motion.p>
@@ -271,7 +314,7 @@ function StoryCarousel() {
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.14 }}
-                  className="mt-4 font-serif-display text-2xl leading-snug text-indigo sm:text-3xl"
+                  className="mt-4 font-serif-display text-2xl leading-snug text-brand-dark sm:text-3xl"
                 >
                   “{story.quote}”
                 </motion.blockquote>
@@ -279,7 +322,7 @@ function StoryCarousel() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: 0.2 }}
-                  className="mt-5 text-sm font-medium text-lavender"
+                  className="mt-5 text-sm font-medium text-brand-slate"
                 >
                   {story.name}
                 </motion.p>
@@ -290,7 +333,7 @@ function StoryCarousel() {
                 >
                   <Link
                     href={story.href}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-punch transition hover:text-flag"
+                    className="mt-6 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-red transition hover:text-brand-crimson"
                   >
                     Read Story <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -315,7 +358,7 @@ function StoryCarousel() {
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.9 }}
               className={`h-2.5 w-2.5 rounded-full transition ${
-                i === index ? "bg-punch" : "bg-lavender/50 hover:bg-lavender"
+                i === index ? "bg-brand-red" : "bg-brand-slate/50 hover:bg-brand-slate"
               }`}
             />
           ))}
@@ -328,6 +371,22 @@ function StoryCarousel() {
 export default function HomePage() {
   return (
     <SiteLayout>
+      {/* Keyframes for the "21 Years in Hong Kong" marquee. */}
+      <style>{`
+        @keyframes l21-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .l21-marquee-track {
+          display: flex;
+          width: max-content;
+          animation: l21-marquee 38s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .l21-marquee-track { animation: none; }
+        }
+      `}</style>
+
       {/* Section 1: Hero — full-bleed looping video */}
       <section className="relative left-1/2 right-1/2 w-screen -ml-[50vw] -mr-[50vw] min-h-[88vh] overflow-hidden">
         <motion.div
@@ -348,7 +407,7 @@ export default function HomePage() {
             <source src="/videos/love21.mp4" type="video/mp4" />
           </video>
           <div
-            className="absolute inset-0 bg-[#2B2D42]/30"
+            className="absolute inset-0 bg-brand-dark/30"
             aria-hidden="true"
           />
         </motion.div>
@@ -359,7 +418,7 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={scrollViewport}
             transition={{ duration: 0.5 }}
-            className="font-serif-display text-5xl leading-[1.05] text-[#EF233C] sm:text-6xl lg:text-7xl"
+            className="font-serif-display text-5xl leading-[1.05] text-brand-red sm:text-6xl lg:text-7xl"
           >
             #SoMuchAbility
           </motion.h1>
@@ -385,7 +444,7 @@ export default function HomePage() {
           >
             <Button
               asChild
-              className="bg-[#EF233C] text-white hover:bg-[#D90429]"
+              className="bg-brand-red text-white hover:bg-brand-crimson"
             >
               <Link href="/our-story">
                 Discover More <ArrowRight className="ml-2 h-4 w-4" />
@@ -395,45 +454,63 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Section 1.5: 21 Years in Hong Kong — marquee, between the hero and the
+          dashboard. No wave shape between the two — the pink band ends and
+          the brand-light section starts cleanly, which reads better than the
+          curved seam did. */}
+      <YearsMarquee />
+
       {/* Section 2: Live Impact Public Dashboard */}
-      <ImpactDashboard />
+      <Reveal>
+        <ImpactDashboard />
+      </Reveal>
 
       {/* Section 3: Four-Door Navigation */}
-      <FourDoors />
+      <Reveal>
+        <FourDoors />
+      </Reveal>
 
       {/* Section 4: Featured Story Spotlight */}
-      <StoryCarousel />
+      <Reveal>
+        <StoryCarousel />
+      </Reveal>
 
       {/* Section 5: Celebrating Ability Philosophy */}
-      <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden bg-white px-4 py-16 sm:px-6 lg:px-8">
+        <Blob className="left-1/2 top-0 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-brand-red/5" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={scrollViewport}
           transition={{ duration: 0.6 }}
-          className="mx-auto max-w-4xl text-center"
+          className="relative mx-auto max-w-4xl text-center"
         >
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-punch">
+          <p className="flex items-center justify-center gap-2.5 text-sm font-semibold uppercase tracking-[0.2em] text-brand-red">
+            <TriMark className="h-2 w-7" />
             Celebrating Ability
           </p>
-          <p className="mt-5 font-serif-display text-3xl leading-snug text-indigo sm:text-4xl">
+          <p className="mt-5 font-serif-display text-3xl leading-snug text-brand-dark sm:text-4xl">
             We focus entirely on what our community CAN do — unlocking potential
             through sports, nutrition, and lifelong empowerment.
           </p>
           <Link
-            href="/our-programmes"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-lavender transition hover:text-punch"
+            href="/get-involved"
+            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.13em] text-brand-slate transition hover:text-brand-red"
           >
             Explore Education & Support <ArrowRight className="h-4 w-4" />
           </Link>
         </motion.div>
       </section>
+      </Reveal>
 
       {/* Section 6: Newsletter (unchanged structure) */}
-      <section className="bg-brand-ink px-4 py-16 text-brand-cream sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+      <Reveal>
+      <section className="relative overflow-hidden bg-brand-dark px-4 py-16 text-brand-light sm:px-6 lg:px-8">
+        <Blob className="right-0 top-0 h-64 w-64 translate-x-1/3 -translate-y-1/3 bg-brand-red/10" />
+        <div className="relative mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-brand-coral">
+            <p className="text-sm uppercase tracking-[0.2em] text-brand-red">
               Subscribe to our eNews
             </p>
             <h2 className="mt-2 font-serif-display text-4xl sm:text-5xl">
@@ -443,6 +520,7 @@ export default function HomePage() {
           <NewsletterForm dark />
         </div>
       </section>
+      </Reveal>
     </SiteLayout>
   );
 }

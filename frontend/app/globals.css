@@ -4,26 +4,35 @@
 
 @layer base {
   :root {
-    --background: 46 46% 96%;
-    --foreground: 209 42% 17%;
-    --card: 0 0% 100%;
-    --card-foreground: 209 42% 17%;
-    --primary: 11 82% 56%;
-    --primary-foreground: 210 40% 98%;
-    --muted: 46 34% 92%;
-    --muted-foreground: 210 14% 45%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 40 33% 82%;
-    --input: 40 33% 82%;
-    --ring: 11 82% 56%;
-    --radius: 0.95rem;
+    /* Official Love 21 palette — RGB channels for Tailwind opacity (e.g. /70) */
+    --brand-dark: 43 45 66;       /* #2B2D42 */
+    --brand-slate: 141 153 174;   /* #8D99AE */
+    --brand-light: 237 242 244;   /* #EDF2F4 */
+    --brand-red: 239 35 60;       /* #EF233C */
+    --brand-crimson: 217 4 41;    /* #D90429 */
 
-    --brand-cream: 46 46% 96%;
-    --brand-ink: 209 42% 17%;
-    --brand-sea: 191 49% 37%;
-    --brand-coral: 11 82% 56%;
-    --brand-sand: 40 33% 82%;
+    /* Legacy aliases → same RGB channels as official tokens */
+    --brand-ink: 43 45 66;        /* → brand-dark */
+    --brand-coral: 239 35 60;     /* → brand-red */
+    --brand-sand: 237 242 244;    /* → brand-light */
+    --brand-cream: 237 242 244;   /* → brand-light */
+    --brand-sea: 141 153 174;     /* → brand-slate */
+
+    /* shadcn / semantic tokens (HSL components) aligned to palette */
+    --background: 198 23% 94%;
+    --foreground: 236 21% 21%;
+    --card: 0 0% 100%;
+    --card-foreground: 236 21% 21%;
+    --primary: 353 86% 54%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 198 23% 92%;
+    --muted-foreground: 216 16% 55%;
+    --destructive: 349 96% 43%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 216 16% 82%;
+    --input: 216 16% 82%;
+    --ring: 353 86% 54%;
+    --radius: 0.95rem;
   }
 
   * { @apply border-border; }
@@ -32,47 +41,48 @@
     font-family: "Avenir Next", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
   :focus-visible { @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background; }
+
+  html[data-font-scale="large"] {
+    font-size: 112.5%;
+  }
+
+  html[data-font-scale="xl"] {
+    font-size: 125%;
+  }
+
+  html.a11y-high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --brand-dark: 0 0 0;
+    --brand-light: 255 255 255;
+    --brand-red: 200 16 46;
+    --brand-slate: 60 60 60;
+    --border: 0 0% 0%;
+    --ring: 353 86% 54%;
+  }
+
+  html.a11y-high-contrast body {
+    font-weight: 500;
+  }
+
+  html.a11y-reduce-motion *,
+  html.a11y-reduce-motion *::before,
+  html.a11y-reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.a11y-underline-links a {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
 }
 
 @layer utilities {
   .font-serif-display {
     font-family: "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
-  }
-
-  .bg-brand-cream {
-    background-color: hsl(var(--brand-cream));
-  }
-
-  .bg-brand-ink {
-    background-color: hsl(var(--brand-ink));
-  }
-
-  .bg-brand-sea {
-    background-color: hsl(var(--brand-sea));
-  }
-
-  .bg-brand-coral {
-    background-color: hsl(var(--brand-coral));
-  }
-
-  .text-brand-cream {
-    color: hsl(var(--brand-cream));
-  }
-
-  .text-brand-ink {
-    color: hsl(var(--brand-ink));
-  }
-
-  .text-brand-sea {
-    color: hsl(var(--brand-sea));
-  }
-
-  .text-brand-coral {
-    color: hsl(var(--brand-coral));
-  }
-
-  .border-brand-sand {
-    border-color: hsl(var(--brand-sand));
   }
 }
 
@@ -95,5 +105,15 @@
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes captain-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
   }
 }

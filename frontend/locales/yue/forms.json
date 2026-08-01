@@ -1,0 +1,22 @@
+{
+  "contact": {
+    "formLabel": "聯絡表格",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "email": "電郵地址",
+    "phone": "聯絡電話",
+    "message": "訊息",
+    "send": "發送訊息"
+  },
+  "newsletter": {
+    "formLabel": "通訊訂閱表格",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "email": "電郵地址 *",
+    "phone": "電話號碼",
+    "subscribe": "訂閱",
+    "frequency": "頻率",
+    "weekly": "每週",
+    "monthly": "每月"
+  }
+}
