@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import get_settings
-from app.db import create_db_and_tables, ensure_bootstrap_admin, ensure_role_enum_compatibility
+from app.db import create_db_and_tables, ensure_bootstrap_admin, ensure_demo_users, ensure_role_enum_compatibility
 from app.routers import (
     admin,
     ai,
@@ -25,6 +25,7 @@ from app.routers import (
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     ensure_role_enum_compatibility()
+    ensure_demo_users()
     ensure_bootstrap_admin()
     yield
 
