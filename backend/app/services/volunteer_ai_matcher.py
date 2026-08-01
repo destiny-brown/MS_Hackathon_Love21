@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.models.volunteer_activity import VolunteerActivity
-from app.services.ollama_client import chat_json
+from app.services.model_client import chat_json
 from app.services.volunteer_matcher import (
     AVAILABILITY_OPTIONS,
     INTEREST_OPTIONS,
@@ -103,8 +103,8 @@ def match_volunteer_with_ai(
     limit: int = 2,
 ) -> tuple[list[dict] | None, str | None]:
     settings = get_settings()
-    if not settings.ollama_enabled:
-        return None, "AI matching is disabled. Set OLLAMA_ENABLED=true in backend/.env."
+    if not settings.model_enabled:
+        return None, "AI matching is disabled. Set MODEL_ENABLED=true in backend/.env."
 
     activities = _load_active_activities(db)
     if not activities:
@@ -136,11 +136,7 @@ def match_volunteer_with_ai(
 
     parsed = chat_json(system=system, user=user)
     if not parsed:
-        return (
-            None,
-            f"Start Ollama with `{settings.ollama_model}` to enable Smart Matching "
-            f"(ollama pull {settings.ollama_model}, then ollama serve).",
-        )
+        return None, f"The hosted `{settings.model_name}` model is unavailable. Please try again shortly."
 
     matches = _parse_ai_matches(parsed, activities_by_id, limit=limit)
     if not matches:
