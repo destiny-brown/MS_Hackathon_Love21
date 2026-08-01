@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -116,12 +116,13 @@ def delete_newsletter_subscriber(
     subscriber_id: int,
     _: User = Depends(require_roles(Role.ADMIN)),
     db: Session = Depends(get_db),
-) -> None:
+) -> Response:
     subscriber = db.get(NewsletterSubscriber, subscriber_id)
     if subscriber is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Subscriber not found")
     db.delete(subscriber)
     db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 class NewsletterSubscriberUpdate(BaseModel):
@@ -213,12 +214,13 @@ def delete_admin_event(
     event_id: int,
     _: User = Depends(require_roles(Role.ADMIN)),
     db: Session = Depends(get_db),
-) -> None:
+) -> Response:
     event = db.get(AdminEvent, event_id)
     if event is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Event not found")
     db.delete(event)
     db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 # --- Admin volunteer programs ---
@@ -285,9 +287,10 @@ def delete_admin_volunteer_program(
     program_id: int,
     _: User = Depends(require_roles(Role.ADMIN)),
     db: Session = Depends(get_db),
-) -> None:
+) -> Response:
     program = db.get(AdminVolunteerProgram, program_id)
     if program is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Program not found")
     db.delete(program)
     db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -165,6 +165,24 @@ Tables are created on app startup with SQLAlchemy metadata. There is intentional
 
 ## Deployment
 
+Pull requests and pushes to `main` run backend tests, migration drift checks,
+and a production frontend build through GitHub Actions.
+
+### Database migrations
+
+Schema changes are managed with Alembic. After changing a SQLAlchemy model:
+
+```bash
+cd backend
+alembic revision --autogenerate -m "describe the change"
+alembic upgrade head
+alembic check
+```
+
+The backend container applies pending migrations before starting Uvicorn. Its
+migration launcher also stamps complete databases created by older versions of
+the project before applying newer migrations.
+
 ### Frontend on Vercel
 
 1. Import the repo in Vercel.
@@ -174,12 +192,15 @@ Tables are created on app startup with SQLAlchemy metadata. There is intentional
 
 ### Backend on Render
 
-This repo includes `render.yaml` for a Docker-based Render web service.
+This repo includes `render.yaml` for a Docker-based Render web service and a
+managed PostgreSQL database.
 
 1. Push the repo to GitHub.
 2. In Render, create a Blueprint from the repo.
-3. Set `SECRET_KEY` and `CORS_ORIGINS` in Render.
-4. Optional: add a Render Postgres database and set `DATABASE_URL`.
+3. Set `CORS_ORIGINS` to the deployed frontend origin, for example
+	`https://your-app.vercel.app`.
+4. Set `ANTHROPIC_API_KEY` and `YOUTUBE_API_KEY` only when those integrations
+	are enabled. Render generates `SECRET_KEY` and connects `DATABASE_URL`.
 
 The backend Dockerfile is also a fallback for any container host:
 
