@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 
+import { MockDonationForm } from "@/components/site/mock-donation-form";
 import { SupportProgress } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
@@ -42,7 +43,7 @@ function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
   );
 }
 
-export function DonationOpportunities() {
+export function DonationOpportunities({ initialItemSlug }: { initialItemSlug?: string | null }) {
   const [opportunities, setOpportunities] = useState<SupportOpportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,7 +51,7 @@ export function DonationOpportunities() {
   useEffect(() => {
     api
       .listSupportOpportunities()
-      .then((entries) => setOpportunities(entries.filter((entry) => entry.kind !== "wishlist")))
+      .then(setOpportunities)
       .catch((err) => setError(err instanceof Error ? err.message : "Could not load donation opportunities"))
       .finally(() => setLoading(false));
   }, []);
@@ -72,6 +73,7 @@ export function DonationOpportunities() {
     ],
     [opportunities],
   );
+  const tiedOpportunities = useMemo(() => opportunities.slice(0, 8), [opportunities]);
 
   if (loading) {
     return <p className="text-brand-dark/70" role="status">Loading opportunities…</p>;
@@ -88,6 +90,8 @@ export function DonationOpportunities() {
 
   return (
     <div className="space-y-16">
+      <MockDonationForm opportunities={tiedOpportunities} initialOpportunitySlug={initialItemSlug} />
+
       {groups.map((group) => (
         <section key={group.kind} aria-labelledby={`${group.kind}-heading`}>
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">{group.eyebrow}</p>

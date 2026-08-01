@@ -8,8 +8,7 @@ from app.db import Base
 
 
 class Role(StrEnum):
-    DONOR = "donor"
-    VOLUNTEER = "volunteer"
+    SUPPORTER = "supporter"
     MEMBER = "member"
     ADMIN = "admin"
 
@@ -20,10 +19,11 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
-    # One role per account for now; multi-role accounts can be added later if Love 21 needs overlap.
+    # Supporter combines donor + volunteer for now. If Love 21 later needs finer permissions,
+    # can_donate/can_volunteer flags would be a clean extension without splitting accounts again.
     role: Mapped[Role] = mapped_column(
         Enum(Role, values_callable=lambda enum: [role.value for role in enum]),
-        default=Role.DONOR,
+        default=Role.SUPPORTER,
         nullable=False,
     )
     created_at: Mapped[datetime] = mapped_column(
@@ -31,3 +31,6 @@ class User(Base):
     )
 
     items: Mapped[list["Item"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
+    donations: Mapped[list["Donation"]] = relationship(back_populates="supporter")
+    activity_signups: Mapped[list["ActivitySignup"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")
+    volunteer_hours: Mapped[list["VolunteerHour"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")

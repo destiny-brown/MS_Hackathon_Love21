@@ -1,7 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const TOKEN_KEY = "hackkit_token";
 
-export type Role = "donor" | "volunteer" | "member" | "admin";
+export type Role = "supporter" | "member" | "admin";
 export type User = { id: number; email: string; role: Role; created_at: string };
 export type Item = { id: number; title: string; description: string | null; owner_id: number; created_at: string };
 export type AuthResponse = { access_token: string; token_type: "bearer"; user: User };
@@ -14,6 +14,7 @@ export type SupportOpportunity = {
   title: string;
   description: string;
   impact_statement: string;
+  image_url: string | null;
   target_amount_hkd: number;
   funded_amount_hkd: number;
   moonclerk_url: string | null;
@@ -30,6 +31,75 @@ export type SupportOpportunityInput = Omit<
   SupportOpportunity,
   "id" | "slug" | "progress_percent" | "created_at" | "updated_at"
 >;
+export type DonationFrequency = "one_time" | "monthly";
+export type Donation = {
+  id: number;
+  supporter_id: number | null;
+  support_opportunity_id: number | null;
+  donor_email: string | null;
+  donor_name: string | null;
+  amount_hkd: number;
+  frequency: DonationFrequency;
+  status: string;
+  payment_reference: string;
+  message: string | null;
+  created_at: string;
+  support_opportunity: SupportOpportunity | null;
+};
+export type DonationInput = {
+  amount_hkd: number;
+  frequency: DonationFrequency;
+  support_opportunity_id?: number | null;
+  donor_email?: string | null;
+  donor_name?: string | null;
+  message?: string | null;
+};
+export type DonationReceipt = {
+  donation: Donation;
+  attributed_to_account: boolean;
+  account_prompt: string | null;
+};
+export type Activity = {
+  id: number;
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  location: string;
+  description: string;
+  signed_up: boolean;
+};
+export type ActivitySignup = {
+  id: number;
+  supporter_id: number;
+  activity_id: number;
+  status: string;
+  created_at: string;
+  activity: Activity;
+};
+export type VolunteerHour = {
+  id: number;
+  supporter_id: number;
+  activity_id: number | null;
+  hours: number;
+  notes: string | null;
+  logged_at: string;
+  activity: Activity | null;
+};
+export type ImpactItem = {
+  title: string;
+  amount_hkd: number;
+  message: string;
+  progress_percent: number;
+};
+export type SupporterDashboard = {
+  donations: Donation[];
+  total_given_hkd: number;
+  recurring_status: string;
+  impact_items: ImpactItem[];
+  signed_up_activities: ActivitySignup[];
+  volunteer_hours: VolunteerHour[];
+  total_volunteer_hours: number;
+};
 export type YouTubeVideo = {
   video_id: string;
   title: string;
@@ -143,11 +213,9 @@ export function landingPathForRole(role: Role) {
       return "/dashboard";
     case "member":
       return "/member/profile";
-    case "volunteer":
-      return "/volunteer/portal";
-    case "donor":
+    case "supporter":
     default:
-      return "/donor/portal";
+      return "/supporter/dashboard";
   }
 }
 
@@ -180,7 +248,7 @@ export async function getCurrentUserWithRole() {
 }
 
 export const api = {
-  register: (email: string, password: string, role: Exclude<Role, "admin"> = "donor") =>
+  register: (email: string, password: string, role: Exclude<Role, "admin"> = "supporter") =>
     request<AuthResponse>("/auth/register", { method: "POST", body: JSON.stringify({ email, password, role }) }),
   login: (email: string, password: string) =>
     request<AuthResponse>("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
@@ -192,7 +260,7 @@ export const api = {
     request<Item>(`/items/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
   deleteItem: (id: number) => request<void>(`/items/${id}`),
   adminMetrics: () => request<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number }>("/admin/metrics"),
-  recurringDonation: () => request<{ email: string; status: string }>("/donor/recurring-donation"),
+  recurringDonation: () => request<{ email: string; status: string }>("/supporter/recurring-donation"),
   memberProfile: () => request<{ email: string; profile_status: string }>("/member/profile"),
   listSupportOpportunities: (kind?: OpportunityKind) =>
     request<SupportOpportunity[]>(`/support-opportunities${kind ? `?kind=${kind}` : ""}`),
@@ -207,6 +275,17 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify(payload),
     }),
+  createMockDonation: (payload: DonationInput) =>
+    request<DonationReceipt>("/donations/mock", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  listActivities: () => request<Activity[]>("/activities"),
+  signUpForActivity: (id: number) =>
+    request<ActivitySignup>(`/activities/${id}/signup`, { method: "POST", body: JSON.stringify({}) }),
+  supporterDashboard: () => request<SupporterDashboard>("/supporter/dashboard"),
+  logVolunteerHours: (payload: { activity_id?: number | null; hours: number; notes?: string | null }) =>
+    request<VolunteerHour>("/supporter/hours", { method: "POST", body: JSON.stringify(payload) }),
   searchYouTube: (query: string, maxResults = 20, maxDurationMinutes = 5) =>
     request<YouTubeSearchResponse>(
       `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
