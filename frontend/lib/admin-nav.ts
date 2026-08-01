@@ -5,6 +5,7 @@ import {
   Calendar,
   Gift,
   Heart,
+  HeartHandshake,
   Home,
   HelpCircle,
   Mail,
@@ -71,6 +72,12 @@ export const adminNavSections: AdminNavSection[] = [
         label: "Gratitude wall",
         description: "Review and approve member submissions",
         icon: Sparkles,
+      },
+      {
+        href: "/admin/stories",
+        label: "Member stories",
+        description: "Stories & Media carousel and story pages",
+        icon: HeartHandshake,
       },
       {
         href: "/admin/newsletter",
