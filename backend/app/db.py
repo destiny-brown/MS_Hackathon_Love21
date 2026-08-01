@@ -34,6 +34,32 @@ def create_db_and_tables() -> None:
             )
 
 
+def ensure_role_enum_compatibility() -> None:
+    if not settings.database_url.startswith("postgresql"):
+        return
+
+    # Some existing databases still have the legacy role enum without 'supporter'.
+    # Add it safely, then normalize old role values.
+    with engine.connect() as connection:
+        connection = connection.execution_options(isolation_level="AUTOCOMMIT")
+        connection.execute(
+            text(
+                """
+                DO $$
+                BEGIN
+                    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'role') THEN
+                        ALTER TYPE role ADD VALUE IF NOT EXISTS 'supporter';
+                    END IF;
+                END
+                $$;
+                """
+            )
+        )
+
+    with engine.begin() as connection:
+        connection.execute(text("UPDATE users SET role = 'supporter' WHERE role IN ('donor', 'volunteer')"))
+
+
 def get_db():
     db = SessionLocal()
     try:
