@@ -13,7 +13,6 @@ export const footerNav: NavItem[] = [
   { label: "Volunteer", href: "/our-volunteer" },
   { label: "Join as a Member", href: "/members" },
   { label: "Partner with Us", href: "/join-us" },
-  { label: "Events", href: "/events-campaigns" },
   { label: "Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
   { label: "Contact", href: "/contact-us" },
@@ -80,9 +79,9 @@ export const fourDoors = [
     href: "/our-volunteer",
   },
   {
-    title: "See activities",
-    description: "Check upcoming sports, nutrition workshops, and community gatherings.",
-    href: "/events-campaigns",
+    title: "Explore programmes",
+    description: "See sports, nutrition workshops, family support, and community activities.",
+    href: "/our-programmes",
   },
 ];
 

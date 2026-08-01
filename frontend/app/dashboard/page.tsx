@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { CheckCircle2, Plus, XCircle } from "lucide-react";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { SupportOpportunityManager } from "@/components/support-opportunity-manager";
@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { api, Item } from "@/lib/api";
+import { api, type GratitudeEntry, type Item } from "@/lib/api";
 import { signOutToLogin, useRequireRoles } from "@/lib/auth";
 import { Locale, t } from "@/lib/i18n";
 
@@ -18,16 +18,24 @@ export default function DashboardPage() {
   const [locale, setLocale] = useState<Locale>("en");
   const { user, loading, error: authError } = useRequireRoles("admin");
   const [items, setItems] = useState<Item[]>([]);
+  const [pendingEntries, setPendingEntries] = useState<GratitudeEntry[]>([]);
   const [metrics, setMetrics] = useState<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number } | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [editing, setEditing] = useState<Item | null>(null);
   const [error, setError] = useState("");
+  const [moderatingId, setModeratingId] = useState<number | null>(null);
+  const [moderationMessage, setModerationMessage] = useState("");
 
   async function loadAdminData() {
-    const [list, adminMetrics] = await Promise.all([api.listItems(), api.adminMetrics()]);
+    const [list, adminMetrics, gratitudeEntries] = await Promise.all([
+      api.listItems(),
+      api.adminMetrics(),
+      api.listPendingGratitudeEntries(),
+    ]);
     setItems(list);
     setMetrics(adminMetrics);
+    setPendingEntries(gratitudeEntries);
   }
 
   useEffect(() => {
@@ -64,6 +72,21 @@ export default function DashboardPage() {
     await loadAdminData();
   }
 
+  async function moderateEntry(entry: GratitudeEntry, status: "approved" | "rejected") {
+    setModeratingId(entry.id);
+    setError("");
+    setModerationMessage("");
+    try {
+      await api.moderateGratitudeEntry(entry.id, status);
+      setModerationMessage(`Gratitude entry ${status}.`);
+      await loadAdminData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not moderate gratitude entry");
+    } finally {
+      setModeratingId(null);
+    }
+  }
+
   if (loading || !user || user.role !== "admin") {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10">
@@ -92,6 +115,11 @@ export default function DashboardPage() {
 
         {authError ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{authError}</p> : null}
         {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
+        {moderationMessage ? (
+          <p className="rounded-md border border-brand-sea/30 bg-brand-sea/10 p-3 text-sm text-brand-ink" role="status">
+            {moderationMessage}
+          </p>
+        ) : null}
 
         {metrics ? (
           <section className="grid gap-4 md:grid-cols-3" aria-label="Admin metrics">
@@ -115,6 +143,58 @@ export default function DashboardPage() {
             </Card>
           </section>
         ) : null}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Wall of Gratitude moderation</CardTitle>
+            <CardDescription>
+              Pending member submissions require admin approval before they appear on the public Wall of Gratitude.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {pendingEntries.map((entry) => (
+                <article key={entry.id} className="rounded-2xl border border-brand-sand p-4">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-coral">Pending approval</p>
+                      <h2 className="mt-1 font-semibold text-brand-ink">{entry.display_name || "Love 21 member"}</h2>
+                      <p className="mt-2 text-sm leading-6 text-brand-ink/75">“{entry.message}”</p>
+                      {entry.photo_url ? <p className="mt-2 break-all text-xs text-muted-foreground">Photo: {entry.photo_url}</p> : null}
+                      <p className="mt-2 text-xs text-muted-foreground">Submitted {new Date(entry.submitted_at).toLocaleString()}</p>
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => moderateEntry(entry, "approved")}
+                        disabled={moderatingId === entry.id}
+                      >
+                        <CheckCircle2 className="mr-1.5 h-4 w-4" aria-hidden="true" />
+                        Approve
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => moderateEntry(entry, "rejected")}
+                        disabled={moderatingId === entry.id}
+                      >
+                        <XCircle className="mr-1.5 h-4 w-4" aria-hidden="true" />
+                        Reject
+                      </Button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+              {pendingEntries.length === 0 ? (
+                <p className="rounded-2xl border border-dashed border-brand-sand p-4 text-sm text-muted-foreground" role="status">
+                  No pending gratitude entries right now.
+                </p>
+              ) : null}
+            </div>
+          </CardContent>
+        </Card>
 
         <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <Card>

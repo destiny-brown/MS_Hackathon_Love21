@@ -107,6 +107,23 @@ export type YouTubeVideo = {
   published_at: string;
   thumbnail_url: string | null;
 };
+export type GratitudeEntryStatus = "pending" | "approved" | "rejected";
+export type GratitudeEntry = {
+  id: number;
+  author_id: number;
+  display_name: string | null;
+  message: string;
+  photo_url: string | null;
+  status: GratitudeEntryStatus | string;
+  submitted_at: string;
+  moderated_at: string | null;
+  moderator_id: number | null;
+};
+export type GratitudeEntryInput = {
+  display_name?: string | null;
+  message: string;
+  photo_url?: string | null;
+};
 export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
 
 export function getToken() {
@@ -183,6 +200,15 @@ export const api = {
   adminMetrics: () => request<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number }>("/admin/metrics"),
   recurringDonation: () => request<{ email: string; status: string }>("/supporter/recurring-donation"),
   memberProfile: () => request<{ email: string; profile_status: string }>("/member/profile"),
+  listPublicGratitudeEntries: () => request<GratitudeEntry[]>("/gratitude-entries/public"),
+  submitGratitudeEntry: (payload: GratitudeEntryInput) =>
+    request<GratitudeEntry>("/gratitude-entries/member", { method: "POST", body: JSON.stringify(payload) }),
+  listPendingGratitudeEntries: () => request<GratitudeEntry[]>("/gratitude-entries/admin/pending"),
+  moderateGratitudeEntry: (id: number, status: "approved" | "rejected") =>
+    request<GratitudeEntry>(`/gratitude-entries/admin/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    }),
   listSupportOpportunities: (kind?: OpportunityKind) =>
     request<SupportOpportunity[]>(`/support-opportunities${kind ? `?kind=${kind}` : ""}`),
   listAdminSupportOpportunities: () => request<SupportOpportunity[]>("/support-opportunities/admin"),

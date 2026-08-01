@@ -15,6 +15,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { SiteLayout } from "@/components/site/site-layout";
+import { WallOfGratitude } from "@/components/site/wall-of-gratitude";
 import { Button } from "@/components/ui/button";
 import {
   fourDoors,
@@ -416,8 +417,9 @@ export default function HomePage() {
             Celebrating Ability
           </p>
           <p className="mt-5 font-serif-display text-3xl leading-snug text-indigo sm:text-4xl">
-            We focus entirely on what our community CAN do — unlocking potential
-            through sports, nutrition, and lifelong empowerment.
+            This is an ABILITY story — an opportunity story, straight from
+            #SoMuchAbility, Love 21&apos;s own campaign hashtag. We celebrate what
+            people can do and open more places for every ability to shine.
           </p>
           <Link
             href="/our-programmes"
@@ -427,6 +429,8 @@ export default function HomePage() {
           </Link>
         </motion.div>
       </section>
+
+      <WallOfGratitude />
 
       {/* Section 6: Newsletter (unchanged structure) */}
       <section className="bg-brand-ink px-4 py-16 text-brand-cream sm:px-6 lg:px-8">

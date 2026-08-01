@@ -7,6 +7,7 @@ from app.core.security import hash_password
 from app.db import SessionLocal, create_db_and_tables
 from app.models.activity import Activity, ActivitySignup, VolunteerHour
 from app.models.donation import Donation
+from app.models.gratitude_entry import GratitudeEntry, GratitudeEntryStatus
 from app.models.item import Item
 from app.models.support_opportunity import SupportOpportunity
 from app.models.user import Role, User
@@ -141,6 +142,7 @@ def run() -> None:
                 db.commit()
 
         admin_user = next(user for user in demo_accounts if user.role == Role.ADMIN)
+        member_user = next(user for user in demo_accounts if user.role == Role.MEMBER)
         supporter_user = next(user for user in demo_accounts if user.role == Role.SUPPORTER)
         existing_items = db.scalars(select(Item).where(Item.owner_id == admin_user.id)).all()
         if not existing_items:
@@ -321,6 +323,50 @@ def run() -> None:
         ensure_hour(db, supporter_user, None, 1.0, "Manual log: helped prepare family resource packs")
         ensure_donation(db, supporter_user, movement, 500, "monthly", "seed_monthly_movement_500")
         ensure_donation(db, supporter_user, campaign, 1000, "one_time", "seed_campaign_1000")
+
+        gratitude_entries = [
+            {
+                "message": "Thank you to the coaches who help our family celebrate every new skill and every brave try.",
+                "display_name": "Demo Member Family",
+                "status": GratitudeEntryStatus.APPROVED,
+                "moderator_id": admin_user.id,
+                "moderated_at": now,
+            },
+            {
+                "message": "Love 21 gives me friends, movement, and a place to show what I can do.",
+                "display_name": "A Love 21 Member",
+                "status": GratitudeEntryStatus.APPROVED,
+                "moderator_id": admin_user.id,
+                "moderated_at": now,
+            },
+            {
+                "message": "I want to thank the volunteers for making Saturday sports calm, fun, and welcoming.",
+                "display_name": "Pending Demo Entry",
+                "status": GratitudeEntryStatus.PENDING,
+                "moderator_id": None,
+                "moderated_at": None,
+            },
+            {
+                "message": "Our family is grateful for nutrition workshops that turn advice into everyday confidence.",
+                "display_name": "Pending Family Note",
+                "status": GratitudeEntryStatus.PENDING,
+                "moderator_id": None,
+                "moderated_at": None,
+            },
+        ]
+        for values in gratitude_entries:
+            existing = db.scalar(
+                select(GratitudeEntry).where(
+                    GratitudeEntry.author_id == member_user.id,
+                    GratitudeEntry.message == values["message"],
+                )
+            )
+            if existing is None:
+                db.add(GratitudeEntry(author_id=member_user.id, **values))
+            else:
+                for key, value in values.items():
+                    setattr(existing, key, value)
+        db.commit()
 
     print("Seeded demo users:")
     for email, role in DEMO_USERS:
