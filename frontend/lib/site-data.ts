@@ -1,23 +1,24 @@
 export type NavItem = { label: string; href: string };
 
 export const mainNav: NavItem[] = [
-  { label: "About Love 21", href: "/our-story" },
-  { label: "Programmes", href: "/our-programmes" },
+  { label: "Learn", href: "/learn-play" },
   { label: "Get Involved", href: "/get-involved" },
   { label: "Impact", href: "/impact-dashboard" },
   { label: "Stories", href: "/stories-media" },
+  { label: "Events", href: "/events-campaigns" },
+  { label: "About Us", href: "/about-governance" },
   { label: "Wishlist", href: "/shop" },
 ];
 
 export const footerNav: NavItem[] = [
-  { label: "Volunteer", href: "/our-volunteer" },
-  { label: "Join as a Member", href: "/members" },
-  { label: "Partner with Us", href: "/join-us" },
-  { label: "Reports", href: "/our-finance" },
+  { label: "Volunteers", href: "/our-volunteer" },
+  { label: "Donate", href: "/donate" },
+  { label: "Join Us", href: "/join-us" },
+  { label: "Our Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
   { label: "Wishlist: Help Us", href: "/shop" },
   { label: "Members", href: "/members" },
-  { label: "Contact", href: "/contact-us" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 
 export const stats = [
