@@ -12,9 +12,9 @@ def admin_metrics(_: User = Depends(require_roles(Role.ADMIN))) -> dict[str, int
     return {"active_members": 128, "monthly_recurring_donations": 42, "open_volunteer_roles": 7}
 
 
-@router.get("/donor/recurring-donation")
+@router.get("/supporter/recurring-donation")
 def recurring_donation(
-    current_user: User = Depends(require_roles(Role.DONOR, Role.VOLUNTEER, Role.MEMBER)),
+    current_user: User = Depends(require_roles(Role.SUPPORTER)),
 ) -> dict[str, str]:
     # Template: use this pattern for opt-in recurring donation management; one-off donations stay public.
     return {"email": current_user.email, "status": "ready_to_manage"}

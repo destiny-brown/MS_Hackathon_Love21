@@ -25,6 +25,7 @@ class SupportOpportunityBase(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     description: str = Field(min_length=1)
     impact_statement: str = Field(min_length=1)
+    image_url: str | None = Field(default=None, max_length=500)
     target_amount_hkd: int = Field(gt=0)
     funded_amount_hkd: int = Field(default=0, ge=0)
     moonclerk_url: str | None = Field(default=None, max_length=500)
@@ -42,7 +43,7 @@ class SupportOpportunityBase(BaseModel):
             raise ValueError("Value cannot be blank")
         return normalized
 
-    @field_validator("moonclerk_url", "purchase_url")
+    @field_validator("image_url", "moonclerk_url", "purchase_url")
     @classmethod
     def validate_url(cls, value: str | None) -> str | None:
         return validate_optional_url(value)
@@ -75,6 +76,7 @@ class SupportOpportunityUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, min_length=1)
     impact_statement: str | None = Field(default=None, min_length=1)
+    image_url: str | None = Field(default=None, max_length=500)
     target_amount_hkd: int | None = Field(default=None, gt=0)
     funded_amount_hkd: int | None = Field(default=None, ge=0)
     moonclerk_url: str | None = Field(default=None, max_length=500)
@@ -94,7 +96,7 @@ class SupportOpportunityUpdate(BaseModel):
             raise ValueError("Value cannot be blank")
         return normalized
 
-    @field_validator("moonclerk_url", "purchase_url")
+    @field_validator("image_url", "moonclerk_url", "purchase_url")
     @classmethod
     def validate_url(cls, value: str | None) -> str | None:
         return validate_optional_url(value)

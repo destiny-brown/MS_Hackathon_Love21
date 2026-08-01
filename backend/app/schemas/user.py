@@ -8,7 +8,7 @@ from app.models.user import Role
 class UserCreate(BaseModel):
     email: str
     password: str
-    role: Role = Role.DONOR
+    role: Role = Role.SUPPORTER
 
 
 class UserLogin(BaseModel):

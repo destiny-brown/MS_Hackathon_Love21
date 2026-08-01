@@ -11,8 +11,7 @@ import { Label } from "@/components/ui/label";
 import { api, landingPathForRole, Role, setToken } from "@/lib/api";
 
 const registerableRoles: Array<{ value: Exclude<Role, "admin">; label: string; description: string }> = [
-  { value: "donor", label: "Donor", description: "Manage recurring giving and donation history." },
-  { value: "volunteer", label: "Volunteer", description: "Track involvement after signing up for opportunities." },
+  { value: "supporter", label: "Supporter", description: "Track your giving, volunteering, activities, and impact in one place." },
   { value: "member", label: "Member", description: "Manage your Love 21 member profile." },
 ];
 
@@ -20,7 +19,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Exclude<Role, "admin">>("donor");
+  const [role, setRole] = useState<Exclude<Role, "admin">>("supporter");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 

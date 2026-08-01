@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Gift, HeartHandshake } from "lucide-react";
 
@@ -69,19 +70,12 @@ export function WishlistOpportunities() {
                 </a>
               </Button>
             ) : null}
-            {item.moonclerk_url ? (
-              <>
-                <p className="text-xs text-brand-dark/65">
-                  Add &ldquo;{item.title}&rdquo; in the MoonClerk Remarks field to designate your contribution.
-                </p>
-                <Button asChild>
-                  <a href={item.moonclerk_url} target="_blank" rel="noreferrer">
-                    <HeartHandshake className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Contribute any amount
-                  </a>
-                </Button>
-              </>
-            ) : null}
+            <Button asChild>
+              <Link href={`/donate?item=${encodeURIComponent(item.slug)}`}>
+                <HeartHandshake className="mr-2 h-4 w-4" aria-hidden="true" />
+                Contribute toward this
+              </Link>
+            </Button>
           </div>
         </article>
       ))}

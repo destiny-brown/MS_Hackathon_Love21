@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Award, Briefcase, HandHeart, Medal, Newspaper, Share2, Trophy } from "lucide-react";
+import { Award, Briefcase, HandHeart, HeartHandshake, Medal, Newspaper, Share2, Trophy } from "lucide-react";
 
 import { Reveal } from "@/components/brand/Reveal";
 import { ElfsightFeeds } from "@/components/media/elfsight-feeds";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
+import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { mediaPosts } from "@/lib/media-stories";
 
 import badmintonImage from "./assets/badminton-medals.png";
@@ -129,6 +130,23 @@ export default function StoriesMediaPage() {
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="member-stories" className="scroll-mt-24 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-6 flex items-center gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
+              <HeartHandshake className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Member Stories</h2>
+            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
+          </div>
+          <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
+            Voices from families and members — the everyday moments that make Love 21 feel like home.
+          </p>
+
+          <TestimonialCarousel />
         </div>
       </section>
 

@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { AccessibilityMenu } from "@/components/site/accessibility-menu";
 import { LanguageSwitcherInline } from "@/components/site/language-switcher-inline";
+import { SiteAccountNav } from "@/components/site/site-account-nav";
 import { Button } from "@/components/ui/button";
 import { navKeyByHref } from "@/lib/i18n/nav";
 import { mainNav } from "@/lib/site-data";
@@ -54,6 +55,7 @@ export function SiteHeader() {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <AccessibilityMenu />
           <LanguageSwitcherInline />
+          <SiteAccountNav />
           <Link
             href="/admin"
             className="text-sm font-semibold text-muted-foreground transition-colors hover:text-brand-red lg:hidden"
