@@ -15,11 +15,44 @@ export function WishlistOpportunities() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api
-      .listSupportOpportunities("wishlist")
-      .then(setItems)
-      .catch((err) => setError(err instanceof Error ? err.message : "Could not load the wishlist"))
-      .finally(() => setLoading(false));
+    let cancelled = false;
+
+    async function loadWishlist() {
+      try {
+        const wishlistItems = await api.listSupportOpportunities("wishlist");
+        if (!cancelled && wishlistItems.length > 0) {
+          setItems(wishlistItems);
+          return;
+        }
+
+        const allItems = await api.listSupportOpportunities();
+        const inferredWishlistItems = allItems.filter(
+          (entry) =>
+            entry.kind === "wishlist" ||
+            entry.purchase_url !== null ||
+            entry.quantity_needed !== null ||
+            entry.quantity_secured !== null,
+        );
+
+        if (!cancelled) {
+          setItems(inferredWishlistItems);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Could not load the wishlist");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadWishlist();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {
