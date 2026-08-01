@@ -1,3 +1,5 @@
+"use client";
+
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";

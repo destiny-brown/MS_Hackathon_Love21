@@ -1,44 +1,42 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 
+import { Blob } from "@/components/brand/Blob";
+import { BrandCard } from "@/components/brand/BrandCard";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { Eyebrow } from "@/components/brand/Eyebrow";
+import { Reveal } from "@/components/brand/Reveal";
+import { TriMark } from "@/components/brand/TriMark";
 import { SiteLayout } from "@/components/site/site-layout";
+import { LiveActivityBadge } from "@/components/volunteer/live-activity-badge";
+import { VolunteerFaqAccordion } from "@/components/volunteer/volunteer-faq-accordion";
+import { VolunteerStoryCarousel } from "@/components/volunteer/volunteer-story-carousel";
+import { api, type VolunteerActivity } from "@/lib/api";
+import {
+  availabilityOptions,
+  categoryMeta,
+  commitmentOptions,
+  groupSizeOptions,
+  interestOptions,
+  rosterItems as fallbackRosterItems,
+  type Availability,
+  type Category,
+  type Commitment,
+  type GroupSize,
+  type Interest,
+  type RosterItem,
+} from "@/lib/volunteer-roster";
 
 // ---------------------------------------------------------------------------
-// Shared visual language (mirrors get-involved/page.tsx).
-// TODO: if both pages keep growing, pull TriMark / Eyebrow / Blob / Reveal /
-// CtaButton / WaveDivider into components/site/story-kit.tsx so they're not
-// duplicated across files.
+// Page-local decorative helpers (WaveDivider / icons stay here).
 // ---------------------------------------------------------------------------
-
-function TriMark({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 44 14" className={className} aria-hidden="true" fill="currentColor">
-      <circle cx="7" cy="7" r="4.5" />
-      <circle cx="22" cy="7" r="4.5" />
-      <circle cx="37" cy="7" r="4.5" />
-    </svg>
-  );
-}
-
-function Eyebrow({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <p className={`flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral ${className}`}>
-      <TriMark className="h-2 w-7" />
-      {children}
-    </p>
-  );
-}
 
 function DashedRule({ className = "" }: { className?: string }) {
-  return <span aria-hidden="true" className={`mt-2 block h-px w-16 border-t border-dashed border-brand-coral/40 ${className}`} />;
-}
-
-function Blob({ className = "" }: { className?: string }) {
-  return <div aria-hidden="true" className={`pointer-events-none absolute rounded-full blur-3xl ${className}`} />;
+  return <span aria-hidden="true" className={`mt-2 block h-px w-16 border-t border-dashed border-brand-red/40 ${className}`} />;
 }
 
 function WaveDivider({ color = "#FFFFFF", flip = false, className = "" }: { color?: string; flip?: boolean; className?: string }) {
@@ -51,81 +49,6 @@ function WaveDivider({ color = "#FFFFFF", flip = false, className = "" }: { colo
         <path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,50 L1440,100 L0,100 Z" fill={color} />
       </svg>
     </div>
-  );
-}
-
-function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.15 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: visible ? `${delay}ms` : "0ms", filter: visible ? "blur(0px)" : "blur(6px)" }}
-      className={`transition-all duration-700 ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0 motion-reduce:blur-none ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-      } ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function CtaButton({
-  href,
-  children,
-  variant = "solid",
-  onClick,
-}: {
-  href?: string;
-  children: React.ReactNode;
-  variant?: "solid" | "outline" | "outline-dark";
-  onClick?: () => void;
-}) {
-  const styles = {
-    solid:
-      "bg-brand-coral text-white shadow-[0_6px_20px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_10px_28px_-8px_rgba(0,0,0,0.45)] hover:bg-black",
-    outline: "border border-black/15 text-brand-ink hover:border-black hover:bg-black hover:text-white",
-    "outline-dark": "border border-white/30 text-white hover:border-white hover:bg-white hover:text-black",
-  }[variant];
-
-  const content = (
-    <>
-      {children}
-      <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
-        →
-      </span>
-    </>
-  );
-
-  if (onClick && !href) {
-    return (
-      <button onClick={onClick} className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300 ${styles}`}>
-        {content}
-      </button>
-    );
-  }
-
-  return (
-    <Link href={href ?? "#"} className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300 ${styles}`}>
-      {content}
-    </Link>
   );
 }
 
@@ -174,153 +97,24 @@ function IconSearch({ className = "" }: { className?: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Data
+// Page-only content (roster + matcher data lives in lib/volunteer-roster.ts)
 // ---------------------------------------------------------------------------
 
-type Category = "sport" | "nutrition" | "family" | "csr";
-
-const categoryMeta: Record<Category, { label: string; blurb: string }> = {
-  sport: { label: "Sport", blurb: "Football, swimming, karate & more" },
-  nutrition: { label: "Nutrition", blurb: "Cooking, dietician days" },
-  family: { label: "Family", blurb: "Counselling, mentorship, events" },
-  csr: { label: "CSR", blurb: "Corporate volunteering" },
-};
-
-type RosterItem = {
-  id: string;
-  icon: string;
-  title: string;
-  desc: string;
-  when: string;
-  where: string;
-  category: Category;
-  filled?: number;
-  total?: number;
-  note?: string;
-  ctaLabel: string;
-};
-
-const rosterItems: RosterItem[] = [
-  {
-    id: "football-basketball",
-    icon: "⚽",
-    title: "Football & basketball coach",
-    desc: "Help run our weekly ball-game sessions — no coaching certificate needed, just energy and patience.",
-    when: "Saturday mornings",
-    where: "San Po Kong centre",
-    category: "sport",
-    filled: 3,
-    total: 5,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "swimming-dragonboat",
-    icon: "🏊",
-    title: "Swimming & dragon boat buddy",
-    desc: "Support our water-based sessions — a splash of confidence, one paddle at a time.",
-    when: "Sunday mornings",
-    where: "Victoria Park pool",
-    category: "sport",
-    filled: 17,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "trampoline-karate",
-    icon: "🥋",
-    title: "Trampoline & karate class helper",
-    desc: "Cheer on the same members who've gone on to win medals at Asian Para-Karate events.",
-    when: "Wednesday evenings",
-    where: "San Po Kong centre",
-    category: "sport",
-    filled: 2,
-    total: 5,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "cooking-workshop",
-    icon: "🥗",
-    title: "Cooking workshop helper",
-    desc: "Assist our monthly healthy-cooking classes where members and parents learn recipes together.",
-    when: "One Sunday a month",
-    where: "San Po Kong kitchen",
-    category: "nutrition",
-    filled: 1,
-    total: 6,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "dietician-day",
-    icon: "📋",
-    title: "Dietician day & health points assistant",
-    desc: "Welcome families to their monthly one-on-one nutrition check-ins and help track the health points they earn.",
-    when: "Weekday afternoons",
-    where: "San Po Kong centre",
-    category: "nutrition",
-    filled: 11,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "family-counselling",
-    icon: "💬",
-    title: "Family counselling support",
-    desc: "Front-of-house support around our parent counselling sessions — greeting families, not delivering counselling.",
-    when: "Weekday mornings",
-    where: "San Po Kong centre",
-    category: "family",
-    filled: 3,
-    total: 10,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "mentorship-buddy",
-    icon: "🤝",
-    title: "Mentorship programme buddy",
-    desc: "Get matched 1:1 with a member and work toward a shared weekly activity goal, side by side.",
-    when: "Weekly, your schedule",
-    where: "Varies by activity",
-    category: "family",
-    filled: 12,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "community-dinners",
-    icon: "🎉",
-    title: "Community dinners & trips crew",
-    desc: "Help run the dinners, outings and away trips that keep the whole Love 21 family close.",
-    when: "Occasional evenings/weekends",
-    where: "Varies",
-    category: "family",
-    filled: 9,
-    total: 20,
-    ctaLabel: "I'm interested",
-  },
-  {
-    id: "corporate-day",
-    icon: "🏢",
-    title: "Corporate volunteer day",
-    desc: "Bring your team for a hands-on day at our San Po Kong centre — no experience needed, just show up together.",
-    when: "Book a date for your team",
-    where: "San Po Kong centre",
-    category: "csr",
-    note: "2 dates booked this quarter",
-    ctaLabel: "Book a date",
-  },
-  {
-    id: "skills-based",
-    icon: "💡",
-    title: "Skills-based placement",
-    desc: "Offer your professional skills — design, marketing, legal — pro bono, on your own schedule.",
-    when: "Flexible",
-    where: "Remote or on-site",
-    category: "csr",
-    filled: 3,
-    total: 12,
-    ctaLabel: "I'm interested",
-  },
-];
+function mapActivityToRosterItem(activity: VolunteerActivity): RosterItem {
+  return {
+    id: activity.role_id,
+    icon: activity.icon,
+    title: activity.title,
+    desc: activity.desc,
+    when: activity.when,
+    where: activity.where,
+    category: activity.category as Category,
+    filled: activity.filled ?? undefined,
+    total: activity.total ?? undefined,
+    note: activity.note ?? undefined,
+    ctaLabel: activity.cta_label ?? "I'm interested",
+  };
+}
 
 // Placeholder — wire up to Instagram/Facebook Graph API later.
 const socialPosts = [
@@ -330,20 +124,6 @@ const socialPosts = [
 ];
 
 // Replace with a real, consented volunteer story before this goes live.
-const volunteerStories = [
-  {
-    quote: "I signed up for one Saturday shift because a friend dragged me along. Eighteen months later I'm on the events committee.",
-    name: "[Volunteer name], class volunteer since 2024",
-  },
-  {
-    quote: "My daughter has Down syndrome, and I never expected to be the one coaching football. Now I can't imagine my Saturdays without it.",
-    name: "[Volunteer name], parent & sports volunteer",
-  },
-  {
-    quote: "Our team came for one CSR morning. Half of us still show up monthly, on our own time.",
-    name: "[Company name], corporate partner",
-  },
-];
 
 // Candid, in-the-field moments — placeholder paths.
 const galleryStrip = [
@@ -352,153 +132,6 @@ const galleryStrip = [
   { src: "/images/get-involved/gallery-3.jpg", alt: "A high-five between a volunteer and a member at swim class", shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]" },
   { src: "/images/get-involved/gallery-4.jpg", alt: "A corporate volunteer team on-site", shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]" },
 ];
-
-const faqs = [
-  { q: "Do I need experience to volunteer?", a: "No. Most of our volunteers have never worked with neurodiverse members before their first shift. Coaches brief you on-site, every time." },
-  { q: "What if I need to cancel a shift?", a: "Life happens — cancel or swap through the member app up to 24 hours ahead, no penalty. We'd just ask you not to no-show, since a role sitting empty means a class runs short-staffed." },
-  { q: "Is training provided?", a: "Yes. Every new volunteer gets a short on-site briefing before their first shift, plus a returning volunteer paired alongside them for support." },
-  { q: "Can I bring a friend, or volunteer as a group?", a: "Absolutely — group and friend sign-ups are common, especially for the community dinners & trips crew and corporate days." },
-];
-
-// ---- AI match logic (kept for when the AI Match section is re-enabled) ----
-
-type Interest = "hands-on" | "food" | "people" | "skills" | "events" | "creative";
-type Availability = "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
-type Commitment = "one-off" | "weekly" | "long-term";
-type GroupSize = "solo" | "friend" | "team";
-
-// `category` maps an interest directly onto one of the four programme
-// pillars. `keywords` is for interests that cut across pillars — matched
-// against the role's title/description/id instead.
-const interestOptions: {
-  key: Interest;
-  label: string;
-  blurb: string;
-  category?: Category;
-  keywords?: string[];
-}[] = [
-  { key: "hands-on", label: "Hands-on & active", blurb: "Sport, coaching, being on the move", category: "sport" },
-  { key: "food", label: "Food & wellbeing", blurb: "Cooking, nutrition, health check-ins", category: "nutrition" },
-  { key: "people", label: "People & connection", blurb: "Counselling support, mentorship, events", category: "family" },
-  { key: "skills", label: "My professional skills", blurb: "Design, marketing, legal, corporate days", category: "csr" },
-  {
-    key: "events",
-    label: "Events & logistics",
-    blurb: "Dinners, trips, corporate days — making things run smoothly",
-    keywords: ["dinner", "trip", "corporate", "book a date", "outing", "community"],
-  },
-  {
-    key: "creative",
-    label: "Creative & media",
-    blurb: "Design, recipes, storytelling, hands-on making",
-    keywords: ["design", "marketing", "cooking", "recipe", "workshop"],
-  },
-];
-
-const availabilityOptions: { key: Availability; label: string; matchWhen: string[] }[] = [
-  { key: "weekday-am", label: "Weekday mornings", matchWhen: ["weekday mornings"] },
-  { key: "weekday-pm", label: "Weekday afternoons/evenings", matchWhen: ["weekday afternoons", "wednesday evenings"] },
-  { key: "weekend-am", label: "Weekend mornings", matchWhen: ["saturday mornings", "sunday mornings"] },
-  { key: "flexible", label: "Flexible — it varies", matchWhen: ["flexible", "varies", "one sunday a month", "occasional", "weekly, your schedule"] },
-];
-
-const commitmentOptions: { key: Commitment; label: string; blurb: string; matchWhen: string[] }[] = [
-  {
-    key: "one-off",
-    label: "One-off or occasional",
-    blurb: "A single date, not a standing slot",
-    matchWhen: ["one sunday a month", "occasional", "book a date for your team"],
-  },
-  {
-    key: "weekly",
-    label: "A regular weekly slot",
-    blurb: "Same day, most weeks",
-    matchWhen: ["saturday mornings", "sunday mornings", "wednesday evenings", "weekday mornings", "weekday afternoons"],
-  },
-  {
-    key: "long-term",
-    label: "Flexible & ongoing",
-    blurb: "I'll show up on my own schedule, long-term",
-    matchWhen: ["flexible", "weekly, your schedule", "varies"],
-  },
-];
-
-const groupSizeOptions: { key: GroupSize; label: string; blurb: string; keywords: string[] }[] = [
-  { key: "solo", label: "Just me", blurb: "Happy to go it alone", keywords: [] },
-  {
-    key: "friend",
-    label: "With a friend",
-    blurb: "Roles that welcome pairs or small groups",
-    keywords: ["buddy", "crew", "dinners", "trips", "mentorship"],
-  },
-  {
-    key: "team",
-    label: "As a team / corporate group",
-    blurb: "Bring colleagues along",
-    keywords: ["corporate", "team"],
-  },
-];
-
-function scoreRosterItem(
-  item: RosterItem,
-  interest: Interest,
-  availability: Availability,
-  commitment: Commitment,
-  groupSize: GroupSize,
-) {
-  let score = 52;
-  const reasons: string[] = [];
-  const interestMeta = interestOptions.find((o) => o.key === interest)!;
-  const availMeta = availabilityOptions.find((o) => o.key === availability)!;
-  const commitmentMeta = commitmentOptions.find((o) => o.key === commitment)!;
-  const groupMeta = groupSizeOptions.find((o) => o.key === groupSize)!;
-  const haystack = `${item.title} ${item.desc} ${item.id}`.toLowerCase();
-
-  if (interestMeta.category && item.category === interestMeta.category) {
-    score += 26;
-    reasons.push(`You're drawn to "${interestMeta.label.toLowerCase()}" — this role sits right in that pillar.`);
-  } else if (interestMeta.keywords?.some((kw) => haystack.includes(kw))) {
-    score += 22;
-    reasons.push(`Your pull toward "${interestMeta.label.toLowerCase()}" shows up directly in this role's day-to-day.`);
-  }
-
-  const whenLower = item.when.toLowerCase();
-  if (availMeta.matchWhen.some((kw) => whenLower.includes(kw))) {
-    score += 16;
-    reasons.push(`The timing (${item.when}) lines up with when you said you're free.`);
-  }
-
-  if (item.total && item.filled !== undefined) {
-    const openRatio = 1 - item.filled / item.total;
-    if (openRatio > 0.4) {
-      score += 6;
-      reasons.push("Plenty of open spots — you'd start right away, no waitlist.");
-    }
-  }
-
-  if (commitmentMeta.matchWhen.some((kw) => whenLower.includes(kw))) {
-    score += 14;
-    reasons.push(`It's ${commitmentMeta.label.toLowerCase()} — the pace you said works for you.`);
-  }
-
-  if (groupSize === "solo") {
-    score += 4;
-    reasons.push("A straightforward solo shift — no need to coordinate with anyone else.");
-  } else if (groupMeta.keywords.some((kw) => haystack.includes(kw))) {
-    score += 12;
-    reasons.push(
-      groupSize === "team"
-        ? "This one's built for a team — bring your colleagues along."
-        : "This role plays well with a friend or small group joining you.",
-    );
-  }
-
-  if (reasons.length === 0) {
-    reasons.push("It's a role with open capacity right now across a pillar close to what you picked.");
-  }
-
-  return { score: Math.min(score, 98), reasons };
-}
 
 // ---- One-pager generator -------------------------------------------------
 
@@ -562,149 +195,72 @@ function generateCsrOnePager() {
 // Small components
 // ---------------------------------------------------------------------------
 
-function useCountUp(target: number, durationMs = 1400) {
-  const [value, setValue] = useState(0);
+// ---- AI Volunteer Match — wired to backend /ai/volunteer/match ----------------
 
-  useEffect(() => {
-    let start: number | null = null;
-    let raf: number;
+type MatchResult = {
+  item: RosterItem;
+  score: number;
+  reasons: string[];
+};
 
-    function step(ts: number) {
-      if (start === null) start = ts;
-      const progress = Math.min((ts - start) / durationMs, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(eased * target));
-      if (progress < 1) raf = requestAnimationFrame(step);
-    }
-
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [target, durationMs]);
-
-  return value;
-}
-
-// Live-stat card. Sits in normal page flow now (left column, under the hero
-// buttons) rather than floating over the photo. Swap the two target numbers
-// for a real Supabase count() query once that's wired up.
-function LiveActivityBadge() {
-  const volunteers = useCountUp(214, 1400);
-  const shiftsToday = useCountUp(6, 1000);
-
-  return (
-    <div className="mt-8 inline-flex w-full items-center gap-4 rounded-2xl border border-brand-sand bg-white p-4 shadow-sm shadow-black/5 sm:w-auto">
-      <span className="relative flex h-2.5 w-2.5 shrink-0">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-coral opacity-60" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-coral" />
-      </span>
-      <div>
-        <div className="flex items-baseline gap-1.5">
-          <span className="font-serif-display text-2xl leading-none text-brand-ink">{volunteers}</span>
-          <span className="text-xs text-brand-ink/60">volunteers active this month</span>
-        </div>
-        <div className="mt-1.5 flex items-baseline gap-1.5 border-t border-dashed border-brand-ink/15 pt-1.5">
-          <span className="font-serif-display text-lg leading-none text-brand-ink">{shiftsToday}</span>
-          <span className="text-xs text-brand-ink/50">shifts running today</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VolunteerStoryCarousel() {
-  const [index, setIndex] = useState(0);
-  const [fade, setFade] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setIndex((i) => (i + 1) % volunteerStories.length);
-        setFade(true);
-      }, 200);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
-
-  function go(next: number) {
-    setFade(false);
-    setTimeout(() => {
-      setIndex((next + volunteerStories.length) % volunteerStories.length);
-      setFade(true);
-    }, 200);
-  }
-
-  const active = volunteerStories[index];
-
-  return (
-    <div>
-      <div className={`transition-opacity duration-300 motion-reduce:transition-none ${fade ? "opacity-100" : "opacity-0"}`}>
-        <blockquote className="font-serif-display text-3xl leading-snug text-brand-ink sm:text-4xl">"{active.quote}"</blockquote>
-        <p className="mt-5 text-sm font-semibold text-brand-ink/60">{active.name}</p>
-      </div>
-      <div className="mt-6 flex items-center gap-3">
-        <TriMark className="h-2 w-7 text-brand-coral/40" />
-        <div className="flex gap-1.5">
-          {volunteerStories.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => go(i)}
-              aria-label={`Show story ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-brand-coral" : "w-1.5 bg-brand-ink/20"}`}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function FaqAccordion() {
-  const [open, setOpen] = useState<number | null>(0);
-  return (
-    <div className="divide-y divide-brand-sand">
-      {faqs.map((item, i) => {
-        const isOpen = open === i;
-        return (
-          <div key={item.q} className="py-5">
-            <button onClick={() => setOpen(isOpen ? null : i)} className="flex w-full items-center justify-between gap-6 text-left" aria-expanded={isOpen}>
-              <span className="font-serif-display text-lg text-brand-ink sm:text-xl">{item.q}</span>
-              <span className={`shrink-0 text-2xl text-brand-coral transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`} aria-hidden="true">+</span>
-            </button>
-            <div className={`grid overflow-hidden transition-all duration-300 ease-out ${isOpen ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-              <p className="overflow-hidden text-brand-ink/70">{item.a}</p>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// ---- AI Volunteer Match — kept in the file, section below is commented out
-
-function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => void }) {
+function AiVolunteerMatch({
+  rosterItems,
+  onSelectRole,
+}: {
+  rosterItems: RosterItem[];
+  onSelectRole: (title: string) => void;
+}) {
   const [interest, setInterest] = useState<Interest | null>(null);
   const [availability, setAvailability] = useState<Availability | null>(null);
   const [commitment, setCommitment] = useState<Commitment | null>(null);
   const [groupSize, setGroupSize] = useState<GroupSize | null>(null);
   const [thinking, setThinking] = useState(false);
-  const [results, setResults] = useState<{ item: RosterItem; score: number; reasons: string[] }[] | null>(null);
+  const [results, setResults] = useState<MatchResult[] | null>(null);
   const [resultIndex, setResultIndex] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const [aiEnhanced, setAiEnhanced] = useState(false);
 
-  function findMatch() {
+  async function findMatch() {
     if (!interest || !availability || !commitment || !groupSize) return;
     setThinking(true);
     setResults(null);
-    window.setTimeout(() => {
-      const scored = rosterItems
-        .map((item) => ({ item, ...scoreRosterItem(item, interest, availability, commitment, groupSize) }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 2);
-      setResults(scored);
+    setError(null);
+    setAiEnhanced(false);
+
+    try {
+      const response = await api.matchVolunteer({
+        interest,
+        availability,
+        commitment,
+        group_size: groupSize,
+      });
+      if (!response.enabled || response.matches.length === 0) {
+        setError(response.message || "AI matching is unavailable right now. Try again in a moment.");
+        return;
+      }
+
+      const mapped = response.matches
+        .map((match) => {
+          const item = rosterItems.find((role) => role.id === match.role_id);
+          if (!item) return null;
+          return { item, score: match.score, reasons: match.reasons };
+        })
+        .filter((match): match is MatchResult => match !== null)
+        .sort((a, b) => b.score - a.score);
+
+      if (mapped.length === 0) {
+        setError("We couldn't map those matches to open roles. Please try again.");
+        return;
+      }
+
+      setResults(mapped);
+      setAiEnhanced(response.ai_enhanced);
       setResultIndex(0);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Matching failed. Is the backend running on port 8000?");
+    } finally {
       setThinking(false);
-    }, 900);
+    }
   }
 
   function reset() {
@@ -714,6 +270,8 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
     setGroupSize(null);
     setResults(null);
     setThinking(false);
+    setError(null);
+    setAiEnhanced(false);
   }
 
   const active = results?.[resultIndex];
@@ -721,11 +279,11 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
   return (
     <div className="relative mx-auto max-w-4xl rounded-[32px] border border-white/15 bg-white/[0.04] p-8 sm:p-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+        <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
           <IconSpark className="h-4 w-4" />
-          New · Smart Matching
+          AI · Smart Matching
         </p>
-        {(interest || availability || commitment || groupSize || results) && !thinking && (
+        {(interest || availability || commitment || groupSize || results || error) && !thinking && (
           <button onClick={reset} className="text-xs font-semibold text-white/50 hover:text-white">
             Start over
           </button>
@@ -736,8 +294,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
         Not sure where you fit? Let it find your shift.
       </h3>
       <p className="mt-3 max-w-xl text-sm text-white/65">
-        Four quick questions, and we'll match you against every open role the same way the member
-        app tracks engagement — by pillar, timing, commitment, and group size.
+        Four quick questions, and our local AI (Ollama) will read every open role to find the best fit for your interests, timing, commitment, and group size.
       </p>
 
       {!results && !thinking && (
@@ -750,7 +307,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
                   key={opt.key}
                   onClick={() => setInterest(opt.key)}
                   className={`rounded-2xl border px-4 py-3 text-left transition ${
-                    interest === opt.key ? "border-brand-coral bg-brand-coral/10" : "border-white/15 hover:border-white/30"
+                    interest === opt.key ? "border-brand-red bg-brand-red/10" : "border-white/15 hover:border-white/30"
                   }`}
                 >
                   <div className="text-sm font-semibold text-white">{opt.label}</div>
@@ -768,7 +325,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
                   key={opt.key}
                   onClick={() => setAvailability(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    availability === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    availability === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -776,6 +333,8 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
               ))}
             </div>
           </div>
+
+          {error && <p className="text-sm text-red-300">{error}</p>}
 
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-white/50">3. How often can you commit?</p>
@@ -785,7 +344,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
                   key={opt.key}
                   onClick={() => setCommitment(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    commitment === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    commitment === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -802,7 +361,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
                   key={opt.key}
                   onClick={() => setGroupSize(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    groupSize === opt.key ? "border-brand-coral bg-brand-coral/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    groupSize === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -814,9 +373,9 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
           <button
             onClick={findMatch}
             disabled={!interest || !availability || !commitment || !groupSize}
-            className="inline-flex items-center gap-2 rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-coral disabled:hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full bg-brand-red px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-brand-red disabled:hover:text-white"
           >
-            Find my match →
+            Ask AI for my match →
           </button>
         </div>
       )}
@@ -824,11 +383,11 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
       {thinking && (
         <div className="mt-10 flex items-center gap-3 text-sm text-white/60">
           <span className="flex gap-1">
-            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.3s]" />
-            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral [animation-delay:-0.15s]" />
-            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-coral" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-red [animation-delay:-0.3s]" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-red [animation-delay:-0.15s]" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-brand-red" />
           </span>
-          Weighing pillar fit, timing, commitment, and group size…
+          Ollama is reading every open role and weighing your answers…
         </div>
       )}
 
@@ -836,13 +395,18 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
         <div className="mt-8">
           <div className="flex items-center justify-between gap-4">
             <span className="text-xs font-semibold uppercase tracking-wide text-white/50">Your best match</span>
-            <span className="rounded-full bg-brand-coral/15 px-3 py-1 text-xs font-semibold text-brand-coral">
-              {active.score}% match
-            </span>
+            <div className="flex items-center gap-2">
+              {aiEnhanced && (
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">AI matched</span>
+              )}
+              <span className="rounded-full bg-brand-red/15 px-3 py-1 text-xs font-semibold text-brand-red">
+                {active.score}% match
+              </span>
+            </div>
           </div>
 
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-            <div className="h-full rounded-full bg-brand-coral transition-all duration-700" style={{ width: `${active.score}%` }} />
+            <div className="h-full rounded-full bg-brand-red transition-all duration-700" style={{ width: `${active.score}%` }} />
           </div>
 
           <div className="mt-6 flex items-start gap-4">
@@ -860,7 +424,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
           <ul className="mt-5 space-y-2">
             {active.reasons.map((reason) => (
               <li key={reason} className="flex items-start gap-2.5 text-sm text-white/70">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-coral" />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-red" />
                 {reason}
               </li>
             ))}
@@ -869,7 +433,7 @@ function AiVolunteerMatch({ onSelectRole }: { onSelectRole: (title: string) => v
           <div className="mt-7 flex flex-wrap gap-3">
             <button
               onClick={() => onSelectRole(active.item.title)}
-              className="rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
+              className="rounded-full bg-brand-red px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
             >
               Sign me up for this
             </button>
@@ -909,11 +473,28 @@ function VolunteerContent() {
   const requestedCategory = searchParams.get("category");
   const initialFilter: Category | "all" = requestedCategory && requestedCategory in categoryMeta ? (requestedCategory as Category) : "all";
 
+  const [rosterItems, setRosterItems] = useState<RosterItem[]>(fallbackRosterItems);
   const [filter, setFilter] = useState<Category | "all">(initialFilter);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllRoles, setShowAllRoles] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<string>(rosterItems[0].title);
+  const [selectedOpportunity, setSelectedOpportunity] = useState<string>(fallbackRosterItems[0].title);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    api
+      .listVolunteerActivities()
+      .then((activities) => {
+        if (activities.length === 0) return;
+        const mapped = activities.map(mapActivityToRosterItem);
+        setRosterItems(mapped);
+        setSelectedOpportunity((current) =>
+          mapped.some((item) => item.title === current) ? current : mapped[0].title,
+        );
+      })
+      .catch(() => {
+        // Keep local fallback roster if backend is unavailable.
+      });
+  }, []);
 
   const visibleItems = useMemo(() => {
     let items = filter === "all" ? rosterItems : rosterItems.filter((item) => item.category === filter);
@@ -928,10 +509,8 @@ function VolunteerContent() {
       );
     }
     return items;
-  }, [filter, searchQuery]);
+  }, [filter, rosterItems, searchQuery]);
 
-  // Collapse back to the preview count whenever the filter or search changes,
-  // so switching context never leaves a stray "expanded" state behind.
   useEffect(() => {
     setShowAllRoles(false);
   }, [filter, searchQuery]);
@@ -945,7 +524,7 @@ function VolunteerContent() {
         .filter((item) => item.total && item.filled !== undefined && item.filled / item.total >= 0.6)
         .sort((a, b) => b.filled! / b.total! - a.filled! / a.total!)
         .slice(0, 2),
-    [],
+    [rosterItems],
   );
 
   function selectRoleAndScroll(title: string) {
@@ -956,18 +535,19 @@ function VolunteerContent() {
   return (
     <>
       {/* ---------- HERO ---------- */}
+      <Reveal>
       <section className="relative overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
         <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
             <Eyebrow>Get Involved · Volunteers</Eyebrow>
-            <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-ink sm:text-5xl">
+            <h1 className="mt-3 max-w-2xl font-serif-display text-4xl leading-[1.08] text-brand-dark sm:text-5xl">
               Come be part of a{" "}
-              <span className="relative text-brand-coral">
+              <span className="relative text-brand-red">
                 so much ability
                 <svg
                   viewBox="0 0 200 14"
-                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-coral/50"
+                  className="absolute -bottom-1 left-0 h-3 w-full text-brand-red/50"
                   preserveAspectRatio="none"
                   aria-hidden="true"
                 >
@@ -983,15 +563,15 @@ function VolunteerContent() {
               </span>{" "}
               community.
             </h1>
-            <p className="mt-5 max-w-lg text-brand-ink/75">
+            <p className="mt-5 max-w-lg text-brand-dark/75">
               No email chains, no waiting on the office. Pick an opening across sport, nutrition,
               family support or a corporate day, and you&apos;re confirmed straight away.
             </p>
             <div className="mt-7 flex flex-wrap gap-4">
-              <a href="#opportunities" className="rounded-full bg-brand-coral px-7 py-3.5 text-sm font-semibold text-white hover:bg-black">
+              <a href="#opportunities" className="rounded-full bg-brand-red px-7 py-3.5 text-sm font-semibold text-white hover:bg-black">
                 See open roles
               </a>
-              <a href="#match" className="rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-brand-ink hover:border-black">
+              <a href="#match" className="rounded-full border border-black/15 px-7 py-3.5 text-sm font-semibold text-brand-dark hover:border-black">
                 Not sure where to start?
               </a>
             </div>
@@ -999,7 +579,7 @@ function VolunteerContent() {
           </div>
           <div className="relative">
             <Blob className="-bottom-8 -left-10 h-40 w-40 bg-[#EAF6F2] opacity-70" />
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-sand lg:aspect-[3/4]">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[55%_45%_35%_65%/55%_35%_65%_45%] bg-brand-light lg:aspect-[3/4]">
               {/* Swap for a real photo of a volunteer mid-shift — energetic, not posed. */}
               <Image src="/images/get-involved/hero-image.png" alt="A volunteer coaching alongside a Love 21 member" fill priority className="object-cover" />
             </div>
@@ -1013,27 +593,29 @@ function VolunteerContent() {
             { value: String(rosterItems.length + 8), label: "Volunteer roles open now" },
             { value: "4", label: "Programme areas to join" },
           ].map((stat) => (
-            <div key={stat.label} className="rounded-2xl bg-brand-sand px-5 py-6">
-              <div className="font-serif-display text-2xl text-brand-ink">{stat.value}</div>
-              <div className="mt-1 text-xs leading-snug text-brand-ink/70">{stat.label}</div>
+            <div key={stat.label} className="rounded-2xl bg-brand-light px-5 py-6">
+              <div className="font-serif-display text-2xl text-brand-dark">{stat.value}</div>
+              <div className="mt-1 text-xs leading-snug text-brand-dark/70">{stat.label}</div>
             </div>
           ))}
         </div> */}
       </section>
+      </Reveal>
 
       {/* ---------- START YOUR OWN CAMPAIGN ---------- */}
-      <section className="border-y border-brand-sand bg-[#F8F4EB] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-coral/40 bg-white p-7">
+      <Reveal>
+      <section className="border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-red/40 bg-white p-7">
           <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-sand">
-              <IconFlag className="h-5 w-5 text-brand-coral" />
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-light">
+              <IconFlag className="h-5 w-5 text-brand-red" />
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Another way to help</p>
-              <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-ink sm:text-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">Another way to help</p>
+              <h3 className="mt-1 max-w-md font-serif-display text-xl text-brand-dark sm:text-2xl">
                 Can&apos;t commit to a shift? Start your own fundraising campaign instead.
               </h3>
-              <p className="mt-2 max-w-md text-sm text-brand-ink/70">
+              <p className="mt-2 max-w-md text-sm text-brand-dark/70">
                 Run a marathon, host a birthday fundraiser, or rally your friends — set up a
                 peer-to-peer page in minutes and raise funds on your own schedule.
               </p>
@@ -1042,12 +624,13 @@ function VolunteerContent() {
           <CtaButton href="/campaigns/new">Start a campaign</CtaButton>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- URGENCY STRIP ---------- */}
       {urgentItems.length > 0 && (
         <section className="bg-black px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 text-sm text-white">
-            <span className="flex items-center gap-2 font-semibold text-brand-coral">
+            <span className="flex items-center gap-2 font-semibold text-brand-red">
               <TriMark className="h-2 w-6" />
               Going fast
             </span>
@@ -1066,27 +649,27 @@ function VolunteerContent() {
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <Eyebrow>The board</Eyebrow>
-              <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Open opportunities</h2>
+              <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Open opportunities</h2>
             </div>
-            <p className="max-w-md text-sm text-brand-ink/70">
+            <p className="max-w-md text-sm text-brand-dark/70">
               Every role sits under one of our four programme pillars. Pick the one that fits you.
             </p>
           </div>
 
           <div className="relative mb-8">
-            <IconSearch className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-ink/40" />
+            <IconSearch className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-dark/40" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search roles — try “Saturday”, “cooking”, or “CSR”"
-              className="w-full rounded-full border border-dashed border-brand-ink/20 bg-white py-3 pl-11 pr-4 text-sm text-brand-ink placeholder:text-brand-ink/40 outline-none transition focus:border-solid focus:border-brand-coral"
+              className="w-full rounded-full border border-dashed border-brand-dark/20 bg-white py-3 pl-11 pr-4 text-sm text-brand-dark placeholder:text-brand-dark/40 outline-none transition focus:border-solid focus:border-brand-red"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
                 aria-label="Clear search"
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-brand-ink/40 hover:text-brand-ink"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-brand-dark/40 hover:text-brand-dark"
               >
                 Clear
               </button>
@@ -1099,8 +682,8 @@ function VolunteerContent() {
                 onClick={() => setFilter("all")}
                 className={`whitespace-nowrap rounded-full px-4 py-2 text-left text-sm font-semibold transition lg:rounded-none lg:border-l-2 lg:px-0 lg:pl-4 ${
                   filter === "all"
-                    ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-coral lg:text-brand-ink"
-                    : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
+                    ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-red lg:text-brand-dark"
+                    : "bg-brand-light text-brand-dark lg:bg-transparent lg:border-dashed lg:border-brand-dark/15 lg:text-brand-dark/60"
                 }`}
               >
                 All roles
@@ -1111,20 +694,20 @@ function VolunteerContent() {
                   onClick={() => setFilter(key)}
                   className={`whitespace-nowrap rounded-full px-4 py-2 text-left text-sm font-semibold transition lg:rounded-none lg:border-l-2 lg:px-0 lg:pl-4 ${
                     filter === key
-                      ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-coral lg:text-brand-ink"
-                      : "bg-brand-sand text-brand-ink lg:bg-transparent lg:border-dashed lg:border-brand-ink/15 lg:text-brand-ink/60"
+                      ? "bg-black text-white lg:bg-transparent lg:border-solid lg:border-brand-red lg:text-brand-dark"
+                      : "bg-brand-light text-brand-dark lg:bg-transparent lg:border-dashed lg:border-brand-dark/15 lg:text-brand-dark/60"
                   }`}
                 >
                   {categoryMeta[key].label}
-                  <span className="hidden text-xs font-normal text-brand-ink/50 lg:block">{categoryMeta[key].blurb}</span>
+                  <span className="hidden text-xs font-normal text-brand-dark/50 lg:block">{categoryMeta[key].blurb}</span>
                 </button>
               ))}
             </div>
 
             <div>
               {displayedItems.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-brand-ink/20 p-10 text-center">
-                  <p className="text-sm text-brand-ink/60">
+                <div className="rounded-2xl border border-dashed border-brand-dark/20 p-10 text-center">
+                  <p className="text-sm text-brand-dark/60">
                     No roles match {searchQuery ? `“${searchQuery}”` : "this filter"} right now.
                   </p>
                   <button
@@ -1132,7 +715,7 @@ function VolunteerContent() {
                       setSearchQuery("");
                       setFilter("all");
                     }}
-                    className="mt-3 text-sm font-semibold text-brand-coral hover:underline"
+                    className="mt-3 text-sm font-semibold text-brand-red hover:underline"
                   >
                     Clear search & filters
                   </button>
@@ -1142,30 +725,30 @@ function VolunteerContent() {
                   {displayedItems.map((item, i) => {
                     const pct = item.total && item.filled !== undefined ? Math.round((item.filled / item.total) * 100) : null;
                     return (
-                      <Reveal key={item.id} delay={i * 60}>
-                        <article className="h-full rounded-2xl border border-brand-sand p-6 transition hover:-translate-y-0.5 hover:shadow-md">
-                          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-sand text-lg">{item.icon}</div>
-                          <h3 className="text-xl text-brand-ink">{item.title}</h3>
-                          <p className="mt-2 text-sm text-brand-ink/70">{item.desc}</p>
-                          <div className="mt-4 flex flex-col gap-1 text-xs text-brand-ink/60">
-                            <span><b className="font-semibold text-brand-ink">When:</b> {item.when}</span>
-                            <span><b className="font-semibold text-brand-ink">Where:</b> {item.where}</span>
+                      <Reveal key={item.id} delay={i * 0.06}>
+                        <BrandCard as="article" className="h-full rounded-2xl p-6 transition hover:-translate-y-0.5 hover:shadow-md sm:p-6">
+                          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-light text-lg">{item.icon}</div>
+                          <h3 className="text-xl text-brand-dark">{item.title}</h3>
+                          <p className="mt-2 text-sm text-brand-dark/70">{item.desc}</p>
+                          <div className="mt-4 flex flex-col gap-1 text-xs text-brand-dark/60">
+                            <span><b className="font-semibold text-brand-dark">When:</b> {item.when}</span>
+                            <span><b className="font-semibold text-brand-dark">Where:</b> {item.where}</span>
                           </div>
 
                           {pct !== null ? (
                             <div className="mt-4 flex items-center gap-2">
-                              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-sand">
-                                <div className="h-full rounded-full bg-brand-coral" style={{ width: `${pct}%` }} />
+                              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-brand-light">
+                                <div className="h-full rounded-full bg-brand-red" style={{ width: `${pct}%` }} />
                               </div>
-                              <span className="whitespace-nowrap text-xs text-brand-ink/50">{item.filled} / {item.total} filled</span>
+                              <span className="whitespace-nowrap text-xs text-brand-slate">{item.filled} / {item.total} filled</span>
                             </div>
                           ) : (
-                            <div className="mt-4 text-xs text-brand-ink/50">{item.note}</div>
+                            <div className="mt-4 text-xs text-brand-slate">{item.note}</div>
                           )}
 
                           <button
                             onClick={() => selectRoleAndScroll(item.title)}
-                            className="mt-5 w-full rounded-full bg-brand-sand py-3 text-sm font-semibold text-brand-ink hover:bg-black hover:text-white"
+                            className="mt-5 w-full rounded-full bg-brand-light py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
                           >
                             {item.ctaLabel}
                           </button>
@@ -1173,12 +756,12 @@ function VolunteerContent() {
                           {item.category === "csr" && item.id === "corporate-day" && (
                             <button
                               onClick={generateCsrOnePager}
-                              className="mt-2 w-full rounded-full border border-black/15 py-2.5 text-xs font-semibold text-brand-ink hover:border-black"
+                              className="mt-2 w-full rounded-full border border-brand-slate/40 py-2.5 text-xs font-semibold text-brand-dark hover:border-brand-dark"
                             >
                               Generate a one-pager for your HR/CSR team
                             </button>
                           )}
-                        </article>
+                        </BrandCard>
                       </Reveal>
                     );
                   })}
@@ -1189,7 +772,7 @@ function VolunteerContent() {
                 <div className="mt-8 flex justify-center">
                   <button
                     onClick={() => setShowAllRoles((v) => !v)}
-                    className="inline-flex items-center gap-2 rounded-full border border-dashed border-brand-ink/25 px-6 py-3 text-sm font-semibold text-brand-ink transition hover:border-black hover:border-solid"
+                    className="inline-flex items-center gap-2 rounded-full border border-dashed border-brand-dark/25 px-6 py-3 text-sm font-semibold text-brand-dark transition hover:border-black hover:border-solid"
                   >
                     {showAllRoles ? "Show fewer roles" : `View ${hiddenCount} more role${hiddenCount === 1 ? "" : "s"}`}
                     <span aria-hidden="true" className={`inline-block transition-transform duration-300 ${showAllRoles ? "rotate-180" : ""}`}>
@@ -1203,18 +786,18 @@ function VolunteerContent() {
         </div>
       </section>
 
-      <WaveDivider color="#F8F4EB" />
+      <WaveDivider color="#EDF2F4" />
 
       {/* ---------- GALLERY ---------- */}
-      <section className="bg-[#F8F4EB] px-4 pb-20 sm:px-6 lg:px-8">
+      <section className="bg-brand-light px-4 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-ink/50">
+          <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-dark/50">
             <IconHeart className="h-4 w-4" /> Life on shift
           </p>
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {galleryStrip.map((photo, i) => (
-              <Reveal key={photo.src} delay={i * 80}>
-                <div className={`relative aspect-square w-full overflow-hidden bg-brand-sand ${photo.shape}`}>
+              <Reveal key={photo.src} delay={i * 0.08}>
+                <div className={`relative aspect-square w-full overflow-hidden bg-brand-light ${photo.shape}`}>
                   <Image src={photo.src} alt={photo.alt} fill className="object-cover" />
                 </div>
               </Reveal>
@@ -1224,29 +807,32 @@ function VolunteerContent() {
       </section>
 
       {/* ---------- AS SEEN ON SOCIAL ---------- */}
-      <section className="relative overflow-hidden border-t border-brand-sand bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden border-t border-brand-light bg-white px-4 py-16 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-40" />
         <div className="relative mx-auto max-w-6xl">
           <Eyebrow>From our feed</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">As featured this week</h2>
+          <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">As featured this week</h2>
           <div className="mt-8 grid gap-5 sm:grid-cols-3">
             {socialPosts.map((post) => (
-              <a key={post.caption} href={post.href} className="block rounded-2xl border border-brand-sand p-5 transition hover:border-black/20">
-                <div className="text-xs font-semibold uppercase tracking-wide text-brand-coral">{post.platform}</div>
-                <p className="mt-3 text-sm text-brand-ink/80">{post.caption}</p>
-                <div className="mt-4 text-xs text-brand-ink/50">{post.date}</div>
+              <a key={post.caption} href={post.href} className="block rounded-2xl border border-brand-light p-5 transition hover:border-black/20">
+                <div className="text-xs font-semibold uppercase tracking-wide text-brand-red">{post.platform}</div>
+                <p className="mt-3 text-sm text-brand-dark/80">{post.caption}</p>
+                <div className="mt-4 text-xs text-brand-dark/50">{post.date}</div>
               </a>
             ))}
           </div>
         </div>
       </section>
+      </Reveal>
 
 
       {/* ---------- RECOGNITION ---------- */}
+      <Reveal>
       <section className="bg-white px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <Eyebrow>Hours & recognition</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">Every hour counts, and it shows</h2>
+          <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">Every hour counts, and it shows</h2>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
@@ -1255,73 +841,82 @@ function VolunteerContent() {
               { tier: "50", title: "Community favourite", body: "50 hours of showing up. Featured in our volunteer spotlight." },
               { tier: "100", title: "Team captain", body: "100+ hours. Invited to help lead new volunteer onboarding." },
             ].map((m) => (
-              <div key={m.tier} className="rounded-2xl border border-brand-sand p-6">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-black text-sm font-semibold text-white">{m.tier}</div>
-                <h3 className="text-base text-brand-ink">{m.title}</h3>
-                <p className="mt-2 text-xs text-brand-ink/60">{m.body}</p>
-              </div>
+              <BrandCard key={m.tier} className="rounded-2xl p-6 sm:p-6">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-brand-dark text-sm font-semibold text-white">{m.tier}</div>
+                <h3 className="text-base text-brand-dark">{m.title}</h3>
+                <p className="mt-2 text-xs text-brand-dark/60">{m.body}</p>
+              </BrandCard>
             ))}
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-6 rounded-2xl bg-brand-sand p-7">
-            <div className="font-serif-display text-3xl text-brand-ink">32<span className="text-sm font-sans font-normal text-brand-ink/60"> hrs</span></div>
+          <div className="mt-8 flex flex-wrap items-center gap-6 rounded-2xl bg-brand-light p-7">
+            <div className="font-serif-display text-3xl text-brand-dark">32<span className="text-sm font-sans font-normal text-brand-dark/60"> hrs</span></div>
             <div className="h-2.5 flex-1 min-w-[200px] overflow-hidden rounded-full bg-white">
-              <div className="h-full w-[64%] rounded-full bg-brand-coral" />
+              <div className="h-full w-[64%] rounded-full bg-brand-red" />
             </div>
-            <div className="text-xs text-brand-ink/60">18 hours to your Community Favourite ribbon</div>
+            <div className="text-xs text-brand-dark/60">18 hours to your Community Favourite ribbon</div>
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- CORPORATE NUDGE ---------- */}
+      <Reveal>
       <section className="bg-white px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-brand-sand border-l-4 border-l-brand-coral p-8">
+        <BrandCard className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border-l-4 border-l-brand-red p-8 sm:p-8">
           <div>
-            <h3 className="max-w-lg text-xl text-brand-ink">Know a company that could sponsor a class of 15?</h3>
-            <p className="mt-2 max-w-md text-sm text-brand-ink/70">
+            <h3 className="max-w-lg text-xl text-brand-dark">Know a company that could sponsor a class of 15?</h3>
+            <p className="mt-2 max-w-md text-sm text-brand-dark/70">
               Volunteers are often the first link to a new corporate partner — a quick introduction goes a long way.
             </p>
           </div>
           <button
             onClick={generateCsrOnePager}
-            className="rounded-full bg-brand-sand px-6 py-3 text-sm font-semibold text-brand-ink hover:bg-black hover:text-white"
+            className="rounded-full bg-brand-light px-6 py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
           >
             Generate one-pager to introduce them
           </button>
-        </div>
+        </BrandCard>
       </section>
+      </Reveal>
 
       {/* ---------- FAQ ---------- */}
-      <section className="relative overflow-hidden bg-brand-sand px-4 py-20 sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
         <div className="relative mx-auto max-w-3xl">
           <Eyebrow>Before you sign up</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Questions people actually ask</h2>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Questions people actually ask</h2>
           <div className="mt-8 rounded-3xl bg-white px-6 sm:px-8">
-            <FaqAccordion />
+            <VolunteerFaqAccordion />
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/*---------- AI VOLUNTEER MATCH ----------*/}
+      <Reveal>
       <section id="match" className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8">
-        <Blob className="-left-20 top-0 h-72 w-72 bg-brand-coral/15" />
-        <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-coral/10" />
-        <AiVolunteerMatch onSelectRole={selectRoleAndScroll} />
+        <Blob className="-left-20 top-0 h-72 w-72 bg-brand-red/15" />
+        <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-red/10" />
+        <AiVolunteerMatch rosterItems={rosterItems} onSelectRole={selectRoleAndScroll} />
       </section>
+      </Reveal>
 
       {/* ---------- FINAL CTA ---------- */}
-      <section className="relative overflow-hidden bg-[#F8F4EB] px-4 py-16 text-center sm:px-6 lg:px-8">
+      <Reveal>
+      <section className="relative overflow-hidden bg-brand-light px-4 py-16 text-center sm:px-6 lg:px-8">
         <Blob className="left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 bg-[#F8DCDA] opacity-50" />
         <div className="relative">
-          <TriMark className="mx-auto h-2.5 w-9 text-brand-coral" />
-          <h2 className="mt-4 font-serif-display text-3xl text-brand-ink sm:text-4xl">Every shift starts with someone saying yes.</h2>
+          <TriMark className="mx-auto h-2.5 w-9 text-brand-red" />
+          <h2 className="mt-4 font-serif-display text-3xl text-brand-dark sm:text-4xl">Every shift starts with someone saying yes.</h2>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             {/* <CtaButton href="#opportunities">Browse open roles</CtaButton> */}
             <CtaButton href="/donate" variant="outline">Prefer to give instead?</CtaButton>
           </div>
         </div>
       </section>
+      </Reveal>
     </>
   );
 }

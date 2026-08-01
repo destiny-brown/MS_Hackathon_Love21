@@ -55,8 +55,9 @@ All demo users use password `demo1234`:
 
 - Admin: `admin@love21.demo`
 - Member: `member@love21.demo`
-- Donor: `donor@love21.demo`
-- Volunteer: `volunteer@love21.demo`
+- Supporter: `supporter@love21.demo` — includes giving history, impact, activity sign-ups, and volunteer hours
+
+Legacy `donor@love21.demo` and `volunteer@love21.demo` rows are converted to the `supporter` role if they already exist in a local database.
 
 ## Managing donations and the wishlist
 
@@ -65,11 +66,9 @@ All demo users use password `demo1234`:
 3. Create or edit a campaign, ongoing cause, or wishlist need.
 4. After reconciling MoonClerk payments and in-kind gifts, update the funded amount (and secured quantity for wishlist items).
 
-Published progress is shared by the Donate and Wishlist pages and is available to the future Impact dashboard through
-the same API. Payments continue through MoonClerk; this project does not store card details or MoonClerk credentials.
+Published progress is shared by the Donate, Wishlist, and supporter dashboard pages through the same API. Payments are mocked for now: the demo records a successful donation locally and includes a TODO where a real processor such as Stripe should be connected. This project does not store card details.
 
-The initial seeded goals and totals are demonstration content. Love 21 should verify and replace them before publishing
-the site in production.
+The initial seeded goals, placeholder image URLs, activities, donation history, and volunteer hours are demonstration content. Love 21 should verify and replace them before publishing the site in production.
 
 ### Public dashboard handoff
 
@@ -122,7 +121,12 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `POST /auth/login`
 - `GET /auth/me`
 - `GET /admin/metrics` — admin-only role-protection template
-- `GET /donor/recurring-donation` — donor/volunteer/member recurring-support template
+- `GET /supporter/recurring-donation` — supporter recurring-support template
+- `GET /supporter/dashboard` — supporter giving, impact, activities, and volunteer hours
+- `GET /activities` — public activity calendar, with signed-up flags when logged in
+- `POST /activities/{id}/signup` — supporter activity sign-up
+- `POST /supporter/hours` — supporter volunteer-hour logging
+- `POST /donations/mock` — public mocked donation recording; supporter donations are attributed when logged in
 - `GET /member/profile` — member-only profile template
 - `GET /items`
 - `POST /items`
@@ -165,6 +169,24 @@ Tables are created on app startup with SQLAlchemy metadata. There is intentional
 
 ## Deployment
 
+Pull requests and pushes to `main` run backend tests, migration drift checks,
+and a production frontend build through GitHub Actions.
+
+### Database migrations
+
+Schema changes are managed with Alembic. After changing a SQLAlchemy model:
+
+```bash
+cd backend
+alembic revision --autogenerate -m "describe the change"
+alembic upgrade head
+alembic check
+```
+
+The backend container applies pending migrations before starting Uvicorn. Its
+migration launcher also stamps complete databases created by older versions of
+the project before applying newer migrations.
+
 ### Frontend on Vercel
 
 1. Import the repo in Vercel.
@@ -174,12 +196,15 @@ Tables are created on app startup with SQLAlchemy metadata. There is intentional
 
 ### Backend on Render
 
-This repo includes `render.yaml` for a Docker-based Render web service.
+This repo includes `render.yaml` for a Docker-based Render web service and a
+managed PostgreSQL database.
 
 1. Push the repo to GitHub.
 2. In Render, create a Blueprint from the repo.
-3. Set `SECRET_KEY` and `CORS_ORIGINS` in Render.
-4. Optional: add a Render Postgres database and set `DATABASE_URL`.
+3. Set `CORS_ORIGINS` to the deployed frontend origin, for example
+	`https://your-app.vercel.app`.
+4. Set `ANTHROPIC_API_KEY` and `YOUTUBE_API_KEY` only when those integrations
+	are enabled. Render generates `SECRET_KEY` and connects `DATABASE_URL`.
 
 The backend Dockerfile is also a fallback for any container host:
 

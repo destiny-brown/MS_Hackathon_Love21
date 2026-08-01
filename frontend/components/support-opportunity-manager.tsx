@@ -22,6 +22,7 @@ type FormState = {
   title: string;
   description: string;
   impact_statement: string;
+  image_url: string;
   target_amount_hkd: string;
   funded_amount_hkd: string;
   moonclerk_url: string;
@@ -37,6 +38,7 @@ const emptyForm: FormState = {
   title: "",
   description: "",
   impact_statement: "",
+  image_url: "",
   target_amount_hkd: "",
   funded_amount_hkd: "0",
   moonclerk_url: "https://app.moonclerk.com/pay/2805gcehxjca",
@@ -53,6 +55,7 @@ function toFormState(opportunity: SupportOpportunity): FormState {
     title: opportunity.title,
     description: opportunity.description,
     impact_statement: opportunity.impact_statement,
+    image_url: opportunity.image_url ?? "",
     target_amount_hkd: String(opportunity.target_amount_hkd),
     funded_amount_hkd: String(opportunity.funded_amount_hkd),
     moonclerk_url: opportunity.moonclerk_url ?? "",
@@ -71,6 +74,7 @@ function toPayload(form: FormState): SupportOpportunityInput {
     title: form.title,
     description: form.description,
     impact_statement: form.impact_statement,
+    image_url: form.image_url || null,
     target_amount_hkd: Number(form.target_amount_hkd),
     funded_amount_hkd: Number(form.funded_amount_hkd),
     moonclerk_url: form.moonclerk_url || null,
@@ -215,6 +219,17 @@ export function SupportOpportunityManager() {
                   value={form.impact_statement}
                   onChange={(event) => updateField("impact_statement", event.target.value)}
                   required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="support-image">Image URL</Label>
+                <Input
+                  id="support-image"
+                  type="url"
+                  value={form.image_url}
+                  onChange={(event) => updateField("image_url", event.target.value)}
+                  placeholder="https://..."
                 />
               </div>
 

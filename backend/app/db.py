@@ -21,9 +21,15 @@ def create_db_and_tables() -> None:
     Base.metadata.create_all(bind=engine)
     if settings.database_url.startswith("sqlite"):
         with engine.begin() as connection:
+            support_columns = {
+                row[1]
+                for row in connection.execute(text("PRAGMA table_info(support_opportunities)"))
+            }
+            if "image_url" not in support_columns:
+                connection.execute(text("ALTER TABLE support_opportunities ADD COLUMN image_url VARCHAR(500)"))
             connection.execute(
-                text("UPDATE users SET role = :donor WHERE role IN ('user', '') OR role IS NULL"),
-                {"donor": "donor"},
+                text("UPDATE users SET role = :supporter WHERE role IN ('user', 'donor', 'volunteer', '') OR role IS NULL"),
+                {"supporter": "supporter"},
             )
 
 

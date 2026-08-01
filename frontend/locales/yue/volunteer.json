@@ -1,0 +1,322 @@
+{
+  "categories": {
+    "sport": {
+      "label": "運動",
+      "blurb": "足球、游泳、空手道等"
+    },
+    "nutrition": {
+      "label": "營養",
+      "blurb": "烹飪、營養師日"
+    },
+    "family": {
+      "label": "家庭",
+      "blurb": "輔導、導師計劃、活動"
+    },
+    "csr": {
+      "label": "CSR",
+      "blurb": "企業義工"
+    }
+  },
+  "roles": {
+    "football-basketball": {
+      "title": "足球及籃球教練",
+      "desc": "協助每週球類課堂——無需教練證書，只需活力和耐心。",
+      "when": "星期六早上",
+      "where": "新蒲崗中心",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "swimming-dragonboat": {
+      "title": "游泳及龍舟結伴同行",
+      "desc": "支援水上課堂——一次划桨，增添一分自信。",
+      "when": "星期日早上",
+      "where": "維多利亞公園泳池",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "trampoline-karate": {
+      "title": "彈床及空手道課堂助手",
+      "desc": "為曾在亞洲殘疾空手道賽事奪獎的會員加油打氣。",
+      "when": "星期三晚上",
+      "where": "新蒲崗中心",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "cooking-workshop": {
+      "title": "烹飪工作坊助手",
+      "desc": "協助每月健康烹飪班，會員與家長一同學習食譜。",
+      "when": "每月一個星期日",
+      "where": "新蒲崗廚房",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "dietician-day": {
+      "title": "營養師日及健康積分助手",
+      "desc": "迎接家庭參加每月一對一營養諮詢，並協助記錄他們賺取的健康積分。",
+      "when": "工作日下午",
+      "where": "新蒲崗中心",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "family-counselling": {
+      "title": "家庭輔導支援",
+      "desc": "在家長輔導課堂提供前台支援——迎接家庭，而非提供輔導服務。",
+      "when": "工作日上午",
+      "where": "新蒲崗中心",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "mentorship-buddy": {
+      "title": "導師計劃結伴同行",
+      "desc": "與一位會員一對一配對，並肩朝每週共同活動目標努力。",
+      "when": "每週，按你的時間",
+      "where": "視活動而定",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "community-dinners": {
+      "title": "社區晚宴及外遊團隊",
+      "desc": "協助舉辦晚宴、外出活動及遠足，讓整個 Love 21 大家庭保持緊密聯繫。",
+      "when": "不定期晚上/週末",
+      "where": "視活動而定",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    },
+    "corporate-day": {
+      "title": "企業義工日",
+      "desc": "帶你的團隊到新蒲崗中心參與實踐日——無需經驗，只需齊心出席。",
+      "when": "為你的團隊預約日期",
+      "where": "新蒲崗中心",
+      "note": "本季已預約 2 個日期",
+      "ctaLabel": "預約日期"
+    },
+    "skills-based": {
+      "title": "技能專才義工",
+      "desc": "提供你的專業技能——設計、市場推廣、法律等——義務服務，按你的時間安排。",
+      "when": "彈性",
+      "where": "遙距或現場",
+      "note": "",
+      "ctaLabel": "我有興趣"
+    }
+  },
+  "matcher": {
+    "interests": {
+      "hands-on": {
+        "label": "動手實踐及活躍",
+        "blurb": "運動、教練、動起來"
+      },
+      "food": {
+        "label": "飲食及身心健康",
+        "blurb": "烹飪、營養、健康諮詢"
+      },
+      "people": {
+        "label": "人際及連繫",
+        "blurb": "輔導支援、導師計劃、活動"
+      },
+      "skills": {
+        "label": "我的專業技能",
+        "blurb": "設計、市場推廣、法律、企業日"
+      }
+    },
+    "availability": {
+      "weekday-am": {
+        "label": "工作日上午"
+      },
+      "weekday-pm": {
+        "label": "工作日下午/晚上"
+      },
+      "weekend-am": {
+        "label": "週末早上"
+      },
+      "flexible": {
+        "label": "彈性——視情況而定"
+      }
+    },
+    "commitment": {
+      "one-off": {
+        "label": "一次性或偶爾",
+        "blurb": "單一日期，非固定時段"
+      },
+      "weekly": {
+        "label": "固定每週時段",
+        "blurb": "同一日子，大多數週次"
+      },
+      "long-term": {
+        "label": "彈性及持續",
+        "blurb": "按自己的時間安排，長期參與"
+      }
+    },
+    "groupSize": {
+      "solo": {
+        "label": "只有我",
+        "blurb": "樂於獨自參與"
+      },
+      "friend": {
+        "label": "與朋友一起",
+        "blurb": "歡迎兩人或小組的角色"
+      },
+      "team": {
+        "label": "團隊 / 企業小組",
+        "blurb": "帶同事一同參與"
+      }
+    }
+  },
+  "page": {
+    "defaultCta": "我有興趣",
+    "hero": {
+      "eyebrow": "參與我哋 · 義工",
+      "titleBefore": "來加入呢個",
+      "titleHighlight": "充滿能力",
+      "titleAfter": "嘅社區。",
+      "body": "唔使電郵來往、唔使等辦公室回覆。揀運動、營養、家庭支援或企業義工日等空缺，即刻確認。",
+      "ctaRoles": "睇空缺職位",
+      "ctaMatcher": "唔知從何開始？",
+      "imageAlt": "義工同 Love 21 成員一齊訓練",
+      "volunteersActive": "本月活躍義工",
+      "shiftsToday": "今日進行中嘅班次"
+    },
+    "campaign": {
+      "eyebrow": "另一種幫助方式",
+      "title": "唔可以固定參與班次？不如發起自己嘅籌款活動。",
+      "body": "跑馬拉松、搞生日籌款，或者號召朋友——幾分鐘內設立點對點籌款頁面，按自己節奏籌款。",
+      "cta": "發起籌款活動"
+    },
+    "urgency": {
+      "label": "名額緊俏",
+      "filled": "已填 {{filled}}/{{total}}"
+    },
+    "board": {
+      "eyebrow": "職位板",
+      "title": "開放機會",
+      "subtitle": "每個職位都屬於我哋四大計劃支柱之一。揀最啱你嘅。",
+      "searchPlaceholder": "搜尋職位——試下「周六」、「烹飪」或「CSR」",
+      "clearSearch": "清除搜尋",
+      "allRoles": "全部職位",
+      "when": "時間：",
+      "where": "地點：",
+      "filled": "{{filled}} / {{total}} 已填",
+      "noMatchQuery": "目前冇符合「{{query}}」嘅職位。",
+      "noMatchFilter": "目前冇符合此篩選條件嘅職位。",
+      "clearFilters": "清除搜尋及篩選",
+      "showFewer": "顯示較少職位",
+      "viewMore": "睇多 {{count}} 個職位",
+      "viewMore_plural": "睇多 {{count}} 個職位",
+      "csrOnePager": "為 HR/CSR 團隊生成一頁簡介"
+    },
+    "gallery": {
+      "label": "班次實況",
+      "items": {
+        "1": { "alt": "義工指導足球訓練" },
+        "2": { "alt": "義工協助烹飪工作坊" },
+        "3": { "alt": "游泳課上義工同成員擊掌" },
+        "4": { "alt": "企業義工團隊在現場" }
+      }
+    },
+    "social": {
+      "eyebrow": "來自我哋嘅動態",
+      "title": "本週精選",
+      "posts": {
+        "1": { "platform": "Instagram", "caption": "周六足球隊努力訓練中 ⚽", "date": "2 日前" },
+        "2": { "platform": "Instagram", "caption": "為下月龍舟賽加緊練習 🐉", "date": "5 日前" },
+        "3": { "platform": "Facebook", "caption": "感謝本季嘅企業義工團隊！", "date": "1 週前" }
+      }
+    },
+    "stories": {
+      "showLabel": "顯示故事 {{number}}",
+      "items": {
+        "1": {
+          "quote": "朋友拉我來咗一個周六班次。十八個月後，我加入咗活動委員會。",
+          "name": "[義工姓名]，2024 年起擔任課堂義工"
+        },
+        "2": {
+          "quote": "女兒有唐氏綜合症，我從未諗過自己會教足球。而家想像唔到冇周六訓練嘅日子。",
+          "name": "[義工姓名]，家長兼運動義工"
+        },
+        "3": {
+          "quote": "團隊來參加一次 CSR 上午活動。一半人至今仍每月自願參與。",
+          "name": "[公司名稱]，企業夥伴"
+        }
+      }
+    },
+    "recognition": {
+      "eyebrow": "工時與認可",
+      "title": "每一小時都有意義，有目共睹",
+      "tiers": {
+        "1": { "title": "首次出勤", "body": "第一次記錄班次。歡迎加入名冊。" },
+        "2": { "title": "季度常客", "body": "累計 10 小時——你已在日程上有固定位置。" },
+        "3": { "title": "社區寵兒", "body": "50 小時堅持出席。入選義工焦點故事。" },
+        "4": { "title": "團隊隊長", "body": "100+ 小時。受邀協助帶領新義工入職。" }
+      },
+      "hoursUnit": "小時",
+      "progressLabel": "距離社區寵兒絲帶仲差 18 小時"
+    },
+    "corporate": {
+      "title": "識得可以贊助 15 人課堂嘅企業嗎？",
+      "body": "義工往往係新企業夥伴嘅第一環——一句介紹就可以帶來好大影響。",
+      "cta": "生成一頁簡介介紹佢哋"
+    },
+    "faq": {
+      "eyebrow": "報名前須知",
+      "title": "大家真正會問嘅問題",
+      "items": {
+        "experience": {
+          "q": "做義工需要經驗嗎？",
+          "a": "唔需要。大多數義工喺第一次班次前都未接觸過神經多樣性成員。教練每次都會在現場 briefing。"
+        },
+        "cancel": {
+          "q": "如需取消班次點算？",
+          "a": "生活總有意外——可在會員 app 提前 24 小時取消或調換，唔設懲罰。請勿無故缺席，空缺職位會導致課堂人手不足。"
+        },
+        "training": {
+          "q": "有培訓嗎？",
+          "a": "有。每位新義工喺首次班次前會有簡短現場 briefing，並有資深義工陪同支援。"
+        },
+        "group": {
+          "q": "可以帶朋友或組隊參與嗎？",
+          "a": "當然可以——團體同朋友報名好常見，尤其係社區晚宴及外遊團隊同企業義工日。"
+        }
+      }
+    },
+    "matcher": {
+      "eyebrow": "AI · 智能配對",
+      "startOver": "重新開始",
+      "title": "唔確定適合邊度？讓 AI 幫你搵班次。",
+      "subtitle": "四個簡單問題，本地 AI（Ollama）會閱讀所有開放職位，根據興趣、時間、投入程度及人數為你配對。",
+      "step1": "1. 咩吸引你？",
+      "step2": "2. 你通常幾時有空？",
+      "step3": "3. 你可以幾常參與？",
+      "step4": "4. 獨自前來定結伴？",
+      "submit": "請 AI 為我配對 →",
+      "thinking": "Ollama 正在閱讀所有開放職位並權衡你嘅答案…",
+      "bestMatch": "最佳配對",
+      "aiMatched": "AI 配對",
+      "matchPercent": "{{score}}% 匹配",
+      "signUp": "幫我報名呢個",
+      "anotherMatch": "睇另一個配對",
+      "unavailable": "AI 配對暫時不可用。請稍後再試。",
+      "mapFailed": "無法將配對結果對應到開放職位。請重試。",
+      "backendError": "配對失敗。後端係咪喺 port 8000 運行？"
+    },
+    "finalCta": {
+      "title": "每個班次都始於有人願意講「好」。",
+      "donate": "想改為捐款？"
+    },
+    "csrOnePager": {
+      "tag": "帶上你嘅團隊",
+      "title": "Love 21 Foundation 企業義工日",
+      "intro": "同 HR 或 CSR 團隊分享——佢哋需要講「好」嘅一切都在此頁。",
+      "statFamilies": "每月支援嘅家庭",
+      "statClasses": "每月運行嘅課堂",
+      "statYears": "在香港建設此社區",
+      "whatIs": "係咩：",
+      "whatIsBody": "在新蒲崗中心同成員共度實操一日——唔需要經驗。過往團隊曾協助運動課、營養工作坊及社區活動。",
+      "whyMatters": "對團隊嘅意義：",
+      "whyMattersBody": "員工獲得直接、以能力為本嘅神經多樣性理解——唔係講座，而係真實共度嘅下午。",
+      "nextStep": "下一步：",
+      "nextStepBody": "回覆此電郵或訪問我哋嘅參與頁面，為團隊揀日期。",
+      "cta": "聯絡 partnerships@love21.org.hk 預訂團隊日期。",
+      "footer": "Love 21 Foundation · 九龍新蒲崗 · 由義工訪問 love21.org.hk/our-volunteer 生成",
+      "print": "打印 / 儲存為 PDF"
+    }
+  }
+}

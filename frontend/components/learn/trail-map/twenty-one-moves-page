@@ -1,0 +1,341 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import { ConfettiBurst } from "@/components/learn/trail-map/confetti-burst";
+import { DayMapStrip } from "@/components/learn/trail-map/day-map-strip";
+import { DragonBoatStage } from "@/components/learn/trail-map/dragon-boat-stage";
+import { EventAnimationStage } from "@/components/learn/trail-map/event-animation-stage";
+import { sceneGridStyle } from "@/components/learn/trail-map/scene-theme";
+import { PageHero } from "@/components/site/page-hero";
+import { SiteLayout } from "@/components/site/site-layout";
+import { getLocationForDayNumber, LOCATION_DAYS } from "@/lib/day-locations-data";
+
+import "./event-animations.css";
+
+const STORAGE_KEY = "love21_trail_progress_v2";
+const NAME_STORAGE_KEY = "love21_trail_crew_name";
+
+interface StoredProgress {
+  dayNumber: number; // 1-based, keeps counting up past 6 (the location loops, the day count doesn't)
+  eventIndex: number; // 0-4, which event within the current day
+  correctCount: number;
+  totalAnswered: number;
+}
+
+const DEFAULT_PROGRESS: StoredProgress = {
+  dayNumber: 1,
+  eventIndex: 0,
+  correctCount: 0,
+  totalAnswered: 0,
+};
+
+function loadProgress(): StoredProgress {
+  if (typeof window === "undefined") return DEFAULT_PROGRESS;
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return DEFAULT_PROGRESS;
+    const parsed = JSON.parse(raw) as Partial<StoredProgress>;
+    return { ...DEFAULT_PROGRESS, ...parsed };
+  } catch {
+    return DEFAULT_PROGRESS;
+  }
+}
+
+function loadCrewName(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return window.localStorage.getItem(NAME_STORAGE_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Welcome gate — asks for a name before the journey begins, so everything
+// after this point can address the person by name instead of staying generic.
+// ---------------------------------------------------------------------------
+
+function NameGate({ onSubmit }: { onSubmit: (name: string) => void }) {
+  const [value, setValue] = useState("");
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = value.trim().slice(0, 24);
+    if (!trimmed) return;
+    onSubmit(trimmed);
+  }
+
+  return (
+    <div className="relative flex min-h-[70vh] items-center justify-center overflow-hidden rounded-3xl border border-brand-sand bg-gradient-to-b from-brand-ink to-[#12181f] px-4 py-16 text-center text-white sm:px-6">
+      <div className="trail-scene-grid pointer-events-none absolute inset-0 opacity-20" aria-hidden />
+      <ConfettiBurst count={0} />
+
+      <div className="anim-gate-in relative mx-auto max-w-md">
+        <span className="anim-gate-float inline-block text-5xl">🧭</span>
+        <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-brand-coral">
+          Before we set sail
+        </p>
+        <h1 className="mt-2 font-serif-display text-3xl leading-tight sm:text-4xl">
+          Captain 21 needs a crewmate
+        </h1>
+        <p className="mt-3 text-sm text-white/70">
+          Six locations, twenty-one moves, one trail. Tell the Captain your name and the two of you
+          will take it on together.
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row">
+          <label className="sr-only" htmlFor="crew-name">
+            Your name
+          </label>
+          <input
+            id="crew-name"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="What should the Captain call you?"
+            maxLength={24}
+            autoFocus
+            className="min-w-0 flex-1 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm text-white outline-none placeholder:text-white/50 focus:border-brand-coral"
+          />
+          <button
+            type="submit"
+            className="rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-brand-ink"
+          >
+            Join the crew →
+          </button>
+        </form>
+        <button
+          type="button"
+          onClick={() => onSubmit("Captain")}
+          className="mt-4 text-xs font-medium text-white/50 underline-offset-2 hover:text-white/80 hover:underline"
+        >
+          Skip for now
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Mission Badge — a small "crew tag" overlay that keeps the personalization
+// visible throughout the trail without ever blocking the scene underneath it.
+// ---------------------------------------------------------------------------
+
+function MissionBadge({ crewName, correctCount }: { crewName: string; correctCount: number }) {
+  return (
+    <div className="anim-badge-glow pointer-events-none absolute left-3 top-3 z-10 flex items-center gap-2 rounded-full border border-white/20 bg-brand-ink/70 px-3 py-1.5 text-white shadow-lg backdrop-blur-md sm:left-4 sm:top-4">
+      <span className="text-base leading-none">🎖️</span>
+      <span className="text-xs font-semibold leading-none sm:text-sm">
+        Captain 21 <span className="text-white/50">&amp;</span> {crewName}
+      </span>
+      {correctCount > 0 && (
+        <span className="ml-1 rounded-full bg-brand-coral/90 px-2 py-0.5 text-[10px] font-bold leading-none">
+          {correctCount}★
+        </span>
+      )}
+    </div>
+  );
+}
+
+export default function TwentyOneMovesPage() {
+  const [progress, setProgress] = useState<StoredProgress | null>(null);
+  const [crewName, setCrewName] = useState<string | null>(null); // null = not loaded yet, "" = needs the gate
+  const [dayJustCompleted, setDayJustCompleted] = useState(false);
+  const [scoreBump, setScoreBump] = useState(false);
+  const prevCorrectRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    setProgress(loadProgress());
+    setCrewName(loadCrewName());
+  }, []);
+
+  useEffect(() => {
+    if (!progress) return;
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  }, [progress]);
+
+  // bounce the score badge every time a correct answer lands
+  useEffect(() => {
+    if (!progress) return;
+    if (prevCorrectRef.current !== null && progress.correctCount > prevCorrectRef.current) {
+      setScoreBump(true);
+      const t = setTimeout(() => setScoreBump(false), 450);
+      return () => clearTimeout(t);
+    }
+    prevCorrectRef.current = progress.correctCount;
+  }, [progress?.correctCount]);
+
+  const location = useMemo(() => (progress ? getLocationForDayNumber(progress.dayNumber) : null), [progress]);
+  const completedLoops = progress ? Math.floor((progress.dayNumber - 1) / LOCATION_DAYS.length) : 0;
+
+  function handleEventComplete(correct: boolean) {
+    setProgress((prev) => {
+      if (!prev || !location) return prev;
+      const nextEventIndex = prev.eventIndex + 1;
+      const updated: StoredProgress = {
+        ...prev,
+        correctCount: prev.correctCount + (correct ? 1 : 0),
+        totalAnswered: prev.totalAnswered + 1,
+      };
+
+      if (nextEventIndex >= location.events.length) {
+        // day complete — advance to the next day (location loops automatically)
+        setDayJustCompleted(true);
+        return { ...updated, dayNumber: prev.dayNumber + 1, eventIndex: 0 };
+      }
+      return { ...updated, eventIndex: nextEventIndex };
+    });
+  }
+
+  function startNextDay() {
+    setDayJustCompleted(false);
+  }
+
+  function handleNameSubmit(name: string) {
+    try {
+      window.localStorage.setItem(NAME_STORAGE_KEY, name);
+    } catch {
+      // ignore write failures (private browsing, storage full, etc.) — the
+      // name still works for this session via state below
+    }
+    setCrewName(name);
+  }
+
+  if (!progress || !location || crewName === null) {
+    return (
+      <SiteLayout>
+        <PageHero title="21 Moves" subtitle="Loading your trail…" />
+      </SiteLayout>
+    );
+  }
+
+  // No name saved yet — show the welcome gate instead of the trail itself.
+  if (crewName === "") {
+    return (
+      <SiteLayout>
+        <section className="px-4 py-10 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl">
+            <NameGate onSubmit={handleNameSubmit} />
+          </div>
+        </section>
+      </SiteLayout>
+    );
+  }
+
+  const currentEvent = location.events[progress.eventIndex];
+  const dayProgressFraction = progress.eventIndex / location.events.length;
+
+  return (
+    <SiteLayout>
+      <PageHero
+        title="21 Moves"
+        subtitle={`Bust a myth, learn a fact, and make the right call — Captain 21 and ${crewName} take on five moves a day.`}
+      />
+
+      {/* Full-bleed themed wash behind the whole trail, so each location feels
+          like its own environment rather than a plain white page with cards
+          scattered on it. Supplementary chrome (map, score, progress) sits in
+          translucent overlays on top of this, per the "sleek overlay" brief. */}
+      <section
+        className="relative overflow-hidden px-4 py-10 sm:px-6 lg:px-8"
+        style={sceneGridStyle(location.theme)}
+      >
+        <div className="trail-scene-grid pointer-events-none absolute inset-0 opacity-[0.15]" aria-hidden />
+
+        <div className="relative mx-auto max-w-6xl space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Link href="/learn-play" className="text-sm font-semibold text-brand-coral hover:underline">
+              ← Back to Learn
+            </Link>
+            <div className="flex flex-wrap gap-3 text-sm text-brand-ink/65">
+              <span
+                className={`inline-flex items-center rounded-full border border-brand-sand/80 bg-white/70 px-3 py-1 backdrop-blur-sm transition-transform ${
+                  scoreBump ? "anim-score-bump" : ""
+                }`}
+              >
+                Correct answers: <strong className="ml-1 text-brand-ink">{progress.correctCount}</strong>
+                <span className="text-brand-ink/40">&nbsp;/ {progress.totalAnswered}</span>
+              </span>
+            </div>
+          </div>
+
+          {/* MAP — floats as a translucent overlay strip rather than a solid block */}
+          <div className="rounded-2xl border border-white/40 bg-white/60 p-2 shadow-sm backdrop-blur-md">
+            <DayMapStrip
+              currentDayNumber={progress.dayNumber}
+              currentDayProgress={dayJustCompleted ? 1 : dayProgressFraction}
+              completedLoops={completedLoops}
+            />
+          </div>
+
+          {/* location header — now also carries the Mission Badge, so the
+              personalization stays visible the whole time the crew is here */}
+          <div className="relative">
+            <div className="relative overflow-hidden rounded-2xl border border-brand-sand bg-brand-ink text-white shadow-sm">
+              <MissionBadge crewName={crewName} correctCount={progress.correctCount} />
+              <div className="px-5 py-6 sm:px-8">
+                <p className="pl-0 text-xs font-semibold uppercase tracking-[0.14em] text-brand-coral sm:pl-24">
+                  Day {progress.dayNumber} · {location.title}
+                </p>
+                <h2 className="mt-2 font-serif-display text-2xl leading-tight sm:pl-24 sm:text-3xl">
+                  {location.subtitle}
+                </h2>
+                {!dayJustCompleted && (
+                  <div className="mt-4 flex items-center gap-2" aria-label="Progress through today's five events">
+                    {location.events.map((evt, i) => (
+                      <span
+                        key={evt.id}
+                        className={`anim-progress-glow h-1.5 flex-1 rounded-full transition-colors ${
+                          i < progress.eventIndex ? "bg-emerald-400" : i === progress.eventIndex ? "bg-brand-coral" : "bg-white/20"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ANIMATION + QUESTION — the storyboard stage itself */}
+          <div className="relative rounded-2xl border border-brand-sand bg-white/90 p-5 shadow-lg backdrop-blur-sm sm:p-8">
+            {dayJustCompleted ? (
+              <div className="relative flex flex-col items-center gap-4 overflow-hidden py-10 text-center">
+                <ConfettiBurst count={24} />
+                <p className="text-4xl">🏁</p>
+                <h3 className="font-serif-display text-2xl text-brand-ink">{location.title} complete!</h3>
+                <p className="max-w-md text-sm text-brand-ink/65">
+                  Captain 21 and {crewName} are ready for the next stop on the trail. The six locations
+                  keep looping — new day, same crew.
+                </p>
+                <button
+                  type="button"
+                  onClick={startNextDay}
+                  className="mt-2 rounded-full bg-brand-coral px-6 py-3 text-sm font-semibold text-white hover:bg-brand-ink"
+                >
+                  Head to Day {progress.dayNumber}
+                </button>
+              </div>
+            ) : location.theme === "harbour" ? (
+              <DragonBoatStage
+                events={location.events}
+                legIndex={progress.eventIndex}
+                progressAtLegStart={dayProgressFraction}
+                crewName={crewName}
+                onLegComplete={handleEventComplete}
+              />
+            ) : (
+              <EventAnimationStage
+                key={currentEvent.id}
+                event={currentEvent}
+                locationTheme={location.theme}
+                crewName={crewName}
+                onEventComplete={handleEventComplete}
+              />
+            )}
+          </div>
+        </div>
+      </section>
+    </SiteLayout>
+  );
+}

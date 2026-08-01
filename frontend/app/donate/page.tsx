@@ -1,72 +1,12 @@
 import Image from "next/image";
-import Link from "next/link";
 
+import { BrandCard } from "@/components/brand/BrandCard";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { Eyebrow } from "@/components/brand/Eyebrow";
+import { Reveal } from "@/components/brand/Reveal";
 import { DonationOpportunities } from "@/components/site/donation-opportunities";
 import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
-
-function TriMark({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 44 14"
-      className={className}
-      aria-hidden="true"
-      fill="currentColor"
-    >
-      <circle cx="7" cy="7" r="4.5" />
-      <circle cx="22" cy="7" r="4.5" />
-      <circle cx="37" cy="7" r="4.5" />
-    </svg>
-  );
-}
-
-function Eyebrow({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <p
-      className={`flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral ${className}`}
-    >
-      <TriMark className="h-2 w-7" />
-      {children}
-    </p>
-  );
-}
-
-function CtaButton({
-  href,
-  children,
-  variant = "solid",
-}: {
-  href: string;
-  children: React.ReactNode;
-  variant?: "solid" | "outline" | "outline-dark";
-}) {
-  const styles = {
-    solid:
-      "bg-brand-coral text-white shadow-[0_6px_20px_-8px_rgba(0,0,0,0.35)] hover:bg-black",
-    outline:
-      "border border-black/15 text-brand-ink hover:border-black hover:bg-black hover:text-white",
-    "outline-dark":
-      "border border-white/30 text-white hover:border-white hover:bg-white hover:text-black",
-  }[variant];
-
-  return (
-    <Link
-      href={href}
-      className={`group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all duration-300 ${styles}`}
-    >
-      {children}
-      <span className="transition-transform duration-300 group-hover:translate-x-1.5">
-        →
-      </span>
-    </Link>
-  );
-}
 
 const donationTiers = [
   {
@@ -87,29 +27,37 @@ const donationTiers = [
   },
 ];
 
-
-export default function DonatePage() {
+export default async function DonatePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ item?: string }>;
+}) {
+  const { item } = await searchParams;
   return (
     <SiteLayout>
-      <PageHero
-        title="Back Their Potential"
-        subtitle="Choose the campaign or cause that speaks to you and help create more opportunities for every ability to shine."
-      />
+      <Reveal>
+        <PageHero
+          title="Back Their Potential"
+          subtitle="Choose the campaign or cause that speaks to you and help create more opportunities for every ability to shine."
+        />
+      </Reveal>
 
       {/* ---------- WHERE YOUR GIFT GOES ---------- */}
+      <Reveal>
       <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="relative mx-auto max-w-6xl">
           <Eyebrow>Donor transparency</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Where your gift goes</h2>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Where your gift goes</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {donationTiers.map((tier, i) => (
-              <div
-                key={tier.amount}
-                className={`rounded-2xl border border-brand-sand bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${i % 2 === 0 ? "sm:-rotate-1" : "sm:rotate-1"}`}
-              >
-                <div className="font-serif-display text-2xl text-brand-coral">{tier.amount}</div>
-                <p className="mt-3 text-sm text-brand-ink/70">{tier.impact}</p>
-              </div>
+              <Reveal key={tier.amount} delay={i * 0.08}>
+                <BrandCard
+                  className={`rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md sm:p-6 ${i % 2 === 0 ? "sm:-rotate-1" : "sm:rotate-1"}`}
+                >
+                  <div className="font-serif-display text-2xl text-brand-red">{tier.amount}</div>
+                  <p className="mt-3 text-sm text-brand-dark/70">{tier.impact}</p>
+                </BrandCard>
+              </Reveal>
             ))}
           </div>
           <div className="mt-8">
@@ -117,12 +65,14 @@ export default function DonatePage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
+      <Reveal>
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-12">
           <div className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
-            <div className="space-y-4 text-brand-ink/80">
-              <h2 className="font-serif-display text-4xl text-brand-ink">Ability deserves opportunity</h2>
+            <div className="space-y-4 text-brand-dark/80">
+              <h2 className="font-serif-display text-4xl text-brand-dark">Ability deserves opportunity</h2>
               <p>
                 Love 21 members bring talent, ambition, and determination. Your gift helps remove the barriers that
                 prevent those strengths from being fully seen in sport, work, family life, and the wider community.
@@ -130,28 +80,28 @@ export default function DonatePage() {
               <p>
                 For donations of HKD$100 or above, an official receipt will be issued and mailed to you upon request.
                 Please contact Maggie at{" "}
-                <a href="mailto:Maggie@love21foundation.com" className="text-brand-coral hover:underline">
+                <a href="mailto:Maggie@love21foundation.com" className="text-brand-red hover:underline">
                   Maggie@love21foundation.com
                 </a>{" "}
                 for enquiries.
               </p>
             </div>
-            <aside className="rounded-2xl border border-brand-sand bg-white p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Give your way</p>
-              <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">One gift or lasting support</h2>
-              <p className="mt-3 text-sm text-brand-ink/75">
-                Choose one-time, weekly, monthly, quarterly, semiannual, or annual giving securely through MoonClerk.
+            <BrandCard as="aside" className="rounded-2xl p-6 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">Give your way</p>
+              <h2 className="mt-2 font-serif-display text-3xl text-brand-dark">One gift or lasting support</h2>
+              <p className="mt-3 text-sm text-brand-dark/75">
+                Choose one-time or monthly giving in the mock checkout. No real payment is taken until a processor is connected.
               </p>
-            </aside>
+            </BrandCard>
           </div>
 
-          <DonationOpportunities />
+          <DonationOpportunities initialItemSlug={item} />
 
-          <div className="border-t border-brand-sand pt-10 text-brand-ink/80">
-            <h2 className="font-serif-display text-3xl text-brand-ink">Donate by other means</h2>
+          <div className="border-t border-brand-light pt-10 text-brand-dark/80">
+            <h2 className="font-serif-display text-3xl text-brand-dark">Donate by other means</h2>
             <div className="mt-6 grid gap-6 md:grid-cols-2">
-              <article className="rounded-2xl border border-brand-sand bg-white p-6">
-                <h3 className="font-serif-display text-2xl text-brand-ink">Donate with PayMe</h3>
+              <BrandCard as="article" className="rounded-2xl p-6 sm:p-6">
+                <h3 className="font-serif-display text-2xl text-brand-dark">Donate with PayMe</h3>
                 <p className="mt-2 text-sm">
                   Open PayMe and scan Love 21&rsquo;s official QR code to make a donation.
                 </p>
@@ -163,13 +113,13 @@ export default function DonatePage() {
                   className="mx-auto mt-5 h-auto w-full max-w-72"
                   unoptimized
                 />
-                <p className="mt-4 text-xs text-brand-ink/65">
+                <p className="mt-4 text-xs text-brand-dark/65">
                   PayMe donations are reflected in campaign progress after Love 21 staff reconcile them.
                 </p>
-              </article>
+              </BrandCard>
 
-              <article className="space-y-4 rounded-2xl border border-brand-sand bg-white p-6">
-                <h3 className="font-serif-display text-2xl text-brand-ink">Bank transfer, FPS, or cheque</h3>
+              <BrandCard as="article" className="space-y-4 rounded-2xl p-6 sm:p-6">
+                <h3 className="font-serif-display text-2xl text-brand-dark">Bank transfer, FPS, or cheque</h3>
                 <p>
                   HSBC transfer: <strong>582-350526-838</strong>
                   <br />
@@ -183,11 +133,12 @@ export default function DonatePage() {
                   <br />
                   Kowloon, HK.
                 </address>
-              </article>
+              </BrandCard>
             </div>
           </div>
         </div>
       </section>
+      </Reveal>
     </SiteLayout>
   );
 }

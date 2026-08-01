@@ -1,0 +1,74 @@
+{
+  "learnPlay": {
+    "title": "Learn",
+    "subtitle": "Educate through shared experiences — bust myths, hear from the community, and go deeper with real stories.",
+    "cta": "Every myth we bust connects to a real Love 21 story — and a way to",
+    "getInvolved": "get involved",
+    "moves": {
+      "title": "21 Moves",
+      "description": "Bust today's myth, practise a real inclusion skill, and journey across Hong Kong with Captain 21.",
+      "badge": "Daily"
+    },
+    "quiz": {
+      "title": "Myth vs Fact Quiz",
+      "description": "A quick 10-question quiz to test what you know about autism, Down syndrome, ADHD, and inclusive practices.",
+      "badge": "Quiz"
+    },
+    "videos": {
+      "title": "Short Videos",
+      "description": "Neurodiversity education clips for families, volunteers, and community partners.",
+      "badge": "Video"
+    },
+    "resources": {
+      "title": "Resources",
+      "description": "Love 21 archive and further reading — real stories and curated neurodiversity articles.",
+      "badge": "Stories"
+    }
+  },
+  "ourStory": {
+    "title": "OUR STORY",
+    "p1": "LOVE 21 is a charity dedicated to empowering the Down syndrome and autistic community in Hong Kong through sport, nutrition, and holistic support programmes.",
+    "p2": "Since the launch of our comprehensive nutrition programme in 2021, we've provided one-on-one nutritional support on top of the sports classes that we've offered.",
+    "p3": "We've also recently expanded into providing counselling support for the parents of our community."
+  },
+  "donate": {
+    "title": "Donate",
+    "subtitle": "Your gift fuels nutrition, sport, and family support for Hong Kong's neurodiverse community."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Reach the Love 21 team for programmes, volunteering, partnerships, or general enquiries."
+  },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Support Love 21 through merchandise and community products."
+  },
+  "newsletter": {
+    "title": "Newsletter",
+    "subtitle": "Stay updated on programmes, events, and stories from the Love 21 community."
+  },
+  "ourProgrammes": {
+    "title": "Our Programmes",
+    "subtitle": "Sport, nutrition, family, and CSR programmes designed for ability-first empowerment."
+  },
+  "joinUs": {
+    "title": "Join Us",
+    "subtitle": "Become part of the Love 21 community as a member, volunteer, or partner."
+  },
+  "members": {
+    "title": "Members",
+    "subtitle": "Information and resources for Love 21 members and families."
+  },
+  "events": {
+    "title": "Events & Campaigns",
+    "subtitle": "Upcoming sports, nutrition workshops, family programmes, and community gatherings."
+  },
+  "about": {
+    "title": "About & Governance",
+    "subtitle": "Our mission, leadership, and commitment to transparent, inclusive governance."
+  },
+  "impact": {
+    "title": "Impact Dashboard",
+    "subtitle": "See how Love 21 serves families across Hong Kong every month."
+  }
+}

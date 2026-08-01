@@ -1,0 +1,322 @@
+{
+  "categories": {
+    "sport": {
+      "label": "Sport",
+      "blurb": "Football, swimming, karate & more"
+    },
+    "nutrition": {
+      "label": "Nutrition",
+      "blurb": "Cooking, dietician days"
+    },
+    "family": {
+      "label": "Family",
+      "blurb": "Counselling, mentorship, events"
+    },
+    "csr": {
+      "label": "CSR",
+      "blurb": "Corporate volunteering"
+    }
+  },
+  "roles": {
+    "football-basketball": {
+      "title": "Football & basketball coach",
+      "desc": "Help run our weekly ball-game sessions — no coaching certificate needed, just energy and patience.",
+      "when": "Saturday mornings",
+      "where": "San Po Kong centre",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "swimming-dragonboat": {
+      "title": "Swimming & dragon boat buddy",
+      "desc": "Support our water-based sessions — a splash of confidence, one paddle at a time.",
+      "when": "Sunday mornings",
+      "where": "Victoria Park pool",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "trampoline-karate": {
+      "title": "Trampoline & karate class helper",
+      "desc": "Cheer on the same members who've gone on to win medals at Asian Para-Karate events.",
+      "when": "Wednesday evenings",
+      "where": "San Po Kong centre",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "cooking-workshop": {
+      "title": "Cooking workshop helper",
+      "desc": "Assist our monthly healthy-cooking classes where members and parents learn recipes together.",
+      "when": "One Sunday a month",
+      "where": "San Po Kong kitchen",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "dietician-day": {
+      "title": "Dietician day & health points assistant",
+      "desc": "Welcome families to their monthly one-on-one nutrition check-ins and help track the health points they earn.",
+      "when": "Weekday afternoons",
+      "where": "San Po Kong centre",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "family-counselling": {
+      "title": "Family counselling support",
+      "desc": "Front-of-house support around our parent counselling sessions — greeting families, not delivering counselling.",
+      "when": "Weekday mornings",
+      "where": "San Po Kong centre",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "mentorship-buddy": {
+      "title": "Mentorship programme buddy",
+      "desc": "Get matched 1:1 with a member and work toward a shared weekly activity goal, side by side.",
+      "when": "Weekly, your schedule",
+      "where": "Varies by activity",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "community-dinners": {
+      "title": "Community dinners & trips crew",
+      "desc": "Help run the dinners, outings and away trips that keep the whole Love 21 family close.",
+      "when": "Occasional evenings/weekends",
+      "where": "Varies",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    },
+    "corporate-day": {
+      "title": "Corporate volunteer day",
+      "desc": "Bring your team for a hands-on day at our San Po Kong centre — no experience needed, just show up together.",
+      "when": "Book a date for your team",
+      "where": "San Po Kong centre",
+      "note": "2 dates booked this quarter",
+      "ctaLabel": "Book a date"
+    },
+    "skills-based": {
+      "title": "Skills-based placement",
+      "desc": "Offer your professional skills — design, marketing, legal — pro bono, on your own schedule.",
+      "when": "Flexible",
+      "where": "Remote or on-site",
+      "note": "",
+      "ctaLabel": "I'm interested"
+    }
+  },
+  "matcher": {
+    "interests": {
+      "hands-on": {
+        "label": "Hands-on & active",
+        "blurb": "Sport, coaching, being on the move"
+      },
+      "food": {
+        "label": "Food & wellbeing",
+        "blurb": "Cooking, nutrition, health check-ins"
+      },
+      "people": {
+        "label": "People & connection",
+        "blurb": "Counselling support, mentorship, events"
+      },
+      "skills": {
+        "label": "My professional skills",
+        "blurb": "Design, marketing, legal, corporate days"
+      }
+    },
+    "availability": {
+      "weekday-am": {
+        "label": "Weekday mornings"
+      },
+      "weekday-pm": {
+        "label": "Weekday afternoons/evenings"
+      },
+      "weekend-am": {
+        "label": "Weekend mornings"
+      },
+      "flexible": {
+        "label": "Flexible — it varies"
+      }
+    },
+    "commitment": {
+      "one-off": {
+        "label": "One-off or occasional",
+        "blurb": "A single date, not a standing slot"
+      },
+      "weekly": {
+        "label": "A regular weekly slot",
+        "blurb": "Same day, most weeks"
+      },
+      "long-term": {
+        "label": "Flexible & ongoing",
+        "blurb": "I'll show up on my own schedule, long-term"
+      }
+    },
+    "groupSize": {
+      "solo": {
+        "label": "Just me",
+        "blurb": "Happy to go it alone"
+      },
+      "friend": {
+        "label": "With a friend",
+        "blurb": "Roles that welcome pairs or small groups"
+      },
+      "team": {
+        "label": "As a team / corporate group",
+        "blurb": "Bring colleagues along"
+      }
+    }
+  },
+  "page": {
+    "defaultCta": "I'm interested",
+    "hero": {
+      "eyebrow": "Get Involved · Volunteers",
+      "titleBefore": "Come be part of a",
+      "titleHighlight": "so much ability",
+      "titleAfter": "community.",
+      "body": "No email chains, no waiting on the office. Pick an opening across sport, nutrition, family support or a corporate day, and you're confirmed straight away.",
+      "ctaRoles": "See open roles",
+      "ctaMatcher": "Not sure where to start?",
+      "imageAlt": "A volunteer coaching alongside a Love 21 member",
+      "volunteersActive": "volunteers active this month",
+      "shiftsToday": "shifts running today"
+    },
+    "campaign": {
+      "eyebrow": "Another way to help",
+      "title": "Can't commit to a shift? Start your own fundraising campaign instead.",
+      "body": "Run a marathon, host a birthday fundraiser, or rally your friends — set up a peer-to-peer page in minutes and raise funds on your own schedule.",
+      "cta": "Start a campaign"
+    },
+    "urgency": {
+      "label": "Going fast",
+      "filled": "{{filled}}/{{total}} filled"
+    },
+    "board": {
+      "eyebrow": "The board",
+      "title": "Open opportunities",
+      "subtitle": "Every role sits under one of our four programme pillars. Pick the one that fits you.",
+      "searchPlaceholder": "Search roles — try \"Saturday\", \"cooking\", or \"CSR\"",
+      "clearSearch": "Clear search",
+      "allRoles": "All roles",
+      "when": "When:",
+      "where": "Where:",
+      "filled": "{{filled}} / {{total}} filled",
+      "noMatchQuery": "No roles match \"{{query}}\" right now.",
+      "noMatchFilter": "No roles match this filter right now.",
+      "clearFilters": "Clear search & filters",
+      "showFewer": "Show fewer roles",
+      "viewMore": "View {{count}} more role",
+      "viewMore_plural": "View {{count}} more roles",
+      "csrOnePager": "Generate a one-pager for your HR/CSR team"
+    },
+    "gallery": {
+      "label": "Life on shift",
+      "items": {
+        "1": { "alt": "A volunteer coaching a football drill" },
+        "2": { "alt": "Volunteers helping run a cooking workshop" },
+        "3": { "alt": "A high-five between a volunteer and a member at swim class" },
+        "4": { "alt": "A corporate volunteer team on-site" }
+      }
+    },
+    "social": {
+      "eyebrow": "From our feed",
+      "title": "As featured this week",
+      "posts": {
+        "1": { "platform": "Instagram", "caption": "Saturday football squad putting in the work ⚽", "date": "2 days ago" },
+        "2": { "platform": "Instagram", "caption": "Dragon boat practice ahead of next month's race 🐉", "date": "5 days ago" },
+        "3": { "platform": "Facebook", "caption": "Thank you to this quarter's corporate volunteer team!", "date": "1 week ago" }
+      }
+    },
+    "stories": {
+      "showLabel": "Show story {{number}}",
+      "items": {
+        "1": {
+          "quote": "I signed up for one Saturday shift because a friend dragged me along. Eighteen months later I'm on the events committee.",
+          "name": "[Volunteer name], class volunteer since 2024"
+        },
+        "2": {
+          "quote": "My daughter has Down syndrome, and I never expected to be the one coaching football. Now I can't imagine my Saturdays without it.",
+          "name": "[Volunteer name], parent & sports volunteer"
+        },
+        "3": {
+          "quote": "Our team came for one CSR morning. Half of us still show up monthly, on our own time.",
+          "name": "[Company name], corporate partner"
+        }
+      }
+    },
+    "recognition": {
+      "eyebrow": "Hours & recognition",
+      "title": "Every hour counts, and it shows",
+      "tiers": {
+        "1": { "title": "First cap", "body": "Your first logged shift. Welcome to the roster." },
+        "2": { "title": "Season regular", "body": "10 hours in — you've got a standing spot on the schedule." },
+        "3": { "title": "Community favourite", "body": "50 hours of showing up. Featured in our volunteer spotlight." },
+        "4": { "title": "Team captain", "body": "100+ hours. Invited to help lead new volunteer onboarding." }
+      },
+      "hoursUnit": "hrs",
+      "progressLabel": "18 hours to your Community Favourite ribbon"
+    },
+    "corporate": {
+      "title": "Know a company that could sponsor a class of 15?",
+      "body": "Volunteers are often the first link to a new corporate partner — a quick introduction goes a long way.",
+      "cta": "Generate one-pager to introduce them"
+    },
+    "faq": {
+      "eyebrow": "Before you sign up",
+      "title": "Questions people actually ask",
+      "items": {
+        "experience": {
+          "q": "Do I need experience to volunteer?",
+          "a": "No. Most of our volunteers have never worked with neurodiverse members before their first shift. Coaches brief you on-site, every time."
+        },
+        "cancel": {
+          "q": "What if I need to cancel a shift?",
+          "a": "Life happens — cancel or swap through the member app up to 24 hours ahead, no penalty. We'd just ask you not to no-show, since a role sitting empty means a class runs short-staffed."
+        },
+        "training": {
+          "q": "Is training provided?",
+          "a": "Yes. Every new volunteer gets a short on-site briefing before their first shift, plus a returning volunteer paired alongside them for support."
+        },
+        "group": {
+          "q": "Can I bring a friend, or volunteer as a group?",
+          "a": "Absolutely — group and friend sign-ups are common, especially for the community dinners & trips crew and corporate days."
+        }
+      }
+    },
+    "matcher": {
+      "eyebrow": "AI · Smart Matching",
+      "startOver": "Start over",
+      "title": "Not sure where you fit? Let it find your shift.",
+      "subtitle": "Four quick questions, and our local AI (Ollama) will read every open role to find the best fit for your interests, timing, commitment, and group size.",
+      "step1": "1. What pulls you in?",
+      "step2": "2. When are you usually free?",
+      "step3": "3. How often can you commit?",
+      "step4": "4. Coming alone, or bringing others?",
+      "submit": "Ask AI for my match →",
+      "thinking": "Ollama is reading every open role and weighing your answers…",
+      "bestMatch": "Your best match",
+      "aiMatched": "AI matched",
+      "matchPercent": "{{score}}% match",
+      "signUp": "Sign me up for this",
+      "anotherMatch": "See another match",
+      "unavailable": "AI matching is unavailable right now. Try again in a moment.",
+      "mapFailed": "We couldn't map those matches to open roles. Please try again.",
+      "backendError": "Matching failed. Is the backend running on port 8000?"
+    },
+    "finalCta": {
+      "title": "Every shift starts with someone saying yes.",
+      "donate": "Prefer to give instead?"
+    },
+    "csrOnePager": {
+      "tag": "Bring your team",
+      "title": "Corporate Volunteer Day at Love 21 Foundation",
+      "intro": "Share this with your HR or CSR team — everything they need to say yes is on this page.",
+      "statFamilies": "families supported monthly",
+      "statClasses": "classes run each month",
+      "statYears": "building this community in HK",
+      "whatIs": "What it is:",
+      "whatIsBody": "A hands-on day at our San Po Kong centre alongside our members — no experience needed. Past teams have helped run sports sessions, nutrition workshops, and community events.",
+      "whyMatters": "Why it matters for your team:",
+      "whyMattersBody": "Employees leave with a direct, ability-focused understanding of neurodiversity — not a lecture, a real afternoon spent together.",
+      "nextStep": "Next step:",
+      "nextStepBody": "Reply to this email or visit our Get Involved page to pick a date for your team.",
+      "cta": "Contact us at partnerships@love21.org.hk to book your team's date.",
+      "footer": "Love 21 Foundation · San Po Kong, Kowloon · Generated from a volunteer's visit to love21.org.hk/our-volunteer",
+      "print": "Print / Save as PDF"
+    }
+  }
+}
