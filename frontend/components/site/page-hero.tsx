@@ -31,12 +31,20 @@ export function PageHero({
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             {primaryAction ? (
               <Button asChild>
-                <Link href={primaryAction.href}>{primaryAction.label}</Link>
+                {primaryAction.href.startsWith("#") ? (
+                  <a href={primaryAction.href}>{primaryAction.label}</a>
+                ) : (
+                  <Link href={primaryAction.href}>{primaryAction.label}</Link>
+                )}
               </Button>
             ) : null}
             {secondaryAction ? (
               <Button asChild variant="outline">
-                <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
+                {secondaryAction.href.startsWith("#") ? (
+                  <a href={secondaryAction.href}>{secondaryAction.label}</a>
+                ) : (
+                  <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
+                )}
               </Button>
             ) : null}
           </div>
