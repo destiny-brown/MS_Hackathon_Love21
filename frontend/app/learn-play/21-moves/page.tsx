@@ -131,20 +131,21 @@ export default function TwentyOneMovesPage() {
   const currentLocIndex = (progress.dayNumber - 1) % LOCATION_DAYS.length;
 
   function resetProgress() {
-  const confirmed = window.confirm(
-    "Reset your 21 Moves progress and start again from Day 1?"
-  );
+    const confirmed = window.confirm(
+      "Reset your 21 Moves progress and start again from Day 1?"
+    );
 
-  if (!confirmed) return;
+    if (!confirmed) return;
 
-  window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(STORAGE_KEY);
 
-  setDayJustCompleted(false);
-  prevCorrectRef.current = null;
-  setScoreBump(false);
+    setDayJustCompleted(false);
+    prevCorrectRef.current = null;
+    setScoreBump(false);
 
-  setProgress(DEFAULT_PROGRESS);
-}
+    setProgress(DEFAULT_PROGRESS);
+  }
+  
   return (
     <SiteLayout>
       {/* Hero */}
@@ -168,7 +169,6 @@ export default function TwentyOneMovesPage() {
               <span className="text-[#999]">/</span>
               <span>{progress.totalAnswered}</span>
               <span className="ml-1 text-xs text-[#999]">correct</span>
-              
             </div>
             {completedLoops > 0 && (
               <div className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#991b1b] to-[#dc2626] px-5 py-2.5 text-sm font-bold text-white shadow-md">
@@ -176,12 +176,12 @@ export default function TwentyOneMovesPage() {
               </div>
             )}
             <button
-    type="button"
-    onClick={resetProgress}
-    className="rounded-full border border-[#e8e4de] bg-white px-4 py-2 text-sm font-medium text-[#991b1b] transition hover:border-[#991b1b] hover:bg-[#991b1b] hover:text-white"
-  >
-    Reset Progress
-  </button>
+              type="button"
+              onClick={resetProgress}
+              className="rounded-full border border-[#e8e4de] bg-white px-4 py-2 text-sm font-medium text-[#991b1b] transition hover:border-[#991b1b] hover:bg-[#991b1b] hover:text-white"
+            >
+              Reset Progress
+            </button>
           </div>
         </div>
       </section>
@@ -197,7 +197,7 @@ export default function TwentyOneMovesPage() {
       </div>
 
       <section className="space-y-6 px-4 pb-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl space-y-6">
+        <div className="mx-auto max-w-6xl space-y-8">
           {/* Trail Map */}
           <div className="overflow-hidden rounded-2xl border border-[#e8e4de] bg-white p-6 shadow-sm sm:p-8">
             <div className="mb-6 flex items-center justify-between">
@@ -288,7 +288,7 @@ export default function TwentyOneMovesPage() {
             </div>
           </div>
 
-          {/* Main Game Area */}
+          {/* Main Game Area - INCREASED SPACING */}
           {dayJustCompleted ? (
             <div className="relative overflow-hidden rounded-2xl border border-[#e8e4de] bg-white py-16 text-center shadow-sm">
               <ConfettiBurst count={32} />
@@ -308,7 +308,7 @@ export default function TwentyOneMovesPage() {
               </div>
             </div>
           ) : location.theme === "harbour" ? (
-            <div className="overflow-hidden rounded-2xl border border-[#e8e4de] bg-white p-5 shadow-sm sm:p-8">
+            <div className="overflow-hidden rounded-2xl border border-[#e8e4de] bg-white p-8 shadow-sm sm:p-10">
               <DragonBoatStage
                 events={location.events}
                 legIndex={progress.eventIndex}
@@ -317,7 +317,7 @@ export default function TwentyOneMovesPage() {
               />
             </div>
           ) : (
-            <div className="overflow-hidden rounded-2xl border border-[#e8e4de] bg-white shadow-sm">
+            <div className="overflow-hidden rounded-2xl border border-[#e8e4de] bg-white p-8 shadow-sm sm:p-10">
               <EventAnimationStage
                 key={currentEvent.id}
                 event={currentEvent}
