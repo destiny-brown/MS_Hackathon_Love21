@@ -65,7 +65,7 @@ def test_captain_chat_infers_language_tool(monkeypatch):
     assert data["tool_calls"][0]["arguments"]["locale"] == "yue"
 
 
-def test_captain_chat_fallback_when_ollama_unavailable(monkeypatch):
+def test_captain_chat_fallback_when_hosted_model_unavailable(monkeypatch):
     monkeypatch.setattr(captain_chat, "chat_json", lambda **_kwargs: None)
     monkeypatch.setattr(captain_chat, "chat_text", lambda **_kwargs: None)
     response = client.post(

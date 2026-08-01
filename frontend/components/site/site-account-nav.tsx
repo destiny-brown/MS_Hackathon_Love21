@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LayoutDashboard, LogOut, Shield } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { landingPathForRole, signOutToLogin, useCurrentUser } from "@/lib/auth";
@@ -23,17 +23,9 @@ export function SiteAccountNav() {
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <Button asChild size="sm" variant="outline" className="border-brand-coral/40 font-semibold">
-        <Link href="/login">Log in</Link>
-      </Button>
-    );
-  }
-
-  if (!user) {
-    return (
-      <Button asChild size="sm" variant="outline" className="border-brand-coral font-semibold text-brand-coral hover:bg-brand-coral/10">
         <Link href="/login">Log in</Link>
       </Button>
     );
@@ -70,17 +62,6 @@ export function SiteAccountNav() {
             <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
             Dashboard
           </Link>
-          {user.role === "admin" ? (
-            <Link
-              href="/admin"
-              role="menuitem"
-              className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-brand-cream"
-              onClick={() => setOpen(false)}
-            >
-              <Shield className="h-4 w-4 text-[#d4a373]" aria-hidden="true" />
-              Admin
-            </Link>
-          ) : null}
           <button
             type="button"
             role="menuitem"
