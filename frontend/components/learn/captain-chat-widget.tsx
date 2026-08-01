@@ -235,11 +235,11 @@ export function CaptainChatWidget() {
   return (
     <>
       {!open && (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+        <div className="pointer-events-none fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
           {mounted && bubbleVisible && (
             <div
               key={bubbleIndex}
-              className="relative max-w-[15rem] animate-[fadeUp_0.35s_ease-out]"
+              className="pointer-events-auto relative max-w-[15rem] animate-[fadeUp_0.35s_ease-out]"
             >
               <button
                 type="button"
@@ -265,7 +265,7 @@ export function CaptainChatWidget() {
           <button
             type="button"
             onClick={openChat}
-            className={`group rounded-full border-0 bg-transparent p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral focus-visible:ring-offset-2 ${floatClass}`}
+            className={`pointer-events-auto group rounded-full border-0 bg-transparent p-1 transition-transform hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral focus-visible:ring-offset-2 ${floatClass}`}
             aria-label={captainOpenAria}
           >
             <CaptainMascot
