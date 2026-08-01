@@ -5,7 +5,6 @@ export const mainNav: NavItem[] = [
   { label: "Get Involved", href: "/get-involved" },
   { label: "Impact", href: "/impact-dashboard" },
   { label: "Stories", href: "/stories-media" },
-  { label: "Events", href: "/events-campaigns" },
   { label: "About Us", href: "/about-governance" },
   { label: "Wishlist", href: "/shop" },
 ];
