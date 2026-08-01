@@ -482,7 +482,7 @@ export default function GetInvolvedPage() {
                     <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
                       <Link href="/members" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Join as a member</Link>
                       <Link href="/our-volunteer" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Volunteer</Link>
-                      <Link href="/donate" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Donate</Link>
+                      <Link href="/donate" className="rounded-md font-semibold text-brand-red hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Donate</Link>
                     </div>
                   </BrandCard>
                 </Reveal>
