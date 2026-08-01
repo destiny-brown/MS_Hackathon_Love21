@@ -1,0 +1,62 @@
+{
+  "hero": {
+    "title": "#SoMuchAbility",
+    "subtitle": "Empowering people with Down syndrome, autism, and neurodiversity in Hong Kong through sport, nutrition, family support, and holistic community care.",
+    "cta": "Discover More"
+  },
+  "marquee": {
+    "years": "21 Years in Hong Kong",
+    "celebrating": "Celebrating Ability"
+  },
+  "impact": {
+    "eyebrow": "Live Impact Dashboard",
+    "families": "Families Served Monthly",
+    "activities": "Classes & Activities Each Month",
+    "volunteerHours": "Volunteer Hours Per Month"
+  },
+  "fourDoors": {
+    "title": "Where will you begin?",
+    "subtitle": "Four doors into Love 21 — choose the path that matches how you want to support our Down syndrome, autistic, and neurodiverse community.",
+    "education": {
+      "title": "Education & Support",
+      "description": "Grow life skills, join inclusive programmes, and access family care across sport, nutrition, and support."
+    },
+    "donate": {
+      "title": "Donate & Partner",
+      "description": "Fund nutrition packs, blood testing, coaching sessions, and day-to-day community care."
+    },
+    "volunteer": {
+      "title": "Volunteer",
+      "description": "Share your time supporting weekly classes, family sessions, and inclusive community events."
+    },
+    "calendar": {
+      "title": "Activity Calendar",
+      "description": "Find upcoming sports, nutrition workshops, family programmes, and community gatherings."
+    }
+  },
+  "stories": {
+    "eyebrow": "Featured Stories",
+    "title": "Ability in motion",
+    "jamie": {
+      "tag": "TEDx Speaker & Self-Advocate",
+      "quote": "Delivering my first TEDx talk proved to everyone that having Down syndrome never limits what you can express and contribute."
+    },
+    "chris": {
+      "tag": "Purposeful Employment Milestone",
+      "quote": "Working independently in food service and community outreach, gaining confidence and financial independence."
+    },
+    "mei": {
+      "tag": "Holistic Health & Sports Champion",
+      "quote": "Overcoming health challenges through tailored nutrition and sports classes, now mentoring younger neurodiverse peers."
+    }
+  },
+  "philosophy": {
+    "eyebrow": "Celebrating Ability",
+    "body": "We focus entirely on what our community CAN do — unlocking potential through sports, nutrition, and lifelong empowerment.",
+    "cta": "Explore Education & Support"
+  },
+  "newsletter": {
+    "eyebrow": "Subscribe to our eNews",
+    "title": "Stay close to the mission"
+  }
+}

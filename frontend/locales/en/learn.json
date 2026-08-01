@@ -1,0 +1,637 @@
+{
+  "ui": {
+    "myth": "Myth",
+    "fact": "Fact",
+    "mythOrFact": "Myth or Fact",
+    "situation": "Situation",
+    "correct": "Correct!",
+    "notQuite": "Not quite",
+    "captainsClue": "Captain's clue",
+    "trailTitle": "The 21 Moves Trail",
+    "loop": "Loop {{n}}",
+    "day": "Day {{n}}",
+    "loading": "Loading today's trail…",
+    "backToLearn": "Back to Learn",
+    "startQuiz": "Start quiz",
+    "seeResults": "See results",
+    "tryAgain": "Try again",
+    "scorePerfect": "Perfect score!",
+    "scoreGreat": "Great job!",
+    "scoreGood": "Good effort!",
+    "scoreKeep": "Keep learning!",
+    "fromCommunity": "From the community",
+    "readFullStory": "Read the full story",
+    "play21Moves": "Play today's 21 Moves",
+    "howItWorks": "How it works",
+    "commonClaim": "Common claim",
+    "mythBusted": "MYTH BUSTED",
+    "correctFact": "CORRECT — THAT'S A FACT",
+    "relatedStories": "Related stories",
+    "relatedStoriesSubtitle": "Real Love 21 stories connected to what you just learned",
+    "searchVideos": "Search videos",
+    "searchPlaceholder": "Search neurodiversity topics…",
+    "recommended": "Recommended",
+    "curated": "Curated",
+    "all": "All",
+    "teachers": "Teachers",
+    "parents": "Parents",
+    "moreFromLove21": "More from Love 21",
+    "captainThinking": "Captain 21 is thinking…",
+    "chatOpen": "Ask Captain21",
+    "chatPlaceholder": "Ask about programmes, volunteering, or how to get involved…",
+    "speak": "Speak",
+    "listening": "Listening…",
+    "send": "Send",
+    "closeChat": "Close chat",
+    "voiceNeedsChrome": "Voice input needs Chrome or Edge",
+    "sources": "Sources",
+    "isMythOrFact": "Is this a myth or a fact?",
+    "chooseMythOrFact": "Choose myth or fact",
+    "stampMyth": "MYTH",
+    "stampFact": "FACT",
+    "stampCorrect": "CORRECT",
+    "thatsRight": "That's right!",
+    "actuallyAnswer": "It's actually a {{answer}}.",
+    "sourceLabel": "Source:",
+    "photoLabel": "Photo:",
+    "scoreStillLearning": "Still Learning",
+    "stampKeepGoing": "KEEP GOING",
+    "scoreChampion": "Neurodiversity Champion",
+    "stampChampion": "CHAMPION",
+    "scoreFactFinder": "Fact Finder",
+    "stampFactFinder": "FACT FINDER",
+    "scoreMythBuster": "Myth Buster",
+    "stampMythBuster": "MYTH BUSTER",
+    "playMoreDailyTitle": "Want to play a longer version?",
+    "playMoreDailyBody": "Fact-check 10 claims in the full Myth vs Fact Quiz.",
+    "playMoreDailyLink": "Play the full quiz →",
+    "playMoreQuizTitle": "Put what you learned into action",
+    "playMoreQuizBody": "Take today's myth into a practical Love 21 skill mission.",
+    "playMoreQuizLink": "Start 21 Moves →",
+    "communityStoriesTitle": "Hear it from the community",
+    "communityStoriesSubtitle": "Real stories from Love 21 families, programmes, and press coverage.",
+    "captainRole": "Site navigation assistant · here to help you find the right page",
+    "captainStarter": "Hi! I'm {{name}}. Ask me about Love 21 programmes, volunteering, or how to get involved.",
+    "captainOpenAria": "Ask Captain21",
+    "captainBubbleQuestions": "Do you have any questions?",
+    "captainBubbleCurious": "Curious about what we do?",
+    "captainBubbleVolunteer": "Do you want to volunteer?",
+    "captainDismissBubble": "Dismiss",
+    "captainMessageLabel": "Message to Captain 21",
+    "captainStopVoice": "Stop voice input",
+    "captainStartVoice": "Start voice input",
+    "captainSpeakEmoji": "🎤 Speak",
+    "captainChatMessages": "Chat messages",
+    "captainSuggestedPages": "Suggested pages",
+    "captainReachError": "Could not reach Captain 21. Is the backend running?",
+    "videosSearchLabel": "What do you want to learn about?",
+    "videosSearchPlaceholder": "Try: autism in school, down syndrome support, inclusive communication",
+    "videosSearchBtn": "Search YouTube",
+    "videosSearching": "Searching…",
+    "videosReset": "Reset",
+    "videosSearchHint": "Curated picks load instantly. YouTube search uses your daily API quota — click Search only when needed.",
+    "videosCuratedLine": "Showing {{count}} curated video from trusted organisations.",
+    "videosCuratedLine_plural": "Showing {{count}} curated videos from trusted organisations.",
+    "videosYoutubeResults": "YouTube results for:",
+    "videosSearchingYoutube": "Searching YouTube videos…",
+    "videosYoutubeUnavailable": "YouTube search is currently unavailable. Showing curated picks.",
+    "videosNoResults": "No videos found. Showing curated picks instead.",
+    "videosSearchFailed": "Unable to search YouTube right now.",
+    "videosShowingCurated": "Showing curated picks instead.",
+    "videosQuotaNote": "Your YouTube API key has a limit of",
+    "videosQuotaLimit": "100 search queries per day",
+    "videosQuotaSuffix": "(separate from the 10,000 general quota). It resets at midnight Pacific Time. Request a quota increase in Google Cloud Console if needed.",
+    "videosNoFilterMatch": "No videos match your filter. Try a different keyword or reset to see all curated picks.",
+    "resourcesLoading": "Loading stories…",
+    "resourcesArchiveTitle": "Love 21 Archive",
+    "resourcesArchiveSubtitle": "Educational stories",
+    "resourcesReadingTitle": "Further Reading",
+    "resourcesReadingSubtitle": "Curated from",
+    "resourcesNeurodiversityNetwork": "Neurodiversity Network",
+    "resourcesMoreBody": "Explore the full Love 21 stories hub and media archive — press coverage, interviews, and community stories from the foundation.",
+    "resourcesStoriesLink": "Love 21 Stories →",
+    "resourcesMediaLink": "Media archive →",
+    "resourcesGetInvolvedLink": "Get involved →",
+    "parentsCarers": "Parents & Carers"
+  },
+  "quiz": {
+    "questions": {
+      "q1": {
+        "statement": "Autistic people lack empathy.",
+        "explanation": "Many autistic people feel empathy deeply — they may just express or process it differently. Difficulty reading social cues is not the same as not caring.",
+        "topic": "Autism"
+      },
+      "q2": {
+        "statement": "Down syndrome is caused by an extra copy of chromosome 21.",
+        "explanation": "Trisomy 21 means each cell has three copies of chromosome 21 instead of two. This affects development, but abilities vary widely from person to person.",
+        "topic": "Down Syndrome"
+      },
+      "q3": {
+        "statement": "ADHD is just a childhood behaviour problem that people grow out of.",
+        "explanation": "ADHD is a lifelong neurodevelopmental condition. Many adults live with ADHD; symptoms may change over time but do not simply disappear.",
+        "topic": "ADHD"
+      },
+      "q4": {
+        "statement": "Using person-first language (e.g. 'person with autism') is always preferred.",
+        "explanation": "Language preferences vary. Some people prefer identity-first language ('autistic person'). The best approach is to ask individuals what they prefer.",
+        "topic": "Inclusive Language"
+      },
+      "q5": {
+        "statement": "Neurodivergent students benefit from predictable routines and clear instructions.",
+        "explanation": "Structure, visual supports, and explicit expectations reduce cognitive load and anxiety, helping many neurodivergent learners participate more confidently.",
+        "topic": "Education"
+      },
+      "q6": {
+        "statement": "All autistic people have savant abilities like in movies.",
+        "explanation": "Savant skills exist in a small minority of autistic people. Most autistic individuals have diverse strengths and challenges like anyone else.",
+        "topic": "Autism"
+      },
+      "q7": {
+        "statement": "Sensory sensitivities (to light, sound, or touch) are common among neurodivergent people.",
+        "explanation": "Many neurodivergent people process sensory input differently. Adjusting environments — quieter spaces, softer lighting — can make a real difference.",
+        "topic": "Sensory"
+      },
+      "q8": {
+        "statement": "Inclusive education means placing all students in the same classroom with no support.",
+        "explanation": "True inclusion provides appropriate accommodations, differentiated instruction, and support so every learner can participate meaningfully.",
+        "topic": "Education"
+      },
+      "q9": {
+        "statement": "Stimming (repetitive movements or sounds) can help neurodivergent people self-regulate.",
+        "explanation": "Stimming is often a coping strategy for managing emotions, sensory input, or focus. Suppressing it without understanding can increase stress.",
+        "topic": "Autism"
+      },
+      "q10": {
+        "statement": "People with intellectual disabilities cannot live independently or hold jobs.",
+        "explanation": "With the right support, many people with intellectual disabilities work, live independently, and contribute richly to their communities.",
+        "topic": "Down Syndrome"
+      }
+    }
+  },
+  "quotes": {
+    "love-is-simple": {
+      "quote": "Love is simple.",
+      "programmeLabel": "Family programme"
+    },
+    "water-to-racing": {
+      "quote": "From fear of water to racing in open water — inclusion through sport in action.",
+      "programmeLabel": "Sports programme"
+    },
+    "purposeful-work": {
+      "quote": "Those with Down's syndrome and autism are ready for purposeful employment.",
+      "programmeLabel": "Get involved"
+    },
+    "nutrition-families": {
+      "quote": "Free diet advice for children with intellectual disabilities in families who need it most.",
+      "programmeLabel": "Nutrition programme"
+    },
+    "long-happy-life": {
+      "quote": "Nutrition and sport together — supporting longer, healthier lives.",
+      "programmeLabel": "Family & nutrition"
+    },
+    "autistic-careers": {
+      "quote": "Challenging assumptions about what autistic people can do in their careers.",
+      "programmeLabel": "Community programmes"
+    }
+  },
+  "trail": {
+    "locations": {
+      "stadium": {
+        "title": "The Stadium",
+        "subtitle": "Five track & field events with Captain 21"
+      },
+      "harbour": {
+        "title": "The Harbour",
+        "subtitle": "Row the dragon boat to the finish line, one answer at a time"
+      },
+      "court": {
+        "title": "The Court",
+        "subtitle": "A basketball relay across five plays"
+      },
+      "wall": {
+        "title": "The Climbing Wall",
+        "subtitle": "Five holds, five questions, one summit"
+      },
+      "track": {
+        "title": "The Cycling Track",
+        "subtitle": "Five laps around the velodrome"
+      },
+      "festival": {
+        "title": "Finish Line Festival",
+        "subtitle": "Five closing challenges before the trail loops again"
+      }
+    },
+    "events": {
+      "stadium-hurdles-1": {
+        "label": "Hurdles"
+      },
+      "stadium-javelin": {
+        "label": "Javelin"
+      },
+      "stadium-longjump": {
+        "label": "Long Jump"
+      },
+      "stadium-polevault": {
+        "label": "Pole Vault"
+      },
+      "stadium-hurdles-final": {
+        "label": "Hurdles Final"
+      },
+      "harbour-leg-1": {
+        "label": "Leg 1"
+      },
+      "harbour-leg-2": {
+        "label": "Leg 2"
+      },
+      "harbour-leg-3": {
+        "label": "Leg 3"
+      },
+      "harbour-leg-4": {
+        "label": "Leg 4"
+      },
+      "harbour-finish": {
+        "label": "Finish Line"
+      },
+      "court-1": {
+        "label": "Dribble Sprint"
+      },
+      "court-2": {
+        "label": "Free Throw"
+      },
+      "court-3": {
+        "label": "Layup"
+      },
+      "court-4": {
+        "label": "Three-Pointer"
+      },
+      "court-5": {
+        "label": "Buzzer Beater"
+      },
+      "wall-1": {
+        "label": "First Hold"
+      },
+      "wall-2": {
+        "label": "Traverse"
+      },
+      "wall-3": {
+        "label": "Crux Move"
+      },
+      "wall-4": {
+        "label": "Overhang"
+      },
+      "wall-5": {
+        "label": "Summit"
+      },
+      "track-1": {
+        "label": "Lap 1"
+      },
+      "track-2": {
+        "label": "Lap 2"
+      },
+      "track-3": {
+        "label": "Sprint Lane"
+      },
+      "track-4": {
+        "label": "Draft Line"
+      },
+      "track-5": {
+        "label": "Final Lap"
+      },
+      "festival-1": {
+        "label": "Opening Parade"
+      },
+      "festival-2": {
+        "label": "Talent Stage"
+      },
+      "festival-3": {
+        "label": "Team Games"
+      },
+      "festival-4": {
+        "label": "Awards"
+      },
+      "festival-5": {
+        "label": "Closing Ceremony"
+      }
+    },
+    "questions": {
+      "stadium-hurdles-1": {
+        "kicker": "Myth or Fact",
+        "prompt": "People with Down syndrome can't take part in competitive sport.",
+        "explanation": "Athletes with Down syndrome compete at every level, including the Special Olympics and mainstream local leagues — strength and coordination vary person to person, just like in the general population.",
+        "hint": "Think about how many different athletes you've seen at the Special Olympics.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "stadium-javelin": {
+        "kicker": "What is it?",
+        "prompt": "What is 'inclusive education'?",
+        "explanation": "Inclusive education means students of all abilities learn in the same classrooms and school life, with the right supports in place — rather than being separated by default.",
+        "hint": "It's about where and how students learn together.",
+        "options": {
+          "a": "Students with disabilities learning in separate schools only",
+          "b": "Students of all abilities learning together in the same classroom, with support",
+          "c": "A school policy that only applies to sports classes"
+        }
+      },
+      "stadium-longjump": {
+        "kicker": "Situation",
+        "prompt": "A new classmate uses a wheelchair and is joining your PE class today. What's the best first move?",
+        "explanation": "The most inclusive move is to ask directly and adapt together — it respects the person's own knowledge of what works for them.",
+        "hint": "Who knows best what a person needs? The person themselves.",
+        "options": {
+          "a": "Ask them what activities work for them and adapt the game together",
+          "b": "Assume they should just watch from the side",
+          "c": "Speak only to their aide instead of them"
+        }
+      },
+      "stadium-polevault": {
+        "kicker": "Myth or Fact",
+        "prompt": "Down syndrome is a disease that can be caught from someone.",
+        "explanation": "Down syndrome is a genetic condition present from conception — caused by an extra copy of chromosome 21. It is not an illness and cannot be transmitted.",
+        "hint": "Think about where in a person's body genes live.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "stadium-hurdles-final": {
+        "kicker": "What is it?",
+        "prompt": "What does the number '21' refer to in Down syndrome / World Down Syndrome Day (3/21)?",
+        "explanation": "Down syndrome is caused by an extra (third) copy of chromosome 21 — which is also why World Down Syndrome Day falls on 3/21 (the 3rd day of the 21st month... written 21/3 or 3/21).",
+        "hint": "The date March 21st is a clue: 3/21.",
+        "options": {
+          "a": "The age most people are diagnosed",
+          "b": "An extra copy of chromosome 21",
+          "c": "The number of known related conditions"
+        }
+      },
+      "harbour-leg-1": {
+        "kicker": "Situation",
+        "prompt": "Your dragon boat team needs a drummer to keep everyone's paddling in rhythm. A teammate who is Deaf wants the role. What do you do?",
+        "explanation": "Small adaptations — like a visual cue in addition to the drumbeat — let everyone take on the role they want, without singling anyone out.",
+        "hint": "What's a non-audio way to keep a beat visible to the whole boat?",
+        "options": {
+          "a": "Give them the role and agree on a visual cue (like a flag) alongside the drum",
+          "b": "Tell them drumming needs hearing, so they should paddle instead",
+          "c": "Quietly give the role to someone else without saying why"
+        }
+      },
+      "harbour-leg-2": {
+        "kicker": "Myth or Fact",
+        "prompt": "People with intellectual disabilities can't learn teamwork skills like paddling in sync.",
+        "explanation": "Teamwork and timing are learnable skills for everyone — dragon boat teams around the world include paddlers with intellectual disabilities who train and compete just like any other crew member.",
+        "hint": "Teamwork is a skill you build with practice, not something fixed at birth.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "harbour-leg-3": {
+        "kicker": "What is it?",
+        "prompt": "What is a 'reasonable accommodation' (合理便利)?",
+        "explanation": "A reasonable accommodation is a practical change — like a ramp, extra time, or a visual cue — that removes a barrier so someone can fully take part.",
+        "hint": "Think 'adjustment that removes a barrier', not 'special favour'.",
+        "options": {
+          "a": "A free upgrade given to everyone regardless of need",
+          "b": "A practical adjustment that removes a barrier for a person with a disability",
+          "c": "A rule that disabled people must follow strictly"
+        }
+      },
+      "harbour-leg-4": {
+        "kicker": "Situation",
+        "prompt": "One paddler is paddling on a slightly different tempo than the rest. Captain 21 slows the drumbeat to help everyone sync up. What value is this showing?",
+        "explanation": "Adjusting the pace so everyone can contribute is a simple, everyday act of inclusion — the whole team moves forward together.",
+        "hint": "What helps a whole team finish together, not just the fastest member?",
+        "options": {
+          "a": "Patience and adapting the pace so the whole team succeeds together",
+          "b": "Punishing the paddler for being different",
+          "c": "Ignoring the issue and hoping it fixes itself"
+        }
+      },
+      "harbour-finish": {
+        "kicker": "Myth or Fact",
+        "prompt": "Inclusive teams are slower and less successful than teams that exclude people with disabilities.",
+        "explanation": "Research and real-world teams consistently show diverse, inclusive teams perform well — different strengths combine, and morale and cooperation often improve.",
+        "hint": "Think about what a team gains, not just what it 'has to accommodate'.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "court-1": {
+        "kicker": "What is it?",
+        "prompt": "What is a 'sensory-friendly' event?",
+        "explanation": "Sensory-friendly events reduce overwhelming lights/sound and offer a quiet space, making the event accessible to people with sensory sensitivities.",
+        "hint": "Think about what makes a space calmer, not louder.",
+        "options": {
+          "a": "An event with dimmed lights, lower volume, and quiet spaces available",
+          "b": "An event only for people who like loud music",
+          "c": "An event with no seating"
+        }
+      },
+      "court-2": {
+        "kicker": "Myth or Fact",
+        "prompt": "A person who uses a wheelchair can't play basketball.",
+        "explanation": "Wheelchair basketball is a full competitive sport with its own leagues and Paralympic events — plenty of people who use wheelchairs play at a high level.",
+        "hint": "There's an entire Paralympic sport built around this exact question.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "court-3": {
+        "kicker": "Situation",
+        "prompt": "Your team captain always picks the same two people to explain new plays. A teammate with a learning disability says they learn better from a diagram than from spoken instructions. What should the captain do?",
+        "explanation": "Offering the same information in more than one format (visual + verbal) is a simple, low-cost way to include different learning styles.",
+        "hint": "Different people process information differently — how could you say the same thing two ways?",
+        "options": {
+          "a": "Add a simple diagram alongside the verbal explanation",
+          "b": "Tell them to just try harder to listen",
+          "c": "Bench them for practices"
+        }
+      },
+      "court-4": {
+        "kicker": "What is it?",
+        "prompt": "What does 'person-first language' mean, e.g. saying 'a person with Down syndrome'?",
+        "explanation": "Person-first language puts the person before any diagnosis or condition, recognising them as a whole person first.",
+        "hint": "Which word comes first in the phrase — the person, or the condition?",
+        "options": {
+          "a": "Putting the person before the condition, so the person isn't defined by it",
+          "b": "A rule that only doctors need to follow",
+          "c": "A way to make conversations more formal"
+        }
+      },
+      "court-5": {
+        "kicker": "Myth or Fact",
+        "prompt": "Most people with Down syndrome cannot hold a job.",
+        "explanation": "Many adults with Down syndrome work across a wide range of jobs and industries, especially when workplaces offer clear training and reasonable accommodations.",
+        "hint": "Think about the many kinds of jobs that exist, and what support makes them possible.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "wall-1": {
+        "kicker": "Situation",
+        "prompt": "A climbing partner with low vision asks you to call out hand-hold positions using a clock-face system (e.g. 'hold at 2 o'clock'). What should you do?",
+        "explanation": "Learning a simple shared system, like clock positions, is a small effort that makes climbing fully accessible to a partner with low vision.",
+        "hint": "Pointing doesn't work if your partner can't see it — what would work instead?",
+        "options": {
+          "a": "Learn the system and use it so they can climb confidently",
+          "b": "Say it's too much effort and pair them with someone else",
+          "c": "Ignore the request and just point instead"
+        }
+      },
+      "wall-2": {
+        "kicker": "Myth or Fact",
+        "prompt": "Physical disabilities always mean someone can't do adventurous or physical activities.",
+        "explanation": "With the right adaptive equipment and technique, people with physical disabilities take part in climbing, skiing, surfing and many other adventure sports.",
+        "hint": "Think about adaptive sports equipment you may have seen — like sit-skis or adaptive climbing harnesses.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "wall-3": {
+        "kicker": "What is it?",
+        "prompt": "What is an 'IEP' (Individualized Education Plan)?",
+        "explanation": "An IEP is a personalised plan that sets goals and supports tailored to one student's specific learning needs.",
+        "hint": "The key word is 'individualized' — think 'tailored to one person'.",
+        "options": {
+          "a": "A personalised learning plan built around a student's specific needs",
+          "b": "A punishment plan for students who misbehave",
+          "c": "A generic timetable given to every student"
+        }
+      },
+      "wall-4": {
+        "kicker": "Situation",
+        "prompt": "A friend keeps finishing your sentences for a classmate who has a stutter. What's the most respectful thing to do?",
+        "explanation": "Giving people who stutter the time to finish speaking, without interruption, is a simple and respectful form of patience.",
+        "hint": "What does patience look like in a conversation?",
+        "options": {
+          "a": "Gently ask your friend to let the classmate finish in their own time",
+          "b": "Say nothing, it's not a big deal",
+          "c": "Avoid talking to the classmate to skip the awkwardness"
+        }
+      },
+      "wall-5": {
+        "kicker": "Myth or Fact",
+        "prompt": "Autistic people don't want friends or social connection.",
+        "explanation": "Many autistic people deeply value friendship and connection — they may socialise differently, but the desire for connection is common, not absent.",
+        "hint": "Different from 'not wanting' — think about *how* someone might prefer to connect.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "track-1": {
+        "kicker": "What is it?",
+        "prompt": "What is a 'tandem bike' used for in para-cycling?",
+        "explanation": "Tandem bikes pair a sighted 'pilot' at the front with a visually impaired athlete at the back, letting both compete together in para-cycling.",
+        "hint": "Think about what 'two seats, one bike' could solve for a rider who can't see the track.",
+        "options": {
+          "a": "A two-person bike that lets a sighted pilot ride with a visually impaired athlete",
+          "b": "A bike only used for racing against yourself",
+          "c": "A bike with no pedals"
+        }
+      },
+      "track-2": {
+        "kicker": "Myth or Fact",
+        "prompt": "Once someone is diagnosed with a disability, their abilities never change or improve.",
+        "explanation": "Skills, strength, and independence can grow throughout life for people with disabilities, just as for anyone — through practice, therapy, and opportunity.",
+        "hint": "Think about how any skill — for anyone — tends to change with practice.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "track-3": {
+        "kicker": "Situation",
+        "prompt": "A new club member with ADHD says long team meetings are hard to sit through. What's a supportive first step?",
+        "explanation": "Asking and adjusting — shorter segments, breaks, or a written agenda — are simple, effective supports for many people with ADHD.",
+        "hint": "What structural change to a meeting could make it easier to sit through?",
+        "options": {
+          "a": "Ask what would help — like shorter meetings or scheduled breaks — and try it",
+          "b": "Assume they're not interested in the club",
+          "c": "Tell them to just concentrate harder"
+        }
+      },
+      "track-4": {
+        "kicker": "What is it?",
+        "prompt": "What does 'accessibility' mean in the context of a building or website?",
+        "explanation": "Accessibility means designing spaces, products, or websites so people with a wide range of abilities can use them — it benefits far more people than any one group.",
+        "hint": "Think broad: who benefits from a ramp, or captions, or clear signage?",
+        "options": {
+          "a": "Design that can be used by people with a wide range of abilities",
+          "b": "A feature that only wheelchair users need",
+          "c": "An optional extra that's nice but not necessary"
+        }
+      },
+      "track-5": {
+        "kicker": "Myth or Fact",
+        "prompt": "It's rude to ask someone how they'd like to be supported.",
+        "explanation": "Asking directly and respectfully how someone prefers to be supported is usually welcomed — it's far better than guessing on their behalf.",
+        "hint": "Which is more respectful: guessing what someone needs, or asking them?",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "festival-1": {
+        "kicker": "Situation",
+        "prompt": "The festival stage has stairs and no ramp, and a performer uses a wheelchair. What should the organisers do?",
+        "explanation": "Physical access — like a ramp — should be built into event planning from the start, so every performer can access the stage with dignity.",
+        "hint": "What's the difference between a permanent fix and an improvised one?",
+        "options": {
+          "a": "Add a ramp or alternative level access before the show",
+          "b": "Ask the performer to be lifted up by volunteers",
+          "c": "Move the performer's slot to backstage only"
+        }
+      },
+      "festival-2": {
+        "kicker": "Myth or Fact",
+        "prompt": "Down syndrome affects everyone in exactly the same way.",
+        "explanation": "Down syndrome affects each person differently — abilities, health, personality and interests vary widely from person to person, just like in anyone else.",
+        "hint": "Think about how much people in general differ from one another.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      },
+      "festival-3": {
+        "kicker": "What is it?",
+        "prompt": "What is World Down Syndrome Day?",
+        "explanation": "World Down Syndrome Day is an internationally recognised day on March 21st, chosen to reflect the extra copy of chromosome 21.",
+        "hint": "The date itself (3/21) is a clue about what's being marked.",
+        "options": {
+          "a": "An annual day (March 21) raising awareness and celebrating people with Down syndrome",
+          "b": "A medical exam given once a year",
+          "c": "A holiday only observed in one country"
+        }
+      },
+      "festival-4": {
+        "kicker": "Situation",
+        "prompt": "During awards, an emcee jokes that a team 'must have had help' because a teammate has a disability. How should a friend respond?",
+        "explanation": "Gently but clearly naming why a comment is unfair helps shift the moment and supports the teammate.",
+        "hint": "What does standing up for a teammate sound like, kindly but clearly?",
+        "options": {
+          "a": "Speak up that the team earned it together, and the comment wasn't okay",
+          "b": "Laugh along so it's not awkward",
+          "c": "Say nothing and hope it isn't repeated"
+        }
+      },
+      "festival-5": {
+        "kicker": "Myth or Fact",
+        "prompt": "Inclusion only matters on special awareness days.",
+        "explanation": "Inclusion is an everyday practice — in classrooms, teams, and workplaces — not something reserved for a single awareness day.",
+        "hint": "Think about how often barriers show up versus how often awareness days happen.",
+        "options": {
+          "myth": "Myth",
+          "fact": "Fact"
+        }
+      }
+    }
+  }
+}

@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 
 import { MockDonationForm } from "@/components/site/mock-donation-form";
 import { SupportProgress } from "@/components/site/support-progress";
+import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
 
 function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
@@ -36,6 +38,19 @@ function OpportunityCard({ opportunity }: { opportunity: SupportOpportunity }) {
           targetAmount={opportunity.target_amount_hkd}
           progressPercent={opportunity.progress_percent}
         />
+        {opportunity.moonclerk_url ? (
+          <>
+            <p className="mt-5 text-xs text-brand-ink/65">
+              Please write &ldquo;{opportunity.title}&rdquo; in the MoonClerk Remarks field so Love 21 can designate your gift.
+            </p>
+            <Button asChild className="mt-3 w-full">
+              <a href={opportunity.moonclerk_url} target="_blank" rel="noreferrer">
+                Support this {opportunity.kind}
+                <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </a>
+            </Button>
+          </>
+        ) : null}
       </div>
     </article>
   );
@@ -61,14 +76,14 @@ export function DonationOpportunities({ initialItemSlug }: { initialItemSlug?: s
   const tiedOpportunities = useMemo(() => opportunities.slice(0, 8), [opportunities]);
 
   if (loading) {
-    return <p className="text-brand-ink/70" role="status">Loading opportunities…</p>;
+    return <p className="text-brand-dark/70" role="status">Loading opportunities…</p>;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-brand-sand bg-white p-6">
-        <p className="font-semibold text-brand-ink">Donation opportunities are temporarily unavailable.</p>
-        <p className="mt-2 text-sm text-brand-ink/70">{error}</p>
+      <div className="rounded-2xl border border-brand-light bg-white p-6">
+        <p className="font-semibold text-brand-dark">Donation opportunities are temporarily unavailable.</p>
+        <p className="mt-2 text-sm text-brand-dark/70">{error}</p>
       </div>
     );
   }

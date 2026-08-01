@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.security import hash_password
+from app.data.volunteer_activity_seed import VOLUNTEER_ACTIVITY_SEED
 from app.db import SessionLocal, create_db_and_tables
 from app.models.activity import Activity, ActivitySignup, VolunteerHour
 from app.models.donation import Donation
@@ -11,6 +12,7 @@ from app.models.gratitude_entry import GratitudeEntry, GratitudeEntryStatus
 from app.models.item import Item
 from app.models.support_opportunity import SupportOpportunity
 from app.models.user import Role, User
+from app.models.volunteer_activity import VolunteerActivity
 
 DEMO_PASSWORD = "demo1234"
 DEMO_USERS = [
@@ -367,6 +369,11 @@ def run() -> None:
                 for key, value in values.items():
                     setattr(existing, key, value)
         db.commit()
+
+        existing_activity = db.scalar(select(VolunteerActivity.id).limit(1))
+        if existing_activity is None:
+            db.add_all([VolunteerActivity(**entry) for entry in VOLUNTEER_ACTIVITY_SEED])
+            db.commit()
 
     print("Seeded demo users:")
     for email, role in DEMO_USERS:

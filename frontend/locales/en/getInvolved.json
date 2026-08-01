@@ -1,0 +1,162 @@
+{
+  "hero": {
+    "eyebrow": "Celebrating Ability",
+    "titleLine1": "This isn't a disability issue.",
+    "titleHighlight": "opportunity",
+    "titleLine2": "issue.",
+    "body": "Every month, 600+ Hong Kong families walk through our doors for sport, nutrition, and community — because someone showed up for them first. That someone could be you.",
+    "donate": "Donate",
+    "volunteer": "Volunteer",
+    "imageAlt": "A Love 21 member smiling during a sports class"
+  },
+  "marquee": {
+    "years": "21 Years in Hong Kong",
+    "celebrating": "Celebrating Ability"
+  },
+  "floatingCta": {
+    "donate": "Donate",
+    "volunteer": "Volunteer"
+  },
+  "programmes": {
+    "eyebrow": "Programmes",
+    "title": "What We Do",
+    "subtitle": "A whole-person model — sport, nutrition, and family support — because reaching full potential takes more than one hour a week.",
+    "sports": {
+      "title": "Sports",
+      "description": "Our sports programme is designed without limitations. We aim to give our beneficiaries the greatest opportunity to reach their full potential by offering a comprehensive range of activities while also striving for excellence in each sport."
+    },
+    "nutrition": {
+      "title": "Nutrition",
+      "description": "Sport classes alone are not enough to significantly extend the life expectancy of our beneficiaries. This is why we've developed a well thought out nutrition programme to help our community make significant healthy lifestyle changes."
+    },
+    "family": {
+      "title": "Family",
+      "description": "Love 21's focus on family sets us apart. Our parent beneficiaries play a huge role in our classes. We offer specialty classes for parents only and allow parental participation in a large number of our sport and healthy lifestyle classes."
+    },
+    "csr": {
+      "title": "CSR",
+      "description": "Our Corporate Social Responsibility Programme is an extremely important one for Hong Kong. Your employees will learn about our beneficiary's amazing ability in sport, and also about their greatest ability in bringing the best out of people."
+    }
+  },
+  "gallery": {
+    "eyebrow": "Life at Love 21, in between the numbers",
+    "photos": {
+      "football": "Members warming up before a football class",
+      "cooking": "A cooking club session in the nutrition programme",
+      "swim": "A volunteer high-fiving a member at swim class",
+      "family": "A family sports morning on a Saturday"
+    }
+  },
+  "weeklyRhythm": {
+    "eyebrow": "A week at Love 21",
+    "title": "This is what \"600+ families a month\" looks like on the ground",
+    "placeholder": "Placeholder schedule — replace with your real weekly calendar before publishing.",
+    "days": {
+      "mon": "Mon",
+      "wed": "Wed",
+      "thu": "Thu",
+      "sat": "Sat"
+    },
+    "slots": {
+      "football": {
+        "programme": "Football skills",
+        "time": "4:30–5:30pm"
+      },
+      "cooking": {
+        "programme": "Nutrition & cooking club",
+        "time": "4:00–5:00pm"
+      },
+      "swim": {
+        "programme": "Swim class",
+        "time": "5:00–6:00pm"
+      },
+      "family": {
+        "programme": "Family sports morning",
+        "time": "9:30–11:30am"
+      }
+    }
+  },
+  "journey": {
+    "eyebrow": "Your Journey",
+    "title": "Most of our biggest supporters started with one shift.",
+    "steps": {
+      "01": {
+        "title": "Show up",
+        "body": "Volunteer for a class, a match day, or a family event. Most people meet Love 21 here first.",
+        "cta": "Find a shift"
+      },
+      "02": {
+        "title": "Stay close",
+        "body": "Once you've seen the impact firsthand, become a recurring monthly donor — the support that keeps classes running year-round.",
+        "cta": "Give monthly"
+      },
+      "03": {
+        "title": "Bring your company",
+        "body": "Introduce Love 21 to your employer. Volunteers are our biggest source of new corporate partners.",
+        "cta": "Start a CSR conversation"
+      }
+    }
+  },
+  "testimonials": {
+    "eyebrow": "A Love 21 Story",
+    "readMore": "Read more member stories",
+    "showLabel": "Show testimonial {{number}}",
+    "items": {
+      "parent": {
+        "quote": "Two years ago, [Name] couldn't finish a lap. This season, [she/he] led the warm-up.",
+        "name": "[Parent name], mother of a Saturday football member"
+      },
+      "volunteer": {
+        "quote": "I signed up for one Saturday shift. Eighteen months later I'm on the events committee.",
+        "name": "[Volunteer name], class volunteer since 2024"
+      },
+      "corporate": {
+        "quote": "Our team came for a CSR morning. Half of us are still volunteering monthly.",
+        "name": "[Company name], corporate partner"
+      }
+    },
+    "spotlightAlt": "A Love 21 member during a community activity"
+  },
+  "faq": {
+    "eyebrow": "Before you reach out",
+    "title": "Questions people actually ask",
+    "items": {
+      "experience": {
+        "q": "Do I need experience to volunteer?",
+        "a": "No. Most of our volunteers have never worked with neurodiverse members before their first shift. Coaches brief you on-site, every time."
+      },
+      "cost": {
+        "q": "Is there a cost for families to join?",
+        "a": "Programme fees are kept deliberately low and needs-based support is available — cost should never be the reason a family doesn't join. Ask us directly through the member app."
+      },
+      "company": {
+        "q": "Can my company send a small group, not a big event?",
+        "a": "Yes — some of our strongest partners started with two or three employees on a single Saturday shift, not a full CSR day."
+      },
+      "donation": {
+        "q": "How is my donation actually used?",
+        "a": "Every tier on this page is tied to a specific, real cost — class sessions, coaching, or programme fees. We're not government-funded, so recurring gifts are what let us plan a full season, not just one month."
+      }
+    }
+  },
+  "newsletter": {
+    "eyebrow": "Stay close",
+    "title": "Stay connected with Love 21",
+    "body": "Receive stories, programme updates, upcoming events, and ways you can continue making an impact — as often as you'd like to hear from us.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@email.com",
+    "frequencyLabel": "Update frequency",
+    "frequencies": {
+      "weekly": "Weekly updates",
+      "biweekly": "Every 2 weeks",
+      "monthly": "Monthly updates",
+      "quarterly": "Quarterly updates",
+      "important": "Only important announcements"
+    },
+    "subscribe": "Subscribe",
+    "closingTitle": "Not ready to wait for the next update?",
+    "closingBody": "You can donate or find a volunteer shift today — both take less than five minutes.",
+    "donate": "Donate",
+    "volunteer": "Volunteer"
+  }
+}

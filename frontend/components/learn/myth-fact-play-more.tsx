@@ -22,13 +22,13 @@ export function MythFactPlayMore({ variant }: MythFactPlayMoreProps) {
 
   return (
     <div className="mt-4 rounded-xl border border-dashed border-brand-sea/40 bg-brand-sea/5 p-4 text-center">
-      <p className="text-sm font-medium text-brand-ink">One claim a day not enough?</p>
-      <p className="mt-1 text-xs text-brand-ink/60">Build a streak with Daily Myth Buster — back tomorrow for a new one.</p>
+      <p className="text-sm font-medium text-brand-ink">Put what you learned into action</p>
+      <p className="mt-1 text-xs text-brand-ink/60">Take today&apos;s myth into a practical Love 21 skill mission.</p>
       <Link
-        href="/learn-play/daily-myth-buster"
+        href="/learn-play/21-moves"
         className="mt-3 inline-block text-sm font-semibold text-brand-sea hover:underline"
       >
-        Play today&apos;s daily challenge →
+        Start 21 Moves →
       </Link>
     </div>
   );

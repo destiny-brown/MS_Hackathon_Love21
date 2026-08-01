@@ -16,7 +16,7 @@ export default function MembersPage() {
     <SiteLayout>
       <PageHero
         title="Join as a Member"
-        subtitle="For people and families who want to take part in Love 21 programmes. Start with a short enquiry — browsing the website does not require login."
+        subtitle="For people and families who want to take part in Love 21 programmes. Start with a short enquiry — browsing the website does not require login. Already registered? Use member login to open your account profile."
         primaryAction={{ label: "Start enquiry", href: "#member-enquiry" }}
         secondaryAction={{ label: "Member login", href: "/login?role=member" }}
       />

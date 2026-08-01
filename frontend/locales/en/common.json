@@ -1,0 +1,51 @@
+{
+  "nav": {
+    "learn": "Learn",
+    "getInvolved": "Get Involved",
+    "impact": "Impact",
+    "stories": "Stories",
+    "events": "Events",
+    "aboutUs": "About Us",
+    "donate": "Donate",
+    "volunteers": "Volunteers",
+    "joinUs": "Join Us",
+    "ourReports": "Our Reports",
+    "newsletter": "Newsletter",
+    "shop": "Shop",
+    "members": "Members",
+    "contactUs": "Contact Us"
+  },
+  "footer": {
+    "tagline": "Empowering the Down syndrome and autistic community in Hong Kong through sport, nutrition, and holistic support.",
+    "explore": "Explore",
+    "more": "More",
+    "copyright": "Love 21 Foundation. All rights reserved.",
+    "charity": "Registered charity in Hong Kong"
+  },
+  "a11y": {
+    "menu": "Accessibility menu",
+    "menuLine1": "Access",
+    "menuLine2": "ibility",
+    "options": "Accessibility options",
+    "textSize": "Text size",
+    "textSizeNormal": "Normal",
+    "textSizeLarge": "Large",
+    "textSizeExtraLarge": "Extra large",
+    "highContrast": "High contrast",
+    "reduceMotion": "Reduce motion",
+    "underlineLinks": "Underline links",
+    "reset": "Reset",
+    "close": "Close",
+    "skipToContent": "Skip to main content",
+    "languageGroup": "Language"
+  },
+  "actions": {
+    "enter": "Enter",
+    "explore": "Explore",
+    "readStory": "Read Story",
+    "discoverMore": "Discover More",
+    "previousStory": "Previous story",
+    "nextStory": "Next story",
+    "goToStory": "Go to story {{number}}"
+  }
+}

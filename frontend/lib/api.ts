@@ -125,6 +125,141 @@ export type GratitudeEntryInput = {
   photo_url?: string | null;
 };
 export type YouTubeSearchResponse = { enabled: boolean; items: YouTubeVideo[]; error: string | null };
+export type VolunteerMatchRequest = {
+  interest: "hands-on" | "food" | "people" | "skills";
+  availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
+  commitment: "one-off" | "weekly" | "long-term";
+  group_size: "solo" | "friend" | "team";
+};
+export type VolunteerMatchItem = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  score: number;
+  reasons: string[];
+};
+export type VolunteerMatchResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  matches: VolunteerMatchItem[];
+  message: string | null;
+};
+export type VolunteerActivity = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  filled?: number | null;
+  total?: number | null;
+  note?: string | null;
+  cta_label?: string;
+};
+export type TrailDebriefRequest = {
+  captain_name?: string;
+  stop_title: string;
+  ability_line: string;
+  sections_completed: number;
+  trail_streak: number;
+  myth_completed_today: boolean;
+  myth_won_today: boolean;
+  myth_statement?: string;
+};
+export type TrailDebriefResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  encouragement: string;
+  friend_prompt: string;
+  suggested_replies: string[];
+  upgrade_message: string;
+  message: string | null;
+};
+export type CaptainSiteLink = {
+  title: string;
+  href: string;
+  description: string;
+};
+export type CaptainToolCall = {
+  name: string;
+  arguments: Record<string, string>;
+};
+export type CaptainChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+  links?: CaptainSiteLink[];
+  actionNote?: string;
+};
+export type CaptainChatRequest = {
+  message: string;
+  history?: CaptainChatMessage[];
+  locale?: "en" | "yue" | "zh";
+};
+export type CaptainChatResponse = {
+  enabled: boolean;
+  reply: string;
+  links: CaptainSiteLink[];
+  tool_calls: CaptainToolCall[];
+  sources: string[];
+  message: string | null;
+};
+export type AdminActivity = {
+  id: number;
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  location: string;
+  description: string;
+  max_capacity: number | null;
+  category: string | null;
+  status: string;
+  registration_count: number;
+  created_at: string;
+};
+export type AdminVolunteerActivity = {
+  id: number;
+  slug: string;
+  icon: string;
+  title: string;
+  description: string;
+  schedule_label: string;
+  location_label: string;
+  category: string;
+  filled_count: number | null;
+  total_spots: number | null;
+  note: string | null;
+  cta_label: string;
+  status: string;
+  display_order: number;
+  created_at: string;
+};
+export type NewsletterSubscriber = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string | null;
+  status: string;
+  subscribed_at: string;
+};
+export type NewsletterDelivery = {
+  id: number;
+  subject: string;
+  content_text: string;
+  recipient_count: number;
+  sent_at: string;
+};
+export type AdminOverview = {
+  event_count: number;
+  volunteer_program_count: number;
+  subscriber_count: number;
+  active_subscriber_count: number;
+};
 
 export function getToken() {
   if (typeof window === "undefined") return null;
@@ -144,13 +279,20 @@ export function clearToken() {
 export function landingPathForRole(role: Role) {
   switch (role) {
     case "admin":
-      return "/dashboard";
+      return "/admin";
     case "member":
       return "/member/profile";
     case "supporter":
     default:
       return "/supporter/dashboard";
   }
+}
+
+export function resolvePostLoginPath(role: Role, nextPath: string | null) {
+  if (nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") && nextPath !== "/login") {
+    return nextPath;
+  }
+  return landingPathForRole(role);
 }
 
 type ApiRequestInit = RequestInit & { redirectOnUnauthorized?: boolean };
@@ -237,4 +379,66 @@ export const api = {
     request<YouTubeSearchResponse>(
       `/ai/youtube/search?q=${encodeURIComponent(query)}&max_results=${encodeURIComponent(String(maxResults))}&max_duration_minutes=${encodeURIComponent(String(maxDurationMinutes))}`,
     ),
+  matchVolunteer: (payload: VolunteerMatchRequest) =>
+    request<VolunteerMatchResponse>("/ai/volunteer/match", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  trailDebrief: (payload: TrailDebriefRequest) =>
+    request<TrailDebriefResponse>("/ai/trail/debrief", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  captainChat: (payload: CaptainChatRequest) =>
+    request<CaptainChatResponse>("/ai/captain/chat", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  adminOverview: () => request<AdminOverview>("/admin/overview"),
+  listAdminActivities: () => request<AdminActivity[]>("/admin/activities"),
+  createAdminActivity: (payload: Omit<AdminActivity, "id" | "registration_count" | "created_at">) =>
+    request<AdminActivity>("/admin/activities", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminActivity: (id: number, payload: Partial<Omit<AdminActivity, "id" | "registration_count" | "created_at">>) =>
+    request<AdminActivity>(`/admin/activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminActivity: (id: number) => request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
+  listAdminVolunteerActivities: () => request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
+  createAdminVolunteerActivity: (payload: Omit<AdminVolunteerActivity, "id" | "created_at">) =>
+    request<AdminVolunteerActivity>("/admin/volunteer-activities", { method: "POST", body: JSON.stringify(payload) }),
+  updateAdminVolunteerActivity: (id: number, payload: Partial<Omit<AdminVolunteerActivity, "id" | "created_at">>) =>
+    request<AdminVolunteerActivity>(`/admin/volunteer-activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  deleteAdminVolunteerActivity: (id: number) => request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
+  listNewsletterSubscribers: () => request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
+  createNewsletterSubscriber: (payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">) =>
+    request<NewsletterSubscriber>("/admin/newsletter/subscribers", { method: "POST", body: JSON.stringify({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone_number: payload.phone_number,
+      status: payload.status,
+    }) }),
+  updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
+    request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, { method: "PATCH", body: JSON.stringify({
+      first_name: payload.first_name,
+      last_name: payload.last_name,
+      email: payload.email,
+      phone_number: payload.phone_number,
+      status: payload.status,
+    }) }),
+  deleteNewsletterSubscriber: (id: number) => request<void>(`/admin/newsletter/subscribers/${id}`, { method: "DELETE" }),
+  listNewsletterDeliveries: () => request<NewsletterDelivery[]>("/admin/newsletter/deliveries"),
+  previewNewsletter: (payload: { subject: string; content: string; unsubscribe_url?: string }) =>
+    request<{ html: string }>("/admin/newsletter/preview", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  sendNewsletter: (payload: { subject: string; content: string }) =>
+    request<{ success: boolean; message: string; sent_count: number }>("/admin/newsletter/send", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  subscribeNewsletter: (payload: { first_name: string; last_name: string; email: string; phone_number?: string | null }) =>
+    request<NewsletterSubscriber>("/newsletter/subscribe", { method: "POST", body: JSON.stringify(payload) }),
+  unsubscribeNewsletter: (token: string) =>
+    request<{ email: string; status: string; message: string }>(`/newsletter/unsubscribe/${token}`, { method: "POST" }),
 };

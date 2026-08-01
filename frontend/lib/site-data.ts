@@ -15,6 +15,8 @@ export const footerNav: NavItem[] = [
   { label: "Partner with Us", href: "/join-us" },
   { label: "Reports", href: "/our-finance" },
   { label: "Newsletter", href: "/newsletter" },
+  { label: "Wishlist: Help Us", href: "/shop" },
+  { label: "Members", href: "/members" },
   { label: "Contact", href: "/contact-us" },
 ];
 
@@ -101,7 +103,7 @@ export const storySpotlight: StorySpotlight[] = [
     tag: "TEDx Speaker & Self-Advocate",
     quote:
       "Delivering my first TEDx talk proved to everyone that having Down syndrome never limits what you can express and contribute.",
-    href: "/media",
+    href: "/stories-media",
     image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1000&q=80",
     alt: "Self-advocate presenting on stage at a public speaking event",
   },
@@ -119,7 +121,7 @@ export const storySpotlight: StorySpotlight[] = [
     tag: "Holistic Health & Sports Champion",
     quote:
       "Overcoming health challenges through tailored nutrition and sports classes, now mentoring younger neurodiverse peers.",
-    href: "/our-programmes",
+    href: "/get-involved",
     image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1000&q=80",
     alt: "Community champion mentoring peers after holistic health progress",
   },
@@ -156,67 +158,102 @@ export const annualReports = [
   { year: "2022-2023", href: "#" },
 ];
 
-export type BoardMember = { slug: string; name: string; bio: string };
+export type BoardMember = {
+  slug: string;
+  name: string;
+  bio: string;
+  /** Display role on the board grid. Defaults to "Board Member". */
+  role?: string;
+  /** Public path under `/images/board/`. Falls back to template icon when missing. */
+  image?: string;
+};
+
+const BOARD_IMAGE_FALLBACK = "/images/board/templateicon.png";
+
+export function boardMemberImage(member: Pick<BoardMember, "image">): string {
+  return member.image || BOARD_IMAGE_FALLBACK;
+}
 
 export const boardMembers: BoardMember[] = [
   {
     slug: "carol-chan",
     name: "Carol Chan",
+    role: "Board Member",
     bio: "Carol has a passion for sports and healthy lifestyle, and embraces a mission in developing the young and promoting healthy family functioning. Professionally, Carol is experienced in nonprofit governance as a seasoned administrator serving one of the leading local NGOs supporting children and youth in Hong Kong.",
   },
   {
     slug: "dan-maley",
     name: "Dan Maley",
+    role: "Board Member",
+    image: "/images/board/dan.png",
     bio: "Dan has resided in Hong Kong since 2019. He is married to his wife Milk and father to Max. Dan is a global citizen who began volunteering at Love 21 Foundation in 2020, initially attending fitness classes and eventually helping teach a weekly boxing class.",
   },
   {
     slug: "dr-ruby-ng",
     name: "Dr. Ruby Ng",
+    role: "Board Member",
     bio: "Dr. Ruby Ng is a Biofeedback Specialist at Stanford Medicine Children's Health in San Francisco, California. Born and raised in Hong Kong, Dr. Ng pursued her education and built her medical career overseas. She is now actively reconnecting with Hong Kong through community service and nonprofit leadership.",
   },
   {
     slug: "edith-chen",
     name: "Edith Chen",
+    role: "Board Member",
+    image: "/images/board/edith.png",
     bio: "Edith Chen brings over 27 years of executive expertise in driving business transformation, multi-market expansion, brand development and governance across the Asia-Pacific region. Having served as President of De Beers APAC, CEO of Brooks Brothers APAC, and Managing Director of Calvin Klein Asia.",
   },
   {
     slug: "elenisymeonidou",
     name: "Eleni Symeonidou",
+    role: "Board Member",
+    image: "/images/board/eleni.png",
     bio: "Eleni, originally from Greece, has lived in Asia since 2013. Her career has been dedicated to developing people in various capacities, driven by a deep commitment to fostering inclusive communities. She has over 25 years of volunteer experience in mental health, homelessness, and supporting minority groups.",
   },
   {
     slug: "james-barrett",
     name: "James Barrett",
+    role: "Board Member",
+    image: "/images/board/james.png",
     bio: "Originally from Australia, James has lived in Hong Kong since 2008. His commitment to the neurodiverse community is deeply personal; his family's involvement dates back to 1953, when his great-grandmother co-founded a kindergarten for children with Down syndrome.",
   },
   {
     slug: "jeff-sayed",
     name: "Jeff Sayed",
+    role: "Board Member",
+    image: "/images/board/jeff.png",
     bio: "Jeff has lived in Hong Kong since 2005. He is married to Wendy and father to Benton and Olivia. Jeff works for Bank of America Merrill Lynch and is currently Compliance & Operational Risk Executive responsible for overseeing the Compliance and Operational Risk framework for APAC Global Technology & Operations.",
   },
   {
     slug: "kevin-wong",
     name: "Kevin Wong",
+    role: "Treasurer",
     bio: "As the treasurer on the Love 21 board, Kevin brings his experience in accounting and finance to ensure the continual and sustained growth of Love 21. Kevin's efforts in developing and maintaining a consolidated and transparent accounting system for Love 21 has been instrumental in our development.",
   },
   {
     slug: "lobo-cheung",
     name: "Lobo Cheung",
+    role: "Board Member",
+    image: "/images/board/lobo.png",
     bio: "Lobo grew up in Hong Kong and went to the United Kingdom for college in 1994. After building a stable career in the tech sector, he decided in 2016 to pursue an Executive MBA and MA in Christian Studies. Lobo has always felt a calling towards building a better future for those in the Down Syndrome and Autism Spectrum Disorder community.",
   },
   {
     slug: "matthew-hosford",
     name: "Matthew Hosford",
+    role: "Board Member",
+    image: "/images/board/matthew.png",
     bio: "Matthew has lived in Hong Kong with his family for 27 years. He has built a career in financial services in Asia including 17 years with Santander, seven years with PwC in their Risk Management Advisory practice, and most recently with the International Finance Corporation.",
   },
   {
     slug: "raymond-tam",
     name: "Raymond Tam",
+    role: "Board Member",
+    image: "/images/board/raymond.png",
     bio: "Raymond is a seasoned financial executive with nearly 30 years of leadership experience in digital wealth, pension, and asset management at Manulife, Value Partners, BlackRock, and Merrill Lynch. He is dedicated to contributing his governance and financial expertise to support community and social impact initiatives.",
   },
   {
     slug: "young-sook-stewart",
     name: "Young-Sook Stewart",
+    role: "Board Member",
+    image: "/images/board/young-sook.png",
     bio: "As the APAC Leader of Talent Function for EY Financial Services Organisation, Young-Sook manages operations across Oceania, Greater China, Japan, Korea, and ASEAN. Her dynamic team has been instrumental in driving APAC FSO's robust business growth via talent acquisition, retention, and development.",
   },
 ];

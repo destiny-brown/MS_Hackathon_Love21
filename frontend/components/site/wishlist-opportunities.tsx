@@ -23,20 +23,20 @@ export function WishlistOpportunities() {
   }, []);
 
   if (loading) {
-    return <p className="text-brand-ink/70" role="status">Loading wishlist…</p>;
+    return <p className="text-brand-dark/70" role="status">Loading wishlist…</p>;
   }
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-brand-sand bg-white p-6">
-        <p className="font-semibold text-brand-ink">The wishlist is temporarily unavailable.</p>
-        <p className="mt-2 text-sm text-brand-ink/70">{error}</p>
+      <div className="rounded-2xl border border-brand-light bg-white p-6">
+        <p className="font-semibold text-brand-dark">The wishlist is temporarily unavailable.</p>
+        <p className="mt-2 text-sm text-brand-dark/70">{error}</p>
       </div>
     );
   }
 
   if (!items.length) {
-    return <p className="text-brand-ink/70">Love 21’s current needs will be shared here soon.</p>;
+    return <p className="text-brand-dark/70">Love 21’s current needs will be shared here soon.</p>;
   }
 
   return (

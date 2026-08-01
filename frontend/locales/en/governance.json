@@ -1,0 +1,93 @@
+{
+  "programmes": {
+    "p0": {
+      "title": "Sports",
+      "description": "Our sports programme is designed without limitations. We aim to give our beneficiaries the greatest opportunity to reach their full potential by offering a comprehensive range of activities while also striving for excellence in each sport."
+    },
+    "p1": {
+      "title": "Nutrition",
+      "description": "Sport classes alone are not enough to significantly extend the life expectancy of our beneficiaries. This is why we've developed a well thought out nutrition programme to help our community make significant healthy lifestyle changes."
+    },
+    "p2": {
+      "title": "Family",
+      "description": "Love 21's focus on family sets us apart. Our parent beneficiaries play a huge role in our classes. We offer specialty classes for parents only and allow parental participation in a large number of our sport and healthy lifestyle classes."
+    },
+    "p3": {
+      "title": "CSR",
+      "description": "Our Corporate Social Responsibility Programme is an extremely important one for Hong Kong. Your employees will learn about our beneficiary's amazing ability in sport, and also about their greatest ability in bringing the best out of people."
+    }
+  },
+  "board": {
+    "carol-chan": {
+      "name": "Carol Chan",
+      "bio": "Carol has a passion for sports and healthy lifestyle, and embraces a mission in developing the young and promoting healthy family functioning. Professionally, Carol is experienced in nonprofit governance as a seasoned administrator serving one of the leading local NGOs supporting children and youth in Hong Kong."
+    },
+    "dan-maley": {
+      "name": "Dan Maley",
+      "bio": "Dan has resided in Hong Kong since 2019. He is married to his wife Milk and father to Max. Dan is a global citizen who began volunteering at Love 21 Foundation in 2020, initially attending fitness classes and eventually helping teach a weekly boxing class."
+    },
+    "dr-ruby-ng": {
+      "name": "Dr. Ruby Ng",
+      "bio": "Dr. Ruby Ng is a Biofeedback Specialist at Stanford Medicine Children's Health in San Francisco, California. Born and raised in Hong Kong, Dr. Ng pursued her education and built her medical career overseas. She is now actively reconnecting with Hong Kong through community service and nonprofit leadership."
+    },
+    "edith-chen": {
+      "name": "Edith Chen",
+      "bio": "Edith Chen brings over 27 years of executive expertise in driving business transformation, multi-market expansion, brand development and governance across the Asia-Pacific region. Having served as President of De Beers APAC, CEO of Brooks Brothers APAC, and Managing Director of Calvin Klein Asia."
+    },
+    "elenisymeonidou": {
+      "name": "Eleni Symeonidou",
+      "bio": "Eleni, originally from Greece, has lived in Asia since 2013. Her career has been dedicated to developing people in various capacities, driven by a deep commitment to fostering inclusive communities. She has over 25 years of volunteer experience in mental health, homelessness, and supporting minority groups."
+    },
+    "james-barrett": {
+      "name": "James Barrett",
+      "bio": "Originally from Australia, James has lived in Hong Kong since 2008. His commitment to the neurodiverse community is deeply personal; his family's involvement dates back to 1953, when his great-grandmother co-founded a kindergarten for children with Down syndrome."
+    },
+    "jeff-sayed": {
+      "name": "Jeff Sayed",
+      "bio": "Jeff has lived in Hong Kong since 2005. He is married to Wendy and father to Benton and Olivia. Jeff works for Bank of America Merrill Lynch and is currently Compliance & Operational Risk Executive responsible for overseeing the Compliance and Operational Risk framework for APAC Global Technology & Operations."
+    },
+    "kevin-wong": {
+      "name": "Kevin Wong",
+      "bio": "As the treasurer on the Love 21 board, Kevin brings his experience in accounting and finance to ensure the continual and sustained growth of Love 21. Kevin's efforts in developing and maintaining a consolidated and transparent accounting system for Love 21 has been instrumental in our development."
+    },
+    "lobo-cheung": {
+      "name": "Lobo Cheung",
+      "bio": "Lobo grew up in Hong Kong and went to the United Kingdom for college in 1994. After building a stable career in the tech sector, he decided in 2016 to pursue an Executive MBA and MA in Christian Studies. Lobo has always felt a calling towards building a better future for those in the Down Syndrome and Autism Spectrum Disorder community."
+    },
+    "matthew-hosford": {
+      "name": "Matthew Hosford",
+      "bio": "Matthew has lived in Hong Kong with his family for 27 years. He has built a career in financial services in Asia including 17 years with Santander, seven years with PwC in their Risk Management Advisory practice, and most recently with the International Finance Corporation."
+    },
+    "raymond-tam": {
+      "name": "Raymond Tam",
+      "bio": "Raymond is a seasoned financial executive with nearly 30 years of leadership experience in digital wealth, pension, and asset management at Manulife, Value Partners, BlackRock, and Merrill Lynch. He is dedicated to contributing his governance and financial expertise to support community and social impact initiatives."
+    },
+    "young-sook-stewart": {
+      "name": "Young-Sook Stewart",
+      "bio": "As the APAC Leader of Talent Function for EY Financial Services Organisation, Young-Sook manages operations across Oceania, Greater China, Japan, Korea, and ASEAN. Her dynamic team has been instrumental in driving APAC FSO's robust business growth via talent acquisition, retention, and development."
+    }
+  },
+  "internship": {
+    "roles": [
+      "Devising a sports programme for our community",
+      "Managing the operations of Love 21 Space (our community centre)",
+      "Proposal writing and project/programme reporting",
+      "Refining and executing our nutrition programme",
+      "Administrative and operational work",
+      "Marketing and design"
+    ],
+    "requirements": [
+      "Fluent English and Chinese, written and spoken",
+      "Currently enrolled in university",
+      "Interest and/or experience in the NGO industry preferred",
+      "Flexible, compassionate and proactive"
+    ],
+    "requirementsTitle": "Requirements",
+    "rolesTitle": "Roles",
+    "intro": "We welcome students majoring in related fields to apply for an internship at Love 21! As an intern, you'll gain first-hand experience in the operations (back-end and front-end) and management of a young and growing NGO. Depending on your interests and major, as well as the duration of your internship, your roles may include:",
+    "contactBefore": "For interested parties, please send your CV and cover letter to Jeff (",
+    "contactMiddle": ") and Maggie (",
+    "contactAfter": ").",
+    "availability": "We accept applications year round, and our internship programme can be tailored to suit your schedule. Please let us know your availability in your application."
+  }
+}

@@ -55,8 +55,8 @@ export default function MemberProfilePage() {
 
   if (loading || !user || user.role !== "member") {
     return (
-      <main className="flex min-h-screen items-center justify-center px-4 py-10">
-        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Checking member access...</p>
+      <main className="flex min-h-[40vh] items-center justify-center px-4 py-10">
+        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Loading member profile…</p>
       </main>
     );
   }
