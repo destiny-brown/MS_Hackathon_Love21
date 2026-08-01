@@ -305,7 +305,7 @@ export default function GetInvolvedPage() {
           <div className="relative">
             <Eyebrow>Celebrating Ability</Eyebrow>
             <h1 className="mt-3 font-serif-display text-4xl leading-[1.05] text-brand-dark sm:text-5xl lg:text-6xl">
-              Talent waits. Opportunity builds. 
+              Talent waits. Opportunity builds.
               <br />
               <span className="relative italic text-brand-red">
                 Join us.
@@ -324,7 +324,6 @@ export default function GetInvolvedPage() {
                   />
                 </svg>
               </span>{" "}
-           
             </h1>
             <p className="mt-6 max-w-lg text-lg text-brand-dark/75">
               Every month, 600+ Hong Kong families walk through our doors for sport, nutrition, and
