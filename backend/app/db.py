@@ -57,7 +57,11 @@ def ensure_role_enum_compatibility() -> None:
         )
 
     with engine.begin() as connection:
-        connection.execute(text("UPDATE users SET role = 'supporter' WHERE role IN ('donor', 'volunteer')"))
+        # Cast to text so PostgreSQL accepts the comparison after the enum
+        # was narrowed to supporter/member/admin (donor/volunteer are invalid literals).
+        connection.execute(
+            text("UPDATE users SET role = 'supporter' WHERE role::text IN ('donor', 'volunteer')")
+        )
 
 
 def get_db():
