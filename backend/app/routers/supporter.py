@@ -22,12 +22,17 @@ from app.schemas.supporter import (
     DonationRead,
     DonationReceipt,
     ImpactItem,
+    MemberDashboardRead,
+    RecommendedEventRead,
+    RecommendedEventsResponse,
     SupporterDashboardRead,
     UserPlayStateRead,
     UserPlayStateUpdate,
+    VolunteerActivityRegistrationRead,
     VolunteerHourCreate,
     VolunteerHourRead,
 )
+from app.services.activity_recommendations import recommend_events_for_supporter
 from app.services.captain_greeting import (
     build_trail_snapshot,
     generate_greeting,
@@ -318,3 +323,18 @@ def upsert_play_state(
     db.commit()
     db.refresh(state)
     return serialize_play_state(state)
+
+
+@router.get("/supporter/recommended-events", response_model=RecommendedEventsResponse)
+def recommended_events(
+    current_user: User = Depends(require_roles(Role.SUPPORTER)),
+    db: Session = Depends(get_db),
+) -> RecommendedEventsResponse:
+    headline, matches, ai_enhanced, message = recommend_events_for_supporter(db, current_user)
+    return RecommendedEventsResponse(
+        enabled=bool(matches),
+        ai_enhanced=ai_enhanced,
+        headline=headline,
+        matches=[RecommendedEventRead.model_validate(match) for match in matches],
+        message=message,
+    )

@@ -170,6 +170,38 @@ export type GratitudeEntryInput = {
   message: string;
   photo_url?: string | null;
 };
+export type RecommendedEvent = {
+  id: number;
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  location: string;
+  description: string;
+  score: number;
+  reasons: string[];
+  signed_up: boolean;
+};
+export type RecommendedEventsResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  headline: string;
+  matches: RecommendedEvent[];
+  message: string | null;
+};
+export type MemberDashboard = {
+  registered_activities: VolunteerActivityRegistration[];
+  total_registrations: number;
+  upcoming_registrations: number;
+};
+export type VolunteerActivityRegistration = {
+  id: number;
+  user_id: number;
+  activity_id: number;
+  activity_slug: string;
+  activity_name: string;
+  status: string;
+  created_at: string;
+};
 export type VolunteerMatchRequest = {
   interest: "hands-on" | "food" | "people" | "skills";
   availability: "weekday-am" | "weekday-pm" | "weekend-am" | "flexible";
@@ -206,15 +238,6 @@ export type VolunteerActivity = {
   note?: string | null;
   cta_label?: string;
   signed_up: boolean;
-};
-export type VolunteerActivityRegistration = {
-  id: number;
-  user_id: number;
-  activity_id: number;
-  activity_slug: string;
-  activity_name: string;
-  status: string;
-  created_at: string;
 };
 export type TrailDebriefRequest = {
   captain_name?: string;
@@ -521,7 +544,7 @@ export function landingPathForRole(role: Role) {
     case "admin":
       return "/admin";
     case "member":
-      return "/member/profile";
+      return "/member/dashboard";
     case "supporter":
     default:
       return "/supporter/dashboard";
@@ -674,6 +697,9 @@ export const api = {
     }>("/admin/metrics"),
   recurringDonation: () =>
     request<{ email: string; status: string }>("/supporter/recurring-donation"),
+  getRecommendedEvents: () =>
+    request<RecommendedEventsResponse>("/supporter/recommended-events"),
+  memberDashboard: () => request<MemberDashboard>("/member/dashboard"),
   memberProfile: () =>
     request<{ email: string; profile_status: string }>("/member/profile"),
   listPublicGratitudeEntries: () =>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 
@@ -68,9 +69,14 @@ export default function MemberProfilePage() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Member area</p>
             <h1 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Member profile</h1>
-            <p className="mt-2 text-sm text-brand-ink/70">Signed in as {user.email} · {user.role}</p>
+            <p className="mt-2 text-sm text-brand-ink/70">Signed in as {user.email}</p>
           </div>
-          <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline">
+              <Link href="/member/dashboard">My dashboard</Link>
+            </Button>
+            <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
+          </div>
         </header>
 
         {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}

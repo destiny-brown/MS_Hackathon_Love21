@@ -154,3 +154,31 @@ class CaptainsCornerRead(BaseModel):
     play_state: UserPlayStateRead
     captain_message: str
     ai_enhanced: bool
+
+
+class RecommendedEventRead(BaseModel):
+    id: int
+    title: str
+    starts_at: datetime
+    ends_at: datetime | None
+    location: str
+    description: str
+    score: int = Field(ge=0, le=100)
+    reasons: list[str]
+    signed_up: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class RecommendedEventsResponse(BaseModel):
+    enabled: bool
+    ai_enhanced: bool
+    headline: str
+    matches: list[RecommendedEventRead]
+    message: str | None = None
+
+
+class MemberDashboardRead(BaseModel):
+    registered_activities: list[VolunteerActivityRegistrationRead]
+    total_registrations: int
+    upcoming_registrations: int

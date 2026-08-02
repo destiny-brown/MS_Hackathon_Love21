@@ -16,6 +16,7 @@ from app.routers import (
     gratitude_entries,
     items,
     learn,
+    member,
     newsletter,
     role_examples,
     support_opportunities,
@@ -61,6 +62,7 @@ app.include_router(captain_chat.router)
 app.include_router(trail_debrief.router)
 app.include_router(support_opportunities.router)
 app.include_router(supporter.router)
+app.include_router(member.router)
 app.include_router(gratitude_entries.router)
 app.include_router(learn.router)
 app.include_router(role_examples.router)

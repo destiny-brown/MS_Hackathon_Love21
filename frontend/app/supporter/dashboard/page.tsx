@@ -6,6 +6,7 @@ import { CalendarDays, Clock3, Gift, HeartHandshake, Plus, Users } from "lucide-
 
 import { SupportProgress, formatHkd } from "@/components/site/support-progress";
 import { CaptainsCorner } from "@/components/supporter/captains-corner";
+import { RecommendedEvents } from "@/components/supporter/recommended-events";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -164,6 +165,22 @@ export default function SupporterDashboardPage() {
         </header>
 
         <CaptainsCorner />
+
+        <RecommendedEvents
+          saving={saving}
+          onSignUp={async (activityId) => {
+            setSaving(true);
+            setError("");
+            try {
+              await api.signUpForActivity(activityId);
+              await loadSupporterData();
+            } catch (err) {
+              setError(err instanceof Error ? err.message : "Could not sign up for this activity");
+            } finally {
+              setSaving(false);
+            }
+          }}
+        />
 
         {authError ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{authError}</p> : null}
         {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
