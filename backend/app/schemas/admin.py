@@ -61,6 +61,20 @@ class VolunteerActivityAdminRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class VolunteerActivityRegistrationAdminRead(BaseModel):
+    id: int
+    user_id: int
+    user_email: EmailStr
+    user_role: str
+    activity_id: int
+    activity_slug: str
+    activity_name: str
+    status: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class VolunteerActivityAdminCreate(BaseModel):
     slug: str = Field(min_length=1, max_length=120)
     icon: str = Field(default="🤝", max_length=16)

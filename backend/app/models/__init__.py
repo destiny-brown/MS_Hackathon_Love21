@@ -25,5 +25,6 @@ __all__ = [
     "UserPlayState",
     "CaptainGreetingCache",
     "VolunteerActivity",
+    "VolunteerActivityRegistration",
     "VolunteerHour",
 ]
