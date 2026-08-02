@@ -1,0 +1,191 @@
+{
+  "common": {
+    "site": "Site",
+    "logOut": "Log out",
+    "profile": "Profile",
+    "signedInAs": "Signed in as {{email}}",
+    "loadingDashboard": "Loading your dashboard…",
+    "joined": "Joined",
+    "join": "Join",
+    "signUp": "Sign up",
+    "signedUp": "Signed up",
+    "refresh": "Refresh",
+    "viewAll": "View all",
+    "noNotes": "No notes",
+    "manualLog": "Manual log",
+    "monthly": "Monthly",
+    "oneTime": "One-time",
+    "generalSupport": "General Love 21 support",
+    "connectedFunded": "{{amount}} connected · {{percent}}% funded",
+    "hoursCount": "{{count}} hours",
+    "hoursUnit": "{{count}} hrs",
+    "openCount": "{{count}} open",
+    "openEvents_one": "{{count}} open event",
+    "openEvents_other": "{{count}} open events",
+    "rolesCount_one": "{{count}} role",
+    "rolesCount_other": "{{count}} roles",
+    "rolesAvailable": "{{count}} available",
+    "matchPercent": "{{score}}% match"
+  },
+  "captainsCorner": {
+    "title": "Captain's Corner",
+    "loading": "Loading Captain's Corner…",
+    "unavailable": "Captain's Corner is unavailable right now.",
+    "loadError": "Could not load Captain's Corner",
+    "aiBadge": "Captain + AI",
+    "captainBadge": "Captain",
+    "captainLabel": "Captain 21",
+    "dayLocation": "Day {{day}} · {{location}}",
+    "streak": "Streak {{count}}",
+    "movesLeft_one": "{{count}} move left",
+    "movesLeft_other": "{{count}} moves left",
+    "continueMoves": "Continue 21 Moves",
+    "exploreLearn": "Explore Learn"
+  },
+  "recommendedEvents": {
+    "title": "Events picked for you",
+    "loading": "Finding events based on your volunteering…",
+    "loadError": "Could not load recommendations",
+    "aiMatch": "AI match",
+    "suggested": "Suggested",
+    "scrollLabel": "Recommended events"
+  },
+  "recommendedRoles": {
+    "title": "Roles picked for you",
+    "loading": "Finding volunteer roles based on your programmes…",
+    "loadError": "Could not load recommendations",
+    "aiMatch": "AI match",
+    "suggested": "Suggested",
+    "scrollLabel": "Recommended volunteer roles"
+  },
+  "supporter": {
+    "eyebrow": "Supporter dashboard",
+    "title": "Your Love 21 impact",
+    "signedInHint": "Browse roles on <link>Our Volunteer</link>.",
+    "checkingAccess": "Checking supporter access…",
+    "loadError": "Could not load supporter dashboard",
+    "signUpError": "Could not sign up for this activity",
+    "logHoursError": "Could not log volunteer hours",
+    "stats": {
+      "totalGiven": "Total given",
+      "totalGivenHelp": "Gifts on this account.",
+      "recurring": "Recurring",
+      "recurringHelp": "Monthly support status.",
+      "volunteerHours": "Volunteer hours",
+      "volunteerHoursHelp": "Logged hours total.",
+      "activities": "Activities",
+      "activitiesHelp": "Signed-up events."
+    },
+    "tabs": {
+      "ariaLabel": "Dashboard sections",
+      "impact": "Impact",
+      "volunteer": "Volunteer"
+    },
+    "giving": {
+      "title": "My giving",
+      "description": "Donation history and recurring status.",
+      "scrollLabel": "Donation history",
+      "empty": "No donations recorded yet."
+    },
+    "impact": {
+      "title": "Impact",
+      "description": "How your giving connects to priorities.",
+      "scrollLabel": "Impact items",
+      "empty": "Make a designated gift to see impact here."
+    },
+    "volunteering": {
+      "title": "My volunteering",
+      "description": "Calendar, hours, and history.",
+      "calendarLabel": "Activity calendar",
+      "calendarEmpty": "Sign up for an activity to see it here.",
+      "logHoursTitle": "Log volunteer hours",
+      "activityOptional": "Activity (optional)",
+      "manualOption": "Manual log / no activity",
+      "hours": "Hours",
+      "notes": "Notes",
+      "notesPlaceholder": "What did you help with?",
+      "addHours": "Add hours",
+      "hoursHistory": "Hours history",
+      "hoursHistoryLabel": "Volunteer hours history",
+      "hoursEmpty": "No hours logged yet."
+    },
+    "events": {
+      "title": "Activity sign-up",
+      "searchPlaceholder": "Search events…",
+      "searchAria": "Search events",
+      "scrollLabel": "Upcoming events",
+      "noMatch": "No events match your search.",
+      "empty": "No open events right now."
+    },
+    "summaryAria": "Supporter summary"
+  },
+  "member": {
+    "eyebrow": "Member dashboard",
+    "title": "Your Love 21 activities",
+    "checkingAccess": "Checking member access…",
+    "loadError": "Could not load member dashboard",
+    "registerError": "Could not register for this activity",
+    "joinedOn": "Joined {{date}} · {{status}}",
+    "stats": {
+      "joined": "Joined",
+      "joinedHelp": "Programmes on your account.",
+      "active": "Active",
+      "activeHelp": "Current registrations.",
+      "openRoles": "Open roles",
+      "openRolesHelp": "You can still join these."
+    },
+    "tabs": {
+      "ariaLabel": "Activity sections",
+      "browse": "Browse ({{count}})",
+      "joined": "Joined ({{count}})"
+    },
+    "joined": {
+      "title": "My joined activities",
+      "description": "Programmes linked to your account.",
+      "descriptionDesktop": "Programmes linked to your member account.",
+      "scrollLabel": "Joined activities list",
+      "empty": "No joined activities yet.",
+      "browseLink": "Browse open roles"
+    },
+    "browse": {
+      "title": "Join an activity",
+      "description": "Scroll to browse open roles.",
+      "descriptionDesktop": "Browse open volunteer roles — scroll for more.",
+      "searchPlaceholder": "Search roles…",
+      "searchAria": "Search volunteer roles",
+      "scrollLabel": "Available volunteer roles",
+      "showJoined": "Show joined ({{count}})",
+      "hideJoined": "Hide joined",
+      "noMatch": "No roles match your search.",
+      "empty": "No open roles right now.",
+      "fullPage": "Full volunteer page"
+    },
+    "summaryAria": "Member summary"
+  },
+  "profile": {
+    "eyebrow": "Member area",
+    "title": "Member profile",
+    "myDashboard": "My dashboard",
+    "gratitudeTitle": "Gratitude wall",
+    "gratitudeDescription": "Share a short thank-you for Love 21 staff to review.",
+    "profileTitle": "Profile details",
+    "profileDescription": "Update contact details for Love 21 programmes.",
+    "displayName": "Display name",
+    "displayNamePlaceholder": "Your name",
+    "programmeInterest": "Programme interest",
+    "programmeInterestPlaceholder": "Tell Love 21 what you would like to update.",
+    "submit": "Submit for admin approval",
+    "submitting": "Submitting…",
+    "saved": "Profile saved for review.",
+    "loadError": "Could not load member profile"
+  },
+  "legacy": {
+    "checkingAccess": "Checking dashboard access…",
+    "activeMembers": "Active members",
+    "recurringDonations": "Recurring donations",
+    "openVolunteerRoles": "Open volunteer roles",
+    "accessibleLabels": "Accessible labels for screen readers",
+    "noDescription": "No description",
+    "noItems": "No items yet. Create one."
+  }
+}

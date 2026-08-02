@@ -24,6 +24,8 @@ export const i18nNamespaces = [
   "learn",
   "volunteer",
   "getInvolved",
+  "dashboard",
+  "admin",
 ] as const;
 
 export type I18nNamespace = (typeof i18nNamespaces)[number];

@@ -1,30 +1,27 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 import { ContactForm } from "@/components/site/contact-form";
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { Button } from "@/components/ui/button";
 
-const memberSteps = [
-  "Tell us who you are and how to contact you.",
-  "Love 21 will follow up with the right programme information.",
-  "You can log in later if you already have a member account.",
-];
-
 export default function MembersPage() {
+  const { t } = useTranslation("pages");
+  const memberSteps = t("members.steps", { returnObjects: true }) as string[];
+
   return (
     <SiteLayout>
-      <PageHero
-        title="Join as a Member"
-        subtitle="For people and families who want to take part in Love 21 programmes. Start with a short enquiry — browsing the website does not require login. Already registered? Use member login to open your account profile."
-        primaryAction={{ label: "Start enquiry", href: "#member-enquiry" }}
-        secondaryAction={{ label: "Member login", href: "/login?role=member" }}
-      />
+      <TranslatedPageHero titleKey="members.title" subtitleKey="members.subtitle" />
       <section id="member-enquiry" className="scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.8fr_1fr]">
           <aside className="rounded-3xl border border-brand-sand bg-white p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">What happens next</p>
-            <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">A simple first step</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+              {t("members.whatHappensNext")}
+            </p>
+            <h2 className="mt-2 font-serif-display text-3xl text-brand-ink">{t("members.stepsTitle")}</h2>
             <ol className="mt-5 space-y-4 text-sm leading-6 text-brand-ink/75">
               {memberSteps.map((step, index) => (
                 <li key={step} className="flex gap-3">
@@ -36,7 +33,7 @@ export default function MembersPage() {
               ))}
             </ol>
             <Button asChild variant="outline" className="mt-6">
-              <Link href="/our-programmes">See programmes first</Link>
+              <Link href="/our-programmes">{t("members.seeProgrammes")}</Link>
             </Button>
           </aside>
           <div>

@@ -2,8 +2,8 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { GratitudeModerationPanel } from "@/components/admin/gratitude-moderation-panel";
 import { SupportOpportunityManager } from "@/components/support-opportunity-manager";
 import { Button } from "@/components/ui/button";
@@ -19,10 +19,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api, type Item } from "@/lib/api";
 import { signOutToLogin, useRequireRoles } from "@/lib/auth";
-import { Locale, t } from "@/lib/i18n";
 
 export default function DashboardPage() {
-  const [locale, setLocale] = useState<Locale>("en");
+  const { t } = useTranslation(["dashboard", "common", "admin"]);
   const { user, loading, error: authError } = useRequireRoles("admin");
   const [items, setItems] = useState<Item[]>([]);
   const [metrics, setMetrics] = useState<{
@@ -87,7 +86,7 @@ export default function DashboardPage() {
           className="rounded-md border p-4 text-sm text-muted-foreground"
           role="status"
         >
-          Checking dashboard access...
+          {t("legacy.checkingAccess")}
         </p>
       </main>
     );
@@ -99,16 +98,15 @@ export default function DashboardPage() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              {t(locale, "dashboard")}
+              {t("common:dashboard")}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {t(locale, "signedInAs")} {user.email} · {user.role}
+              {t("common.signedInAs", { email: user.email })} · {user.role}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher locale={locale} onChange={setLocale} />
             <Button variant="outline" onClick={signOutToLogin}>
-              {t(locale, "logout")}
+              {t("common.logOut")}
             </Button>
           </div>
         </header>
@@ -136,19 +134,19 @@ export default function DashboardPage() {
           >
             <Card>
               <CardHeader>
-                <CardDescription>Active members</CardDescription>
+                <CardDescription>{t("legacy.activeMembers")}</CardDescription>
                 <CardTitle>{metrics.active_members}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader>
-                <CardDescription>Recurring donations</CardDescription>
+                <CardDescription>{t("legacy.recurringDonations")}</CardDescription>
                 <CardTitle>{metrics.monthly_recurring_donations}</CardTitle>
               </CardHeader>
             </Card>
             <Card>
               <CardHeader>
-                <CardDescription>Open volunteer roles</CardDescription>
+                <CardDescription>{t("legacy.openVolunteerRoles")}</CardDescription>
                 <CardTitle>{metrics.open_volunteer_roles}</CardTitle>
               </CardHeader>
             </Card>
@@ -161,17 +159,16 @@ export default function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>
-                {editing ? t(locale, "edit") : t(locale, "createItem")}
+                {editing ? t("admin:events.editTitle") : t("admin:events.createTitle")}
               </CardTitle>
               <CardDescription>
-                Accessible labels, visible focus states, and mobile-first
-                spacing.
+                {t("legacy.accessibleLabels")}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={onSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="title">{t(locale, "title")}</Label>
+                  <Label htmlFor="title">{t("admin:events.titleLabel")}</Label>
                   <Input
                     id="title"
                     value={title}
@@ -181,7 +178,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">
-                    {t(locale, "description")}
+                    {t("admin:events.descriptionLabel")}
                   </Label>
                   <Textarea
                     id="description"
@@ -192,7 +189,7 @@ export default function DashboardPage() {
                 <div className="flex gap-2">
                   <Button type="submit">
                     <Plus className="mr-2 h-4 w-4" />
-                    {t(locale, "save")}
+                    {editing ? t("admin:events.update") : t("admin:events.create")}
                   </Button>
                   {editing ? (
                     <Button
@@ -204,7 +201,7 @@ export default function DashboardPage() {
                         setDescription("");
                       }}
                     >
-                      {t(locale, "cancel")}
+                      {t("admin:events.cancel")}
                     </Button>
                   ) : null}
                 </div>
@@ -214,7 +211,7 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>{t(locale, "items")}</CardTitle>
+              <CardTitle>{t("admin:events.allEvents")}</CardTitle>
               <CardDescription>
                 This CRUD UI maps to the owned backend Item resource.
               </CardDescription>
@@ -227,7 +224,7 @@ export default function DashboardPage() {
                       <div>
                         <h2 className="font-semibold">{item.title}</h2>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          {item.description || "No description"}
+                          {item.description || t("legacy.noDescription")}
                         </p>
                         <p className="mt-2 text-xs text-muted-foreground">
                           {new Date(item.created_at).toLocaleString()}
@@ -239,14 +236,14 @@ export default function DashboardPage() {
                           size="sm"
                           onClick={() => startEdit(item)}
                         >
-                          {t(locale, "edit")}
+                          {t("admin:events.edit")}
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
                           onClick={() => remove(item)}
                         >
-                          {t(locale, "delete")}
+                          {t("admin:events.delete")}
                         </Button>
                       </div>
                     </div>
@@ -254,7 +251,7 @@ export default function DashboardPage() {
                 ))}
                 {items.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
-                    No items yet. Create one.
+                    {t("legacy.noItems")}
                   </p>
                 ) : null}
               </div>

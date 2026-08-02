@@ -1,7 +1,9 @@
 {
   "hero": {
-    "title": "Back Their Potential",
-    "subtitle": "Choose the campaign or cause that speaks to you and help create more opportunities for every ability to shine."
+    "title": "Donate",
+    "subtitle": "Choose one clear way to help. Your gift supports sports, nutrition, family programmes, and everyday care for Love 21 members.",
+    "startDonation": "Start donation",
+    "seeWishlist": "See wishlist"
   },
   "transparency": {
     "eyebrow": "Donor transparency",

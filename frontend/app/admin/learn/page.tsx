@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, FileText, HelpCircle, Video } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,6 +31,7 @@ const learnWorkspaces = [
 ];
 
 export default function AdminLearnHubPage() {
+  const { t } = useTranslation("admin");
   const [counts, setCounts] = useState({ questions: 0, resources: 0, videos: 0 });
 
   useEffect(() => {
@@ -48,15 +50,15 @@ export default function AdminLearnHubPage() {
   return (
     <>
       <AdminPageHeader
-        title="Learn content"
-        description="Manage myth-vs-fact quizzes, daily myths, resource links, and short videos for the public Learn section."
+        title={t("learn.hubTitle")}
+        description={t("learn.hubDescription")}
         actions={
           <Link
             href="/learn-play"
             className="inline-flex items-center rounded-md border border-brand-sand bg-white px-3 py-2 text-sm font-medium text-brand-ink hover:border-brand-coral/40"
           >
             <BookOpen className="mr-1.5 h-4 w-4" aria-hidden="true" />
-            Preview Learn
+            {t("learn.previewLearn")}
           </Link>
         }
       />

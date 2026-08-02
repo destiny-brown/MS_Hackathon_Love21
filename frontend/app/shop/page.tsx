@@ -5,12 +5,12 @@ import { SiteLayout } from "@/components/site/site-layout";
 import { WishlistOpportunities } from "@/components/site/wishlist-opportunities";
 import { useTranslation } from "react-i18next";
 
-export default function WishlistPage() {
+export default function ShopPage() {
   const { t } = useTranslation("donate");
 
   return (
     <SiteLayout>
-      <TranslatedPageHero titleKey="wishlist.title" subtitleKey="wishlist.subtitle" />
+      <TranslatedPageHero titleKey="shop.title" subtitleKey="shop.subtitle" ns="pages" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 rounded-3xl border border-brand-sand bg-white p-6 sm:p-8">

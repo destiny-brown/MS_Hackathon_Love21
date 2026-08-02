@@ -1,0 +1,119 @@
+"use client";
+
+import Image from "next/image";
+
+import { BrandCard } from "@/components/brand/BrandCard";
+import { CtaButton } from "@/components/brand/CtaButton";
+import { Eyebrow } from "@/components/brand/Eyebrow";
+import { Reveal } from "@/components/brand/Reveal";
+import { DonationAmountProvider } from "@/components/site/donation-amount-context";
+import { DonationOpportunities } from "@/components/site/donation-opportunities";
+import { DonationTierGrid } from "@/components/site/donation-tier-grid";
+import { DonateGratitudeWall } from "@/components/site/donate-gratitude-wall";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
+import { SiteLayout } from "@/components/site/site-layout";
+import { useTranslation } from "react-i18next";
+
+export function DonatePageContent({
+  suggestedAmount,
+  initialItemSlug,
+}: {
+  suggestedAmount?: number;
+  initialItemSlug?: string;
+}) {
+  const { t } = useTranslation("donate");
+
+  return (
+    <SiteLayout>
+      <TranslatedPageHero
+        ns="donate"
+        titleKey="hero.title"
+        subtitleKey="hero.subtitle"
+        actionNs="donate"
+        primaryActionKey="hero.startDonation"
+        primaryActionHref="#donation-form"
+        secondaryActionKey="hero.seeWishlist"
+        secondaryActionHref="/wishlist"
+      />
+      <DonationAmountProvider defaultAmount={suggestedAmount}>
+        <Reveal>
+          <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
+            <div className="relative mx-auto max-w-6xl">
+              <Eyebrow>{t("transparency.eyebrow")}</Eyebrow>
+              <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">
+                {t("transparency.title")}
+              </h2>
+              <DonationTierGrid />
+              <div className="mt-8">
+                <CtaButton href="/donate#donation-form">{t("transparency.cta")}</CtaButton>
+              </div>
+            </div>
+          </section>
+        </Reveal>
+
+        <Reveal>
+          <DonateGratitudeWall />
+        </Reveal>
+
+        <Reveal>
+          <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-6xl space-y-12">
+              <div className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
+                <div className="space-y-4 text-brand-dark/80">
+                  <h2 className="font-serif-display text-4xl text-brand-dark">{t("body.title")}</h2>
+                  <p>{t("body.p1")}</p>
+                  <p>{t("body.p2")}</p>
+                </div>
+                <BrandCard as="aside" className="rounded-2xl p-6 sm:p-6">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
+                    {t("aside.eyebrow")}
+                  </p>
+                  <h2 className="mt-2 font-serif-display text-3xl text-brand-dark">{t("aside.title")}</h2>
+                  <p className="mt-3 text-sm text-brand-dark/75">{t("aside.body")}</p>
+                </BrandCard>
+              </div>
+
+              <DonationOpportunities initialItemSlug={initialItemSlug} />
+
+              <div className="border-t border-brand-light pt-10 text-brand-dark/80">
+                <h2 className="font-serif-display text-3xl text-brand-dark">{t("other.title")}</h2>
+                <div className="mt-6 grid gap-6 md:grid-cols-2">
+                  <BrandCard as="article" className="rounded-2xl p-6 sm:p-6">
+                    <h3 className="font-serif-display text-2xl text-brand-dark">{t("other.paymeTitle")}</h3>
+                    <p className="mt-2 text-sm">{t("other.paymeBody")}</p>
+                    <Image
+                      src="/images/love21-payme.png"
+                      alt="Love 21 Foundation PayMe donation QR code"
+                      width={332}
+                      height={383}
+                      className="mx-auto mt-5 h-auto w-full max-w-72"
+                      unoptimized
+                    />
+                    <p className="mt-4 text-xs text-brand-dark/65">{t("other.paymeNote")}</p>
+                  </BrandCard>
+
+                  <BrandCard as="article" className="space-y-4 rounded-2xl p-6 sm:p-6">
+                    <h3 className="font-serif-display text-2xl text-brand-dark">{t("other.bankTitle")}</h3>
+                    <p>
+                      HSBC transfer: <strong>582-350526-838</strong>
+                      <br />
+                      FPS ID: <strong>164778151</strong>
+                    </p>
+                    <p>{t("other.chequeNote")}</p>
+                    <address className="not-italic">
+                      1102, 11/F, Artisan Lab
+                      <br />
+                      21 Luk Hop Street, San Po Kong,
+                      <br />
+                      Kowloon, HK.
+                    </address>
+                  </BrandCard>
+                </div>
+              </div>
+            </div>
+          </section>
+        </Reveal>
+      </DonationAmountProvider>
+    </SiteLayout>
+  );
+}

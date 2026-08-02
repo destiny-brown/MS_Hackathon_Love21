@@ -1,0 +1,191 @@
+{
+  "common": {
+    "site": "網站",
+    "logOut": "登出",
+    "profile": "個人資料",
+    "signedInAs": "已登入 {{email}}",
+    "loadingDashboard": "正在載入你的控制台…",
+    "joined": "已加入",
+    "join": "加入",
+    "signUp": "報名",
+    "signedUp": "已報名",
+    "refresh": "重新整理",
+    "viewAll": "查看全部",
+    "noNotes": "沒有備註",
+    "manualLog": "手動記錄",
+    "monthly": "每月",
+    "oneTime": "一次性",
+    "generalSupport": "一般 Love 21 支持",
+    "connectedFunded": "已連結 {{amount}} · 已籌得 {{percent}}%",
+    "hoursCount": "{{count}} 小時",
+    "hoursUnit": "{{count}} 小時",
+    "openCount": "{{count}} 個開放",
+    "openEvents_one": "{{count}} 個開放活動",
+    "openEvents_other": "{{count}} 個開放活動",
+    "rolesCount_one": "{{count}} 個職位",
+    "rolesCount_other": "{{count}} 個職位",
+    "rolesAvailable": "{{count}} 個可報名",
+    "matchPercent": "匹配度 {{score}}%"
+  },
+  "captainsCorner": {
+    "title": "Captain 專區",
+    "loading": "正在載入 Captain 專區…",
+    "unavailable": "Captain 專區暫時無法使用。",
+    "loadError": "無法載入 Captain 專區",
+    "aiBadge": "Captain + AI",
+    "captainBadge": "Captain",
+    "captainLabel": "Captain 21",
+    "dayLocation": "第 {{day}} 天 · {{location}}",
+    "streak": "連續 {{count}} 天",
+    "movesLeft_one": "尚餘 {{count}} 步",
+    "movesLeft_other": "尚餘 {{count}} 步",
+    "continueMoves": "繼續 21 Moves",
+    "exploreLearn": "探索學習"
+  },
+  "recommendedEvents": {
+    "title": "為你精選的活動",
+    "loading": "根據你的義工服務尋找活動…",
+    "loadError": "無法載入推薦",
+    "aiMatch": "AI 匹配",
+    "suggested": "建議",
+    "scrollLabel": "推薦活動"
+  },
+  "recommendedRoles": {
+    "title": "為你精選的職位",
+    "loading": "根據你的計劃尋找義工職位…",
+    "loadError": "無法載入推薦",
+    "aiMatch": "AI 匹配",
+    "suggested": "建議",
+    "scrollLabel": "推薦義工職位"
+  },
+  "supporter": {
+    "eyebrow": "支持者控制台",
+    "title": "你的 Love 21 影響力",
+    "signedInHint": "在<link>我們的義工</link>頁面瀏覽職位。",
+    "checkingAccess": "正在檢查支持者權限…",
+    "loadError": "無法載入支持者控制台",
+    "signUpError": "無法報名此活動",
+    "logHoursError": "無法記錄義工時數",
+    "stats": {
+      "totalGiven": "捐款總額",
+      "totalGivenHelp": "此帳戶的捐款記錄。",
+      "recurring": "定期捐款",
+      "recurringHelp": "每月支持狀態。",
+      "volunteerHours": "義工時數",
+      "volunteerHoursHelp": "已記錄時數總計。",
+      "activities": "活動",
+      "activitiesHelp": "已報名的活動。"
+    },
+    "tabs": {
+      "ariaLabel": "控制台分區",
+      "impact": "影響力",
+      "volunteer": "義工"
+    },
+    "giving": {
+      "title": "我的捐款",
+      "description": "捐款記錄及定期捐款狀態。",
+      "scrollLabel": "捐款記錄",
+      "empty": "尚未有捐款記錄。"
+    },
+    "impact": {
+      "title": "影響力",
+      "description": "你的捐款如何連結到優先項目。",
+      "scrollLabel": "影響力項目",
+      "empty": "進行指定捐款後，可在此查看影響力。"
+    },
+    "volunteering": {
+      "title": "我的義工服務",
+      "description": "日曆、時數及記錄。",
+      "calendarLabel": "活動日曆",
+      "calendarEmpty": "報名活動後，可在此查看。",
+      "logHoursTitle": "記錄義工時數",
+      "activityOptional": "活動（選填）",
+      "manualOption": "手動記錄／無活動",
+      "hours": "時數",
+      "notes": "備註",
+      "notesPlaceholder": "你幫助了什麼？",
+      "addHours": "新增時數",
+      "hoursHistory": "時數記錄",
+      "hoursHistoryLabel": "義工時數記錄",
+      "hoursEmpty": "尚未記錄時數。"
+    },
+    "events": {
+      "title": "活動報名",
+      "searchPlaceholder": "搜尋活動…",
+      "searchAria": "搜尋活動",
+      "scrollLabel": "即將舉行的活動",
+      "noMatch": "沒有符合搜尋條件的活動。",
+      "empty": "目前沒有開放活動。"
+    },
+    "summaryAria": "支持者摘要"
+  },
+  "member": {
+    "eyebrow": "會員控制台",
+    "title": "你的 Love 21 活動",
+    "checkingAccess": "正在檢查會員權限…",
+    "loadError": "無法載入會員控制台",
+    "registerError": "無法報名此活動",
+    "joinedOn": "於 {{date}} 加入 · {{status}}",
+    "stats": {
+      "joined": "已加入",
+      "joinedHelp": "帳戶上的計劃。",
+      "active": "進行中",
+      "activeHelp": "目前的報名。",
+      "openRoles": "開放職位",
+      "openRolesHelp": "你仍可加入這些職位。"
+    },
+    "tabs": {
+      "ariaLabel": "活動分區",
+      "browse": "瀏覽（{{count}}）",
+      "joined": "已加入（{{count}}）"
+    },
+    "joined": {
+      "title": "我已加入的活動",
+      "description": "與你的帳戶連結的計劃。",
+      "descriptionDesktop": "與你的會員帳戶連結的計劃。",
+      "scrollLabel": "已加入活動列表",
+      "empty": "尚未加入任何活動。",
+      "browseLink": "瀏覽開放職位"
+    },
+    "browse": {
+      "title": "加入活動",
+      "description": "滾動瀏覽開放職位。",
+      "descriptionDesktop": "瀏覽開放義工職位——滾動查看更多。",
+      "searchPlaceholder": "搜尋職位…",
+      "searchAria": "搜尋義工職位",
+      "scrollLabel": "可報名的義工職位",
+      "showJoined": "顯示已加入（{{count}}）",
+      "hideJoined": "隱藏已加入",
+      "noMatch": "沒有符合搜尋條件的職位。",
+      "empty": "目前沒有開放職位。",
+      "fullPage": "完整義工頁面"
+    },
+    "summaryAria": "會員摘要"
+  },
+  "profile": {
+    "eyebrow": "會員專區",
+    "title": "會員資料",
+    "myDashboard": "我的控制台",
+    "gratitudeTitle": "感謝牆",
+    "gratitudeDescription": "分享簡短感謝，供 Love 21 職員審閱。",
+    "profileTitle": "資料詳情",
+    "profileDescription": "更新 Love 21 計劃的聯絡資料。",
+    "displayName": "顯示名稱",
+    "displayNamePlaceholder": "你的名稱",
+    "programmeInterest": "計劃興趣",
+    "programmeInterestPlaceholder": "告訴 Love 21 你想更新什麼。",
+    "submit": "提交供職員審批",
+    "submitting": "提交中…",
+    "saved": "資料已儲存，待審閱。",
+    "loadError": "無法載入會員資料"
+  },
+  "legacy": {
+    "checkingAccess": "正在檢查控制台權限…",
+    "activeMembers": "活躍會員",
+    "recurringDonations": "定期捐款",
+    "openVolunteerRoles": "開放義工職位",
+    "accessibleLabels": "螢幕閱讀器的無障礙標籤",
+    "noDescription": "沒有描述",
+    "noItems": "尚無項目。請建立一個。"
+  }
+}

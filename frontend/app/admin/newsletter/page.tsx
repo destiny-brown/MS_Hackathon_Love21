@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Plus, Trash2, Users, User, Sparkles, Send, Copy, Eye, History } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ function formatNewsletterContent(content: string): string {
 }
 
 export default function AdminNewsletterPage() {
+  const { t } = useTranslation("admin");
   const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [deliveries, setDeliveries] = useState<NewsletterDelivery[]>([]);
   const [editingSubscriber, setEditingSubscriber] = useState<NewsletterSubscriber | null>(null);
@@ -202,19 +204,19 @@ export default function AdminNewsletterPage() {
   return (
     <>
       <AdminPageHeader
-        title="Newsletter"
-        description="Generate weekly or monthly updates with Qwen, then send to the right subscriber groups."
+        title={t("newsletter.title")}
+        description={t("newsletter.description")}
       />
 
       {error ? <p className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</p> : null}
       {success ? <p className="mb-4 rounded-md bg-green-50 p-3 text-sm text-green-700">{success}</p> : null}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Total</p><p className="text-2xl font-bold">{subscribers.length}</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Active</p><p className="text-2xl font-bold">{activeSubscribers.length}</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Weekly</p><p className="text-2xl font-bold">{weeklyActiveCount}</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Monthly</p><p className="text-2xl font-bold">{monthlyActiveCount}</p></CardContent></Card>
-        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">Campaigns sent</p><p className="text-2xl font-bold">{deliveries.length}</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">{t("newsletter.total")}</p><p className="text-2xl font-bold">{subscribers.length}</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">{t("newsletter.active")}</p><p className="text-2xl font-bold">{activeSubscribers.length}</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">{t("newsletter.weekly")}</p><p className="text-2xl font-bold">{weeklyActiveCount}</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">{t("newsletter.monthly")}</p><p className="text-2xl font-bold">{monthlyActiveCount}</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><p className="text-sm text-muted-foreground">{t("newsletter.campaignsSent")}</p><p className="text-2xl font-bold">{deliveries.length}</p></CardContent></Card>
       </div>
 
       <Card className="mb-8 border-2 border-[#d4a373]/30">

@@ -1,0 +1,179 @@
+{
+  "shell": {
+    "eyebrow": "Love 21 Staff Console",
+    "viewSite": "View site",
+    "logOut": "Log out",
+    "navAria": "Staff navigation"
+  },
+  "nav": {
+    "sections": {
+      "home": "Home",
+      "operations": "Operations",
+      "learnContent": "Learn content"
+    },
+    "overview": {
+      "label": "Overview",
+      "description": "Staff home and quick links"
+    },
+    "analytics": {
+      "label": "Analytics",
+      "description": "Traffic, engagement, and impact metrics"
+    },
+    "events": {
+      "label": "Events",
+      "description": "Create events and track registrations"
+    },
+    "volunteers": {
+      "label": "Volunteers",
+      "description": "Manage volunteer programmes and sign-ups"
+    },
+    "donations": {
+      "label": "Donations & wishlist",
+      "description": "Campaigns, causes, and wishlist needs"
+    },
+    "gratitude": {
+      "label": "Gratitude wall",
+      "description": "Review and approve member submissions"
+    },
+    "stories": {
+      "label": "Member stories",
+      "description": "Stories & Media carousel and story pages"
+    },
+    "newsletter": {
+      "label": "Newsletter",
+      "description": "Subscribers, drafts, and send history"
+    },
+    "learnHub": {
+      "label": "Learn hub",
+      "description": "Quiz, resources, and video library"
+    },
+    "learnQuestions": {
+      "label": "Questions",
+      "description": "Myth vs fact quiz and daily myths"
+    },
+    "learnResources": {
+      "label": "Resources",
+      "description": "Articles, press, and learning links"
+    },
+    "learnVideos": {
+      "label": "Short videos",
+      "description": "Curated YouTube picks for Learn"
+    }
+  },
+  "home": {
+    "title": "Staff console",
+    "description": "Choose a workspace below to manage Love 21 content, campaigns, and community updates.",
+    "atAGlance": "At a glance",
+    "events": "Events",
+    "volunteerProgrammes": "Volunteer programmes",
+    "activeSubscribers": "Active subscribers",
+    "newsletterList": "Newsletter list",
+    "learnQuestions": "Learn questions",
+    "learnResources": "Learn resources",
+    "registrationsTitle": "Activity registrations",
+    "registrationsDescription": "Recent volunteer activity signups from the public volunteering page.",
+    "refresh": "Refresh",
+    "viewAll": "View all",
+    "noRegistrations": "No activity registrations yet.",
+    "who": "Who",
+    "activity": "Activity",
+    "when": "When",
+    "workspaces": "Workspaces"
+  },
+  "events": {
+    "title": "Events",
+    "description": "Create and manage Love 21 community events.",
+    "createTitle": "Create event",
+    "editTitle": "Edit event",
+    "allEvents": "All events",
+    "titleLabel": "Title",
+    "locationLabel": "Location",
+    "descriptionLabel": "Description",
+    "dateLabel": "Date",
+    "maxCapacityLabel": "Max capacity",
+    "categoryLabel": "Category",
+    "statusLabel": "Status",
+    "create": "Create event",
+    "update": "Update event",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "empty": "No events yet.",
+    "categories": {
+      "community": "Community",
+      "sport": "Sport",
+      "nutrition": "Nutrition",
+      "family": "Family",
+      "fundraising": "Fundraising"
+    },
+    "statuses": {
+      "upcoming": "Upcoming",
+      "ongoing": "Ongoing",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "volunteers": {
+    "title": "Volunteer programmes",
+    "description": "Manage volunteer roles and track sign-ups.",
+    "totalPrograms": "Total programmes",
+    "totalVolunteers": "Total volunteers",
+    "registrations": "Recent registrations",
+    "createProgram": "Create programme",
+    "editProgram": "Edit programme",
+    "empty": "No volunteer programmes yet."
+  },
+  "newsletter": {
+    "title": "Newsletter",
+    "description": "Manage subscribers, generate drafts with Qwen, and send campaigns.",
+    "total": "Total subscribers",
+    "active": "Active",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "campaignsSent": "Campaigns sent",
+    "generatorTitle": "Qwen newsletter generator",
+    "cadence": "Cadence",
+    "guidance": "Guidance for AI",
+    "subject": "Subject line",
+    "generate": "Generate draft",
+    "generating": "Generating…",
+    "send": "Send campaign",
+    "sending": "Sending…",
+    "preview": "Preview",
+    "copy": "Copy content",
+    "history": "Send history",
+    "addSubscriber": "Add subscriber",
+    "search": "Search subscribers…",
+    "empty": "No subscribers yet."
+  },
+  "learn": {
+    "hubTitle": "Learn content",
+    "hubDescription": "Manage quiz questions, resources, and short videos for the Learn section.",
+    "questionsTitle": "Learn questions",
+    "questionsDescription": "Edit myth vs fact quiz questions and daily myths.",
+    "resourcesTitle": "Learn resources",
+    "resourcesDescription": "Manage articles, press links, and further reading.",
+    "videosTitle": "Learn short videos",
+    "videosDescription": "Curate YouTube clips for the Learn video library.",
+    "previewLearn": "Preview Learn"
+  },
+  "stories": {
+    "title": "Member stories",
+    "description": "Manage Stories & Media carousel entries and member story pages."
+  },
+  "gratitude": {
+    "title": "Gratitude wall",
+    "description": "Review and approve member gratitude submissions."
+  },
+  "donations": {
+    "title": "Donations & wishlist",
+    "description": "Manage campaigns, causes, and wishlist needs."
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "Website traffic and engagement overview.",
+    "trafficTitle": "Website traffic overview",
+    "aboutTitle": "About this data",
+    "aboutBody": "Metrics come from Google Analytics and Looker Studio. Figures may lag by up to 24 hours."
+  }
+}

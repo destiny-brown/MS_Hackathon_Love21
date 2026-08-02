@@ -2,17 +2,14 @@
 
 import Link from "next/link";
 
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { curatedVideos } from "@/lib/curated-videos";
 
 export default function ShortVideosPage() {
   return (
     <SiteLayout>
-      <PageHero
-        title="Short Videos"
-        subtitle="A calm library of short neurodiversity education clips for families, volunteers, and community partners."
-      />
+      <TranslatedPageHero titleKey="learnPlay.videos.title" subtitleKey="learnPlay.videos.description" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl space-y-10">
           <Link

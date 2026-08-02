@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 import { Blob } from "@/components/brand/Blob";
 import { BrandCard } from "@/components/brand/BrandCard";
@@ -12,7 +13,8 @@ import { Reveal } from "@/components/brand/Reveal";
 import { TriMark } from "@/components/brand/TriMark";
 import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
-import { programmes } from "@/lib/site-data";
+
+const PROGRAMME_KEYS = ["sports", "nutrition", "family", "csr"] as const;
 
 const sectionNavItems: PageSectionNavItem[] = [
   { id: "get-involved-hero", label: "Join", labelKey: "sectionNav.join" },
@@ -86,90 +88,19 @@ function IconTrophy({ className = "" }: { className?: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Data
-// ---------------------------------------------------------------------------
-
-const journeySteps = [
-  {
-    step: "01",
-    title: "Show up",
-    body: "Volunteer for a class, a match day, or a family event. Most people meet Love 21 here first.",
-    href: "/our-volunteer",
-    cta: "Find a shift",
-  },
-  {
-    step: "02",
-    title: "Stay close",
-    body: "Once you've seen the impact firsthand, become a recurring monthly donor — the support that keeps classes running year-round.",
-    href: "/donate",
-    cta: "Give monthly",
-  },
-  {
-    step: "03",
-    title: "Bring your company",
-    body: "Introduce Love 21 to your employer. Volunteers are our biggest source of new corporate partners.",
-    href: "/join-us",
-    cta: "Start a CSR conversation",
-  },
-];
-
-// Replace with real, family-approved quotes and names before this goes live.
-const testimonials = [
-  {
-    quote: "Two years ago, [Name] couldn't finish a lap. This season, [she/he] led the warm-up.",
-    name: "[Parent name], mother of a Saturday football member",
-  },
-  {
-    quote: "I signed up for one Saturday shift. Eighteen months later I'm on the events committee.",
-    name: "[Volunteer name], class volunteer since 2024",
-  },
-  {
-    quote: "Our team came for a CSR morning. Half of us are still volunteering monthly.",
-    name: "[Company name], corporate partner",
-  },
-];
-
-// Placeholder — swap for your real weekly calendar.
-const weeklyRhythm = [
-  { day: "Mon", programme: "Football skills", time: "4:30–5:30pm" },
-  { day: "Wed", programme: "Nutrition & cooking club", time: "4:00–5:00pm" },
-  { day: "Thu", programme: "Swim class", time: "5:00–6:00pm" },
-  { day: "Sat", programme: "Family sports morning", time: "9:30–11:30am" },
-];
-
-const faqs = [
-  {
-    q: "Do I need experience to volunteer?",
-    a: "No. Most of our volunteers have never worked with neurodiverse members before their first shift. Coaches brief you on-site, every time.",
-  },
-  {
-    q: "Is there a cost for families to join?",
-    a: "Programme fees are kept deliberately low and needs-based support is available — cost should never be the reason a family doesn't join. Ask us directly through the member app.",
-  },
-  {
-    q: "Can my company send a small group, not a big event?",
-    a: "Yes — some of our strongest partners started with two or three employees on a single Saturday shift, not a full CSR day.",
-  },
-  {
-    q: "How is my donation actually used?",
-    a: "Every tier on this page is tied to a specific, real cost — class sessions, coaching, or programme fees. We're not government-funded, so recurring gifts are what let us plan a full season, not just one month.",
-  },
-];
-
-// A handful of candid moments to break up the two-hero-image page into
-// something that feels photographed throughout, not just bookended.
-const galleryStrip = [
-  { src: "/images/get-involved/gallery-1.jpeg", alt: "Members warming up before a football class", shape: "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]" },
-  { src: "/images/get-involved/gallery-2.jpeg", alt: "A cooking club session in the nutrition programme", shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]" },
-  { src: "/images/get-involved/gallery-3.jpg", alt: "A volunteer high-fiving a member at swim class", shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]" },
-  { src: "/images/get-involved/gallery-4.jpg", alt: "A family sports morning on a Saturday", shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]" },
-];
-
-// ---------------------------------------------------------------------------
 // Small interactive components
 // ---------------------------------------------------------------------------
 
-function TestimonialCarousel() {
+type TestimonialItem = { quote: string; name: string };
+type FaqItem = { q: string; a: string };
+
+function TestimonialCarousel({
+  testimonials,
+  showLabel,
+}: {
+  testimonials: TestimonialItem[];
+  showLabel: (index: number) => string;
+}) {
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
@@ -182,7 +113,7 @@ function TestimonialCarousel() {
       }, 200);
     }, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials.length]);
 
   function go(next: number) {
     setFade(false);
@@ -213,7 +144,7 @@ function TestimonialCarousel() {
             <button
               key={i}
               onClick={() => go(i)}
-              aria-label={`Show testimonial ${i + 1}`}
+              aria-label={showLabel(i)}
               className={`h-1.5 rounded-full transition-all ${
                 i === index ? "w-6 bg-brand-red" : "w-1.5 bg-brand-dark/20"
               }`}
@@ -225,7 +156,7 @@ function TestimonialCarousel() {
   );
 }
 
-function FaqAccordion() {
+function FaqAccordion({ faqs }: { faqs: FaqItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
@@ -268,7 +199,115 @@ function FaqAccordion() {
 // ---------------------------------------------------------------------------
 
 export default function GetInvolvedPage() {
+  const { t } = useTranslation("getInvolved");
   const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-light"];
+
+  const journeySteps = useMemo(
+    () => [
+      {
+        step: "01",
+        title: t("journey.steps.01.title"),
+        body: t("journey.steps.01.body"),
+        href: "/our-volunteer",
+        cta: t("journey.steps.01.cta"),
+      },
+      {
+        step: "02",
+        title: t("journey.steps.02.title"),
+        body: t("journey.steps.02.body"),
+        href: "/donate",
+        cta: t("journey.steps.02.cta"),
+      },
+      {
+        step: "03",
+        title: t("journey.steps.03.title"),
+        body: t("journey.steps.03.body"),
+        href: "/join-us",
+        cta: t("journey.steps.03.cta"),
+      },
+    ],
+    [t],
+  );
+
+  const testimonials = useMemo(
+    () => [
+      {
+        quote: t("testimonials.items.parent.quote"),
+        name: t("testimonials.items.parent.name"),
+      },
+      {
+        quote: t("testimonials.items.volunteer.quote"),
+        name: t("testimonials.items.volunteer.name"),
+      },
+      {
+        quote: t("testimonials.items.corporate.quote"),
+        name: t("testimonials.items.corporate.name"),
+      },
+    ],
+    [t],
+  );
+
+  const weeklyRhythm = useMemo(
+    () => [
+      {
+        day: t("weeklyRhythm.days.mon"),
+        programme: t("weeklyRhythm.slots.football.programme"),
+        time: t("weeklyRhythm.slots.football.time"),
+      },
+      {
+        day: t("weeklyRhythm.days.wed"),
+        programme: t("weeklyRhythm.slots.cooking.programme"),
+        time: t("weeklyRhythm.slots.cooking.time"),
+      },
+      {
+        day: t("weeklyRhythm.days.thu"),
+        programme: t("weeklyRhythm.slots.swim.programme"),
+        time: t("weeklyRhythm.slots.swim.time"),
+      },
+      {
+        day: t("weeklyRhythm.days.sat"),
+        programme: t("weeklyRhythm.slots.family.programme"),
+        time: t("weeklyRhythm.slots.family.time"),
+      },
+    ],
+    [t],
+  );
+
+  const faqs = useMemo(
+    () => [
+      { q: t("faq.items.experience.q"), a: t("faq.items.experience.a") },
+      { q: t("faq.items.cost.q"), a: t("faq.items.cost.a") },
+      { q: t("faq.items.company.q"), a: t("faq.items.company.a") },
+      { q: t("faq.items.donation.q"), a: t("faq.items.donation.a") },
+    ],
+    [t],
+  );
+
+  const galleryStrip = useMemo(
+    () => [
+      {
+        src: "/images/get-involved/gallery-1.jpeg",
+        alt: t("gallery.photos.football"),
+        shape: "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]",
+      },
+      {
+        src: "/images/get-involved/gallery-2.jpeg",
+        alt: t("gallery.photos.cooking"),
+        shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]",
+      },
+      {
+        src: "/images/get-involved/gallery-3.jpg",
+        alt: t("gallery.photos.swim"),
+        shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]",
+      },
+      {
+        src: "/images/get-involved/gallery-4.jpg",
+        alt: t("gallery.photos.family"),
+        shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]",
+      },
+    ],
+    [t],
+  );
 
   return (
     <SiteLayout>
@@ -303,12 +342,12 @@ export default function GetInvolvedPage() {
       >        <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pr-16">
           <div className="relative">
-            <Eyebrow>Celebrating Ability</Eyebrow>
+            <Eyebrow>{t("hero.eyebrow")}</Eyebrow>
             <h1 className="mt-3 font-serif-display text-4xl leading-[1.05] text-brand-dark sm:text-5xl lg:text-6xl">
-              Talent waits. Opportunity builds.
+              {t("hero.titleLine1")}
               <br />
               <span className="relative italic text-brand-red">
-                Join us.
+                {t("hero.titleHighlight")}
                 <svg
                   viewBox="0 0 200 14"
                   className="absolute -bottom-1 left-0 h-3 w-full text-brand-red/50"
@@ -324,14 +363,14 @@ export default function GetInvolvedPage() {
                   />
                 </svg>
               </span>{" "}
+              {t("hero.titleLine2")}
             </h1>
             <p className="mt-6 max-w-lg text-lg text-brand-dark/75">
-              Every month, 600+ Hong Kong families walk through our doors for sport, nutrition, and
-              community — because someone showed up for them first. That someone could be you.
+              {t("hero.body")}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <CtaButton href="/donate">Donate</CtaButton>
-              <CtaButton href="/our-volunteer" variant="outline">Volunteer</CtaButton>
+              <CtaButton href="/donate">{t("hero.donate")}</CtaButton>
+              <CtaButton href="/our-volunteer" variant="outline">{t("hero.volunteer")}</CtaButton>
             </div>
           </div>
 
@@ -341,7 +380,7 @@ export default function GetInvolvedPage() {
               {/* Swap for a real, high-res photo of a member mid-activity — smiling, in motion, not posed/pitying. */}
               <Image
                 src="/images/get-involved/hero-image.png"
-                alt="A Love 21 member smiling during a sports class"
+                alt={t("hero.imageAlt")}
                 fill
                 priority
                 className="object-cover"
@@ -365,11 +404,11 @@ export default function GetInvolvedPage() {
               {Array.from({ length: 8 }).map((_, i) => (
                 <span key={i} className="mx-5 flex items-center gap-2.5 whitespace-nowrap">
                   <span className="font-serif-display text-sm text-brand-dark sm:text-base">
-                    21 Years in Hong Kong
+                    {t("marquee.years")}
                   </span>
                   <TriMark className="h-1.5 w-5 text-brand-red/50" />
                   <span className="text-[10px] uppercase tracking-[0.2em] text-black/45">
-                    Celebrating Ability
+                    {t("marquee.celebrating")}
                   </span>
                 </span>
               ))}
@@ -404,20 +443,19 @@ export default function GetInvolvedPage() {
           <div className="mx-auto max-w-6xl">
             <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <Eyebrow>Programmes</Eyebrow>
-                <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">What we do</h2>
+                <Eyebrow>{t("programmes.eyebrow")}</Eyebrow>
+                <h2 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">{t("programmes.title")}</h2>
               </div>
               <p className="max-w-2xl text-sm text-brand-dark/70">
-                A whole-person model — sport, nutrition, and family support — because reaching full
-                potential takes more than one hour a week.
+                {t("programmes.subtitle")}
               </p>
             </div>
           </div>
           </Reveal>
           <div className="mx-auto max-w-6xl">
             <div className="grid gap-5 sm:grid-cols-2">
-              {programmes.map((programme, i) => (
-                <Reveal key={programme.title} delay={i * 0.08}>
+              {PROGRAMME_KEYS.map((key, i) => (
+                <Reveal key={key} delay={i * 0.08}>
                   <BrandCard
                     as="article"
                     className="group relative overflow-hidden rounded-2xl border-brand-slate/10 p-6 transition hover:-translate-y-1 hover:shadow-md sm:p-6"
@@ -426,12 +464,12 @@ export default function GetInvolvedPage() {
                       className={`absolute right-0 top-0 h-16 w-16 -translate-y-8 translate-x-8 rotate-45 opacity-10 transition-opacity group-hover:opacity-20 ${cardAccents[i % cardAccents.length]}`}
                       aria-hidden="true"
                     />
-                    <h3 className="font-serif-display text-2xl text-brand-ink">{programme.title}</h3>
-                    <p className="mt-3 text-sm text-brand-ink/75">{programme.description}</p>
+                    <h3 className="font-serif-display text-2xl text-brand-ink">{t(`programmes.${key}.title`)}</h3>
+                    <p className="mt-3 text-sm text-brand-ink/75">{t(`programmes.${key}.description`)}</p>
                     <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                      <Link href="/members" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Join as a member</Link>
-                      <Link href="/our-volunteer" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Volunteer</Link>
-                      <Link href="/donate" className="rounded-md font-semibold text-brand-red hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Donate</Link>
+                      <Link href="/members" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">{t("programmes.joinMember")}</Link>
+                      <Link href="/our-volunteer" className="rounded-md font-semibold text-brand-coral hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">{t("hero.volunteer")}</Link>
+                      <Link href="/donate" className="rounded-md font-semibold text-brand-red hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">{t("hero.donate")}</Link>
                     </div>
                   </BrandCard>
                 </Reveal>
@@ -444,7 +482,7 @@ export default function GetInvolvedPage() {
         <section className="relative px-4 pb-16 sm:px-6 lg:px-8 lg:pr-24">
           <div className="mx-auto max-w-6xl">
             <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-dark/50">
-              <IconHeart className="h-4 w-4" /> Life at Love 21, in between the numbers
+              <IconHeart className="h-4 w-4" /> {t("gallery.eyebrow")}
             </p>
             <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {galleryStrip.map((photo, i) => (
@@ -467,10 +505,10 @@ export default function GetInvolvedPage() {
         <Blob className="right-8 top-8 h-36 w-36 bg-white/50" />
         <div className="relative mx-auto max-w-6xl">
           <div className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
-            <IconSprout className="h-4 w-4" /> A week at Love 21
+            <IconSprout className="h-4 w-4" /> {t("weeklyRhythm.eyebrow")}
           </div>
           <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">
-            This is what "600+ families a month" looks like on the ground
+            {t("weeklyRhythm.title")}
           </h2>
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {weeklyRhythm.map((slot) => (
@@ -482,7 +520,7 @@ export default function GetInvolvedPage() {
             ))}
           </div>
           <p className="mt-4 text-xs text-brand-dark/50">
-            Placeholder schedule — replace with your real weekly calendar before publishing.
+            {t("weeklyRhythm.placeholder")}
           </p>
         </div>
       </section>
@@ -495,10 +533,10 @@ export default function GetInvolvedPage() {
         <div className="relative mx-auto max-w-6xl">
           <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
             <TriMark className="h-2 w-7" />
-            Your Journey
+            {t("journey.eyebrow")}
           </p>
           <h2 className="mt-2 max-w-xl font-serif-display text-4xl sm:text-5xl">
-            Most of our biggest supporters started with one shift.
+            {t("journey.title")}
           </h2>
 
           <div className="relative mt-12">
@@ -551,20 +589,23 @@ export default function GetInvolvedPage() {
             {/* Replace with a real member story photo — smiles, motion, not posed/pitying. */}
             <Image
               src="/images/get-involved/story-spotlight.png"
-              alt="A Love 21 member during a community activity"
+              alt={t("testimonials.spotlightAlt")}
               fill
               className="object-cover"
             />
           </div>
           <div>
             <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-red">
-              <IconTrophy className="h-4 w-4" /> A Love 21 Story
+              <IconTrophy className="h-4 w-4" /> {t("testimonials.eyebrow")}
             </p>
             <div className="mt-3">
-              <TestimonialCarousel />
+              <TestimonialCarousel
+                testimonials={testimonials}
+                showLabel={(i) => t("testimonials.showLabel", { number: i + 1 })}
+              />
             </div>
             <Link href="/stories-media" className="group mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-red hover:underline">
-              Read more member stories
+              {t("testimonials.readMore")}
               <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
             </Link>
           </div>
@@ -577,10 +618,10 @@ export default function GetInvolvedPage() {
       <section id="faq" className="relative scroll-mt-24 overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
         <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
         <div className="relative mx-auto max-w-3xl">
-          <Eyebrow>Before you reach out</Eyebrow>
-          <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">Questions people actually ask</h2>
+          <Eyebrow>{t("faq.eyebrow")}</Eyebrow>
+          <h2 className="mt-2 font-serif-display text-4xl text-brand-dark sm:text-5xl">{t("faq.title")}</h2>
           <div className="mt-8 rounded-3xl bg-white px-6 shadow-sm sm:px-8">
-            <FaqAccordion />
+            <FaqAccordion faqs={faqs} />
           </div>
         </div>
       </section>
@@ -595,47 +636,46 @@ export default function GetInvolvedPage() {
         <div className="relative mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div>
-              <Eyebrow>Stay close</Eyebrow>
+              <Eyebrow>{t("newsletter.eyebrow")}</Eyebrow>
               <h2 className="mt-2 font-serif-display text-3xl text-brand-dark sm:text-4xl">
-                Stay connected with Love 21
+                {t("newsletter.title")}
               </h2>
               <p className="mt-3 max-w-md text-brand-dark/70">
-                Receive stories, programme updates, upcoming events, and ways you can
-                continue making an impact — as often as you'd like to hear from us.
+                {t("newsletter.body")}
               </p>
 
               <form className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <label className="sr-only" htmlFor="newsletter-email">
-                  Email address
+                  {t("newsletter.emailLabel")}
                 </label>
                 <input
                   id="newsletter-email"
                   type="email"
                   required
-                  placeholder="you@email.com"
+                  placeholder={t("newsletter.emailPlaceholder")}
                   className="min-w-0 flex-1 rounded-full border border-black/15 px-5 py-3 text-sm text-brand-dark outline-none focus:border-brand-red sm:min-w-[220px]"
                 />
 
                 <label className="sr-only" htmlFor="newsletter-frequency">
-                  Update frequency
+                  {t("newsletter.frequencyLabel")}
                 </label>
                 <select
                   id="newsletter-frequency"
                   defaultValue="monthly"
                   className="rounded-full border border-black/15 bg-white px-5 py-3 text-sm text-brand-dark outline-none focus:border-brand-red"
                 >
-                  <option value="weekly">Weekly updates</option>
-                  <option value="biweekly">Every 2 weeks</option>
-                  <option value="monthly">Monthly updates</option>
-                  <option value="quarterly">Quarterly updates</option>
-                  <option value="important">Only important announcements</option>
+                  <option value="weekly">{t("newsletter.frequencies.weekly")}</option>
+                  <option value="biweekly">{t("newsletter.frequencies.biweekly")}</option>
+                  <option value="monthly">{t("newsletter.frequencies.monthly")}</option>
+                  <option value="quarterly">{t("newsletter.frequencies.quarterly")}</option>
+                  <option value="important">{t("newsletter.frequencies.important")}</option>
                 </select>
 
                 <button
                   type="submit"
                   className="rounded-full bg-brand-red px-7 py-3 text-sm font-semibold text-white transition hover:bg-black"
                 >
-                  Subscribe
+                  {t("newsletter.subscribe")}
                 </button>
               </form>
             </div>

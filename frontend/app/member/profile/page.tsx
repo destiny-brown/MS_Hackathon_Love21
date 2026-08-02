@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { api } from "@/lib/api";
 import { signOutToLogin, useRequireRoles } from "@/lib/auth";
 
 export default function MemberProfilePage() {
+  const { t } = useTranslation(["dashboard", "auth"]);
   const { user, loading, error } = useRequireRoles("member");
   const [profileStatus, setProfileStatus] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -26,8 +28,8 @@ export default function MemberProfilePage() {
     if (user?.role !== "member") return;
     api.memberProfile()
       .then((profile) => setProfileStatus(profile.profile_status))
-      .catch((err) => setProfileStatus(err instanceof Error ? err.message : "Could not load member profile"));
-  }, [user]);
+      .catch((err) => setProfileStatus(err instanceof Error ? err.message : t("profile.loadError")));
+  }, [user, t]);
 
   async function submitGratitudeEntry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,7 +50,7 @@ export default function MemberProfilePage() {
         `Thank you — your Wall of Gratitude entry is ${entry.status} and will appear publicly after admin approval.`,
       );
     } catch (err) {
-      setGratitudeError(err instanceof Error ? err.message : "Could not submit your gratitude entry");
+      setGratitudeError(err instanceof Error ? err.message : t("profile.loadError"));
     } finally {
       setSubmitting(false);
     }
@@ -57,7 +59,9 @@ export default function MemberProfilePage() {
   if (loading || !user || user.role !== "member") {
     return (
       <main className="flex min-h-[40vh] items-center justify-center px-4 py-10">
-        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Loading member profile…</p>
+        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">
+          {t("auth:portal.checkingMember")}
+        </p>
       </main>
     );
   }
@@ -67,15 +71,15 @@ export default function MemberProfilePage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Member area</p>
-            <h1 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Member profile</h1>
-            <p className="mt-2 text-sm text-brand-ink/70">Signed in as {user.email}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{t("profile.eyebrow")}</p>
+            <h1 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">{t("profile.title")}</h1>
+            <p className="mt-2 text-sm text-brand-ink/70">{t("common.signedInAs", { email: user.email })}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline">
-              <Link href="/member/dashboard">My dashboard</Link>
+              <Link href="/member/dashboard">{t("profile.myDashboard")}</Link>
             </Button>
-            <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
+            <Button variant="outline" onClick={signOutToLogin}>{t("common.logOut")}</Button>
           </div>
         </header>
 
@@ -84,44 +88,42 @@ export default function MemberProfilePage() {
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <Card>
             <CardHeader>
-              <CardTitle>Manage your Love 21 profile</CardTitle>
-              <CardDescription>
-                This protected page is for stateful member profile management. Programme browsing and joining information remain public.
-              </CardDescription>
+              <CardTitle>{t("auth:portal.memberManageTitle")}</CardTitle>
+              <CardDescription>{t("auth:portal.memberManageDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">Backend profile endpoint: {profileStatus || "Loading..."}</p>
-              <form className="grid gap-4" aria-label="Demo member profile form">
+              <p className="text-sm text-muted-foreground">
+                {t("auth:portal.memberEndpoint")} {profileStatus || t("auth:portal.loading")}
+              </p>
+              <form className="grid gap-4" aria-label={t("auth:portal.memberFormLabel")}>
                 <div className="space-y-2">
-                  <Label htmlFor="display-name">Display name</Label>
-                  <Input id="display-name" placeholder="Your name" />
+                  <Label htmlFor="display-name">{t("profile.displayName")}</Label>
+                  <Input id="display-name" placeholder={t("profile.displayNamePlaceholder")} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="programme-interest">Programme interest</Label>
-                  <Textarea id="programme-interest" placeholder="Tell Love 21 what you would like to update." />
+                  <Label htmlFor="programme-interest">{t("profile.programmeInterest")}</Label>
+                  <Textarea id="programme-interest" placeholder={t("profile.programmeInterestPlaceholder")} />
                 </div>
-                <Button type="button">Save profile draft</Button>
+                <Button type="button">{t("auth:portal.memberSaveDraft")}</Button>
               </form>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Update the Wall of Gratitude</CardTitle>
-              <CardDescription>
-                Share a short thank-you for the public wall. New entries stay pending until an admin approves them.
-              </CardDescription>
+              <CardTitle>{t("profile.gratitudeTitle")}</CardTitle>
+              <CardDescription>{t("profile.gratitudeDescription")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={submitGratitudeEntry} className="space-y-4" aria-describedby="gratitude-approval-note">
+              <form onSubmit={submitGratitudeEntry} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="gratitude-name">Name to show (optional)</Label>
+                  <Label htmlFor="gratitude-name">{t("profile.displayName")}</Label>
                   <Input
                     id="gratitude-name"
                     value={displayName}
                     onChange={(event) => setDisplayName(event.target.value)}
                     maxLength={120}
-                    placeholder="Your name, family name, or leave blank"
+                    placeholder={t("profile.displayNamePlaceholder")}
                   />
                 </div>
                 <div className="space-y-2">
@@ -146,11 +148,8 @@ export default function MemberProfilePage() {
                     placeholder="https://example.com/photo.jpg"
                   />
                 </div>
-                <p id="gratitude-approval-note" className="rounded-2xl bg-brand-cream p-3 text-sm text-brand-ink/75">
-                  For privacy and safety, the backend always creates member submissions as pending. Only an admin endpoint can approve them.
-                </p>
                 <Button type="submit" disabled={submitting || !message.trim()}>
-                  {submitting ? "Submitting…" : "Submit for admin approval"}
+                  {submitting ? t("profile.submitting") : t("profile.submit")}
                 </Button>
               </form>
 

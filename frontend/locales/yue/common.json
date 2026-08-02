@@ -44,6 +44,12 @@
     "skipToContent": "跳至主要內容",
     "languageGroup": "語言"
   },
+  "site": "網站",
+  "logOut": "登出",
+  "viewSite": "查看網站",
+  "refresh": "重新整理",
+  "viewAll": "查看全部",
+  "loading": "載入中…",
   "actions": {
     "enter": "進入",
     "explore": "探索",

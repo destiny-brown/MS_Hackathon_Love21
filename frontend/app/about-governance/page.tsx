@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Building2, FileText, Mail, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Blob } from "@/components/brand/Blob";
 import { BrandCard } from "@/components/brand/BrandCard";
@@ -14,39 +17,21 @@ const sectionNavItems: PageSectionNavItem[] = [
   { id: "ready-to-connect", label: "Contact", labelKey: "sectionNav.contact" },
 ];
 
-const sections = [
-  {
-    title: "Board of Directors",
-    description: "Meet the leaders guiding Love 21's strategy, stewardship, and governance.",
-    href: "/board-of-directors",
-    icon: Building2,
-  },
-  {
-    title: "Staff",
-    description: "Learn about the team delivering programmes and community support.",
-    href: "/staff",
-    icon: Users,
-  },
-  {
-    title: "Annual Reports",
-    description: "Transparent reporting and financial stewardship updates.",
-    href: "/our-finance",
-    icon: FileText,
-  },
-  {
-    title: "Contact Us",
-    description: "Reach the team for partnerships, support, and community enquiries.",
-    href: "/contact-us",
-    icon: Mail,
-  },
-];
+const sectionKeys = [
+  { key: "board", href: "/board-of-directors", icon: Building2 },
+  { key: "staff", href: "/staff", icon: Users },
+  { key: "reports", href: "/our-finance", icon: FileText },
+  { key: "programmes", href: "/our-programmes", icon: Mail },
+] as const;
 
 const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-light", "bg-brand-slate"];
 
 export default function AboutGovernancePage() {
+  const { t } = useTranslation("governance");
+  const { t: tCommon } = useTranslation("common");
+
   return (
     <SiteLayout>
-      {/* Sentinel for section-nav reveal — not a nav target. */}
       <div id="about-governance-nav-sentinel" className="h-px w-full" aria-hidden="true" />
 
       <PageSectionNav
@@ -63,13 +48,11 @@ export default function AboutGovernancePage() {
           <Blob className="-right-16 -top-10 h-72 w-72 bg-[#F8DCDA] opacity-40" />
           <Blob className="-left-20 bottom-0 h-56 w-56 bg-[#B8C5E8]/30" />
           <div className="relative z-10 mx-auto max-w-6xl">
-            <Eyebrow>Governance &amp; Transparency</Eyebrow>
+            <Eyebrow>{t("about.eyebrow")}</Eyebrow>
             <h1 className="mt-3 max-w-3xl font-serif-display text-4xl leading-[1.05] text-brand-dark sm:text-5xl lg:text-6xl">
-              About Us
+              {t("about.title")}
             </h1>
-            <p className="mt-4 max-w-2xl text-lg text-brand-dark/70">
-              Core organisation information, leadership, transparency, and contact channels.
-            </p>
+            <p className="mt-4 max-w-2xl text-lg text-brand-dark/70">{t("about.subtitle")}</p>
           </div>
         </section>
       </Reveal>
@@ -77,10 +60,10 @@ export default function AboutGovernancePage() {
       <section className="bg-brand-light/40 px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-5 sm:grid-cols-2">
-            {sections.map((section, i) => {
+            {sectionKeys.map((section, i) => {
               const Icon = section.icon;
               return (
-                <Reveal key={section.title} delay={i * 0.08}>
+                <Reveal key={section.key} delay={i * 0.08}>
                   <BrandCard
                     as="article"
                     className="group relative flex h-full flex-col overflow-hidden rounded-2xl border-brand-slate/10 p-6 transition hover:-translate-y-1 hover:shadow-md sm:p-6"
@@ -93,16 +76,16 @@ export default function AboutGovernancePage() {
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">
-                      {section.title}
+                      {t(`about.sections.${section.key}.title`)}
                     </h2>
                     <p className="mt-3 flex-1 text-sm leading-relaxed text-brand-dark/75">
-                      {section.description}
+                      {t(`about.sections.${section.key}.description`)}
                     </p>
                     <Link
                       href={section.href}
                       className="group/link mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-red transition hover:text-brand-dark"
                     >
-                      Open Section
+                      {tCommon("actions.explore")}
                       <span
                         aria-hidden="true"
                         className="transition-transform duration-200 group-hover/link:translate-x-1"
@@ -124,20 +107,14 @@ export default function AboutGovernancePage() {
           className="scroll-mt-24 border-t border-brand-light bg-white px-4 py-12 sm:px-6 lg:px-8 lg:py-16"
         >
           <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-brand-dark px-8 py-12 text-center text-white sm:px-12 sm:py-14">
-            <div
-              className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-brand-red/10"
-              aria-hidden="true"
-            />
+            <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-brand-red/10" aria-hidden="true" />
             <div className="relative z-10">
-              <h2 className="font-serif-display text-3xl sm:text-4xl">Ready to connect?</h2>
-              <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/70">
-                Reach the team for partnerships, support, and community enquiries — or review our
-                transparent reporting.
-              </p>
+              <h2 className="font-serif-display text-3xl sm:text-4xl">{t("about.readyTitle")}</h2>
+              <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-white/70">{t("about.readyBody")}</p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <CtaButton href="/contact-us">Contact Us</CtaButton>
+                <CtaButton href="/contact-us">{t("about.contactUs")}</CtaButton>
                 <CtaButton href="/our-finance" variant="outline-dark">
-                  Annual Reports
+                  {t("about.sections.reports.title")}
                 </CtaButton>
               </div>
             </div>

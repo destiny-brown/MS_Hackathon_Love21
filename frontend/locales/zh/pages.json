@@ -37,7 +37,14 @@
   },
   "contact": {
     "title": "联系我们",
-    "subtitle": "如有计划、志愿者、合作或一般查询，请联系 Love 21 团队。"
+    "subtitle": "如你想加入我们的计划、捐款、做志愿者或了解更多信息，欢迎联系我们。我们期待你的来信！",
+    "memberRegistration": "会员登记请<membersLink>在此填写表格</membersLink>。志愿服务请查看<volunteerLink>志愿者页面</volunteerLink>了解详情及报名。",
+    "partnership": "合作查询请联系 Jeff（创办人／行政总裁）：<email>jeff@love21foundation.com</email>",
+    "otherEnquiries": "其他查询请填写表格或电邮至 <email>info@love21foundation.com</email>",
+    "spaceTitle": "Love 21 Space",
+    "spaceAddress": "九龙新蒲岗乐合街 21 号 Trium Lab 2 楼",
+    "officeTitle": "Love 21 办公室（通讯地址）",
+    "officeAddress": "九龙新蒲岗乐合街 21 号 Trium Lab 11 楼 1102 室"
   },
   "wishlist": {
     "title": "愿望清单",
@@ -45,7 +52,27 @@
   },
   "newsletter": {
     "title": "通讯",
-    "subtitle": "紧贴 Love 21 社群的计划、活动及故事。"
+    "subtitle": "紧贴 Love 21 社群的计划、活动及故事。",
+    "signupTitle": "订阅 Love 21 Foundation 通讯",
+    "unsubscribe": {
+      "title": "通讯偏好",
+      "processing": "处理中…",
+      "returnHome": "返回 Love 21"
+    }
+  },
+  "traffic": {
+    "title": "流量与分析",
+    "subtitle": "实时网站参与度及影响力指标",
+    "aboutTitle": "关于此数据",
+    "aboutBody": "此仪表板从 Google Analytics 通过 Looker Studio 撷取数据。指标可能滞后最多 24 小时。"
+  },
+  "shop": {
+    "title": "愿望清单",
+    "subtitle": "帮助 Love 21 会员获得训练、学习、创意及日常参与所需的实用工具。"
+  },
+  "storiesMedia": {
+    "title": "故事与媒体",
+    "soMuchAbility": "无限可能"
   },
   "ourProgrammes": {
     "title": "我们的计划",
@@ -53,11 +80,20 @@
   },
   "joinUs": {
     "title": "加入我们",
-    "subtitle": "以会员、志愿者或伙伴身份成为 Love 21 社群的一份子。"
+    "subtitle": "实习机会",
+    "subtitleLong": "以会员、志愿者或伙伴身份成为 Love 21 社群的一份子。"
   },
   "members": {
     "title": "会员",
-    "subtitle": "Love 21 会员及家庭的信息与资源。"
+    "subtitle": "Love 21 会员及家庭的信息与资源。",
+    "whatHappensNext": "下一步会怎样",
+    "stepsTitle": "简单的第一步",
+    "steps": [
+      "告诉我们你是谁及如何联络你。",
+      "Love 21 会跟进提供合适的计划信息。",
+      "如你已有会员账户，可稍后登录。"
+    ],
+    "seeProgrammes": "先了解计划"
   },
   "events": {
     "title": "活动与倡议",

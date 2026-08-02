@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { impactPillars } from "@/lib/impact-data";
+import { useTranslatedImpactPillars } from "@/lib/i18n/translated-data";
 
 const viewport = { once: false, amount: 0.15 } as const;
 
@@ -29,17 +30,18 @@ const stageImages = [
 ] as const;
 
 export function ImpactPillars() {
+  const pillars = useTranslatedImpactPillars();
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, viewport);
   const [index, setIndex] = useState(0);
-  const active = impactPillars[index];
+  const active = pillars[index];
   const ActiveIcon = active.icon;
 
   const go = (direction: -1 | 1) => {
     setIndex((current) => {
       const next = current + direction;
-      if (next < 0) return impactPillars.length - 1;
-      if (next >= impactPillars.length) return 0;
+      if (next < 0) return pillars.length - 1;
+      if (next >= pillars.length) return 0;
       return next;
     });
   };
@@ -77,7 +79,7 @@ export function ImpactPillars() {
             className="min-h-0 lg:col-span-3"
           >
             <div className="relative flex h-full flex-row items-center justify-between gap-2 overflow-x-auto pb-1 lg:flex-col lg:justify-between lg:gap-1 lg:overflow-visible lg:pb-0">
-              {impactPillars.map((pillar, i) => {
+              {pillars.map((pillar, i) => {
                 const selected = i === index;
                 return (
                   <button

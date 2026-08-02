@@ -637,5 +637,22 @@
   "sectionNav": {
     "learn": "Learn",
     "explore": "Explore"
+  },
+  "hub": {
+    "eyebrow": "Celebrating Ability",
+    "subtitle": "Learn through shared experiences, hear from the community, and explore real stories.",
+    "communityEyebrow": "From the Community",
+    "communityQuote": "Those with Down's syndrome and autism are ready for purposeful employment.",
+    "communityQuoteEmphasis": "ready for purposeful employment",
+    "communitySource": "South China Morning Post · Love 21 Foundation",
+    "readFullStory": "Read the full story →",
+    "play21Moves": "Play today's 21 Moves",
+    "getInvolved": "Get involved →",
+    "enter": "Enter",
+    "cards": {
+      "moves": { "number": "01", "title": "21 Moves", "description": "Bust today's myth, practise a real inclusion skill, and journey across Hong Kong with Captain 21.", "badge": "Daily" },
+      "videos": { "number": "02", "title": "Short Videos", "description": "Neurodiversity education clips for families, volunteers, and community partners.", "badge": "Video" },
+      "resources": { "number": "03", "title": "Resources", "description": "Love 21 archive and further reading — real stories and curated neurodiversity articles.", "badge": "Stories" }
+    }
   }
 }
