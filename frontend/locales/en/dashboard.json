@@ -65,6 +65,7 @@
     "checkingAccess": "Checking supporter access…",
     "loadError": "Could not load supporter dashboard",
     "signUpError": "Could not sign up for this activity",
+    "joinRoleError": "Could not join this volunteer role",
     "logHoursError": "Could not log volunteer hours",
     "stats": {
       "totalGiven": "Total given",
@@ -95,8 +96,9 @@
     },
     "volunteering": {
       "title": "My volunteering",
-      "description": "Calendar, hours, and history.",
-      "calendarLabel": "Activity calendar",
+      "description": "Your schedule, hours log, and history.",
+      "scheduleTitle": "Your schedule",
+      "calendarLabel": "Signed-up activities",
       "calendarEmpty": "Sign up for an activity to see it here.",
       "logHoursTitle": "Log volunteer hours",
       "activityOptional": "Activity (optional)",
@@ -111,6 +113,7 @@
     },
     "events": {
       "title": "Activity sign-up",
+      "descriptionDesktop": "Browse open events — scroll for more.",
       "searchPlaceholder": "Search events…",
       "searchAria": "Search events",
       "scrollLabel": "Upcoming events",

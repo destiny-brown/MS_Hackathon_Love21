@@ -11,19 +11,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { api, type RecommendedVolunteerRolesResponse } from "@/lib/api";
 
 type RecommendedVolunteerRolesProps = {
+  audience?: "member" | "supporter";
   onJoin: (slug: string) => Promise<void>;
   saving?: boolean;
 };
 
-export function RecommendedVolunteerRoles({ onJoin, saving = false }: RecommendedVolunteerRolesProps) {
+export function RecommendedVolunteerRoles({
+  audience = "member",
+  onJoin,
+  saving = false,
+}: RecommendedVolunteerRolesProps) {
   const { t } = useTranslation("dashboard");
   const [data, setData] = useState<RecommendedVolunteerRolesResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    api
-      .getMemberRecommendedRoles()
+    const request =
+      audience === "supporter" ? api.getSupporterRecommendedRoles() : api.getMemberRecommendedRoles();
+    request
       .then((response) => {
         if (!cancelled) setData(response);
       })
@@ -36,7 +42,7 @@ export function RecommendedVolunteerRoles({ onJoin, saving = false }: Recommende
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [audience]);
 
   if (loading) {
     return (
@@ -67,7 +73,7 @@ export function RecommendedVolunteerRoles({ onJoin, saving = false }: Recommende
         <CardDescription>{data.headline}</CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
-        <ScrollPanel label={t("recommendedRoles.scrollLabel")}>
+        <ScrollPanel label={t("recommendedRoles.scrollLabel")} size="sm">
           <div className="space-y-2 sm:space-y-3">
             {data.matches.map((match) => (
               <article key={match.role_id} className="rounded-xl border border-brand-sand bg-white p-3 sm:p-4">
@@ -95,7 +101,7 @@ export function RecommendedVolunteerRoles({ onJoin, saving = false }: Recommende
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="w-full sm:w-auto"
+                    className="w-full shrink-0 sm:w-auto"
                     disabled={saving}
                     onClick={() => onJoin(match.role_id)}
                   >

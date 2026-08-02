@@ -65,6 +65,7 @@
     "checkingAccess": "正在檢查支持者權限…",
     "loadError": "無法載入支持者控制台",
     "signUpError": "無法報名此活動",
+    "joinRoleError": "無法加入此義工角色",
     "logHoursError": "無法記錄義工時數",
     "stats": {
       "totalGiven": "捐款總額",
@@ -95,8 +96,9 @@
     },
     "volunteering": {
       "title": "我的義工服務",
-      "description": "日曆、時數及記錄。",
-      "calendarLabel": "活動日曆",
+      "description": "你的日程、時數記錄及歷史。",
+      "scheduleTitle": "你的日程",
+      "calendarLabel": "已報名活動",
       "calendarEmpty": "報名活動後，可在此查看。",
       "logHoursTitle": "記錄義工時數",
       "activityOptional": "活動（選填）",

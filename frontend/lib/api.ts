@@ -725,6 +725,8 @@ export const api = {
     request<{ email: string; status: string }>("/supporter/recurring-donation"),
   getRecommendedEvents: () =>
     request<RecommendedEventsResponse>("/supporter/recommended-events"),
+  getSupporterRecommendedRoles: () =>
+    request<RecommendedVolunteerRolesResponse>("/supporter/recommended-roles"),
   getMemberCaptainsCorner: () => request<CaptainsCorner>("/member/captains-corner"),
   getMemberPlayState: () => request<UserPlayState>("/member/play-state"),
   saveMemberPlayState: (payload: UserPlayStateUpdate) =>

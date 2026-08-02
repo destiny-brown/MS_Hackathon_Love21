@@ -9,6 +9,7 @@ import { ScrollPanel } from "@/components/account/scroll-panel";
 import { SupportProgress, formatHkd } from "@/components/site/support-progress";
 import { CaptainsCorner } from "@/components/supporter/captains-corner";
 import { RecommendedEvents } from "@/components/supporter/recommended-events";
+import { RecommendedVolunteerRoles } from "@/components/member/recommended-volunteer-roles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -156,6 +157,19 @@ export default function SupporterDashboardPage() {
     }
   }
 
+  async function joinVolunteerRole(slug: string) {
+    setSaving(true);
+    setError("");
+    try {
+      await api.signUpForVolunteerActivity(slug);
+      await loadSupporterData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("supporter.joinRoleError"));
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function logHours(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
@@ -253,23 +267,26 @@ export default function SupporterDashboardPage() {
   ) : null;
 
   const volunteerPanel = dashboard ? (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <Card>
+    <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
+      <Card className="flex flex-col overflow-hidden">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg">{t("supporter.volunteering.title")}</CardTitle>
           <CardDescription>{t("supporter.volunteering.description")}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4 pt-0">
-          <ScrollPanel label={t("supporter.volunteering.calendarLabel")}>
-            <ActivityCalendar
-              activities={signedUpActivities}
-              intlLocale={intlLocale}
-              emptyMessage={t("supporter.volunteering.calendarEmpty")}
-            />
-          </ScrollPanel>
+        <CardContent className="flex flex-col gap-4 pt-0">
+          <div>
+            <h3 className="text-sm font-semibold text-brand-ink">{t("supporter.volunteering.scheduleTitle")}</h3>
+            <ScrollPanel label={t("supporter.volunteering.calendarLabel")} size="sm" className="mt-2">
+              <ActivityCalendar
+                activities={signedUpActivities}
+                intlLocale={intlLocale}
+                emptyMessage={t("supporter.volunteering.calendarEmpty")}
+              />
+            </ScrollPanel>
+          </div>
 
-          <form onSubmit={logHours} className="space-y-3 rounded-xl border border-brand-sand p-3 sm:p-4">
-            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">{t("supporter.volunteering.logHoursTitle")}</h3>
+          <form onSubmit={logHours} className="shrink-0 space-y-3 rounded-xl border border-brand-sand bg-white p-3 sm:p-4">
+            <h3 className="text-sm font-semibold text-brand-ink">{t("supporter.volunteering.logHoursTitle")}</h3>
             <div className="space-y-2">
               <Label htmlFor="hours-activity">{t("supporter.volunteering.activityOptional")}</Label>
               <select
@@ -303,11 +320,11 @@ export default function SupporterDashboardPage() {
           </form>
 
           <div>
-            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">{t("supporter.volunteering.hoursHistory")}</h3>
-            <ScrollPanel label={t("supporter.volunteering.hoursHistoryLabel")} className="mt-2">
+            <h3 className="text-sm font-semibold text-brand-ink">{t("supporter.volunteering.hoursHistory")}</h3>
+            <ScrollPanel label={t("supporter.volunteering.hoursHistoryLabel")} size="sm" className="mt-2">
               <div className="space-y-2">
                 {dashboard.volunteer_hours.map((entry) => (
-                  <article key={entry.id} className="rounded-xl border p-3 text-sm">
+                  <article key={entry.id} className="rounded-xl border bg-white p-3 text-sm">
                     <p className="font-semibold text-brand-ink">
                       {t("common.hoursCount", { count: entry.hours })} · {entry.activity?.title ?? t("common.manualLog")}
                     </p>
@@ -323,13 +340,13 @@ export default function SupporterDashboardPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="flex flex-col overflow-hidden">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg">{t("supporter.events.title")}</CardTitle>
-          <CardDescription>{t("supporter.events.openEvents", { count: availableActivities.length })}</CardDescription>
+          <CardDescription>{t("common.openEvents", { count: availableActivities.length })}</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3 pt-0">
-          <div className="relative">
+        <CardContent className="flex min-h-0 flex-col gap-3 pt-0">
+          <div className="relative shrink-0">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <Input
               value={eventSearch}
@@ -339,19 +356,19 @@ export default function SupporterDashboardPage() {
               aria-label={t("supporter.events.searchAria")}
             />
           </div>
-          <ScrollPanel label={t("supporter.events.scrollLabel")}>
-            <div className="space-y-2 sm:space-y-3">
+          <ScrollPanel label={t("supporter.events.scrollLabel")} size="sm" className="min-h-0 flex-1">
+            <div className="space-y-2">
               {filteredActivities.map((activity) => (
-                <article key={activity.id} className="rounded-xl border p-3 sm:p-4">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <article key={activity.id} className="rounded-xl border bg-white p-3">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-brand-ink sm:text-base">{activity.title}</h3>
-                      <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                      <h3 className="text-sm font-semibold text-brand-ink">{activity.title}</h3>
+                      <p className="mt-1 text-xs text-muted-foreground">
                         {formatDateTime(activity.starts_at)} · {activity.location}
                       </p>
-                      <p className="mt-2 line-clamp-2 text-sm text-brand-ink/75">{activity.description}</p>
+                      <p className="mt-1 line-clamp-2 text-xs text-brand-ink/75 sm:text-sm">{activity.description}</p>
                     </div>
-                    <Button type="button" variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => signUp(activity.id)} disabled={saving}>
+                    <Button type="button" variant="outline" size="sm" className="w-full shrink-0 sm:w-auto" onClick={() => signUp(activity.id)} disabled={saving}>
                       {t("common.signUp")}
                     </Button>
                   </div>
@@ -410,6 +427,8 @@ export default function SupporterDashboardPage() {
         <CaptainsCorner />
 
         <RecommendedEvents saving={saving} onSignUp={signUp} />
+
+        <RecommendedVolunteerRoles audience="supporter" saving={saving} onJoin={joinVolunteerRole} />
 
         {authError ? (
           <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">

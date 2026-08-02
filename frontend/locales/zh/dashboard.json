@@ -65,6 +65,7 @@
     "checkingAccess": "正在检查支持者权限…",
     "loadError": "无法加载支持者控制台",
     "signUpError": "无法报名此活动",
+    "joinRoleError": "无法加入此志愿者角色",
     "logHoursError": "无法记录志愿者时数",
     "stats": {
       "totalGiven": "捐款总额",
@@ -95,8 +96,9 @@
     },
     "volunteering": {
       "title": "我的志愿服务",
-      "description": "日历、时数及记录。",
-      "calendarLabel": "活动日历",
+      "description": "你的日程、时数记录及历史。",
+      "scheduleTitle": "你的日程",
+      "calendarLabel": "已报名活动",
       "calendarEmpty": "报名活动后，可在此查看。",
       "logHoursTitle": "记录志愿者时数",
       "activityOptional": "活动（选填）",

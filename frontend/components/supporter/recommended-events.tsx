@@ -83,7 +83,7 @@ export function RecommendedEvents({ onSignUp, saving = false }: RecommendedEvent
         <CardDescription>{data.headline}</CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
-        <ScrollPanel label={t("recommendedEvents.scrollLabel")}>
+        <ScrollPanel label={t("recommendedEvents.scrollLabel")} size="sm">
           <div className="space-y-2 sm:space-y-3">
             {data.matches.map((match) => (
               <article key={match.id} className="rounded-xl border border-brand-sand bg-white p-3 sm:p-4">

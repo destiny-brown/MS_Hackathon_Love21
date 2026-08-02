@@ -25,6 +25,8 @@ from app.schemas.supporter import (
     MemberDashboardRead,
     RecommendedEventRead,
     RecommendedEventsResponse,
+    RecommendedVolunteerRoleRead,
+    RecommendedVolunteerRolesResponse,
     SupporterDashboardRead,
     UserPlayStateRead,
     UserPlayStateUpdate,
@@ -33,6 +35,7 @@ from app.schemas.supporter import (
     VolunteerHourRead,
 )
 from app.services.activity_recommendations import recommend_events_for_supporter
+from app.services.volunteer_role_recommendations import recommend_volunteer_roles_for_user
 from app.services.captain_greeting import (
     build_trail_snapshot,
     generate_greeting,
@@ -336,5 +339,20 @@ def recommended_events(
         ai_enhanced=ai_enhanced,
         headline=headline,
         matches=[RecommendedEventRead.model_validate(match) for match in matches],
+        message=message,
+    )
+
+
+@router.get("/supporter/recommended-roles", response_model=RecommendedVolunteerRolesResponse)
+def supporter_recommended_roles(
+    current_user: User = Depends(require_roles(Role.SUPPORTER)),
+    db: Session = Depends(get_db),
+) -> RecommendedVolunteerRolesResponse:
+    headline, matches, ai_enhanced, message = recommend_volunteer_roles_for_user(db, current_user)
+    return RecommendedVolunteerRolesResponse(
+        enabled=bool(matches),
+        ai_enhanced=ai_enhanced,
+        headline=headline,
+        matches=[RecommendedVolunteerRoleRead.model_validate(match) for match in matches],
         message=message,
     )
