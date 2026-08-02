@@ -1,18 +1,19 @@
+import random
 from datetime import datetime, timedelta, timezone
 
+from faker import Faker
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.security import hash_password
-from app.data.volunteer_activity_seed import VOLUNTEER_ACTIVITY_SEED
 from app.db import SessionLocal, create_db_and_tables
 from app.models.activity import Activity, ActivitySignup, VolunteerHour
 from app.models.donation import Donation
-from app.models.gratitude_entry import GratitudeEntry, GratitudeEntryStatus
 from app.models.item import Item
+from app.models.newsletter import NewsletterSubscriber
 from app.models.support_opportunity import SupportOpportunity
 from app.models.user import Role, User
-from app.models.volunteer_activity import VolunteerActivity
+from app.models.volunteer_activity import VolunteerActivity, VolunteerActivityRegistration
 
 DEMO_PASSWORD = "demo1234"
 DEMO_USERS = [
@@ -21,16 +22,44 @@ DEMO_USERS = [
     ("supporter@love21.demo", Role.SUPPORTER),
 ]
 MOCK_CHECKOUT_NOTE = "Mocked checkout records donations locally for the demo."
+FAKER_SEED = 21
+VOLUNTEER_ACTIVITY_COUNT = 10
+SUPPORT_OPPORTUNITY_COUNT = 8
+NEWSLETTER_SUBSCRIBER_COUNT = 2
+GENERATED_RECORD_CAP = 20
 
+assert (
+    VOLUNTEER_ACTIVITY_COUNT
+    + SUPPORT_OPPORTUNITY_COUNT
+    + NEWSLETTER_SUBSCRIBER_COUNT
+    <= GENERATED_RECORD_CAP
+), "Generated record budget exceeds cap"
 
-PLACEHOLDER_IMAGES = {
-    "sports": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=900&q=80",
-    "nutrition": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=900&q=80",
-    "learning": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
-    "family": "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=900&q=80",
-    "transport": "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=900&q=80",
-    "art": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=900&q=80",
-}
+fake = Faker()
+Faker.seed(FAKER_SEED)
+rng = random.Random(FAKER_SEED)
+
+VOLUNTEER_ICONS = ["⚽", "🏀", "🎨", "🤝", "🍳", "📚", "🎯", "🌟"]
+VOLUNTEER_CATEGORIES = ["sport", "community", "skills", "admin"]
+VOLUNTEER_CATEGORY_WEIGHTS = [0.4, 0.3, 0.2, 0.1]
+VOLUNTEER_SEED_OVERRIDES = [
+    {
+        "slug": "skills-based",
+        "title": "Skills-based placement",
+        "category": "skills",
+        "icon": "🧩",
+    },
+    {
+        "slug": "community-dinners",
+        "title": "Community dinners",
+        "category": "community",
+        "icon": "🍽️",
+    },
+]
+
+SUPPORT_KINDS = ["campaign", "cause", "wishlist"]
+SUPPORT_PROGRESS_RATIOS = [0.04, 0.09, 0.28, 0.37, 0.61, 0.72, 0.89, 0.96]
+SUPPORT_TARGET_AMOUNTS = [18000, 24000, 36000, 50000, 80000, 120000]
 
 
 def upsert_opportunity(db: Session, **values) -> SupportOpportunity:
@@ -115,8 +144,154 @@ def ensure_donation(
                 message="Seeded demo donation",
             )
         )
-    opportunity.funded_amount_hkd += amount
     db.commit()
+
+
+def upsert_volunteer_activity(db: Session, **values) -> VolunteerActivity:
+    activity = db.scalar(select(VolunteerActivity).where(VolunteerActivity.slug == values["slug"]))
+    if activity is None:
+        activity = VolunteerActivity(**values)
+        db.add(activity)
+    else:
+        for key, value in values.items():
+            setattr(activity, key, value)
+    db.commit()
+    db.refresh(activity)
+    return activity
+
+
+def ensure_volunteer_registration(
+    db: Session,
+    user: User,
+    activity: VolunteerActivity,
+    status: str,
+) -> None:
+    existing = db.scalar(
+        select(VolunteerActivityRegistration).where(
+            VolunteerActivityRegistration.user_id == user.id,
+            VolunteerActivityRegistration.activity_id == activity.id,
+        )
+    )
+    if existing is None:
+        existing = VolunteerActivityRegistration(
+            user_id=user.id,
+            activity_id=activity.id,
+            activity_slug=activity.slug,
+            activity_name=activity.title,
+            status=status,
+        )
+        db.add(existing)
+    else:
+        existing.activity_slug = activity.slug
+        existing.activity_name = activity.title
+        existing.status = status
+    db.commit()
+
+
+def upsert_newsletter_subscriber(db: Session, **values) -> NewsletterSubscriber:
+    email = values["email"].lower().strip()
+    payload = {**values, "email": email}
+    subscriber = db.scalar(select(NewsletterSubscriber).where(NewsletterSubscriber.email == email))
+    if subscriber is None:
+        subscriber = NewsletterSubscriber(**payload)
+        db.add(subscriber)
+    else:
+        for key, value in payload.items():
+            if key != "email":
+                setattr(subscriber, key, value)
+        subscriber.email = email
+    db.commit()
+    db.refresh(subscriber)
+    return subscriber
+
+
+def _build_volunteer_rows(now: datetime) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+
+    for index in range(VOLUNTEER_ACTIVITY_COUNT):
+        if index < len(VOLUNTEER_SEED_OVERRIDES):
+            override = VOLUNTEER_SEED_OVERRIDES[index]
+            title = str(override["title"])
+            slug = str(override["slug"])
+            category = str(override["category"])
+            icon = str(override["icon"])
+        else:
+            title = fake.sentence(nb_words=3).replace(".", "")
+            slug = f"volunteer-{index + 1}-{fake.lexify(text='????')}".lower()
+            category = rng.choices(VOLUNTEER_CATEGORIES, weights=VOLUNTEER_CATEGORY_WEIGHTS, k=1)[0]
+            icon = rng.choice(VOLUNTEER_ICONS)
+
+        total_spots = rng.randint(8, 40)
+        filled_count = rng.randint(0, total_spots)
+        status = "active" if index < 8 else "archived"
+        schedule_day = fake.day_of_week()
+        schedule_label = f"{schedule_day} {rng.choice(['morning', 'afternoon', 'evening'])}"
+        created_at = fake.date_time_between(start_date="-120d", end_date="now", tzinfo=timezone.utc)
+
+        rows.append(
+            {
+                "slug": slug,
+                "icon": icon,
+                "title": title,
+                "description": fake.paragraph(nb_sentences=2),
+                "schedule_label": schedule_label,
+                "location_label": f"{fake.city()}, {rng.choice(['community hall', 'sports centre', 'studio'])}",
+                "category": category,
+                "filled_count": filled_count,
+                "total_spots": total_spots,
+                "note": fake.sentence(nb_words=8) if index % 3 == 0 else None,
+                "cta_label": "I'm interested",
+                "status": status,
+                "display_order": index,
+                "created_at": min(created_at, now),
+            }
+        )
+    return rows
+
+
+def _build_support_rows(now: datetime) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    for index in range(SUPPORT_OPPORTUNITY_COUNT):
+        kind = SUPPORT_KINDS[index % len(SUPPORT_KINDS)]
+        title = fake.sentence(nb_words=4).replace(".", "")
+        slug = f"support-{index + 1}-{fake.lexify(text='????')}".lower()
+        target_amount_hkd = rng.choice(SUPPORT_TARGET_AMOUNTS)
+        ratio = SUPPORT_PROGRESS_RATIOS[index]
+        funded_amount_hkd = int(target_amount_hkd * ratio)
+
+        quantity_needed: int | None = None
+        quantity_secured: int | None = None
+        purchase_url: str | None = None
+        moonclerk_url: str | None = None
+        if kind == "wishlist":
+            quantity_needed = rng.randint(10, 40)
+            quantity_secured = min(quantity_needed, max(0, int(quantity_needed * ratio)))
+            purchase_url = f"https://example.com/wishlist/{slug}"
+        else:
+            moonclerk_url = f"https://buy.stripe.test/{slug}"
+
+        created_at = fake.date_time_between(start_date="-160d", end_date="now", tzinfo=timezone.utc)
+        rows.append(
+            {
+                "slug": slug,
+                "kind": kind,
+                "title": title,
+                "description": fake.paragraph(nb_sentences=2),
+                "impact_statement": fake.sentence(nb_words=14),
+                "image_url": f"https://picsum.photos/seed/{slug}/1200/800",
+                "target_amount_hkd": target_amount_hkd,
+                "funded_amount_hkd": funded_amount_hkd,
+                "moonclerk_url": moonclerk_url,
+                "purchase_url": purchase_url,
+                "quantity_needed": quantity_needed,
+                "quantity_secured": quantity_secured,
+                "status": "active" if index < 7 else "archived",
+                "display_order": index,
+                "created_at": min(created_at, now),
+                "updated_at": now,
+            }
+        )
+    return rows
 
 
 def run() -> None:
@@ -157,133 +332,26 @@ def run() -> None:
             )
             db.commit()
 
-        campaign = upsert_opportunity(
-            db,
-            slug="beyond-limits-banquet",
-            kind="campaign",
-            title="Beyond Limits Banquet",
-            description=(
-                "Help bring Hong Kong together to celebrate the talent, confidence, and achievements "
-                "of Love 21 members."
-            ),
-            impact_statement="Your support helps create more stages where every ability can be seen.",
-            image_url=PLACEHOLDER_IMAGES["family"],
-            target_amount_hkd=250000,
-            funded_amount_hkd=180000,
-            display_order=10,
-        )
-        movement = upsert_opportunity(
-            db,
-            slug="movement-builds-confidence",
-            kind="cause",
-            title="Movement Builds Confidence",
-            description=(
-                "Back inclusive sport where members build strength, teamwork, and the confidence "
-                "to pursue ambitious goals."
-            ),
-            impact_statement="HKD 500 supports one sport session for 12 Love 21 members.",
-            image_url=PLACEHOLDER_IMAGES["sports"],
-            target_amount_hkd=80000,
-            funded_amount_hkd=44800,
-            display_order=20,
-        )
-        upsert_opportunity(
-            db,
-            slug="skills-open-doors",
-            kind="cause",
-            title="Skills Open Doors",
-            description=(
-                "Support employment training that gives members opportunities to demonstrate their "
-                "skills, reliability, and potential."
-            ),
-            impact_statement="HKD 100 supports two hours of employment training for one member.",
-            image_url=PLACEHOLDER_IMAGES["learning"],
-            target_amount_hkd=60000,
-            funded_amount_hkd=24600,
-            display_order=30,
-        )
-        upsert_opportunity(
-            db,
-            slug="families-grow-together",
-            kind="cause",
-            title="Families Grow Together",
-            description=(
-                "Strengthen the family networks that help members make choices, take ownership, and "
-                "thrive in their communities."
-            ),
-            impact_statement="HKD 1,000 provides two counselling sessions for a Love 21 family.",
-            image_url=PLACEHOLDER_IMAGES["family"],
-            target_amount_hkd=100000,
-            funded_amount_hkd=41000,
-            display_order=40,
-        )
-
-        wishlist_items = [
-            {
-                "slug": "athlete-training-kits",
-                "title": "Athlete Training Kits",
-                "description": "Placeholder image — swap for real Love 21 sports-session photos. Kits give members dependable equipment for practising skills and reaching their next sporting milestone.",
-                "impact_statement": "HKD 600 funds one reusable training kit for weekly sport sessions.",
-                "image_url": PLACEHOLDER_IMAGES["sports"],
-                "target_amount_hkd": 12000,
-                "funded_amount_hkd": 3600,
-                "quantity_needed": 20,
-                "quantity_secured": 6,
-                "display_order": 50,
-            },
-            {
-                "slug": "nutrition-workshop-equipment",
-                "title": "Nutrition Workshop Equipment",
-                "description": "Placeholder image — swap for real workshop photos. Practical equipment helps members and families turn nutrition knowledge into confident everyday choices.",
-                "impact_statement": "HKD 1,500 equips one hands-on nutrition station.",
-                "image_url": PLACEHOLDER_IMAGES["nutrition"],
-                "target_amount_hkd": 18000,
-                "funded_amount_hkd": 4500,
-                "quantity_needed": 12,
-                "quantity_secured": 3,
-                "display_order": 60,
-            },
-            {
-                "slug": "creative-learning-tablets",
-                "title": "Creative Learning Tablets",
-                "description": "Placeholder image — swap for real learning-session photos. Shared tablets expand how members communicate, create, learn, and show what they know.",
-                "impact_statement": "HKD 4,000 funds one shared accessibility-friendly tablet.",
-                "image_url": PLACEHOLDER_IMAGES["learning"],
-                "target_amount_hkd": 24000,
-                "funded_amount_hkd": 8000,
-                "quantity_needed": 6,
-                "quantity_secured": 2,
-                "display_order": 70,
-            },
-            {
-                "slug": "family-day-transport",
-                "title": "Family Day Transport",
-                "description": "Placeholder image — swap for real outing photos. Accessible transport helps families join community activities without cost becoming the barrier.",
-                "impact_statement": "HKD 2,000 covers an accessible coach for one family day route.",
-                "image_url": PLACEHOLDER_IMAGES["transport"],
-                "target_amount_hkd": 20000,
-                "funded_amount_hkd": 9200,
-                "quantity_needed": 10,
-                "quantity_secured": 4,
-                "display_order": 80,
-            },
-            {
-                "slug": "art-studio-supplies",
-                "title": "Art Studio Supplies",
-                "description": "Placeholder image — swap for real creative-class photos. Quality supplies help members explore identity, communication, and confidence through art.",
-                "impact_statement": "HKD 300 fills one art box for a member-led creative session.",
-                "image_url": PLACEHOLDER_IMAGES["art"],
-                "target_amount_hkd": 9000,
-                "funded_amount_hkd": 3900,
-                "quantity_needed": 30,
-                "quantity_secured": 13,
-                "display_order": 90,
-            },
-        ]
-        for item in wishlist_items:
-            upsert_opportunity(db, kind="wishlist", status="active", purchase_url=None, **item)
-
         now = datetime.now(timezone.utc)
+
+        volunteer_rows = _build_volunteer_rows(now)
+        seeded_volunteer_activities = [upsert_volunteer_activity(db, **row) for row in volunteer_rows]
+
+        support_rows = _build_support_rows(now)
+        seeded_support_opportunities = [upsert_opportunity(db, **row) for row in support_rows]
+
+        for index in range(NEWSLETTER_SUBSCRIBER_COUNT):
+            upsert_newsletter_subscriber(
+                db,
+                first_name=fake.first_name(),
+                last_name=fake.last_name(),
+                email=f"demo-news-{index + 1}@love21.demo",
+                phone_number=fake.numerify(text="+852#### ####"),
+                status="active",
+                frequency="weekly" if index == 0 else "monthly",
+                subscribed_at=fake.date_time_between(start_date="-60d", end_date="now", tzinfo=timezone.utc),
+            )
+
         activities = [
             upsert_activity(
                 db,
@@ -323,62 +391,38 @@ def run() -> None:
         ensure_signup(db, supporter_user, activities[2], "signed_up")
         ensure_hour(db, supporter_user, activities[0], 2.5, "Supported Saturday sports stations")
         ensure_hour(db, supporter_user, None, 1.0, "Manual log: helped prepare family resource packs")
-        ensure_donation(db, supporter_user, movement, 500, "monthly", "seed_monthly_movement_500")
-        ensure_donation(db, supporter_user, campaign, 1000, "one_time", "seed_campaign_1000")
+        ensure_donation(
+            db,
+            supporter_user,
+            seeded_support_opportunities[0],
+            500,
+            "monthly",
+            "seed_monthly_support_500",
+        )
+        ensure_donation(
+            db,
+            supporter_user,
+            seeded_support_opportunities[1],
+            1000,
+            "one_time",
+            "seed_support_1000",
+        )
 
-        gratitude_entries = [
-            {
-                "message": "Thank you to the coaches who help our family celebrate every new skill and every brave try.",
-                "display_name": "Demo Member Family",
-                "status": GratitudeEntryStatus.APPROVED,
-                "moderator_id": admin_user.id,
-                "moderated_at": now,
-            },
-            {
-                "message": "Love 21 gives me friends, movement, and a place to show what I can do.",
-                "display_name": "A Love 21 Member",
-                "status": GratitudeEntryStatus.APPROVED,
-                "moderator_id": admin_user.id,
-                "moderated_at": now,
-            },
-            {
-                "message": "I want to thank the volunteers for making Saturday sports calm, fun, and welcoming.",
-                "display_name": "Pending Demo Entry",
-                "status": GratitudeEntryStatus.PENDING,
-                "moderator_id": None,
-                "moderated_at": None,
-            },
-            {
-                "message": "Our family is grateful for nutrition workshops that turn advice into everyday confidence.",
-                "display_name": "Pending Family Note",
-                "status": GratitudeEntryStatus.PENDING,
-                "moderator_id": None,
-                "moderated_at": None,
-            },
-        ]
-        for values in gratitude_entries:
-            existing = db.scalar(
-                select(GratitudeEntry).where(
-                    GratitudeEntry.author_id == member_user.id,
-                    GratitudeEntry.message == values["message"],
-                )
-            )
-            if existing is None:
-                db.add(GratitudeEntry(author_id=member_user.id, **values))
-            else:
-                for key, value in values.items():
-                    setattr(existing, key, value)
-        db.commit()
-
-        existing_activity = db.scalar(select(VolunteerActivity.id).limit(1))
-        if existing_activity is None:
-            db.add_all([VolunteerActivity(**entry) for entry in VOLUNTEER_ACTIVITY_SEED])
-            db.commit()
+        ensure_volunteer_registration(db, member_user, seeded_volunteer_activities[0], "registered")
+        ensure_volunteer_registration(db, member_user, seeded_volunteer_activities[1], "registered")
+        ensure_volunteer_registration(db, supporter_user, seeded_volunteer_activities[2], "registered")
 
     print("Seeded demo users:")
     for email, role in DEMO_USERS:
         print(f"- {role.value}: {email} / {DEMO_PASSWORD}")
-    print("- legacy donor/volunteer demo accounts, if present, were converted to supporter")
+    print(
+        "Generated records: "
+        f"{VOLUNTEER_ACTIVITY_COUNT} volunteer activities + "
+        f"{SUPPORT_OPPORTUNITY_COUNT} support opportunities + "
+        f"{NEWSLETTER_SUBSCRIBER_COUNT} newsletter subscribers = "
+        f"{VOLUNTEER_ACTIVITY_COUNT + SUPPORT_OPPORTUNITY_COUNT + NEWSLETTER_SUBSCRIBER_COUNT} total"
+    )
+    print("Progress spread includes near-0%, early traction, momentum, and near-complete support opportunities.")
     print(MOCK_CHECKOUT_NOTE)
 
 
