@@ -8,16 +8,21 @@ import { ArrowUpRight } from "lucide-react";
 import { SupportProgress } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
+import { donationFormUrl } from "@/lib/donation-form-url";
 
 function OpportunityCard({
   opportunity,
   remarkLabel,
   supportLabel,
+  mockSupportNote,
 }: {
   opportunity: SupportOpportunity;
   remarkLabel: string;
   supportLabel: string;
+  mockSupportNote: string;
 }) {
+  const supportHref = opportunity.moonclerk_url ?? donationFormUrl({ item: opportunity.slug });
+
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-brand-sand bg-white">
       {opportunity.image_url ? (
@@ -46,17 +51,22 @@ function OpportunityCard({
           targetAmount={opportunity.target_amount_hkd}
           progressPercent={opportunity.progress_percent}
         />
-        {opportunity.moonclerk_url ? (
-          <>
-            <p className="mt-5 text-xs text-brand-ink/65">{remarkLabel}</p>
-            <Button asChild className="mt-3 w-full">
-              <a href={opportunity.moonclerk_url} target="_blank" rel="noreferrer">
-                {supportLabel}
-                <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
-              </a>
-            </Button>
-          </>
-        ) : null}
+        <p className="mt-5 text-xs text-brand-ink/65">
+          {opportunity.moonclerk_url ? remarkLabel : mockSupportNote}
+        </p>
+        <Button asChild className="mt-3 w-full">
+          {opportunity.moonclerk_url ? (
+            <a href={opportunity.moonclerk_url} target="_blank" rel="noreferrer">
+              {supportLabel}
+              <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
+            </a>
+          ) : (
+            <a href={supportHref}>
+              {supportLabel}
+              <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
+            </a>
+          )}
+        </Button>
       </div>
     </article>
   );
@@ -77,12 +87,8 @@ export function FundingPriorities() {
       .finally(() => setLoading(false));
   }, [t]);
 
-  const campaigns = useMemo(
-    () => opportunities.filter((entry) => entry.status === "active" && entry.kind === "campaign"),
-    [opportunities],
-  );
-  const causes = useMemo(
-    () => opportunities.filter((entry) => entry.status === "active" && entry.kind === "cause"),
+  const donationOpportunities = useMemo(
+    () => opportunities.filter((entry) => entry.kind !== "wishlist"),
     [opportunities],
   );
 
@@ -99,54 +105,29 @@ export function FundingPriorities() {
     );
   }
 
-  if (!campaigns.length && !causes.length) {
-    return <p className="text-brand-ink/70">{t("opportunities.emptySoon")}</p>;
-  }
-
   return (
-    <div className="space-y-10" aria-labelledby="giving-opportunities-heading">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
-          {t("mockForm.prioritiesEyebrow")}
-        </p>
-        <h2 id="giving-opportunities-heading" className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">
-          {t("mockForm.prioritiesTitle")}
-        </h2>
-      </div>
-
-      {campaigns.length ? (
-        <section>
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{t("opportunities.campaignEyebrow")}</p>
-          <h3 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">{t("opportunities.campaignTitle")}</h3>
-          <div className="mt-7 grid gap-6 md:grid-cols-2">
-            {campaigns.map((opportunity) => (
-              <OpportunityCard
-                key={opportunity.id}
-                opportunity={opportunity}
-                remarkLabel={t("opportunities.remarkMoonclerk", { title: opportunity.title })}
-                supportLabel={t("opportunities.support", { kind: opportunity.kind })}
-              />
-            ))}
-          </div>
-        </section>
-      ) : null}
-
-      {causes.length ? (
-        <section>
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{t("opportunities.causeEyebrow")}</p>
-          <h3 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl">{t("opportunities.causeTitle")}</h3>
-          <div className="mt-7 grid gap-6 md:grid-cols-2">
-            {causes.map((opportunity) => (
-              <OpportunityCard
-                key={opportunity.id}
-                opportunity={opportunity}
-                remarkLabel={t("opportunities.remarkMoonclerk", { title: opportunity.title })}
-                supportLabel={t("opportunities.support", { kind: opportunity.kind })}
-              />
-            ))}
-          </div>
-        </section>
-      ) : null}
-    </div>
+    <section aria-labelledby="giving-opportunities-heading">
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">
+        {t("opportunities.prioritiesEyebrow")}
+      </p>
+      <h2 id="giving-opportunities-heading" className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">
+        {t("opportunities.prioritiesTitle")}
+      </h2>
+      {donationOpportunities.length ? (
+        <div className="mt-7 grid gap-6 md:grid-cols-2">
+          {donationOpportunities.map((opportunity) => (
+            <OpportunityCard
+              key={opportunity.id}
+              opportunity={opportunity}
+              remarkLabel={t("opportunities.remarkMoonclerk", { title: opportunity.title })}
+              supportLabel={t("opportunities.support", { kind: opportunity.kind })}
+              mockSupportNote={t("opportunities.mockSupportNote")}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="mt-5 text-brand-ink/70">{t("opportunities.emptySoon")}</p>
+      )}
+    </section>
   );
 }

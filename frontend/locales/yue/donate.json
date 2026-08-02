@@ -53,7 +53,10 @@
     "campaignEyebrow": "限時機會",
     "campaignTitle": "當前活動",
     "causeEyebrow": "持續影響力",
-    "causeTitle": "支持佢哋嘅潛能"
+    "causeTitle": "支持佢哋嘅潛能",
+    "prioritiesEyebrow": "捐款連繫之處",
+    "prioritiesTitle": "現時資助重點",
+    "mockSupportNote": "喺示範中可透過模擬捐款表格支持此項目。"
   },
   "mockForm": {
     "eyebrow": "模擬捐款流程",

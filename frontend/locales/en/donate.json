@@ -53,7 +53,10 @@
     "campaignEyebrow": "Time-bound opportunities",
     "campaignTitle": "Current Campaigns",
     "causeEyebrow": "Sustained impact",
-    "causeTitle": "Champion Their Potential"
+    "causeTitle": "Champion Their Potential",
+    "prioritiesEyebrow": "Where gifts connect",
+    "prioritiesTitle": "Current funding priorities",
+    "mockSupportNote": "Use the mock donation form to support this priority in the demo."
   },
   "mockForm": {
     "eyebrow": "Mock donation flow",

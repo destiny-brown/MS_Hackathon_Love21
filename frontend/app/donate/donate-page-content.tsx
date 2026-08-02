@@ -52,6 +52,14 @@ export function DonatePageContent({ suggestedAmount }: { suggestedAmount?: numbe
 
         <Reveal>
           <section className="px-4 py-16 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-6xl">
+              <FundingPriorities />
+            </div>
+          </section>
+        </Reveal>
+
+        <Reveal>
+          <section className="px-4 py-16 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-6xl space-y-12">
               <div className="grid gap-8 lg:grid-cols-[1.35fr_0.65fr]">
                 <div className="space-y-4 text-brand-dark/80">
@@ -67,8 +75,6 @@ export function DonatePageContent({ suggestedAmount }: { suggestedAmount?: numbe
                   <p className="mt-3 text-sm text-brand-dark/75">{t("aside.body")}</p>
                 </BrandCard>
               </div>
-
-              <FundingPriorities />
 
               <div className="border-t border-brand-light pt-10 text-brand-dark/80">
                 <h2 className="font-serif-display text-3xl text-brand-dark">{t("other.title")}</h2>
