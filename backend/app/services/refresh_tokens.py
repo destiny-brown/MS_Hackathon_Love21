@@ -11,6 +11,13 @@ from app.models.refresh_token import RefreshTokenRecord
 from app.models.user import User
 
 
+def _as_utc(value: datetime) -> datetime:
+    """Normalize datetimes from DB drivers (naive or aware) into UTC-aware values."""
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
+
+
 def issue_token_pair(db: Session, user: User) -> tuple[str, str]:
     settings = get_settings()
     access_token = create_access_token(str(user.id), role=user.role.value)
@@ -36,7 +43,11 @@ def rotate_refresh_token(db: Session, refresh_token: str) -> tuple[str, str, Use
             RefreshTokenRecord.revoked_at.is_(None),
         )
     )
-    if record is None or record.expires_at <= datetime.now(timezone.utc):
+    if record is None:
+        return None
+
+    expires_at_utc = _as_utc(record.expires_at)
+    if expires_at_utc <= datetime.now(timezone.utc):
         return None
 
     user = db.get(User, record.user_id)

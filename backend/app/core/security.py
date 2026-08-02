@@ -22,6 +22,16 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
+def verify_password_with_rehash(plain_password: str, hashed_password: str) -> tuple[bool, str | None]:
+    """Verify a password and return an updated hash when passlib marks the hash as outdated."""
+    verified = pwd_context.verify(plain_password, hashed_password)
+    if not verified:
+        return False, None
+    if pwd_context.needs_update(hashed_password):
+        return True, pwd_context.hash(plain_password)
+    return True, None
+
+
 def _encode_token(payload: dict[str, object]) -> str:
     settings = get_settings()
     return jwt.encode(payload, settings.secret_key, algorithm=settings.algorithm)

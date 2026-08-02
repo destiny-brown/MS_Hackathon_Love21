@@ -1,6 +1,11 @@
 from fastapi.testclient import TestClient
+from passlib.context import CryptContext
+from sqlalchemy import select
 
+from app.core.security import verify_password
+from app.db import SessionLocal
 from app.main import app
+from app.models.user import Role, User
 
 client = TestClient(app)
 
@@ -62,3 +67,32 @@ def test_admin_route_checks_role_from_database():
         headers={"Authorization": f"Bearer {admin['access_token']}"},
     )
     assert response.status_code == 200
+
+
+def test_login_rehashes_outdated_bcrypt_hash():
+    email = "rehash-test@love21.demo"
+    password = "demo1234"
+    weak_context = CryptContext(schemes=["bcrypt"], bcrypt__rounds=4)
+    weak_hash = weak_context.hash(password)
+
+    with SessionLocal() as db:
+        user = db.scalar(select(User).where(User.email == email))
+        if user is None:
+            user = User(email=email, hashed_password=weak_hash, role=Role.SUPPORTER)
+            db.add(user)
+        else:
+            user.hashed_password = weak_hash
+            user.role = Role.SUPPORTER
+        db.commit()
+
+    response = client.post("/auth/login", json={"email": email, "password": password})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["access_token"]
+    assert data["refresh_token"]
+
+    with SessionLocal() as db:
+        updated = db.scalar(select(User).where(User.email == email))
+        assert updated is not None
+        assert updated.hashed_password != weak_hash
+        assert verify_password(password, updated.hashed_password)

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.security import hash_password, verify_password
+from app.core.security import hash_password, verify_password_with_rehash
 from app.db import get_db
 from app.deps import get_current_user
 from app.models.user import Role, User
@@ -34,8 +34,16 @@ def register(payload: UserCreate, db: Session = Depends(get_db)) -> Token:
 def login(payload: UserLogin, db: Session = Depends(get_db)) -> Token:
     email = payload.email.lower().strip()
     user = db.scalar(select(User).where(User.email == email))
-    if not user or not verify_password(payload.password, user.hashed_password):
+    if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+
+    verified, updated_hash = verify_password_with_rehash(payload.password, user.hashed_password)
+    if not verified:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+
+    if updated_hash is not None:
+        user.hashed_password = updated_hash
+        db.commit()
 
     access_token, refresh_token = issue_token_pair(db, user)
     return Token(access_token=access_token, refresh_token=refresh_token, user=UserRead.model_validate(user))
