@@ -29,9 +29,9 @@
       "title": "志愿者",
       "description": "投入时间支援每周课堂、家庭活动及融合社区盛事。"
     },
-    "calendar": {
-      "title": "活动日历",
-      "description": "查看即将举行的运动、营养工作坊、家庭计划及社区聚会。"
+    "stories": {
+      "title": "故事",
+      "description": "认识会员、阅读社区故事，见证能力展现。"
     }
   },
   "stories": {
@@ -63,7 +63,6 @@
     "home": "主页",
     "impact": "影响力",
     "categories": "分类",
-    "stories": "故事",
-    "gratitude": "感谢"
+    "stories": "故事"
   }
 }

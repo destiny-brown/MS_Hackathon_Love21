@@ -29,9 +29,9 @@
       "title": "Volunteer",
       "description": "Share your time supporting weekly classes, family sessions, and inclusive community events."
     },
-    "calendar": {
-      "title": "Activity Calendar",
-      "description": "Find upcoming sports, nutrition workshops, family programmes, and community gatherings."
+    "stories": {
+      "title": "Stories",
+      "description": "Meet members, read community stories, and see ability in action."
     }
   },
   "stories": {
@@ -63,7 +63,6 @@
     "home": "Home",
     "impact": "Impact",
     "categories": "Categories",
-    "stories": "Stories",
-    "gratitude": "Gratitude"
+    "stories": "Stories"
   }
 }

@@ -29,9 +29,9 @@
       "title": "義工",
       "description": "投入時間支援每週課堂、家庭活動及共融社區盛事。"
     },
-    "calendar": {
-      "title": "活動日曆",
-      "description": "查看即將舉行的運動、營養工作坊、家庭計劃及社區聚會。"
+    "stories": {
+      "title": "故事",
+      "description": "認識會員、閱讀社群故事，見證能力展現。"
     }
   },
   "stories": {
@@ -63,7 +63,6 @@
     "home": "主頁",
     "impact": "影響力",
     "categories": "分類",
-    "stories": "故事",
-    "gratitude": "感謝"
+    "stories": "故事"
   }
 }

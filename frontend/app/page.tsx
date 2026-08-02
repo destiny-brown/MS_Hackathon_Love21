@@ -19,7 +19,6 @@ import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
 import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
-import { WallOfGratitude } from "@/components/site/wall-of-gratitude";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useTranslatedProgrammes } from "@/lib/i18n/translated-data";
@@ -32,7 +31,6 @@ const sectionNavItems: PageSectionNavItem[] = [
   { id: "home-impact", label: "Impact", labelKey: "sectionNav.impact" },
   { id: "home-categories", label: "Categories", labelKey: "sectionNav.categories" },
   { id: "home-stories", label: "Stories", labelKey: "sectionNav.stories" },
-  { id: "home-gratitude", label: "Gratitude", labelKey: "sectionNav.gratitude" },
 ];
 
 // The "21 Years in Hong Kong" marquee band from the Get Involved page,
@@ -374,11 +372,12 @@ function FourDoors() {
     "bg-brand-dark",
   ];
   const { t } = useTranslation("home");
+  const { t: tCommon } = useTranslation("common");
   const cards = [
     {
       title: t("fourDoors.education.title"),
       description: t("fourDoors.education.description"),
-      href: "/our-programmes",
+      href: "/learn-play",
     },
     {
       title: t("fourDoors.donate.title"),
@@ -391,9 +390,9 @@ function FourDoors() {
       href: "/our-volunteer",
     },
     {
-      title: t("fourDoors.calendar.title"),
-      description: t("fourDoors.calendar.description"),
-      href: "/our-programmes",
+      title: t("fourDoors.stories.title"),
+      description: t("fourDoors.stories.description"),
+      href: "/stories-media",
     },
   ];
 
@@ -444,7 +443,7 @@ function FourDoors() {
                   {door.description}
                 </p>
                 <span className="relative mt-5 inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-brand-red">
-                  {t("actions.enter")} <ArrowRight className="h-4 w-4" />
+                  {tCommon("actions.enter")} <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>
             </motion.div>
@@ -774,8 +773,6 @@ export default function HomePage() {
           </motion.div>
         </section>
       </Reveal>
-
-      <WallOfGratitude />
 
       {/* Section 6: Newsletter (unchanged structure) */}
       <Reveal>
