@@ -106,52 +106,24 @@ Full feature-by-feature breakdown (files, quirks, workflow): [`FEATURES.md`](FEA
 
 ```
 MS_Hackathon_Love21/
-├── frontend/                      Next.js 16 app (App Router) · Vercel root directory
-│   ├── app/                        ~35 routed pages
-│   │   ├── page.tsx                  Home — hero video, impact stats, story carousel
-│   │   ├── donate/                   Donation marketing, tiers, gratitude wall, campaigns
-│   │   ├── donation-form/            Mock checkout (wishlist / campaign / cause)
-│   │   ├── wishlist/                 In-kind wishlist marketplace
-│   │   ├── learn-play/               Neurodiversity education hub
-│   │   │   └── 21-moves/               Gamified interactive learning trail
-│   │   ├── get-involved/, our-volunteer/   Volunteer onboarding & support pathways
-│   │   ├── supporter/dashboard/      Supporter account (giving, hours, AI picks)
-│   │   ├── member/                   Member profile & gratitude submissions
-│   │   ├── admin/                    Staff admin shell
-│   │   ├── stories/, media/, traffic/    Community stories, press, live site analytics
-│   │   ├── about-governance/, board-of-directors/, our-finance/   Governance & transparency
-│   │   ├── login/, register/         Auth flows
-│   │   └── api/                      Next.js route handlers (e.g. newsletter proxy)
-│   ├── components/
-│   │   ├── captain/                    Captain 21 AI widget & tool-call provider
-│   │   ├── learn/trail-map/            21 Moves trail engine (scenes, unlocks, debrief panel)
-│   │   ├── admin/                      Admin panel widgets
-│   │   ├── supporter/, member/         Dashboard-specific UI
-│   │   ├── site/, layouts/, brand/     Header, footer, nav shell, floating CTAs
-│   │   └── ui/                         Design-system primitives (Radix-based)
-│   ├── lib/                         API client, auth, i18n, Captain logic, static content/seed data
-│   └── locales/                     en / yue (Cantonese) / zh translation JSON
+├── frontend/                  Next.js 16 app (Vercel root)
+│   ├── app/                     ~35 pages — donate, wishlist, learn-play/21-moves,
+│   │                            supporter/member dashboards, admin, governance
+│   ├── components/              captain/ (AI assistant), learn/trail-map/ (21 Moves),
+│   │                            admin/, dashboards, design-system ui/
+│   ├── lib/                     API client, auth, i18n, AI helpers
+│   └── locales/                 en / yue (Cantonese) / zh
 │
-├── backend/                        FastAPI service
-│   ├── app/
-│   │   ├── routers/                  auth · supporter · member · admin · admin_learn
-│   │   │                             newsletter · support_opportunities · gratitude_entries
-│   │   │                             learn · captain_chat · volunteer_match · trail_debrief
-│   │   ├── models/                   users, donations, activities, opportunities,
-│   │   │                             gratitude entries, newsletter, learn content
-│   │   ├── services/                 AI matching, RAG, newsletter render/send, seeders
-│   │   ├── schemas/                  Pydantic request/response contracts
-│   │   ├── core/                     Settings & JWT security
-│   │   └── data/                     Captain 21 knowledge base + static seed content
-│   ├── migrations/                  Alembic schema history
-│   ├── tests/                       Pytest suite (auth, matching, newsletter, chat, …)
-│   ├── seed.py                      Demo data generator (Faker)
-│   └── modal_llm.py                 Modal deployment entrypoint for the AI model
+├── backend/                   FastAPI service
+│   ├── app/routers/              auth, supporter, member, admin, newsletter,
+│   │                             support_opportunities, learn, captain_chat,
+│   │                             volunteer_match, trail_debrief
+│   ├── app/models/, services/    SQLAlchemy models + AI matching/RAG/newsletter logic
+│   ├── migrations/               Alembic schema history
+│   └── tests/                    Pytest suite
 │
-├── docs/examples/                  Sample rendered output (e.g. newsletter HTML)
-├── .github/workflows/ci.yml        Backend tests + migration check + frontend build
-├── docker-compose.yml               One-command local stack (backend + frontend + db)
-└── render.yaml                      Render blueprint (backend service + Postgres)
+├── docker-compose.yml         One-command local stack (backend + frontend + db)
+└── render.yaml                 Render blueprint (backend service + Postgres)
 ```
 
 [↑ back to top](#toc)
