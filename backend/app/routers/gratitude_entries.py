@@ -8,7 +8,11 @@ from app.db import get_db
 from app.deps import require_roles
 from app.models.gratitude_entry import GratitudeEntry, GratitudeEntryStatus
 from app.models.user import Role, User
-from app.schemas.gratitude_entry import GratitudeEntryCreate, GratitudeEntryModeration, GratitudeEntryRead
+from app.schemas.gratitude_entry import (
+    GratitudeEntryCreate,
+    GratitudeEntryModeration,
+    GratitudeEntryRead,
+)
 
 router = APIRouter(prefix="/gratitude-entries", tags=["gratitude entries"])
 
@@ -18,16 +22,22 @@ def serialize(entry: GratitudeEntry) -> GratitudeEntryRead:
 
 
 @router.get("/public", response_model=list[GratitudeEntryRead])
-def list_public_gratitude_entries(db: Session = Depends(get_db)) -> list[GratitudeEntryRead]:
+def list_public_gratitude_entries(
+    db: Session = Depends(get_db),
+) -> list[GratitudeEntryRead]:
     entries = db.scalars(
         select(GratitudeEntry)
         .where(GratitudeEntry.status == GratitudeEntryStatus.APPROVED)
-        .order_by(GratitudeEntry.moderated_at.desc(), GratitudeEntry.submitted_at.desc())
+        .order_by(
+            GratitudeEntry.moderated_at.desc(), GratitudeEntry.submitted_at.desc()
+        )
     ).all()
     return [serialize(entry) for entry in entries]
 
 
-@router.post("/member", response_model=GratitudeEntryRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/member", response_model=GratitudeEntryRead, status_code=status.HTTP_201_CREATED
+)
 def submit_gratitude_entry(
     payload: GratitudeEntryCreate,
     current_user: User = Depends(require_roles(Role.MEMBER, Role.SUPPORTER)),
@@ -59,6 +69,19 @@ def list_pending_gratitude_entries(
     return [serialize(entry) for entry in entries]
 
 
+@router.get("/admin", response_model=list[GratitudeEntryRead])
+def list_all_gratitude_entries(
+    _: User = Depends(require_roles(Role.ADMIN)),
+    db: Session = Depends(get_db),
+) -> list[GratitudeEntryRead]:
+    entries = db.scalars(
+        select(GratitudeEntry).order_by(
+            GratitudeEntry.submitted_at.desc(), GratitudeEntry.id.desc()
+        )
+    ).all()
+    return [serialize(entry) for entry in entries]
+
+
 @router.patch("/admin/{entry_id}", response_model=GratitudeEntryRead)
 def moderate_gratitude_entry(
     entry_id: int,
@@ -68,7 +91,9 @@ def moderate_gratitude_entry(
 ) -> GratitudeEntryRead:
     entry = db.get(GratitudeEntry, entry_id)
     if entry is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gratitude entry not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Gratitude entry not found"
+        )
 
     entry.status = GratitudeEntryStatus(payload.status)
     entry.moderated_at = datetime.now(timezone.utc)
