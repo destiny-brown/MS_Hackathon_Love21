@@ -15,6 +15,11 @@
     "members": "會員",
     "contactUs": "聯絡我們"
   },
+  "account": "帳戶",
+  "dashboard": "控制台",
+  "openMenu": "打開選單",
+  "closeMenu": "關閉選單",
+  "staffLogin": "職員登入",
   "footer": {
     "tagline": "透過運動、營養及全方位支援，賦能香港唐氏綜合症及自閉症社群。",
     "explore": "探索",

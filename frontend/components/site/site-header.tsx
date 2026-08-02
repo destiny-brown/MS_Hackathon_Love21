@@ -8,12 +8,13 @@ import { AccessibilityMenu } from "@/components/site/accessibility-menu";
 import { LanguageSwitcherInline } from "@/components/site/language-switcher-inline";
 import { MobileSiteMenu } from "@/components/site/mobile-site-menu";
 import { SiteAccountNav } from "@/components/site/site-account-nav";
-import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/lib/auth";
 import { navKeyByHref } from "@/lib/i18n/nav";
 import { mainNav } from "@/lib/site-data";
 
 export function SiteHeader() {
   const { t } = useTranslation("common");
+  const { user } = useCurrentUser();
 
   return (
     <header className="relative z-50 border-b border-brand-light/80 bg-brand-light/90 backdrop-blur-sm">
@@ -45,15 +46,23 @@ export function SiteHeader() {
               </Link>
             );
           })}
+          {user?.role === "admin" && (
+            <Link
+              href="/admin"
+              className="whitespace-nowrap rounded-md font-semibold text-[#d4a373] transition-colors hover:text-brand-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              {t("dashboard")}
+            </Link>
+          )}
         </nav>
 
         <div className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
           <AccessibilityMenu />
           <LanguageSwitcherInline />
           <SiteAccountNav />
-          <Button asChild size="sm" className="shrink-0 font-semibold">
+          {/* <Button asChild size="sm" className="shrink-0 font-semibold">
             <Link href="/donate">{t("nav.donate")}</Link>
-          </Button>
+          </Button> */}
           <MobileSiteMenu />
         </div>
       </div>

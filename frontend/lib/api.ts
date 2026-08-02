@@ -2,9 +2,24 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const TOKEN_KEY = "hackkit_token";
 
 export type Role = "supporter" | "member" | "admin";
-export type User = { id: number; email: string; role: Role; created_at: string };
-export type Item = { id: number; title: string; description: string | null; owner_id: number; created_at: string };
-export type AuthResponse = { access_token: string; token_type: "bearer"; user: User };
+export type User = {
+  id: number;
+  email: string;
+  role: Role;
+  created_at: string;
+};
+export type Item = {
+  id: number;
+  title: string;
+  description: string | null;
+  owner_id: number;
+  created_at: string;
+};
+export type AuthResponse = {
+  access_token: string;
+  token_type: "bearer";
+  user: User;
+};
 export type OpportunityKind = "campaign" | "cause" | "wishlist";
 export type OpportunityStatus = "active" | "archived";
 export type SupportOpportunity = {
@@ -432,7 +447,12 @@ export function landingPathForRole(role: Role) {
 }
 
 export function resolvePostLoginPath(role: Role, nextPath: string | null) {
-  if (nextPath && nextPath.startsWith("/") && !nextPath.startsWith("//") && nextPath !== "/login") {
+  if (
+    nextPath &&
+    nextPath.startsWith("/") &&
+    !nextPath.startsWith("//") &&
+    nextPath !== "/login"
+  ) {
     return nextPath;
   }
   return landingPathForRole(role);
@@ -446,7 +466,11 @@ function parseApiError(data: unknown, status: number): string {
     if (typeof detail === "string") return detail;
     if (Array.isArray(detail)) {
       const messages = detail
-        .map((entry) => (typeof entry === "object" && entry !== null && "msg" in entry ? String(entry.msg) : ""))
+        .map((entry) =>
+          typeof entry === "object" && entry !== null && "msg" in entry
+            ? String(entry.msg)
+            : "",
+        )
         .filter(Boolean);
       if (messages.length > 0) return messages.join(", ");
     }
@@ -454,15 +478,23 @@ function parseApiError(data: unknown, status: number): string {
   return `Request failed: ${status}`;
 }
 
-async function request<T>(path: string, options: ApiRequestInit = {}): Promise<T> {
+async function request<T>(
+  path: string,
+  options: ApiRequestInit = {},
+): Promise<T> {
   const { redirectOnUnauthorized = true, ...requestOptions } = options;
   const token = getToken();
   const headers = new Headers(requestOptions.headers);
   headers.set("Content-Type", "application/json");
-  const isPublicAuthRequest = path === "/auth/login" || path === "/auth/register";
-  if (token && !isPublicAuthRequest) headers.set("Authorization", `Bearer ${token}`);
+  const isPublicAuthRequest =
+    path === "/auth/login" || path === "/auth/register";
+  if (token && !isPublicAuthRequest)
+    headers.set("Authorization", `Bearer ${token}`);
 
-  const response = await fetch(`${API_URL}${path}`, { ...requestOptions, headers });
+  const response = await fetch(`${API_URL}${path}`, {
+    ...requestOptions,
+    headers,
+  });
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
@@ -489,7 +521,11 @@ export async function getCurrentUserWithRole() {
 }
 
 export const api = {
-  register: (email: string, password: string, role: Exclude<Role, "admin"> = "supporter") =>
+  register: (
+    email: string,
+    password: string,
+    role: Exclude<Role, "admin"> = "supporter",
+  ) =>
     request<AuthResponse>("/auth/register", {
       method: "POST",
       body: JSON.stringify({ email, password, role }),
@@ -502,34 +538,61 @@ export const api = {
       redirectOnUnauthorized: false,
     }),
   me: () => request<User>("/auth/me"),
-  currentUser: () => request<User>("/auth/me", { redirectOnUnauthorized: false }),
+  currentUser: () =>
+    request<User>("/auth/me", { redirectOnUnauthorized: false }),
   listItems: () => request<Item[]>("/items"),
   createItem: (payload: Pick<Item, "title" | "description">) =>
     request<Item>("/items", { method: "POST", body: JSON.stringify(payload) }),
-  updateItem: (id: number, payload: Partial<Pick<Item, "title" | "description">>) =>
-    request<Item>(`/items/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
+  updateItem: (
+    id: number,
+    payload: Partial<Pick<Item, "title" | "description">>,
+  ) =>
+    request<Item>(`/items/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
   deleteItem: (id: number) => request<void>(`/items/${id}`),
-  adminMetrics: () => request<{ active_members: number; monthly_recurring_donations: number; open_volunteer_roles: number }>("/admin/metrics"),
-  recurringDonation: () => request<{ email: string; status: string }>("/supporter/recurring-donation"),
-  memberProfile: () => request<{ email: string; profile_status: string }>("/member/profile"),
-  listPublicGratitudeEntries: () => request<GratitudeEntry[]>("/gratitude-entries/public"),
+  adminMetrics: () =>
+    request<{
+      active_members: number;
+      monthly_recurring_donations: number;
+      open_volunteer_roles: number;
+    }>("/admin/metrics"),
+  recurringDonation: () =>
+    request<{ email: string; status: string }>("/supporter/recurring-donation"),
+  memberProfile: () =>
+    request<{ email: string; profile_status: string }>("/member/profile"),
+  listPublicGratitudeEntries: () =>
+    request<GratitudeEntry[]>("/gratitude-entries/public"),
   submitGratitudeEntry: (payload: GratitudeEntryInput) =>
-    request<GratitudeEntry>("/gratitude-entries/member", { method: "POST", body: JSON.stringify(payload) }),
-  listPendingGratitudeEntries: () => request<GratitudeEntry[]>("/gratitude-entries/admin/pending"),
+    request<GratitudeEntry>("/gratitude-entries/member", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  listPendingGratitudeEntries: () =>
+    request<GratitudeEntry[]>("/gratitude-entries/admin/pending"),
+  listAdminGratitudeEntries: () =>
+    request<GratitudeEntry[]>("/gratitude-entries/admin"),
   moderateGratitudeEntry: (id: number, status: "approved" | "rejected") =>
     request<GratitudeEntry>(`/gratitude-entries/admin/${id}`, {
       method: "PATCH",
       body: JSON.stringify({ status }),
     }),
   listSupportOpportunities: (kind?: OpportunityKind) =>
-    request<SupportOpportunity[]>(`/support-opportunities${kind ? `?kind=${kind}` : ""}`),
-  listAdminSupportOpportunities: () => request<SupportOpportunity[]>("/support-opportunities/admin"),
+    request<SupportOpportunity[]>(
+      `/support-opportunities${kind ? `?kind=${kind}` : ""}`,
+    ),
+  listAdminSupportOpportunities: () =>
+    request<SupportOpportunity[]>("/support-opportunities/admin"),
   createSupportOpportunity: (payload: SupportOpportunityInput) =>
     request<SupportOpportunity>("/support-opportunities", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  updateSupportOpportunity: (id: number, payload: Partial<SupportOpportunityInput>) =>
+  updateSupportOpportunity: (
+    id: number,
+    payload: Partial<SupportOpportunityInput>,
+  ) =>
     request<SupportOpportunity>(`/support-opportunities/admin/${id}`, {
       method: "PATCH",
       body: JSON.stringify(payload),
@@ -541,11 +604,27 @@ export const api = {
     }),
   listActivities: () => request<Activity[]>("/activities"),
   signUpForActivity: (id: number) =>
-    request<ActivitySignup>(`/activities/${id}/signup`, { method: "POST", body: JSON.stringify({}) }),
+    request<ActivitySignup>(`/activities/${id}/signup`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
   supporterDashboard: () => request<SupporterDashboard>("/supporter/dashboard"),
   getCaptainsCorner: () => request<CaptainsCorner>("/supporter/captains-corner"),
   getSupporterPlayState: () => request<UserPlayState>("/supporter/play-state"),
   saveSupporterPlayState: (payload: UserPlayStateUpdate) =>
+    request<UserPlayState>("/supporter/play-state", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
+  logVolunteerHours: (payload: {
+    activity_id?: number | null;
+    hours: number;
+    notes?: string | null;
+  }) =>
+    request<VolunteerHour>("/supporter/hours", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
     request<UserPlayState>("/supporter/play-state", { method: "PUT", body: JSON.stringify(payload) }),
   logVolunteerHours: (payload: { activity_id?: number | null; hours: number; notes?: string | null }) =>
     request<VolunteerHour>("/supporter/hours", { method: "POST", body: JSON.stringify(payload) }),
@@ -554,7 +633,8 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  listVolunteerActivities: () =>
+    request<VolunteerActivity[]>("/ai/volunteer/activities"),
   trailDebrief: (payload: TrailDebriefRequest) =>
     request<TrailDebriefResponse>("/ai/trail/debrief", {
       method: "POST",
@@ -567,82 +647,173 @@ export const api = {
     }),
   adminOverview: () => request<AdminOverview>("/admin/overview"),
   listAdminActivities: () => request<AdminActivity[]>("/admin/activities"),
-  createAdminActivity: (payload: Omit<AdminActivity, "id" | "registration_count" | "created_at">) =>
-    request<AdminActivity>("/admin/activities", { method: "POST", body: JSON.stringify(payload) }),
-  updateAdminActivity: (id: number, payload: Partial<Omit<AdminActivity, "id" | "registration_count" | "created_at">>) =>
-    request<AdminActivity>(`/admin/activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteAdminActivity: (id: number) => request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
-  listAdminVolunteerActivities: () => request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
-  createAdminVolunteerActivity: (payload: Omit<AdminVolunteerActivity, "id" | "created_at">) =>
-    request<AdminVolunteerActivity>("/admin/volunteer-activities", { method: "POST", body: JSON.stringify(payload) }),
-  updateAdminVolunteerActivity: (id: number, payload: Partial<Omit<AdminVolunteerActivity, "id" | "created_at">>) =>
-    request<AdminVolunteerActivity>(`/admin/volunteer-activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteAdminVolunteerActivity: (id: number) => request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
-  listNewsletterSubscribers: () => request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
-  createNewsletterSubscriber: (payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">) =>
-    request<NewsletterSubscriber>("/admin/newsletter/subscribers", { method: "POST", body: JSON.stringify({
-      first_name: payload.first_name,
-      last_name: payload.last_name,
-      email: payload.email,
-      phone_number: payload.phone_number,
-      status: payload.status,
-    }) }),
-  updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
-    request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, { method: "PATCH", body: JSON.stringify({
-      first_name: payload.first_name,
-      last_name: payload.last_name,
-      email: payload.email,
-      phone_number: payload.phone_number,
-      status: payload.status,
-    }) }),
-  deleteNewsletterSubscriber: (id: number) => request<void>(`/admin/newsletter/subscribers/${id}`, { method: "DELETE" }),
-  listNewsletterDeliveries: () => request<NewsletterDelivery[]>("/admin/newsletter/deliveries"),
-  previewNewsletter: (payload: { subject: string; content: string; unsubscribe_url?: string }) =>
+  createAdminActivity: (
+    payload: Omit<AdminActivity, "id" | "registration_count" | "created_at">,
+  ) =>
+    request<AdminActivity>("/admin/activities", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateAdminActivity: (
+    id: number,
+    payload: Partial<
+      Omit<AdminActivity, "id" | "registration_count" | "created_at">
+    >,
+  ) =>
+    request<AdminActivity>(`/admin/activities/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteAdminActivity: (id: number) =>
+    request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
+  listAdminVolunteerActivities: () =>
+    request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
+  createAdminVolunteerActivity: (
+    payload: Omit<AdminVolunteerActivity, "id" | "created_at">,
+  ) =>
+    request<AdminVolunteerActivity>("/admin/volunteer-activities", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateAdminVolunteerActivity: (
+    id: number,
+    payload: Partial<Omit<AdminVolunteerActivity, "id" | "created_at">>,
+  ) =>
+    request<AdminVolunteerActivity>(`/admin/volunteer-activities/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteAdminVolunteerActivity: (id: number) =>
+    request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
+  listNewsletterSubscribers: () =>
+    request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
+  createNewsletterSubscriber: (
+    payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">,
+  ) =>
+    request<NewsletterSubscriber>("/admin/newsletter/subscribers", {
+      method: "POST",
+      body: JSON.stringify({
+        first_name: payload.first_name,
+        last_name: payload.last_name,
+        email: payload.email,
+        phone_number: payload.phone_number,
+        status: payload.status,
+      }),
+    }),
+  updateNewsletterSubscriber: (
+    id: number,
+    payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>,
+  ) =>
+    request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        first_name: payload.first_name,
+        last_name: payload.last_name,
+        email: payload.email,
+        phone_number: payload.phone_number,
+        status: payload.status,
+      }),
+    }),
+  deleteNewsletterSubscriber: (id: number) =>
+    request<void>(`/admin/newsletter/subscribers/${id}`, { method: "DELETE" }),
+  listNewsletterDeliveries: () =>
+    request<NewsletterDelivery[]>("/admin/newsletter/deliveries"),
+  previewNewsletter: (payload: {
+    subject: string;
+    content: string;
+    unsubscribe_url?: string;
+  }) =>
     request<{ html: string }>("/admin/newsletter/preview", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
   sendNewsletter: (payload: { subject: string; content: string }) =>
-    request<{ success: boolean; message: string; sent_count: number }>("/admin/newsletter/send", {
+    request<{ success: boolean; message: string; sent_count: number }>(
+      "/admin/newsletter/send",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    ),
+  subscribeNewsletter: (payload: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone_number?: string | null;
+  }) =>
+    request<NewsletterSubscriber>("/newsletter/subscribe", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  subscribeNewsletter: (payload: { first_name: string; last_name: string; email: string; phone_number?: string | null }) =>
-    request<NewsletterSubscriber>("/newsletter/subscribe", { method: "POST", body: JSON.stringify(payload) }),
   unsubscribeNewsletter: (token: string) =>
-    request<{ email: string; status: string; message: string }>(`/newsletter/unsubscribe/${token}`, { method: "POST" }),
+    request<{ email: string; status: string; message: string }>(
+      `/newsletter/unsubscribe/${token}`,
+      { method: "POST" },
+    ),
   listPublishedLearnQuestions: (kind?: string) =>
     request<LearnQuestion[]>(`/learn/questions${kind ? `?kind=${kind}` : ""}`),
   listPublishedLearnResources: (audience?: string) =>
-    request<LearnResource[]>(`/learn/resources${audience ? `?audience=${audience}` : ""}`),
+    request<LearnResource[]>(
+      `/learn/resources${audience ? `?audience=${audience}` : ""}`,
+    ),
   listPublishedLearnVideos: () => request<LearnVideo[]>("/learn/videos"),
   listAdminLearnQuestions: (params?: { status?: string; kind?: string }) => {
     const search = new URLSearchParams();
     if (params?.status) search.set("status", params.status);
     if (params?.kind) search.set("kind", params.kind);
     const query = search.toString();
-    return request<LearnQuestion[]>(`/admin/learn/questions${query ? `?${query}` : ""}`);
+    return request<LearnQuestion[]>(
+      `/admin/learn/questions${query ? `?${query}` : ""}`,
+    );
   },
   createAdminLearnQuestion: (payload: LearnQuestionInput) =>
-    request<LearnQuestion>("/admin/learn/questions", { method: "POST", body: JSON.stringify(payload) }),
-  updateAdminLearnQuestion: (id: number, payload: Partial<LearnQuestionInput>) =>
-    request<LearnQuestion>(`/admin/learn/questions/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteAdminLearnQuestion: (id: number) => request<void>(`/admin/learn/questions/${id}`, { method: "DELETE" }),
+    request<LearnQuestion>("/admin/learn/questions", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateAdminLearnQuestion: (
+    id: number,
+    payload: Partial<LearnQuestionInput>,
+  ) =>
+    request<LearnQuestion>(`/admin/learn/questions/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteAdminLearnQuestion: (id: number) =>
+    request<void>(`/admin/learn/questions/${id}`, { method: "DELETE" }),
   generateAdminLearnQuestions: (payload: LearnQuestionGenerateRequest) =>
     request<LearnQuestionGenerateResponse>("/admin/learn/questions/generate", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  listAdminLearnResources: () => request<LearnResource[]>("/admin/learn/resources"),
+  listAdminLearnResources: () =>
+    request<LearnResource[]>("/admin/learn/resources"),
   createAdminLearnResource: (payload: LearnResourceInput) =>
-    request<LearnResource>("/admin/learn/resources", { method: "POST", body: JSON.stringify(payload) }),
-  updateAdminLearnResource: (id: number, payload: Partial<LearnResourceInput>) =>
-    request<LearnResource>(`/admin/learn/resources/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteAdminLearnResource: (id: number) => request<void>(`/admin/learn/resources/${id}`, { method: "DELETE" }),
+    request<LearnResource>("/admin/learn/resources", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateAdminLearnResource: (
+    id: number,
+    payload: Partial<LearnResourceInput>,
+  ) =>
+    request<LearnResource>(`/admin/learn/resources/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteAdminLearnResource: (id: number) =>
+    request<void>(`/admin/learn/resources/${id}`, { method: "DELETE" }),
   listAdminLearnVideos: () => request<LearnVideo[]>("/admin/learn/videos"),
   createAdminLearnVideo: (payload: LearnVideoInput) =>
-    request<LearnVideo>("/admin/learn/videos", { method: "POST", body: JSON.stringify(payload) }),
+    request<LearnVideo>("/admin/learn/videos", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
   updateAdminLearnVideo: (id: number, payload: Partial<LearnVideoInput>) =>
-    request<LearnVideo>(`/admin/learn/videos/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteAdminLearnVideo: (id: number) => request<void>(`/admin/learn/videos/${id}`, { method: "DELETE" }),
+    request<LearnVideo>(`/admin/learn/videos/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteAdminLearnVideo: (id: number) =>
+    request<void>(`/admin/learn/videos/${id}`, { method: "DELETE" }),
 };

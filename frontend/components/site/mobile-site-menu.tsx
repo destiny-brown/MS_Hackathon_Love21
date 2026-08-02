@@ -65,7 +65,7 @@ export function MobileSiteMenu({ className }: MobileSiteMenuProps) {
             <button
               type="button"
               className="fixed inset-0 z-[90] bg-brand-dark/40"
-              aria-label="Close menu"
+              aria-label={t("closeMenu")}
               onClick={closeMenu}
             />
             <div
@@ -73,16 +73,16 @@ export function MobileSiteMenu({ className }: MobileSiteMenuProps) {
               id={drawerId}
               role="dialog"
               aria-modal="true"
-              aria-label="Menu"
+              aria-label={t("openMenu")}
               className="fixed inset-y-0 right-0 z-[100] flex w-[min(20rem,100vw)] flex-col bg-white shadow-xl"
             >
               <div className="flex items-center justify-between border-b border-brand-light px-4 py-3">
-                <p className="text-sm font-semibold text-brand-dark">Menu</p>
+                <p className="text-sm font-semibold text-brand-dark">{t("openMenu")}</p>
                 <button
                   type="button"
                   onClick={closeMenu}
                   className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-brand-dark transition hover:bg-brand-sand/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-coral"
-                  aria-label="Close menu"
+                  aria-label={t("closeMenu")}
                 >
                   <X className="h-5 w-5" aria-hidden="true" />
                 </button>
@@ -111,7 +111,7 @@ export function MobileSiteMenu({ className }: MobileSiteMenuProps) {
                         onClick={closeMenu}
                         className="flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#d4a373] transition hover:bg-brand-light"
                       >
-                        Admin
+                        {t("dashboard")}
                       </Link>
                     </li>
                   )}
@@ -141,7 +141,7 @@ export function MobileSiteMenu({ className }: MobileSiteMenuProps) {
         )}
         aria-expanded={menuOpen}
         aria-controls={drawerId}
-        aria-label={menuOpen ? "Close menu" : "Open menu"}
+        aria-label={menuOpen ? t("closeMenu") : t("openMenu")}
         onClick={() => setMenuOpen((open) => !open)}
       >
         {menuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
