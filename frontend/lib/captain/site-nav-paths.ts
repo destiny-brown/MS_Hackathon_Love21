@@ -1,7 +1,7 @@
 /** Allowed in-app navigation targets for Captain21 agent tools (mirrors backend allowlist). */
 export const SITE_NAV_PATHS = [
   "/our-story",
-  "/our-programmes",
+  "/get-involved#programmes",
   "/get-involved",
   "/our-volunteer",
   "/learn-play",

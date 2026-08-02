@@ -65,7 +65,7 @@ export const fourDoors = [
   {
     title: "Join programmes",
     description: "Find sport, nutrition, and family support for Love 21 members.",
-    href: "/our-programmes",
+    href: "/get-involved#programmes",
   },
   {
     title: "Donate",
@@ -80,7 +80,7 @@ export const fourDoors = [
   {
     title: "Explore programmes",
     description: "See sports, nutrition workshops, family support, and community activities.",
-    href: "/our-programmes",
+    href: "/get-involved#programmes",
   },
 ];
 

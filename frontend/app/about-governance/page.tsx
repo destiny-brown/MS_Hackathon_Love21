@@ -21,7 +21,7 @@ const sectionKeys = [
   { key: "board", href: "/board-of-directors", icon: Building2 },
   { key: "staff", href: "/staff", icon: Users },
   { key: "reports", href: "/our-finance", icon: FileText },
-  { key: "programmes", href: "/our-programmes", icon: Mail },
+  { key: "programmes", href: "/get-involved#programmes", icon: Mail },
 ] as const;
 
 const cardAccents = ["bg-brand-red", "bg-brand-dark", "bg-brand-light", "bg-brand-slate"];

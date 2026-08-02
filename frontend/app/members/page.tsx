@@ -33,7 +33,7 @@ export default function MembersPage() {
               ))}
             </ol>
             <Button asChild variant="outline" className="mt-6">
-              <Link href="/our-programmes">{t("members.seeProgrammes")}</Link>
+              <Link href="/get-involved#programmes">{t("members.seeProgrammes")}</Link>
             </Button>
           </aside>
           <div>

@@ -130,7 +130,7 @@ export default function LearnResourcesPage() {
               <Link href="/stories-media" className="text-sm font-semibold text-brand-coral hover:underline">
                 Love 21 Stories →
               </Link>
-              <Link href="/media" className="text-sm font-semibold text-brand-coral hover:underline">
+              <Link href="/stories-media" className="text-sm font-semibold text-brand-coral hover:underline">
                 Media archive →
               </Link>
               <Link href="/get-involved" className="text-sm font-semibold text-brand-coral hover:underline">
