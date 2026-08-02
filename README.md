@@ -1,6 +1,8 @@
+<div align="center">
 
+<img src="frontend/public/images/love21_logo.png" alt="Love 21 Foundation" height="90" />&nbsp;&nbsp;&nbsp;<img src="frontend/public/images/triable_logo.png" alt="Team TriAble" height="70" />
 
-
+</div>
 
 # Love 21 Foundation — Digital Platform
 
