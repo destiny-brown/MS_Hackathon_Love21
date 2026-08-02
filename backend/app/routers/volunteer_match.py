@@ -15,7 +15,12 @@ from app.models.user import Role, User
 from app.models.volunteer_activity import VolunteerActivity, VolunteerActivityRegistration
 from app.schemas.supporter import VolunteerActivityRegistrationRead
 from app.services.volunteer_ai_matcher import match_volunteer_with_ai
-from app.services.volunteer_matcher import INTEREST_OPTIONS, AVAILABILITY_OPTIONS, activity_to_dict
+from app.services.volunteer_matcher import (
+    INTEREST_OPTIONS,
+    AVAILABILITY_OPTIONS,
+    activity_to_dict,
+    match_volunteer_with_rules,
+)
 
 router = APIRouter(prefix="/ai/volunteer", tags=["ai"])
 optional_bearer = HTTPBearer(auto_error=False)
@@ -154,7 +159,7 @@ def match_volunteer(payload: VolunteerMatchRequest, db: Session = Depends(get_db
             message="Unknown availability value.",
         )
 
-    matches, error = match_volunteer_with_ai(
+    matches, _error = match_volunteer_with_ai(
         db,
         payload.interest,
         payload.availability,
@@ -162,17 +167,33 @@ def match_volunteer(payload: VolunteerMatchRequest, db: Session = Depends(get_db
         payload.group_size,
         limit=2,
     )
-    if error or not matches:
+    if matches:
         return VolunteerMatchResponse(
-            enabled=False,
+            enabled=True,
+            ai_enhanced=True,
+            matches=[VolunteerMatchItem(**match) for match in matches],
+            message=None,
+        )
+
+    rule_matches = match_volunteer_with_rules(
+        db,
+        payload.interest,
+        payload.availability,
+        payload.commitment,
+        payload.group_size,
+        limit=2,
+    )
+    if rule_matches:
+        return VolunteerMatchResponse(
+            enabled=True,
             ai_enhanced=False,
-            matches=[],
-            message=error or "AI matching is unavailable right now.",
+            matches=[VolunteerMatchItem(**match) for match in rule_matches],
+            message=None,
         )
 
     return VolunteerMatchResponse(
-        enabled=True,
-        ai_enhanced=True,
-        matches=[VolunteerMatchItem(**match) for match in matches],
-        message=None,
+        enabled=False,
+        ai_enhanced=False,
+        matches=[],
+        message="No volunteer roles are available to match right now.",
     )

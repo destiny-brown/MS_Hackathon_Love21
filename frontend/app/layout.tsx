@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   title: "Love 21 Foundation",
   description:
     "Supporting individuals with Down syndrome, autism, and other neurodiverse conditions.",
+  icons: {
+    icon: "/images/love21_logo.png",
+    shortcut: "/images/love21_logo.png",
+    apple: "/images/love21_logo.png",
+  },
 };
 
 export default function RootLayout({

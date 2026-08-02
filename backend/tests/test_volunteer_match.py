@@ -124,8 +124,9 @@ def test_volunteer_match_handles_hosted_model_unavailable(monkeypatch):
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["enabled"] is False
-    assert "unavailable" in (data["message"] or "")
+    assert data["enabled"] is True
+    assert data["ai_enhanced"] is False
+    assert len(data["matches"]) >= 1
 
 
 def test_list_volunteer_activities():

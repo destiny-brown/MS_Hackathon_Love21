@@ -405,8 +405,10 @@ function AiVolunteerMatch({
           <div className="flex items-center justify-between gap-4">
             <span className="text-xs font-semibold uppercase tracking-wide text-white/50">{t("page.matcher.bestMatch")}</span>
             <div className="flex items-center gap-2">
-              {aiEnhanced && (
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">{t("page.matcher.aiMatched")}</span>
+              {(aiEnhanced || results) && (
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">
+                  {aiEnhanced ? t("page.matcher.aiMatched") : t("page.matcher.captainMatched")}
+                </span>
               )}
               <span className="rounded-full bg-brand-red/15 px-3 py-1 text-xs font-semibold text-brand-red">
                 {t("page.matcher.matchPercent", { score: active.score })}
