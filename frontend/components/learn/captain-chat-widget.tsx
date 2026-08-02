@@ -306,10 +306,6 @@ export function CaptainChatWidget() {
           pendingNavigationRef.current = null;
         }, NAVIGATION_DELAY_MS);
       }
-
-      if (response.message && !response.enabled) {
-        setError(response.message);
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : ui("captainReachError", "Could not reach Captain 21. Is the backend running?"));
     } finally {
