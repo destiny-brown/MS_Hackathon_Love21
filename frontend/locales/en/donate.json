@@ -98,6 +98,7 @@
     "error": "Could not load the wishlist",
     "empty": "No wishlist items right now.",
     "emptySoon": "Love 21's current needs will be shared here soon.",
+    "fallbackNotice": "Showing demo wishlist items while live data is unavailable. Start the backend or check NEXT_PUBLIC_API_URL to load current needs.",
     "unavailableTitle": "The wishlist is temporarily unavailable.",
     "buy": "Donate this item",
     "contribute": "Contribute any amount",

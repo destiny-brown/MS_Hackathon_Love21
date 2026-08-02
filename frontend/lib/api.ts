@@ -592,6 +592,7 @@ export function resolvePostLoginPath(role: Role, nextPath: string | null) {
 type ApiRequestInit = RequestInit & {
   redirectOnUnauthorized?: boolean;
   _retried?: boolean;
+  timeoutMs?: number;
 };
 
 function parseApiError(data: unknown, status: number): string {
@@ -616,7 +617,13 @@ async function request<T>(
   path: string,
   options: ApiRequestInit = {},
 ): Promise<T> {
-  const { redirectOnUnauthorized = true, _retried = false, ...requestOptions } = options;
+  const {
+    redirectOnUnauthorized = true,
+    _retried = false,
+    timeoutMs = 12_000,
+    signal: externalSignal,
+    ...requestOptions
+  } = options;
   const token = getToken();
   const headers = new Headers(requestOptions.headers);
   headers.set("Content-Type", "application/json");
@@ -627,43 +634,68 @@ async function request<T>(
   if (token && !isPublicAuthRequest)
     headers.set("Authorization", `Bearer ${token}`);
 
-  const response = await fetch(`${API_URL}${path}`, {
-    ...requestOptions,
-    headers,
-  });
+  const controller = new AbortController();
+  const timeoutId =
+    timeoutMs > 0 && typeof window !== "undefined"
+      ? window.setTimeout(() => controller.abort(), timeoutMs)
+      : undefined;
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    const message = parseApiError(data, response.status);
-
-    if (
-      response.status === 401 &&
-      typeof window !== "undefined" &&
-      !isPublicAuthRequest &&
-      !_retried
-    ) {
-      const refreshed = await refreshAccessToken();
-      if (refreshed) {
-        return request<T>(path, {
-          ...options,
-          _retried: true,
-        });
-      }
-    }
-
-    if (response.status === 401 && typeof window !== "undefined") {
-      clearToken();
-      if (redirectOnUnauthorized) {
-        window.location.href = "/login";
-        throw new Error("Unauthorized");
-      }
-    }
-
-    throw new Error(message);
+  function abortFromExternal() {
+    controller.abort();
+  }
+  if (externalSignal) {
+    if (externalSignal.aborted) controller.abort();
+    else externalSignal.addEventListener("abort", abortFromExternal);
   }
 
-  if (response.status === 204) return undefined as T;
-  return response.json() as Promise<T>;
+  try {
+    const response = await fetch(`${API_URL}${path}`, {
+      ...requestOptions,
+      headers,
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      const message = parseApiError(data, response.status);
+
+      if (
+        response.status === 401 &&
+        typeof window !== "undefined" &&
+        !isPublicAuthRequest &&
+        !_retried
+      ) {
+        const refreshed = await refreshAccessToken();
+        if (refreshed) {
+          return request<T>(path, {
+            ...options,
+            _retried: true,
+          });
+        }
+      }
+
+      if (response.status === 401 && typeof window !== "undefined") {
+        clearToken();
+        if (redirectOnUnauthorized) {
+          window.location.href = "/login";
+          throw new Error("Unauthorized");
+        }
+      }
+
+      throw new Error(message);
+    }
+
+    if (response.status === 204) return undefined as T;
+    return response.json() as Promise<T>;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("Request timed out. Check that the backend is running and NEXT_PUBLIC_API_URL is correct.");
+    }
+    throw error;
+  } finally {
+    if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    if (externalSignal) externalSignal.removeEventListener("abort", abortFromExternal);
+  }
 }
 
 export async function getCurrentUserWithRole() {
@@ -758,6 +790,7 @@ export const api = {
   listSupportOpportunities: (kind?: OpportunityKind) =>
     request<SupportOpportunity[]>(
       `/support-opportunities${kind ? `?kind=${kind}` : ""}`,
+      { redirectOnUnauthorized: false, timeoutMs: 8_000 },
     ),
   listAdminSupportOpportunities: () =>
     request<SupportOpportunity[]>("/support-opportunities/admin"),

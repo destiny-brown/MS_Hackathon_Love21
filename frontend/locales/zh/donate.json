@@ -98,6 +98,7 @@
     "error": "无法加载心愿清单",
     "empty": "目前没有心愿清单项目。",
     "emptySoon": "Love 21 当前需求将很快在此公布。",
+    "fallbackNotice": "实时数据暂时无法加载，现正显示示范心愿清单。请启动后端或检查 NEXT_PUBLIC_API_URL。",
     "unavailableTitle": "心愿清单暂时不可用。",
     "buy": "捐赠此物品",
     "contribute": "捐款任何金额",

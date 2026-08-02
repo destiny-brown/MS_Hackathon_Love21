@@ -98,6 +98,7 @@
     "error": "無法載入心願清單",
     "empty": "目前冇心願清單項目。",
     "emptySoon": "Love 21 當前需求將很快喺此公布。",
+    "fallbackNotice": "即時資料暫時無法載入，現正顯示示範心願清單。請啟動後端或檢查 NEXT_PUBLIC_API_URL。",
     "unavailableTitle": "心願清單暫時不可用。",
     "buy": "捐贈此物品",
     "contribute": "捐款任何金額",
