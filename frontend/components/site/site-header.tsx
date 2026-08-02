@@ -19,11 +19,7 @@ export function SiteHeader() {
   return (
     <header className="relative z-50 border-b border-brand-light/80 bg-brand-light/90 backdrop-blur-sm">
       <div className="mx-auto flex min-w-0 max-w-6xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-4 lg:px-8">
-        <Link
-          href="/"
-          className="inline-flex shrink-0 items-center"
-          aria-label="Love 21 home"
-        >
+        <Link href="/" className="inline-flex shrink-0 items-center" aria-label="Love 21 home">
           <Image
             src="/images/love21_logo.png"
             alt="Love 21 Foundation"

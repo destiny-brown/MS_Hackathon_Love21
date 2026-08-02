@@ -872,10 +872,7 @@ function VolunteerContent() {
         </section>
       </Reveal>
 
-      <PageSectionNav
-        items={sectionNavItems}
-        heroSelector="#our-volunteer-nav-sentinel"
-      />
+      <PageSectionNav items={sectionNavItems} heroSelector="#our-volunteer-nav-sentinel" />
 
       {/* ---------- START YOUR OWN CAMPAIGN ---------- */}
       <Reveal>
