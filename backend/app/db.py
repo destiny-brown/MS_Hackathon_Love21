@@ -60,6 +60,20 @@ def create_db_and_tables() -> None:
                         """
                     )
                 )
+            subscriber_columns = {
+                row[1] for row in connection.execute(text("PRAGMA table_info(newsletter_subscribers)"))
+            }
+            if subscriber_columns and "frequency" not in subscriber_columns:
+                connection.execute(
+                    text("ALTER TABLE newsletter_subscribers ADD COLUMN frequency VARCHAR(20) DEFAULT 'monthly' NOT NULL")
+                )
+            delivery_columns = {
+                row[1] for row in connection.execute(text("PRAGMA table_info(newsletter_deliveries)"))
+            }
+            if delivery_columns and "cadence" not in delivery_columns:
+                connection.execute(text("ALTER TABLE newsletter_deliveries ADD COLUMN cadence VARCHAR(20)"))
+            if delivery_columns and "recipient_groups" not in delivery_columns:
+                connection.execute(text("ALTER TABLE newsletter_deliveries ADD COLUMN recipient_groups VARCHAR(120)"))
             connection.execute(
                 text("UPDATE users SET role = :supporter WHERE role IN ('user', 'donor', 'volunteer', '') OR role IS NULL"),
                 {"supporter": "supporter"},

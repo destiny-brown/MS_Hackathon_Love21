@@ -26,14 +26,18 @@ from app.schemas.admin import (
 )
 from app.schemas.newsletter import (
     NewsletterDeliveryRead,
+    NewsletterGenerateRequest,
+    NewsletterGenerateResponse,
     NewsletterPreviewRequest,
     NewsletterPreviewResponse,
     NewsletterSendRequest,
+    NewsletterSourceSummary,
     NewsletterSubscriberCreate,
     NewsletterSubscriberRead,
     NewsletterSubscriberUpdate,
 )
 from app.services.email_service import send_email
+from app.services.newsletter_ai import generate_newsletter
 from app.services.newsletter_template import render_newsletter_html
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -295,6 +299,27 @@ def preview_newsletter(
     )
 
 
+@router.post("/newsletter/generate", response_model=NewsletterGenerateResponse)
+def generate_newsletter_draft(
+    payload: NewsletterGenerateRequest,
+    _: User = Depends(require_roles(Role.ADMIN)),
+    db: Session = Depends(get_db),
+) -> NewsletterGenerateResponse:
+    subject, content, sources, notice = generate_newsletter(
+        db,
+        cadence=payload.cadence,
+        guidance=payload.guidance,
+    )
+    return NewsletterGenerateResponse(
+        enabled=notice is None,
+        subject=subject,
+        content=content,
+        cadence=payload.cadence,
+        sources=NewsletterSourceSummary.model_validate(sources),
+        notice=notice,
+    )
+
+
 @router.post("/newsletter/send")
 def send_newsletter(
     payload: NewsletterSendRequest,
@@ -302,11 +327,18 @@ def send_newsletter(
     db: Session = Depends(get_db),
 ) -> dict[str, int | str]:
     settings = get_settings()
+    groups = list(dict.fromkeys(payload.recipient_groups))
     subscribers = db.scalars(
-        select(NewsletterSubscriber).where(NewsletterSubscriber.status == "active")
+        select(NewsletterSubscriber).where(
+            NewsletterSubscriber.status == "active",
+            NewsletterSubscriber.frequency.in_(groups),
+        )
     ).all()
     if not subscribers:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No active subscribers")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No active subscribers match the selected recipient groups",
+        )
 
     sent_count = 0
     for subscriber in subscribers:
@@ -329,6 +361,8 @@ def send_newsletter(
             f"{settings.site_url.rstrip('/')}/newsletter/unsubscribe/example",
         ),
         recipient_count=sent_count,
+        cadence=payload.cadence,
+        recipient_groups=",".join(groups),
         sent_by_user_id=current_user.id,
         sent_at=datetime.now(timezone.utc),
     )

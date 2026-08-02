@@ -22,6 +22,17 @@ app = modal.App("love21-qwen")
 async def model_auth_middleware(request, call_next):
     from starlette.responses import JSONResponse
 
+    # Allow infrastructure/readiness probes and docs endpoints without auth.
+    if request.url.path in {
+        "/metrics",
+        "/health",
+        "/openapi.json",
+        "/docs",
+        "/docs/oauth2-redirect",
+        "/redoc",
+    }:
+        return await call_next(request)
+
     expected = f"Bearer {os.environ['MODEL_API_KEY']}"
     if request.headers.get("authorization") != expected:
         return JSONResponse(

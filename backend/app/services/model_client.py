@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import time
+from urllib.error import HTTPError
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
@@ -45,11 +47,27 @@ def _chat_completion(
     )
     timeout = timeout_seconds if timeout_seconds is not None else settings.model_timeout_seconds
 
-    try:
-        with urlopen(request, timeout=timeout) as response:
-            body = json.loads(response.read().decode("utf-8"))
-        content = body["choices"][0]["message"]["content"]
-    except (URLError, TimeoutError, json.JSONDecodeError, KeyError, IndexError, TypeError):
+    # Modal + vLLM can return brief 503/502/504 windows while the GPU server cold-starts.
+    # Retry a few times so first user request doesn't immediately fall back to non-AI mode.
+    for attempt in range(4):
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                body = json.loads(response.read().decode("utf-8"))
+            content = body["choices"][0]["message"]["content"]
+            break
+        except HTTPError as exc:
+            if exc.code in {502, 503, 504} and attempt < 3:
+                time.sleep(3 * (attempt + 1))
+                continue
+            return None
+        except URLError:
+            if attempt < 3:
+                time.sleep(3 * (attempt + 1))
+                continue
+            return None
+        except (TimeoutError, json.JSONDecodeError, KeyError, IndexError, TypeError):
+            return None
+    else:
         return None
 
     if not isinstance(content, str) or not content.strip():

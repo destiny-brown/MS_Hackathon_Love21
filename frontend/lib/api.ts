@@ -302,6 +302,8 @@ export type AdminVolunteerActivityRegistration = {
   status: string;
   created_at: string;
 };
+export type NewsletterFrequency = "weekly" | "monthly";
+export type NewsletterCadence = "weekly" | "monthly";
 export type NewsletterSubscriber = {
   id: number;
   first_name: string;
@@ -309,6 +311,7 @@ export type NewsletterSubscriber = {
   email: string;
   phone_number: string | null;
   status: string;
+  frequency: NewsletterFrequency;
   subscribed_at: string;
 };
 export type NewsletterDelivery = {
@@ -316,7 +319,22 @@ export type NewsletterDelivery = {
   subject: string;
   content_text: string;
   recipient_count: number;
+  cadence: string | null;
+  recipient_groups: string | null;
   sent_at: string;
+};
+export type NewsletterGenerateResponse = {
+  enabled: boolean;
+  subject: string;
+  content: string;
+  cadence: NewsletterCadence;
+  sources: {
+    events: Array<Record<string, string>>;
+    volunteer_programmes: Array<Record<string, string>>;
+    community_voices: Array<Record<string, string>>;
+    member_stories: Array<Record<string, string>>;
+  };
+  notice?: string | null;
 };
 export type AdminOverview = {
   event_count: number;
@@ -721,6 +739,7 @@ export const api = {
         email: payload.email,
         phone_number: payload.phone_number,
         status: payload.status,
+        frequency: payload.frequency,
       }),
     }),
   updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
@@ -732,6 +751,7 @@ export const api = {
         email: payload.email,
         phone_number: payload.phone_number,
         status: payload.status,
+        frequency: payload.frequency,
       }),
     }),
   deleteNewsletterSubscriber: (id: number) =>
@@ -747,7 +767,17 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  sendNewsletter: (payload: { subject: string; content: string }) =>
+  generateNewsletter: (payload: { cadence: NewsletterCadence; guidance?: string | null }) =>
+    request<NewsletterGenerateResponse>("/admin/newsletter/generate", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  sendNewsletter: (payload: {
+    subject: string;
+    content: string;
+    cadence?: NewsletterCadence | null;
+    recipient_groups: NewsletterFrequency[];
+  }) =>
     request<{ success: boolean; message: string; sent_count: number }>(
       "/admin/newsletter/send",
       {
@@ -760,6 +790,7 @@ export const api = {
     last_name: string;
     email: string;
     phone_number?: string | null;
+    frequency?: NewsletterFrequency;
   }) =>
     request<NewsletterSubscriber>("/newsletter/subscribe", {
       method: "POST",
