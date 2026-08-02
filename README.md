@@ -60,6 +60,9 @@ All demo users use password `demo1234`:
 
 Legacy `donor@love21.demo` and `volunteer@love21.demo` rows are converted to the `supporter` role if they already exist in a local database.
 
+For local overrides, set `BOOTSTRAP_ADMIN_EMAIL` and `BOOTSTRAP_ADMIN_PASSWORD` in `backend/.env`.
+If `BOOTSTRAP_ADMIN_EMAIL=admin@love21.demo`, that value replaces the default demo admin password on startup.
+
 You can also bootstrap an admin account at backend startup with:
 
 - `BOOTSTRAP_ADMIN_EMAIL`
