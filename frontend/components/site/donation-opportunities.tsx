@@ -135,13 +135,12 @@ export function DonationOpportunities({ initialItemSlug }: { initialItemSlug?: s
     if (loading || !wantsDonationFormFocus(initialItemSlug)) {
       return;
     }
-    const timer = window.setTimeout(() => scrollToDonationForm(), 120);
-    return () => window.clearTimeout(timer);
+    scrollToDonationForm();
   }, [loading, initialItemSlug]);
 
   if (loading) {
     return (
-      <div id={DONATION_FORM_ANCHOR_ID} className="scroll-mt-24">
+      <div id={DONATION_FORM_ANCHOR_ID} className="scroll-mt-28">
         <p className="text-brand-dark/70" role="status">
           {t("opportunities.loading")}
         </p>
@@ -151,7 +150,7 @@ export function DonationOpportunities({ initialItemSlug }: { initialItemSlug?: s
 
   if (error) {
     return (
-      <div id={DONATION_FORM_ANCHOR_ID} className="scroll-mt-24">
+      <div id={DONATION_FORM_ANCHOR_ID} className="scroll-mt-28">
         <div className="rounded-2xl border border-brand-light bg-white p-6">
           <p className="font-semibold text-brand-dark">{t("opportunities.unavailableTitle")}</p>
           <p className="mt-2 text-sm text-brand-dark/70">{error}</p>
@@ -161,7 +160,7 @@ export function DonationOpportunities({ initialItemSlug }: { initialItemSlug?: s
   }
 
   return (
-    <div id={DONATION_FORM_ANCHOR_ID} className="scroll-mt-24 space-y-16">
+    <div id={DONATION_FORM_ANCHOR_ID} className="scroll-mt-28 space-y-16">
       <MockDonationForm opportunities={formOpportunities} initialOpportunitySlug={initialItemSlug} />
 
       <section aria-labelledby="giving-opportunities-heading" className="space-y-10">

@@ -1,18 +1,20 @@
 "use client";
 
 import Image from "next/image";
+import type { MouseEvent } from "react";
 
 import { BrandCard } from "@/components/brand/BrandCard";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
 import { DonationAmountProvider } from "@/components/site/donation-amount-context";
+import { DonationFormHashScroll } from "@/components/site/donation-form-hash-scroll";
 import { DonationOpportunities } from "@/components/site/donation-opportunities";
 import { DonationTierGrid } from "@/components/site/donation-tier-grid";
 import { DonateGratitudeWall } from "@/components/site/donate-gratitude-wall";
 import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
-import { DONATION_FORM_ANCHOR_ID, donatePageUrl } from "@/lib/donation-form-anchor";
+import { DONATION_FORM_ANCHOR_ID, donatePageUrl, handleDonationFormLinkClick } from "@/lib/donation-form-anchor";
 import { useTranslation } from "react-i18next";
 
 export function DonatePageContent({
@@ -24,8 +26,13 @@ export function DonatePageContent({
 }) {
   const { t } = useTranslation("donate");
 
+  function onDonateFormLinkClick(event: MouseEvent<HTMLAnchorElement>) {
+    handleDonationFormLinkClick(event, donatePageUrl());
+  }
+
   return (
     <SiteLayout>
+      <DonationFormHashScroll initialItemSlug={initialItemSlug} />
       <TranslatedPageHero
         ns="donate"
         titleKey="hero.title"
@@ -37,6 +44,12 @@ export function DonatePageContent({
         secondaryActionHref="/wishlist"
       />
       <DonationAmountProvider defaultAmount={suggestedAmount}>
+        <section className="bg-white px-4 pb-8 pt-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <DonationOpportunities initialItemSlug={initialItemSlug} />
+          </div>
+        </section>
+
         <Reveal>
           <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">
             <div className="relative mx-auto max-w-6xl">
@@ -46,7 +59,9 @@ export function DonatePageContent({
               </h2>
               <DonationTierGrid />
               <div className="mt-8">
-                <CtaButton href={donatePageUrl()}>{t("transparency.cta")}</CtaButton>
+                <CtaButton href={donatePageUrl()} onClick={onDonateFormLinkClick}>
+                  {t("transparency.cta")}
+                </CtaButton>
               </div>
             </div>
           </section>
@@ -73,8 +88,6 @@ export function DonatePageContent({
                   <p className="mt-3 text-sm text-brand-dark/75">{t("aside.body")}</p>
                 </BrandCard>
               </div>
-
-              <DonationOpportunities initialItemSlug={initialItemSlug} />
 
               <div className="border-t border-brand-light pt-10 text-brand-dark/80">
                 <h2 className="font-serif-display text-3xl text-brand-dark">{t("other.title")}</h2>

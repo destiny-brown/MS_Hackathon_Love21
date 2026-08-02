@@ -1,7 +1,26 @@
+"use client";
+
 import Link from "next/link";
+import type { MouseEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { DONATION_FORM_ANCHOR_ID, handleDonationFormLinkClick, scrollToAnchorById } from "@/lib/donation-form-anchor";
 import { cn } from "@/lib/utils";
+
+function onHashActionClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
+  if (href.includes(`#${DONATION_FORM_ANCHOR_ID}`)) {
+    handleDonationFormLinkClick(event, href);
+    return;
+  }
+
+  if (!href.startsWith("#")) {
+    return;
+  }
+
+  event.preventDefault();
+  scrollToAnchorById(href.slice(1));
+  window.history.replaceState(window.history.state, "", href);
+}
 
 export function PageHero({
   title,
@@ -31,8 +50,10 @@ export function PageHero({
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             {primaryAction ? (
               <Button asChild>
-                {primaryAction.href.startsWith("#") ? (
-                  <a href={primaryAction.href}>{primaryAction.label}</a>
+                {primaryAction.href.startsWith("#") || primaryAction.href.includes("#") ? (
+                  <a href={primaryAction.href} onClick={(event) => onHashActionClick(event, primaryAction.href)}>
+                    {primaryAction.label}
+                  </a>
                 ) : (
                   <Link href={primaryAction.href}>{primaryAction.label}</Link>
                 )}
@@ -40,8 +61,10 @@ export function PageHero({
             ) : null}
             {secondaryAction ? (
               <Button asChild variant="outline">
-                {secondaryAction.href.startsWith("#") ? (
-                  <a href={secondaryAction.href}>{secondaryAction.label}</a>
+                {secondaryAction.href.startsWith("#") || secondaryAction.href.includes("#") ? (
+                  <a href={secondaryAction.href} onClick={(event) => onHashActionClick(event, secondaryAction.href)}>
+                    {secondaryAction.label}
+                  </a>
                 ) : (
                   <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
                 )}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { api, type GratitudeEntry } from "@/lib/api";
-import { donatePageUrl } from "@/lib/donation-form-anchor";
+import { donatePageUrl, handleDonationFormLinkClick } from "@/lib/donation-form-anchor";
 
 type GratitudeWallCard = {
   id: string;
@@ -319,6 +319,7 @@ export function DonateGratitudeWall() {
           </p>
           <a
             href={donatePageUrl()}
+            onClick={(event) => handleDonationFormLinkClick(event, donatePageUrl())}
             className="inline-flex items-center justify-center rounded-full bg-brand-red px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-red/90"
           >
             Become a donor
