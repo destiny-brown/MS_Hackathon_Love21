@@ -20,7 +20,6 @@ class Settings(BaseSettings):
     site_url: str = "http://localhost:3000"
     resend_api_key: str | None = None
     newsletter_from_email: str = "Love 21 Foundation <newsletter@love21foundation.com>"
-    anthropic_api_key: str | None = None
     bootstrap_admin_email: str | None = None
     bootstrap_admin_password: str | None = None
     demo_users_enabled: bool = True

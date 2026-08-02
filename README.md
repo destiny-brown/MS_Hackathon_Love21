@@ -160,7 +160,6 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `GET /support-opportunities/admin` — admin listing, including archived records
 - `POST /support-opportunities` — admin creation
 - `PATCH /support-opportunities/admin/{id}` — admin update or archive
-- `POST /ai/ask` — no-ops clearly when `ANTHROPIC_API_KEY` is missing
 - `GET /volunteer/activities`
 - `POST /volunteer/match`
 - `POST /captain/chat`
@@ -180,7 +179,6 @@ Backend (`backend/.env`):
 DATABASE_URL=sqlite:///./hackkit.db
 SECRET_KEY=change-me
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-ANTHROPIC_API_KEY=
 BOOTSTRAP_ADMIN_EMAIL=
 BOOTSTRAP_ADMIN_PASSWORD=
 MODEL_ENABLED=false
@@ -279,8 +277,7 @@ managed PostgreSQL database.
 	`https://your-app.vercel.app`.
 4. Set `MODEL_BASE_URL` to the Modal server URL plus `/v1`, and set
 	`MODEL_API_KEY` to the same token stored in the Modal `love21-model` secret.
-5. Set `ANTHROPIC_API_KEY` only when that integration is enabled. Render
-	generates `SECRET_KEY` and connects `DATABASE_URL`.
+5. Render generates `SECRET_KEY` and connects `DATABASE_URL`.
 
 The backend Dockerfile is also a fallback for any container host:
 

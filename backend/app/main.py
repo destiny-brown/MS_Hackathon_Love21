@@ -11,7 +11,6 @@ from app.services.volunteer_activity_seed import ensure_volunteer_activity_demo_
 from app.routers import (
     admin,
     admin_learn,
-    ai,
     auth,
     captain_chat,
     gratitude_entries,
@@ -57,7 +56,6 @@ def health() -> dict[str, str]:
 
 app.include_router(auth.router)
 app.include_router(items.router)
-app.include_router(ai.router)
 app.include_router(volunteer_match.router)
 app.include_router(captain_chat.router)
 app.include_router(trail_debrief.router)
