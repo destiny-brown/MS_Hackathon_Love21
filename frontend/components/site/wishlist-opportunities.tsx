@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
 import { seededWishlistItems } from "@/lib/wishlist-seed";
 
+const DONATION_DELIVERY_MAP_URL =
+  "https://www.google.com/maps/search/Love+21+Foundation+Hong+Kong";
+
 export function WishlistOpportunities() {
   const [items, setItems] = useState<SupportOpportunity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -109,14 +112,12 @@ export function WishlistOpportunities() {
               progressPercent={item.progress_percent}
             />
             <div className="mt-auto flex flex-col gap-3 pt-6">
-              {item.purchase_url ? (
-                <Button asChild variant="outline">
-                  <a href={item.purchase_url} target="_blank" rel="noreferrer">
-                    Buy this item
-                    <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
-                  </a>
-                </Button>
-              ) : null}
+              <Button asChild variant="outline">
+                <a href={DONATION_DELIVERY_MAP_URL} target="_blank" rel="noreferrer">
+                  Donate this item
+                  <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                </a>
+              </Button>
               <Button asChild>
                 <Link href={`/donate?item=${encodeURIComponent(item.slug)}`}>
                   <HeartHandshake className="mr-2 h-4 w-4" aria-hidden="true" />

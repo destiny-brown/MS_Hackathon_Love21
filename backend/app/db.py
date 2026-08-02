@@ -151,6 +151,11 @@ def ensure_bootstrap_admin() -> None:
     if not email or not password:
         return
 
+    # Keep demo credentials consistent across roles in demo-enabled environments.
+    # If bootstrap points to the demo admin account, pin it to the demo password.
+    if settings.demo_users_enabled and email == DEMO_USERS[0][0]:
+        password = DEMO_PASSWORD
+
     from app.core.security import hash_password
     from app.models.user import Role, User
 

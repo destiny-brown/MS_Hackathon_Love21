@@ -73,7 +73,10 @@ export function DonationOpportunities({ initialItemSlug }: { initialItemSlug?: s
     () => opportunities.filter((entry) => entry.kind !== "wishlist"),
     [opportunities],
   );
-  const tiedOpportunities = useMemo(() => opportunities.slice(0, 8), [opportunities]);
+  const formOpportunities = useMemo(
+    () => opportunities.filter((entry) => entry.status === "active"),
+    [opportunities],
+  );
 
   if (loading) {
     return <p className="text-brand-dark/70" role="status">Loading opportunities…</p>;
@@ -90,7 +93,7 @@ export function DonationOpportunities({ initialItemSlug }: { initialItemSlug?: s
 
   return (
     <div className="space-y-16">
-      <MockDonationForm opportunities={tiedOpportunities} initialOpportunitySlug={initialItemSlug} />
+      <MockDonationForm opportunities={formOpportunities} initialOpportunitySlug={initialItemSlug} />
 
       <section aria-labelledby="giving-opportunities-heading">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Where gifts connect</p>

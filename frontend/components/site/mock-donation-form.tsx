@@ -9,9 +9,15 @@ import { formatHkd } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api, DonationFrequency, DonationReceipt, SupportOpportunity } from "@/lib/api";
+import { api, DonationFrequency, DonationReceipt, OpportunityKind, SupportOpportunity } from "@/lib/api";
 import { useCurrentUser } from "@/lib/auth";
 import { DONATION_TIERS } from "@/lib/donation-tiers";
+
+const SUPPORT_KIND_LABELS: Record<OpportunityKind, string> = {
+  wishlist: "Wishlist items",
+  campaign: "Campaigns",
+  cause: "Causes",
+};
 
 export function MockDonationForm({
   opportunities,
@@ -39,6 +45,19 @@ export function MockDonationForm({
     () => opportunities.find((entry) => entry.id === opportunityId) ?? opportunities[0] ?? null,
     [opportunities, opportunityId],
   );
+  const groupedOpportunities = useMemo(() => {
+    const groups: Record<OpportunityKind, SupportOpportunity[]> = {
+      wishlist: [],
+      campaign: [],
+      cause: [],
+    };
+
+    for (const opportunity of opportunities) {
+      groups[opportunity.kind].push(opportunity);
+    }
+
+    return groups;
+  }, [opportunities]);
   const supportsLine = selectedOpportunity
     ? `${formatHkd(amount || 0)} ${frequency === "monthly" ? "each month " : ""}helps fund ${selectedOpportunity.title.toLowerCase()}: ${selectedOpportunity.impact_statement}`
     : `${formatHkd(amount || 0)} helps Love 21 create more inclusive programmes.`;
@@ -150,9 +169,20 @@ export function MockDonationForm({
               onChange={(event) => setOpportunityId(Number(event.target.value))}
               className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             >
-              {opportunities.map((entry) => (
-                <option key={entry.id} value={entry.id}>{entry.title}</option>
-              ))}
+              {(Object.keys(groupedOpportunities) as OpportunityKind[]).map((kind) => {
+                const entries = groupedOpportunities[kind];
+                if (!entries.length) {
+                  return null;
+                }
+
+                return (
+                  <optgroup key={kind} label={SUPPORT_KIND_LABELS[kind]}>
+                    {entries.map((entry) => (
+                      <option key={entry.id} value={entry.id}>{entry.title}</option>
+                    ))}
+                  </optgroup>
+                );
+              })}
             </select>
             <p className="rounded-2xl bg-brand-cream p-4 text-sm font-medium text-brand-ink" aria-live="polite">
               {supportsLine}

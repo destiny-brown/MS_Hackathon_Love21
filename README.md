@@ -52,7 +52,7 @@ docker compose exec backend python seed.py
 
 ## Demo logins
 
-All demo users use password `demo1234`:
+All demo users use password `admin123`:
 
 - Admin: `admin@love21.demo`
 - Member: `member@love21.demo`
