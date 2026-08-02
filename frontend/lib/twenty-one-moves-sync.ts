@@ -1,4 +1,4 @@
-import { api, getToken, type UserPlayState, type UserPlayStateUpdate } from "@/lib/api";
+import { api, getToken, type User, type UserPlayState, type UserPlayStateUpdate } from "@/lib/api";
 
 export const LOCAL_PROGRESS_KEY = "love21_trail_progress_v2";
 export const LOCAL_STREAK_KEY = "love21_21_moves_streak_v1";
@@ -127,17 +127,34 @@ function hasLocalProgress() {
   );
 }
 
+async function getPlayStateApi(user: User | null) {
+  if (user?.role === "member") return api.getMemberPlayState();
+  if (user?.role === "supporter") return api.getSupporterPlayState();
+  throw new Error("Unsupported role for server play state");
+}
+
+async function savePlayStateApi(user: User | null, payload: UserPlayStateUpdate) {
+  if (user?.role === "member") return api.saveMemberPlayState(payload);
+  if (user?.role === "supporter") return api.saveSupporterPlayState(payload);
+  throw new Error("Unsupported role for server play state");
+}
+
 export async function loadPlayStateForUser(): Promise<{ progress: LocalProgress; streak: LocalStreak; fromServer: boolean }> {
   if (!getToken()) {
     return { progress: loadLocalProgress(), streak: loadLocalStreak(), fromServer: false };
   }
 
   try {
-    let serverState = await api.getSupporterPlayState();
+    const user = await api.currentUser();
+    if (user?.role !== "supporter" && user?.role !== "member") {
+      return { progress: loadLocalProgress(), streak: loadLocalStreak(), fromServer: false };
+    }
+
+    let serverState = await getPlayStateApi(user);
     if (isFreshServerState(serverState) && hasLocalProgress()) {
       const localProgress = loadLocalProgress();
       const localStreak = loadLocalStreak();
-      serverState = await api.saveSupporterPlayState(localToPlayStateUpdate(localProgress, localStreak));
+      serverState = await savePlayStateApi(user, localToPlayStateUpdate(localProgress, localStreak));
     }
     const mapped = playStateToLocal(serverState);
     saveLocalProgress(mapped.progress);
@@ -153,7 +170,9 @@ export async function persistPlayState(progress: LocalProgress, streak: LocalStr
   saveLocalStreak(streak);
   if (!getToken()) return;
   try {
-    await api.saveSupporterPlayState(localToPlayStateUpdate(progress, streak));
+    const user = await api.currentUser();
+    if (user?.role !== "supporter" && user?.role !== "member") return;
+    await savePlayStateApi(user, localToPlayStateUpdate(progress, streak));
   } catch {
     // local copy remains the fallback
   }

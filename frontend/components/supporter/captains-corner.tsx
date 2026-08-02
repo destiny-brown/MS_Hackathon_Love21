@@ -17,15 +17,20 @@ function moodForStreak(streak: number): CaptainMood {
   return "idle";
 }
 
-export function CaptainsCorner() {
+type CaptainsCornerProps = {
+  audience?: "supporter" | "member";
+};
+
+export function CaptainsCorner({ audience = "supporter" }: CaptainsCornerProps) {
   const [data, setData] = useState<CaptainsCorner | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    api
-      .getCaptainsCorner()
+    const request =
+      audience === "member" ? api.getMemberCaptainsCorner() : api.getCaptainsCorner();
+    request
       .then((response) => {
         if (!cancelled) setData(response);
       })
@@ -38,12 +43,12 @@ export function CaptainsCorner() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [audience]);
 
   if (loading) {
     return (
       <Card className="border-brand-coral/20 bg-gradient-to-br from-brand-coral/5 via-white to-brand-sea/5">
-        <CardContent className="py-8 text-sm text-muted-foreground" role="status">
+        <CardContent className="py-6 text-sm text-muted-foreground sm:py-8" role="status">
           Loading Captain&apos;s Corner…
         </CardContent>
       </Card>
@@ -65,10 +70,10 @@ export function CaptainsCorner() {
 
   return (
     <Card className="overflow-hidden border-brand-coral/25 bg-gradient-to-br from-brand-coral/8 via-white to-brand-cream/60">
-      <CardContent className="p-6 sm:p-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+      <CardContent className="p-4 sm:p-6 lg:p-8">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-center">
           <div className="flex shrink-0 items-center justify-center lg:justify-start">
-            <CaptainMascot mood={mood} size={112} pulse={play.current_streak >= 3} label="Captain 21" />
+            <CaptainMascot mood={mood} size={96} pulse={play.current_streak >= 3} label="Captain 21" />
           </div>
 
           <div className="min-w-0 flex-1">
@@ -84,29 +89,26 @@ export function CaptainsCorner() {
               )}
             </div>
 
-            <p className="mt-3 text-lg leading-8 text-brand-ink">{message}</p>
+            <p className="mt-2 text-base leading-7 text-brand-ink sm:mt-3 sm:text-lg sm:leading-8">{message}</p>
 
-            <div className="mt-4 flex flex-wrap gap-2 text-sm">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-sand bg-white px-3 py-1.5 font-medium text-brand-ink">
+            <div className="mt-3 flex flex-wrap gap-2 text-xs sm:text-sm">
+              <span className="inline-flex items-center rounded-full border border-brand-sand bg-white px-2.5 py-1 font-medium text-brand-ink sm:px-3 sm:py-1.5">
                 Day {play.day_number} · {play.location_label}
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 font-medium text-amber-900">
-                <Flame className="h-4 w-4" aria-hidden="true" />
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 font-medium text-amber-900 sm:px-3 sm:py-1.5">
+                <Flame className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
                 Streak {play.current_streak}
               </span>
-              <span className="inline-flex rounded-full border border-brand-sand bg-white px-3 py-1.5 text-brand-ink/70">
-                Best {play.best_streak}
-              </span>
-              <span className="inline-flex rounded-full border border-brand-sand bg-white px-3 py-1.5 text-brand-ink/70">
-                {play.events_remaining} move{play.events_remaining === 1 ? "" : "s"} left today
+              <span className="inline-flex rounded-full border border-brand-sand bg-white px-2.5 py-1 text-brand-ink/70 sm:px-3 sm:py-1.5">
+                {play.events_remaining} move{play.events_remaining === 1 ? "" : "s"} left
               </span>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild>
+            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
+              <Button asChild size="sm" className="sm:h-10">
                 <Link href="/learn-play/21-moves">Continue 21 Moves</Link>
               </Button>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" size="sm" className="sm:h-10">
                 <Link href="/learn-play">Explore Learn</Link>
               </Button>
             </div>

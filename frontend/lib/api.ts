@@ -188,6 +188,25 @@ export type RecommendedEventsResponse = {
   matches: RecommendedEvent[];
   message: string | null;
 };
+export type RecommendedVolunteerRole = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  score: number;
+  reasons: string[];
+  signed_up: boolean;
+};
+export type RecommendedVolunteerRolesResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  headline: string;
+  matches: RecommendedVolunteerRole[];
+  message: string | null;
+};
 export type MemberDashboard = {
   registered_activities: VolunteerActivityRegistration[];
   total_registrations: number;
@@ -699,6 +718,15 @@ export const api = {
     request<{ email: string; status: string }>("/supporter/recurring-donation"),
   getRecommendedEvents: () =>
     request<RecommendedEventsResponse>("/supporter/recommended-events"),
+  getMemberCaptainsCorner: () => request<CaptainsCorner>("/member/captains-corner"),
+  getMemberPlayState: () => request<UserPlayState>("/member/play-state"),
+  saveMemberPlayState: (payload: UserPlayStateUpdate) =>
+    request<UserPlayState>("/member/play-state", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
+  getMemberRecommendedRoles: () =>
+    request<RecommendedVolunteerRolesResponse>("/member/recommended-roles"),
   memberDashboard: () => request<MemberDashboard>("/member/dashboard"),
   memberProfile: () =>
     request<{ email: string; profile_status: string }>("/member/profile"),

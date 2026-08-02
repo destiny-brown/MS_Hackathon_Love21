@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     app_name: str = "hackkit"
     environment: str = "local"
     database_url: str = "sqlite:///./hackkit.db"
-    secret_key: str = "change-this-before-deploying"
+    secret_key: str = Field(default="", validation_alias="SECRET_KEY")
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     refresh_token_expire_days: int = 7
@@ -36,6 +36,20 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @field_validator("secret_key")
+    @classmethod
+    def validate_secret_key(cls, value: str, info) -> str:
+        key = value.strip()
+        if not key:
+            raise ValueError("SECRET_KEY must be set")
+
+        environment = str((info.data or {}).get("environment", "local")).strip().lower()
+        is_local_env = environment in {"local", "dev", "development", "test", "testing"}
+        if key == "change-this-before-deploying" and not is_local_env:
+            raise ValueError("SECRET_KEY uses an insecure placeholder; set a strong random value")
+
+        return key
 
     @field_validator("database_url", mode="before")
     @classmethod

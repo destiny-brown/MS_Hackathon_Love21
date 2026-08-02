@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { CalendarDays, Clock3, Gift, HeartHandshake, Plus, Users } from "lucide-react";
+import { CalendarDays, Clock3, Gift, HeartHandshake, Plus, Search, Users } from "lucide-react";
 
+import { ScrollPanel } from "@/components/account/scroll-panel";
 import { SupportProgress, formatHkd } from "@/components/site/support-progress";
 import { CaptainsCorner } from "@/components/supporter/captains-corner";
 import { RecommendedEvents } from "@/components/supporter/recommended-events";
@@ -13,6 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api, Activity, SupporterDashboard } from "@/lib/api";
 import { signOutToLogin, useRequireRoles } from "@/lib/auth";
+import { cn } from "@/lib/utils";
+
+type DashboardTab = "impact" | "volunteer";
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-HK", {
@@ -31,13 +35,13 @@ function formatMonth(value: string) {
 function StatCard({ icon: Icon, label, value, help }: { icon: typeof Gift; label: string; value: string; help: string }) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-        <div className="rounded-full bg-brand-cream p-3 text-brand-coral">
-          <Icon className="h-5 w-5" aria-hidden="true" />
+      <CardHeader className="flex flex-row items-start gap-3 space-y-0 p-4 sm:gap-4 sm:p-6">
+        <div className="rounded-full bg-brand-cream p-2.5 text-brand-coral sm:p-3">
+          <Icon className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </div>
-        <div>
+        <div className="min-w-0">
           <CardDescription>{label}</CardDescription>
-          <CardTitle className="mt-1 text-2xl">{value}</CardTitle>
+          <CardTitle className="mt-1 text-xl sm:text-2xl">{value}</CardTitle>
           <p className="mt-1 text-xs text-muted-foreground">{help}</p>
         </div>
       </CardHeader>
@@ -53,18 +57,16 @@ function ActivityCalendar({ activities }: { activities: Activity[] }) {
   }, {});
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {Object.entries(grouped).map(([month, entries]) => (
-        <section key={month} aria-labelledby={`calendar-${month.replace(/\s+/g, "-").toLowerCase()}`}>
-          <h3 id={`calendar-${month.replace(/\s+/g, "-").toLowerCase()}`} className="font-semibold text-brand-ink">
-            {month}
-          </h3>
-          <ol className="mt-3 space-y-3">
+        <section key={month}>
+          <h3 className="text-sm font-semibold text-brand-ink sm:text-base">{month}</h3>
+          <ol className="mt-2 space-y-2 sm:mt-3 sm:space-y-3">
             {entries.map((activity) => (
-              <li key={activity.id} className="rounded-2xl border border-brand-sand bg-white p-4">
+              <li key={activity.id} className="rounded-xl border border-brand-sand bg-white p-3 sm:p-4">
                 <p className="text-sm font-semibold text-brand-ink">{activity.title}</p>
-                <p className="mt-1 text-sm text-brand-ink/70">{formatDateTime(activity.starts_at)}</p>
-                <p className="mt-1 text-sm text-brand-ink/70">{activity.location}</p>
+                <p className="mt-1 text-xs text-brand-ink/70 sm:text-sm">{formatDateTime(activity.starts_at)}</p>
+                <p className="mt-1 text-xs text-brand-ink/70 sm:text-sm">{activity.location}</p>
               </li>
             ))}
           </ol>
@@ -79,11 +81,13 @@ export default function SupporterDashboardPage() {
   const { user, loading, error: authError } = useRequireRoles("supporter");
   const [dashboard, setDashboard] = useState<SupporterDashboard | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [hoursActivityId, setHoursActivityId] = useState<string>("");
+  const [hoursActivityId, setHoursActivityId] = useState("");
   const [hours, setHours] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<DashboardTab>("impact");
+  const [eventSearch, setEventSearch] = useState("");
 
   async function loadSupporterData() {
     const [dashboardData, activityData] = await Promise.all([api.supporterDashboard(), api.listActivities()]);
@@ -97,16 +101,31 @@ export default function SupporterDashboardPage() {
   }, [user]);
 
   const signedUpActivities = useMemo(
-    () => dashboard?.signed_up_activities.map((signup) => signup.activity).sort((a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()) ?? [],
+    () =>
+      dashboard?.signed_up_activities
+        .map((signup) => signup.activity)
+        .sort((a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()) ?? [],
     [dashboard],
   );
-  const totalActivities = dashboard?.signed_up_activities.length ?? 0;
 
-  async function signUp(activity: Activity) {
+  const availableActivities = useMemo(() => activities.filter((item) => !item.signed_up), [activities]);
+
+  const filteredActivities = useMemo(() => {
+    const query = eventSearch.trim().toLowerCase();
+    if (!query) return availableActivities;
+    return availableActivities.filter(
+      (item) =>
+        item.title.toLowerCase().includes(query) ||
+        item.location.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query),
+    );
+  }, [availableActivities, eventSearch]);
+
+  async function signUp(activityId: number) {
     setSaving(true);
     setError("");
     try {
-      await api.signUpForActivity(activity.id);
+      await api.signUpForActivity(activityId);
       await loadSupporterData();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not sign up for this activity");
@@ -136,216 +155,289 @@ export default function SupporterDashboardPage() {
     }
   }
 
+  const impactPanel = dashboard ? (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">My giving</CardTitle>
+          <CardDescription>Donation history and recurring status.</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <ScrollPanel label="Donation history">
+            <div className="space-y-2 sm:space-y-3">
+              {dashboard.donations.map((donation) => (
+                <article key={donation.id} className="rounded-xl border p-3 sm:p-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold text-brand-ink sm:text-base">
+                        {formatHkd(donation.amount_hkd)} · {donation.frequency === "monthly" ? "Monthly" : "One-time"}
+                      </h3>
+                      <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                        {donation.support_opportunity?.title ?? "General Love 21 support"} ·{" "}
+                        {new Date(donation.created_at).toLocaleDateString("en-HK")}
+                      </p>
+                    </div>
+                    <span className="w-fit rounded-full bg-brand-cream px-3 py-1 text-xs font-semibold text-brand-sea">
+                      {donation.status}
+                    </span>
+                  </div>
+                  {donation.support_opportunity ? (
+                    <SupportProgress
+                      className="mt-3"
+                      label={donation.support_opportunity.title}
+                      fundedAmount={donation.support_opportunity.funded_amount_hkd}
+                      targetAmount={donation.support_opportunity.target_amount_hkd}
+                      progressPercent={donation.support_opportunity.progress_percent}
+                    />
+                  ) : null}
+                </article>
+              ))}
+              {!dashboard.donations.length ? (
+                <p className="text-sm text-muted-foreground">No donations recorded yet.</p>
+              ) : null}
+            </div>
+          </ScrollPanel>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Impact</CardTitle>
+          <CardDescription>How your giving connects to priorities.</CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <ScrollPanel label="Impact items">
+            <div className="space-y-2 sm:space-y-3">
+              {dashboard.impact_items.map((item, index) => (
+                <article key={`${item.title}-${index}`} className="rounded-xl bg-brand-cream p-3 sm:p-4">
+                  <p className="text-sm font-semibold text-brand-ink">{item.message}</p>
+                  <p className="mt-1 text-xs text-brand-ink/70 sm:text-sm">
+                    {formatHkd(item.amount_hkd)} connected · {item.progress_percent}% funded
+                  </p>
+                </article>
+              ))}
+              {!dashboard.impact_items.length ? (
+                <p className="text-sm text-muted-foreground">Make a designated gift to see impact here.</p>
+              ) : null}
+            </div>
+          </ScrollPanel>
+        </CardContent>
+      </Card>
+    </div>
+  ) : null;
+
+  const volunteerPanel = dashboard ? (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">My volunteering</CardTitle>
+          <CardDescription>Calendar, hours, and history.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-0">
+          <ScrollPanel label="Activity calendar">
+            <ActivityCalendar activities={signedUpActivities} />
+          </ScrollPanel>
+
+          <form onSubmit={logHours} className="space-y-3 rounded-xl border border-brand-sand p-3 sm:p-4">
+            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">Log volunteer hours</h3>
+            <div className="space-y-2">
+              <Label htmlFor="hours-activity">Activity (optional)</Label>
+              <select
+                id="hours-activity"
+                value={hoursActivityId}
+                onChange={(event) => setHoursActivityId(event.target.value)}
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Manual log / no activity</option>
+                {signedUpActivities.map((activity) => (
+                  <option key={activity.id} value={activity.id}>
+                    {activity.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="hours">Hours</Label>
+                <Input id="hours" type="number" min={0.25} max={24} step={0.25} value={hours} onChange={(e) => setHours(e.target.value)} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="hours-notes">Notes</Label>
+                <Input id="hours-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="What did you help with?" />
+              </div>
+            </div>
+            <Button type="submit" size="sm" disabled={saving || !hours} className="w-full sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
+              Add hours
+            </Button>
+          </form>
+
+          <div>
+            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">Hours history</h3>
+            <ScrollPanel label="Volunteer hours history" className="mt-2">
+              <div className="space-y-2">
+                {dashboard.volunteer_hours.map((entry) => (
+                  <article key={entry.id} className="rounded-xl border p-3 text-sm">
+                    <p className="font-semibold text-brand-ink">
+                      {entry.hours} hours · {entry.activity?.title ?? "Manual log"}
+                    </p>
+                    <p className="mt-1 text-muted-foreground">{entry.notes ?? "No notes"}</p>
+                  </article>
+                ))}
+                {!dashboard.volunteer_hours.length ? (
+                  <p className="text-sm text-muted-foreground">No hours logged yet.</p>
+                ) : null}
+              </div>
+            </ScrollPanel>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg">Activity sign-up</CardTitle>
+          <CardDescription>
+            {availableActivities.length} open event{availableActivities.length === 1 ? "" : "s"}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3 pt-0">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Input
+              value={eventSearch}
+              onChange={(e) => setEventSearch(e.target.value)}
+              placeholder="Search events…"
+              className="h-9 bg-white pl-9 text-sm"
+              aria-label="Search events"
+            />
+          </div>
+          <ScrollPanel label="Upcoming events">
+            <div className="space-y-2 sm:space-y-3">
+              {filteredActivities.map((activity) => (
+                <article key={activity.id} className="rounded-xl border p-3 sm:p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-semibold text-brand-ink sm:text-base">{activity.title}</h3>
+                      <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                        {formatDateTime(activity.starts_at)} · {activity.location}
+                      </p>
+                      <p className="mt-2 line-clamp-2 text-sm text-brand-ink/75">{activity.description}</p>
+                    </div>
+                    <Button type="button" variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => signUp(activity.id)} disabled={saving}>
+                      Sign up
+                    </Button>
+                  </div>
+                </article>
+              ))}
+              {!filteredActivities.length ? (
+                <p className="text-sm text-muted-foreground">
+                  {eventSearch ? "No events match your search." : "No open events right now."}
+                </p>
+              ) : null}
+            </div>
+          </ScrollPanel>
+        </CardContent>
+      </Card>
+    </div>
+  ) : null;
+
   if (loading || !user || user.role !== "supporter") {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10">
-        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">Checking supporter access…</p>
+        <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">
+          Checking supporter access…
+        </p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-brand-cream px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+    <main className="min-h-screen bg-brand-cream px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-6 sm:space-y-8">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Supporter dashboard</p>
-            <h1 className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">Your Love 21 impact</h1>
+            <h1 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl lg:text-5xl">Your Love 21 impact</h1>
             <p className="mt-2 text-sm text-brand-ink/75">
-              Signed in as {user.email} · track donations, volunteer hours, and activity sign-ups here. Browse open roles on{" "}
-              <a href="/our-volunteer" className="text-brand-coral underline-offset-2 hover:underline">Our Volunteer</a>.
+              Signed in as <span className="break-all">{user.email}</span>. Browse roles on{" "}
+              <Link href="/our-volunteer" className="text-brand-coral hover:underline">
+                Our Volunteer
+              </Link>
+              .
             </p>
           </div>
-          <div className="flex shrink-0 flex-wrap gap-2">
-            <Button asChild variant="outline">
-              <Link href="/">Back to site</Link>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm" className="flex-1 sm:flex-none">
+              <Link href="/">Site</Link>
             </Button>
-            <Button variant="outline" onClick={signOutToLogin}>Log out</Button>
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={signOutToLogin}>
+              Log out
+            </Button>
           </div>
         </header>
 
         <CaptainsCorner />
 
-        <RecommendedEvents
-          saving={saving}
-          onSignUp={async (activityId) => {
-            setSaving(true);
-            setError("");
-            try {
-              await api.signUpForActivity(activityId);
-              await loadSupporterData();
-            } catch (err) {
-              setError(err instanceof Error ? err.message : "Could not sign up for this activity");
-            } finally {
-              setSaving(false);
-            }
-          }}
-        />
+        <RecommendedEvents saving={saving} onSignUp={signUp} />
 
-        {authError ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{authError}</p> : null}
-        {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
+        {authError ? (
+          <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
+            {authError}
+          </p>
+        ) : null}
+        {error ? (
+          <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
+            {error}
+          </p>
+        ) : null}
 
         {!dashboard ? (
-          <p className="rounded-2xl border border-brand-sand bg-white p-5 text-sm text-muted-foreground" role="status">Loading your dashboard…</p>
+          <p className="rounded-2xl border border-brand-sand bg-white p-5 text-sm text-muted-foreground" role="status">
+            Loading your dashboard…
+          </p>
         ) : (
           <>
-            <section className="grid gap-4 md:grid-cols-4" aria-label="Supporter summary">
-              <StatCard icon={Gift} label="Total given" value={formatHkd(dashboard.total_given_hkd)} help="Mock and seeded gifts attributed to this account." />
-              <StatCard icon={HeartHandshake} label="Recurring status" value={dashboard.recurring_status} help="Monthly mock gifts appear as recurring support." />
-              <StatCard icon={Clock3} label="Volunteer hours" value={`${dashboard.total_volunteer_hours} hrs`} help="Activity-attached and manual logs combined." />
-              <StatCard icon={CalendarDays} label="Activities" value={String(totalActivities)} help="Signed-up activities in your calendar." />
+            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4" aria-label="Supporter summary">
+              <StatCard icon={Gift} label="Total given" value={formatHkd(dashboard.total_given_hkd)} help="Gifts on this account." />
+              <StatCard icon={HeartHandshake} label="Recurring" value={dashboard.recurring_status} help="Monthly support status." />
+              <StatCard icon={Clock3} label="Volunteer hours" value={`${dashboard.total_volunteer_hours} hrs`} help="Logged hours total." />
+              <StatCard icon={CalendarDays} label="Activities" value={String(dashboard.signed_up_activities.length)} help="Signed-up events." />
             </section>
 
-            <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-              <Card>
-                <CardHeader>
-                  <CardTitle>My giving</CardTitle>
-                  <CardDescription>Donation history, total giving, and recurring status.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {dashboard.donations.map((donation) => (
-                      <article key={donation.id} className="rounded-2xl border p-4">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                          <div>
-                            <h3 className="font-semibold text-brand-ink">{formatHkd(donation.amount_hkd)} · {donation.frequency === "monthly" ? "Monthly" : "One-time"}</h3>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {donation.support_opportunity?.title ?? "General Love 21 support"} · {new Date(donation.created_at).toLocaleDateString("en-HK")}
-                            </p>
-                          </div>
-                          <span className="rounded-full bg-brand-cream px-3 py-1 text-xs font-semibold text-brand-sea">{donation.status}</span>
-                        </div>
-                        {donation.support_opportunity ? (
-                          <SupportProgress
-                            className="mt-4"
-                            label={donation.support_opportunity.title}
-                            fundedAmount={donation.support_opportunity.funded_amount_hkd}
-                            targetAmount={donation.support_opportunity.target_amount_hkd}
-                            progressPercent={donation.support_opportunity.progress_percent}
-                          />
-                        ) : null}
-                      </article>
-                    ))}
-                    {!dashboard.donations.length ? <p className="text-sm text-muted-foreground">No donations recorded yet.</p> : null}
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="lg:hidden">
+              <div className="flex rounded-xl border border-brand-sand bg-white p-1" role="tablist" aria-label="Dashboard sections">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === "impact"}
+                  className={cn(
+                    "flex-1 rounded-lg px-3 py-2 text-sm font-medium",
+                    activeTab === "impact" ? "bg-brand-coral text-white" : "text-brand-ink/70",
+                  )}
+                  onClick={() => setActiveTab("impact")}
+                >
+                  Impact
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === "volunteer"}
+                  className={cn(
+                    "flex-1 rounded-lg px-3 py-2 text-sm font-medium",
+                    activeTab === "volunteer" ? "bg-brand-coral text-white" : "text-brand-ink/70",
+                  )}
+                  onClick={() => setActiveTab("volunteer")}
+                >
+                  Volunteer
+                </button>
+              </div>
+              <div className="mt-4">{activeTab === "impact" ? impactPanel : volunteerPanel}</div>
+            </div>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Impact</CardTitle>
-                  <CardDescription>How your giving connects back to wishlist items and activities.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {dashboard.impact_items.map((item, index) => (
-                      <article key={`${item.title}-${index}`} className="rounded-2xl bg-brand-cream p-4">
-                        <p className="font-semibold text-brand-ink">{item.message}</p>
-                        <p className="mt-1 text-sm text-brand-ink/70">{formatHkd(item.amount_hkd)} connected to this priority · {item.progress_percent}% funded now</p>
-                      </article>
-                    ))}
-                    {!dashboard.impact_items.length ? (
-                      <p className="text-sm text-muted-foreground">Make a designated gift to see a personal impact acknowledgement here.</p>
-                    ) : null}
-                  </div>
-                </CardContent>
-              </Card>
-            </section>
-
-            <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-              <Card>
-                <CardHeader>
-                  <CardTitle>My volunteering</CardTitle>
-                  <CardDescription>Signed-up activities, calendar view, and total hours.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <h3 className="font-semibold text-brand-ink">Calendar</h3>
-                    <div className="mt-3">
-                      <ActivityCalendar activities={signedUpActivities} />
-                    </div>
-                  </div>
-
-                  <form onSubmit={logHours} className="space-y-4 rounded-2xl border border-brand-sand p-4">
-                    <h3 className="font-semibold text-brand-ink">Log volunteer hours</h3>
-                    <div className="space-y-2">
-                      <Label htmlFor="hours-activity">Activity (optional)</Label>
-                      <select
-                        id="hours-activity"
-                        value={hoursActivityId}
-                        onChange={(event) => setHoursActivityId(event.target.value)}
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      >
-                        <option value="">Manual log / no activity</option>
-                        {signedUpActivities.map((activity) => (
-                          <option key={activity.id} value={activity.id}>{activity.title}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-[0.35fr_0.65fr]">
-                      <div className="space-y-2">
-                        <Label htmlFor="hours">Hours</Label>
-                        <Input id="hours" type="number" min={0.25} max={24} step={0.25} value={hours} onChange={(event) => setHours(event.target.value)} required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="hours-notes">Notes</Label>
-                        <Input id="hours-notes" value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="What did you help with?" />
-                      </div>
-                    </div>
-                    <Button type="submit" disabled={saving || !hours}>
-                      <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
-                      Add hours
-                    </Button>
-                  </form>
-
-                  <div>
-                    <h3 className="font-semibold text-brand-ink">Hours history</h3>
-                    <div className="mt-3 space-y-3">
-                      {dashboard.volunteer_hours.map((entry) => (
-                        <article key={entry.id} className="rounded-2xl border p-4 text-sm">
-                          <p className="font-semibold text-brand-ink">{entry.hours} hours · {entry.activity?.title ?? "Manual log"}</p>
-                          <p className="mt-1 text-muted-foreground">{entry.notes ?? "No notes"}</p>
-                        </article>
-                      ))}
-                      {!dashboard.volunteer_hours.length ? <p className="text-sm text-muted-foreground">No hours logged yet.</p> : null}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Activity sign-up</CardTitle>
-                  <CardDescription>Choose upcoming activities to add them to your supporter calendar.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {activities.map((activity) => (
-                      <article key={activity.id} className="rounded-2xl border p-4">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                          <div>
-                            <h3 className="font-semibold text-brand-ink">{activity.title}</h3>
-                            <p className="mt-1 text-sm text-muted-foreground">{formatDateTime(activity.starts_at)} · {activity.location}</p>
-                            <p className="mt-2 text-sm text-brand-ink/75">{activity.description}</p>
-                          </div>
-                          {activity.signed_up ? (
-                            <span className="inline-flex items-center rounded-full bg-brand-cream px-3 py-1 text-xs font-semibold text-brand-sea">
-                              <Users className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
-                              Signed up
-                            </span>
-                          ) : (
-                            <Button type="button" variant="outline" size="sm" onClick={() => signUp(activity)} disabled={saving}>
-                              Sign up
-                            </Button>
-                          )}
-                        </div>
-                      </article>
-                    ))}
-                    {!activities.length ? <p className="text-sm text-muted-foreground">No activities are scheduled yet.</p> : null}
-                  </div>
-                </CardContent>
-              </Card>
-            </section>
+            <div className="hidden space-y-6 lg:block">
+              {impactPanel}
+              {volunteerPanel}
+            </div>
           </>
         )}
       </div>

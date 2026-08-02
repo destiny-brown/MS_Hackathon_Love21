@@ -11,6 +11,8 @@ from app.models.activity import ActivitySignup, VolunteerHour
 from app.models.donation import Donation
 from app.models.user import User
 from app.models.user_play_state import CaptainGreetingCache, UserPlayState
+from app.models.volunteer_activity import VolunteerActivityRegistration
+from app.models.user_play_state import CaptainGreetingCache, UserPlayState
 from app.services.model_client import chat_json
 
 
@@ -78,6 +80,23 @@ def build_trail_snapshot(state: UserPlayState) -> TrailSnapshot:
     )
 
 
+def load_member_context(db: Session, user_id: int) -> SupporterPlayContext:
+    registration_count = db.scalar(
+        select(func.count())
+        .select_from(VolunteerActivityRegistration)
+        .where(
+            VolunteerActivityRegistration.user_id == user_id,
+            VolunteerActivityRegistration.status != "cancelled",
+        )
+    ) or 0
+    return SupporterPlayContext(
+        has_donations=False,
+        total_volunteer_hours=0.0,
+        signed_up_activity_count=int(registration_count),
+        recurring_supporter=False,
+    )
+
+
 def load_supporter_context(db: Session, user_id: int) -> SupporterPlayContext:
     donation_count = db.scalar(
         select(func.count())
@@ -130,6 +149,8 @@ def fallback_greeting(user: User, trail: TrailSnapshot, context: SupporterPlayCo
         return f"{base} You're learning and giving — that's Love 21."
     if context.total_volunteer_hours > 0:
         return f"{base} Your volunteer heart matches your trail energy."
+    if context.signed_up_activity_count > 0 and not context.has_donations:
+        return f"{base} Love seeing you show up for Love 21 programmes."
     if context.has_donations:
         return f"{base} Thanks for backing the community while you learn."
     return base
@@ -160,8 +181,8 @@ def generate_greeting(
     if context.total_volunteer_hours > 0:
         supporter_bits.append(f"logged {context.total_volunteer_hours:g} volunteer hours")
     if context.signed_up_activity_count > 0:
-        supporter_bits.append(f"signed up for {context.signed_up_activity_count} activities")
-    supporter_summary = ", ".join(supporter_bits) if supporter_bits else "new supporter exploring Learn"
+        supporter_bits.append(f"joined {context.signed_up_activity_count} Love 21 programmes")
+    supporter_summary = ", ".join(supporter_bits) if supporter_bits else "new to the Love 21 community"
 
     parsed = chat_json(
         system=(

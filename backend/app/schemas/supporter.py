@@ -178,6 +178,27 @@ class RecommendedEventsResponse(BaseModel):
     message: str | None = None
 
 
+class RecommendedVolunteerRoleRead(BaseModel):
+    role_id: str
+    icon: str
+    title: str
+    desc: str
+    when: str
+    where: str
+    category: str
+    score: int = Field(ge=0, le=100)
+    reasons: list[str]
+    signed_up: bool = False
+
+
+class RecommendedVolunteerRolesResponse(BaseModel):
+    enabled: bool
+    ai_enhanced: bool
+    headline: str
+    matches: list[RecommendedVolunteerRoleRead]
+    message: str | None = None
+
+
 class MemberDashboardRead(BaseModel):
     registered_activities: list[VolunteerActivityRegistrationRead]
     total_registrations: int
