@@ -8,7 +8,7 @@
 
 **A full-stack platform for [Love 21 Foundation](https://love21foundation.com)** — a Hong Kong charity empowering people with Down syndrome, autism, and neurodiversity through sport, nutrition, family support, and holistic community care.
 
-Built for the **Morgan Stanley Code to Give Hackathon** by **Team TriAble** — pairing a Next.js public site and account dashboards with a FastAPI backend for donations, volunteering, admin tools and AI features.
+Built for the **Morgan Stanley Code to Give Hackathon** by **Team Captain 21** — pairing a Next.js public site and account dashboards with a FastAPI backend for donations, volunteering, admin tools and AI features.
 
 [CI](https://github.com/destiny-brown/MS_Hackathon_Love21/actions/workflows/ci.yml)
 Next.js
