@@ -203,4 +203,4 @@ Seeded campaigns, wishlist targets, activities, donation history, volunteer hour
 
 ## License & attribution
 
-Built for Love 21 Foundation as part of the Microsoft Hackathon. Charity registration and official branding belong to Love 21 Foundation Limited.
+Built for Love 21 Foundation as part of the Morgan Stanley Code to Give Hackathon. Charity registration and official branding belong to Love 21 Foundation Limited.
