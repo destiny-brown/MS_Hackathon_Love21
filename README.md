@@ -22,6 +22,7 @@ Built for the **Morgan Stanley Code to Give Hackathon** — pairing a Next.js pu
 
 ## <a name="toc"></a>Contents
 
+- [🎯 Problem Statement](#problem-statement)
 - [✨ Highlights](#highlights)
 - [🏗️ Architecture](#architecture)
 - [🧭 Feature map](#feature-map)
@@ -35,6 +36,54 @@ Built for the **Morgan Stanley Code to Give Hackathon** — pairing a Next.js pu
 - [📄 License & attribution](#license)
 
 ---
+
+## <a name="problem-statement"></a>🎯 Problem Statement
+
+### Love 21: Hong Kong Challenge Statement
+
+**Context:** Love 21 Foundation empowers the Down syndrome, autistic, and neurodiverse community through sports, nutrition, and holistic support programs, offering nearly 1,000 healthy activities to support 600+ members and families each month. While their programs are deep and impactful, the current website does not convey the breadth of their work or guide supporters toward meaningful involvement. Love 21 believes that seeing ability in action, participating as a volunteer, and understanding the impact of giving are the strongest ways to build community, reduce stigma, and grow long-term support.
+
+**Problem Statement:** How might Love 21 redesign their website to transform passive visitors into an engaged community — by celebrating ability, motivating volunteering, and making donating more meaningful?
+
+**Our Mission:** Build a unified website that brings together three pillars:
+
+- **Showcase Impact & Celebrate Ability**
+  - Clearly communicate the depth of Love 21's programs and holistic model.
+  - Highlight real accomplishments, milestones, and moments that celebrate what constituents can do — not just what services are provided.
+- **Educate and Drive Volunteering**
+  - Educate visitors about the neurodiverse community through shared experiences and connections.
+  - Create a clear, welcoming path from curiosity to volunteer sign-up that feels rewarding, human, and easy.
+- **Make Donating Engaging and Meaningful**
+  - Redesign the donation experience so supporters can clearly see what their contribution supports.
+  - Help donors feel acknowledged, connected, and motivated to stay involved after giving.
+
+### The issues
+
+| # | Issue |
+|---|-------|
+| 1 | The current website does not clearly communicate the depth of Love21's programs, holistic support model, or the impact the organization creates within the neurodiverse community. |
+| 2 | Real accomplishments, milestones, and success stories that celebrate what the neurodiverse community can achieve are not prominently featured. |
+| 3 | Visitors are not adequately educated about the neurodiverse community. More awareness-building content is needed to reduce ignorance, challenge stereotypes, and promote inclusion. |
+| 4 | There is no clear, welcoming journey that encourages visitors to donate, volunteer, or get involved in a way that feels simple, human, and rewarding. Additionally, the current process is largely manual, creating administrative burden. |
+| 5 | Donors and volunteers cannot clearly see how their contributions make a difference, making it harder for them to feel acknowledged, connected, and motivated to stay involved. |
+| 6 | Volunteers lack structured engagement, recognition, and clear pathways to track their involvement, making it difficult for the organization to retain volunteers and convert them into long-term supporters. |
+| 7 | External web operations are disconnected from internal progress, lacking traffic analytics, simple CMS tools for non-technical staff, and real-time donor acknowledgment. |
+| 8 | The current website lacks key accessibility features, including font size controls, English/Cantonese/Mandarin language options, and easy navigation features for all users. |
+
+### Our magic solution
+
+| # | Solution |
+|---|----------|
+| 1 | Our **Get Involved** section guides visitors through sports, nutrition, family support, and CSR programmes, while the **Impact Dashboard** explains Love21's holistic care model through growth metrics and transparent reporting. The **Donate** and **Wishlist** pages also display live campaign progress so supporters can clearly see where their contributions go. |
+| 2 | Our **Stories & Media** page and homepage spotlights showcase member achievements, competition medals, media coverage, and community milestones. Testimonials and story carousels throughout the site ensure these accomplishments remain visible and celebrated. |
+| 3 | Our **Learn** page combines **21 Moves**, an interactive educational quiz featuring Captain 21, curated articles, and videos to help visitors better understand neurodiversity, challenge stereotypes, and promote inclusion through engaging content. |
+| 4 | Our **Get Involved** page, persistent **Donate** and **Volunteer** buttons, and self-service registration provide simple and intuitive ways for visitors to take action. Behind the scenes, the staff **admin console** streamlines event and activity management, reducing manual administration. |
+| 5 | Logged-in supporters can view their donations, campaign impact, volunteer hours, and event participation in a single dashboard. Members can submit thank-you messages for the **Gratitude Wall**, while our AI-powered **Captain's Corner** adds a personal touch that helps supporters feel recognised and connected. |
+| 6 | Our **Volunteer** page enables users to browse opportunities, receive AI-powered role recommendations, register for activities, and track their hours through their supporter dashboard. Recognition tiers, achievement badges, and streaks from **21 Moves** encourage continued participation and long-term engagement. |
+| 7 | Our **Admin Console** allows staff to manage campaigns, wishlist items, events, learning content, and newsletters with AI-assisted support. Integrated **Google Analytics** and **Looker Studio** dashboards provide real-time insights, ensuring public-facing activities remain connected to internal operations. |
+| 8 | We improve accessibility through a language switcher with full English, Cantonese, and Mandarin translations, an accessibility menu with font-size and contrast controls, and sticky page navigation for easier browsing. Our AI assistant can also guide visitors directly to relevant pages based on their requests. |
+
+[↑ back to top](#toc)
 
 ## <a name="highlights"></a>✨ Highlights
 
