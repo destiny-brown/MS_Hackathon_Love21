@@ -40,11 +40,11 @@ Built for the **Morgan Stanley Code to Give Hackathon** — pairing a Next.js pu
 
 | | |
 |---|---|
-| 🧩 **3 account roles** | Supporter, Member, and Admin dashboards, each with server-enforced role checks |
+| 🧩 **3 account roles** | Supporter, Member and Admin dashboards with access verified directly on the backend |
 | 🤖 **AI-native, not AI-dependent** | Captain 21 chat assistant, volunteer matching, and trail debrief — every AI feature gracefully falls back to rule-based logic when no model key is configured |
-| 🌏 **Trilingual by design** | English, Cantonese (yue), and Simplified Chinese via `react-i18next`, including AI-generated replies |
-| 🎮 **Gamified education** | "21 Moves" — an interactive trail teaching neurodiversity concepts, with AI-crafted debrief and encouragement |
-| 💳 **End-to-end giving flow** | Campaigns, causes, and wishlist items share one funding-progress engine, a public gratitude wall, and a mock checkout |
+| 🌏 **Trilingual by design** | English, Cantonese and Simplified Chinese via `react-i18next`, including AI-generated replies |
+| 🎮 **Gamified education** | "21 Moves" — an interactive game teaching neurodiversity concepts, with AI-crafted debrief and encouragement |
+| 💳 **End-to-end giving flow** | Campaigns, causes and wishlist items share one funding-progress engine, a public gratitude wall and a mock checkout |
 | 🚀 **Deploy-ready out of the box** | Dockerized, CI-tested on every PR, with a Vercel + Render blueprint and a one-command Modal deploy for the AI model |
 
 [↑ back to top](#toc)
