@@ -646,17 +646,18 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-    request<UserPlayState>("/supporter/play-state", { method: "PUT", body: JSON.stringify(payload) }),
-  logVolunteerHours: (payload: { activity_id?: number | null; hours: number; notes?: string | null }) =>
-    request<VolunteerHour>("/supporter/hours", { method: "POST", body: JSON.stringify(payload) }),
   matchVolunteer: (payload: VolunteerMatchRequest) =>
     request<VolunteerMatchResponse>("/ai/volunteer/match", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  listVolunteerActivities: () => request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  listVolunteerActivities: () =>
+    request<VolunteerActivity[]>("/ai/volunteer/activities"),
   signUpForVolunteerActivity: (slug: string) =>
-    request<VolunteerActivityRegistration>(`/ai/volunteer/activities/${slug}/signup`, { method: "POST", body: JSON.stringify({}) }),
+    request<VolunteerActivityRegistration>(
+      `/ai/volunteer/activities/${slug}/signup`,
+      { method: "POST", body: JSON.stringify({}) },
+    ),
   trailDebrief: (payload: TrailDebriefRequest) =>
     request<TrailDebriefResponse>("/ai/trail/debrief", {
       method: "POST",
@@ -669,39 +670,6 @@ export const api = {
     }),
   adminOverview: () => request<AdminOverview>("/admin/overview"),
   listAdminActivities: () => request<AdminActivity[]>("/admin/activities"),
-  createAdminActivity: (payload: Omit<AdminActivity, "id" | "registration_count" | "created_at">) =>
-    request<AdminActivity>("/admin/activities", { method: "POST", body: JSON.stringify(payload) }),
-  updateAdminActivity: (id: number, payload: Partial<Omit<AdminActivity, "id" | "registration_count" | "created_at">>) =>
-    request<AdminActivity>(`/admin/activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteAdminActivity: (id: number) => request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
-  listAdminVolunteerActivities: () => request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
-  listAdminVolunteerActivityRegistrations: () =>
-    request<AdminVolunteerActivityRegistration[]>("/admin/volunteer-activity-registrations"),
-  createAdminVolunteerActivity: (payload: Omit<AdminVolunteerActivity, "id" | "created_at">) =>
-    request<AdminVolunteerActivity>("/admin/volunteer-activities", { method: "POST", body: JSON.stringify(payload) }),
-  updateAdminVolunteerActivity: (id: number, payload: Partial<Omit<AdminVolunteerActivity, "id" | "created_at">>) =>
-    request<AdminVolunteerActivity>(`/admin/volunteer-activities/${id}`, { method: "PATCH", body: JSON.stringify(payload) }),
-  deleteAdminVolunteerActivity: (id: number) => request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
-  listNewsletterSubscribers: () => request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
-  createNewsletterSubscriber: (payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">) =>
-    request<NewsletterSubscriber>("/admin/newsletter/subscribers", { method: "POST", body: JSON.stringify({
-      first_name: payload.first_name,
-      last_name: payload.last_name,
-      email: payload.email,
-      phone_number: payload.phone_number,
-      status: payload.status,
-    }) }),
-  updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
-    request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, { method: "PATCH", body: JSON.stringify({
-      first_name: payload.first_name,
-      last_name: payload.last_name,
-      email: payload.email,
-      phone_number: payload.phone_number,
-      status: payload.status,
-    }) }),
-  deleteNewsletterSubscriber: (id: number) => request<void>(`/admin/newsletter/subscribers/${id}`, { method: "DELETE" }),
-  listNewsletterDeliveries: () => request<NewsletterDelivery[]>("/admin/newsletter/deliveries"),
-  previewNewsletter: (payload: { subject: string; content: string; unsubscribe_url?: string }) =>
   createAdminActivity: (
     payload: Omit<AdminActivity, "id" | "registration_count" | "created_at">,
   ) =>
@@ -723,6 +691,8 @@ export const api = {
     request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
   listAdminVolunteerActivities: () =>
     request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
+  listAdminVolunteerActivityRegistrations: () =>
+    request<AdminVolunteerActivityRegistration[]>("/admin/volunteer-activity-registrations"),
   createAdminVolunteerActivity: (
     payload: Omit<AdminVolunteerActivity, "id" | "created_at">,
   ) =>
@@ -742,9 +712,7 @@ export const api = {
     request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
   listNewsletterSubscribers: () =>
     request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
-  createNewsletterSubscriber: (
-    payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">,
-  ) =>
+  createNewsletterSubscriber: (payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">) =>
     request<NewsletterSubscriber>("/admin/newsletter/subscribers", {
       method: "POST",
       body: JSON.stringify({
@@ -755,10 +723,7 @@ export const api = {
         status: payload.status,
       }),
     }),
-  updateNewsletterSubscriber: (
-    id: number,
-    payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>,
-  ) =>
+  updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
     request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, {
       method: "PATCH",
       body: JSON.stringify({
