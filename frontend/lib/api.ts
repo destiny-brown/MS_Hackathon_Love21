@@ -1,5 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const TOKEN_KEY = "hackkit_token";
+const REFRESH_TOKEN_KEY = "hackkit_refresh_token";
 
 export type Role = "supporter" | "member" | "admin";
 export type User = {
@@ -17,6 +18,7 @@ export type Item = {
 };
 export type AuthResponse = {
   access_token: string;
+  refresh_token: string;
   token_type: "bearer";
   user: User;
 };
@@ -115,6 +117,35 @@ export type SupporterDashboard = {
   volunteer_hours: VolunteerHour[];
   total_volunteer_hours: number;
 };
+export type UserPlayState = {
+  day_number: number;
+  event_index: number;
+  correct_count: number;
+  total_answered: number;
+  current_streak: number;
+  best_streak: number;
+  total_plays: number;
+  location_id: string;
+  location_label: string;
+  events_total: number;
+  events_remaining: number;
+  last_played_at: string | null;
+  updated_at: string;
+};
+export type UserPlayStateUpdate = {
+  day_number: number;
+  event_index: number;
+  correct_count: number;
+  total_answered: number;
+  current_streak: number;
+  best_streak: number;
+  total_plays: number;
+};
+export type CaptainsCorner = {
+  play_state: UserPlayState;
+  captain_message: string;
+  ai_enhanced: boolean;
+};
 export type YouTubeVideo = {
   video_id: string;
   title: string;
@@ -138,6 +169,57 @@ export type GratitudeEntryInput = {
   display_name?: string | null;
   message: string;
   photo_url?: string | null;
+};
+export type RecommendedEvent = {
+  id: number;
+  title: string;
+  starts_at: string;
+  ends_at: string | null;
+  location: string;
+  description: string;
+  score: number;
+  reasons: string[];
+  signed_up: boolean;
+};
+export type RecommendedEventsResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  headline: string;
+  matches: RecommendedEvent[];
+  message: string | null;
+};
+export type RecommendedVolunteerRole = {
+  role_id: string;
+  icon: string;
+  title: string;
+  desc: string;
+  when: string;
+  where: string;
+  category: string;
+  score: number;
+  reasons: string[];
+  signed_up: boolean;
+};
+export type RecommendedVolunteerRolesResponse = {
+  enabled: boolean;
+  ai_enhanced: boolean;
+  headline: string;
+  matches: RecommendedVolunteerRole[];
+  message: string | null;
+};
+export type MemberDashboard = {
+  registered_activities: VolunteerActivityRegistration[];
+  total_registrations: number;
+  upcoming_registrations: number;
+};
+export type VolunteerActivityRegistration = {
+  id: number;
+  user_id: number;
+  activity_id: number;
+  activity_slug: string;
+  activity_name: string;
+  status: string;
+  created_at: string;
 };
 export type VolunteerMatchRequest = {
   interest: "hands-on" | "food" | "people" | "skills";
@@ -174,6 +256,7 @@ export type VolunteerActivity = {
   total?: number | null;
   note?: string | null;
   cta_label?: string;
+  signed_up: boolean;
 };
 export type TrailDebriefRequest = {
   captain_name?: string;
@@ -252,6 +335,19 @@ export type AdminVolunteerActivity = {
   display_order: number;
   created_at: string;
 };
+export type AdminVolunteerActivityRegistration = {
+  id: number;
+  user_id: number;
+  user_email: string;
+  user_role: Role;
+  activity_id: number;
+  activity_slug: string;
+  activity_name: string;
+  status: string;
+  created_at: string;
+};
+export type NewsletterFrequency = "weekly" | "monthly";
+export type NewsletterCadence = "weekly" | "monthly";
 export type NewsletterSubscriber = {
   id: number;
   first_name: string;
@@ -259,6 +355,7 @@ export type NewsletterSubscriber = {
   email: string;
   phone_number: string | null;
   status: string;
+  frequency: NewsletterFrequency;
   subscribed_at: string;
 };
 export type NewsletterDelivery = {
@@ -266,7 +363,22 @@ export type NewsletterDelivery = {
   subject: string;
   content_text: string;
   recipient_count: number;
+  cadence: string | null;
+  recipient_groups: string | null;
   sent_at: string;
+};
+export type NewsletterGenerateResponse = {
+  enabled: boolean;
+  subject: string;
+  content: string;
+  cadence: NewsletterCadence;
+  sources: {
+    events: Array<Record<string, string>>;
+    volunteer_programmes: Array<Record<string, string>>;
+    community_voices: Array<Record<string, string>>;
+    member_stories: Array<Record<string, string>>;
+  };
+  notice?: string | null;
 };
 export type AdminOverview = {
   event_count: number;
@@ -392,17 +504,58 @@ export type LearnVideoInput = {
 
 export function getToken() {
   if (typeof window === "undefined") return null;
-  // Fast hackathon path: localStorage is easy to wire and debug.
-  // Tradeoff: it is more exposed to XSS than an HttpOnly cookie.
+  // Access token in localStorage for this hackathon build.
+  // Prefer HttpOnly cookies + in-memory access tokens for production hardening.
   return window.localStorage.getItem(TOKEN_KEY);
 }
 
+function getRefreshToken() {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(REFRESH_TOKEN_KEY);
+}
+
+export function setSessionTokens(accessToken: string, refreshToken: string) {
+  window.localStorage.setItem(TOKEN_KEY, accessToken);
+  window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+}
+
+/** @deprecated Use setSessionTokens after login/register. */
 export function setToken(token: string) {
   window.localStorage.setItem(TOKEN_KEY, token);
 }
 
 export function clearToken() {
   window.localStorage.removeItem(TOKEN_KEY);
+  window.localStorage.removeItem(REFRESH_TOKEN_KEY);
+}
+
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshAccessToken(): Promise<boolean> {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return false;
+
+  if (!refreshPromise) {
+    refreshPromise = (async () => {
+      try {
+        const response = await fetch(`${API_URL}/auth/refresh`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        });
+        if (!response.ok) return false;
+        const data = (await response.json()) as AuthResponse;
+        setSessionTokens(data.access_token, data.refresh_token);
+        return true;
+      } catch {
+        return false;
+      } finally {
+        refreshPromise = null;
+      }
+    })();
+  }
+
+  return refreshPromise;
 }
 
 export function landingPathForRole(role: Role) {
@@ -410,7 +563,7 @@ export function landingPathForRole(role: Role) {
     case "admin":
       return "/admin";
     case "member":
-      return "/member/profile";
+      return "/member/dashboard";
     case "supporter":
     default:
       return "/supporter/dashboard";
@@ -429,7 +582,10 @@ export function resolvePostLoginPath(role: Role, nextPath: string | null) {
   return landingPathForRole(role);
 }
 
-type ApiRequestInit = RequestInit & { redirectOnUnauthorized?: boolean };
+type ApiRequestInit = RequestInit & {
+  redirectOnUnauthorized?: boolean;
+  _retried?: boolean;
+};
 
 function parseApiError(data: unknown, status: number): string {
   if (typeof data === "object" && data !== null && "detail" in data) {
@@ -453,12 +609,14 @@ async function request<T>(
   path: string,
   options: ApiRequestInit = {},
 ): Promise<T> {
-  const { redirectOnUnauthorized = true, ...requestOptions } = options;
+  const { redirectOnUnauthorized = true, _retried = false, ...requestOptions } = options;
   const token = getToken();
   const headers = new Headers(requestOptions.headers);
   headers.set("Content-Type", "application/json");
   const isPublicAuthRequest =
-    path === "/auth/login" || path === "/auth/register";
+    path === "/auth/login" ||
+    path === "/auth/register" ||
+    path === "/auth/refresh";
   if (token && !isPublicAuthRequest)
     headers.set("Authorization", `Bearer ${token}`);
 
@@ -470,6 +628,21 @@ async function request<T>(
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
     const message = parseApiError(data, response.status);
+
+    if (
+      response.status === 401 &&
+      typeof window !== "undefined" &&
+      !isPublicAuthRequest &&
+      !_retried
+    ) {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        return request<T>(path, {
+          ...options,
+          _retried: true,
+        });
+      }
+    }
 
     if (response.status === 401 && typeof window !== "undefined") {
       clearToken();
@@ -508,6 +681,18 @@ export const api = {
       body: JSON.stringify({ email, password }),
       redirectOnUnauthorized: false,
     }),
+  refreshSession: (refreshToken: string) =>
+    request<AuthResponse>("/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+      redirectOnUnauthorized: false,
+    }),
+  logout: (refreshToken: string) =>
+    request<void>("/auth/logout", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+      redirectOnUnauthorized: false,
+    }),
   me: () => request<User>("/auth/me"),
   currentUser: () =>
     request<User>("/auth/me", { redirectOnUnauthorized: false }),
@@ -531,6 +716,18 @@ export const api = {
     }>("/admin/metrics"),
   recurringDonation: () =>
     request<{ email: string; status: string }>("/supporter/recurring-donation"),
+  getRecommendedEvents: () =>
+    request<RecommendedEventsResponse>("/supporter/recommended-events"),
+  getMemberCaptainsCorner: () => request<CaptainsCorner>("/member/captains-corner"),
+  getMemberPlayState: () => request<UserPlayState>("/member/play-state"),
+  saveMemberPlayState: (payload: UserPlayStateUpdate) =>
+    request<UserPlayState>("/member/play-state", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
+  getMemberRecommendedRoles: () =>
+    request<RecommendedVolunteerRolesResponse>("/member/recommended-roles"),
+  memberDashboard: () => request<MemberDashboard>("/member/dashboard"),
   memberProfile: () =>
     request<{ email: string; profile_status: string }>("/member/profile"),
   listPublicGratitudeEntries: () =>
@@ -580,6 +777,13 @@ export const api = {
       body: JSON.stringify({}),
     }),
   supporterDashboard: () => request<SupporterDashboard>("/supporter/dashboard"),
+  getCaptainsCorner: () => request<CaptainsCorner>("/supporter/captains-corner"),
+  getSupporterPlayState: () => request<UserPlayState>("/supporter/play-state"),
+  saveSupporterPlayState: (payload: UserPlayStateUpdate) =>
+    request<UserPlayState>("/supporter/play-state", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
   logVolunteerHours: (payload: {
     activity_id?: number | null;
     hours: number;
@@ -596,6 +800,11 @@ export const api = {
     }),
   listVolunteerActivities: () =>
     request<VolunteerActivity[]>("/ai/volunteer/activities"),
+  signUpForVolunteerActivity: (slug: string) =>
+    request<VolunteerActivityRegistration>(
+      `/ai/volunteer/activities/${slug}/signup`,
+      { method: "POST", body: JSON.stringify({}) },
+    ),
   trailDebrief: (payload: TrailDebriefRequest) =>
     request<TrailDebriefResponse>("/ai/trail/debrief", {
       method: "POST",
@@ -629,6 +838,8 @@ export const api = {
     request<void>(`/admin/activities/${id}`, { method: "DELETE" }),
   listAdminVolunteerActivities: () =>
     request<AdminVolunteerActivity[]>("/admin/volunteer-activities"),
+  listAdminVolunteerActivityRegistrations: () =>
+    request<AdminVolunteerActivityRegistration[]>("/admin/volunteer-activity-registrations"),
   createAdminVolunteerActivity: (
     payload: Omit<AdminVolunteerActivity, "id" | "created_at">,
   ) =>
@@ -648,9 +859,7 @@ export const api = {
     request<void>(`/admin/volunteer-activities/${id}`, { method: "DELETE" }),
   listNewsletterSubscribers: () =>
     request<NewsletterSubscriber[]>("/admin/newsletter/subscribers"),
-  createNewsletterSubscriber: (
-    payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">,
-  ) =>
+  createNewsletterSubscriber: (payload: Omit<NewsletterSubscriber, "id" | "subscribed_at">) =>
     request<NewsletterSubscriber>("/admin/newsletter/subscribers", {
       method: "POST",
       body: JSON.stringify({
@@ -659,12 +868,10 @@ export const api = {
         email: payload.email,
         phone_number: payload.phone_number,
         status: payload.status,
+        frequency: payload.frequency,
       }),
     }),
-  updateNewsletterSubscriber: (
-    id: number,
-    payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>,
-  ) =>
+  updateNewsletterSubscriber: (id: number, payload: Partial<Omit<NewsletterSubscriber, "id" | "subscribed_at">>) =>
     request<NewsletterSubscriber>(`/admin/newsletter/subscribers/${id}`, {
       method: "PATCH",
       body: JSON.stringify({
@@ -673,6 +880,7 @@ export const api = {
         email: payload.email,
         phone_number: payload.phone_number,
         status: payload.status,
+        frequency: payload.frequency,
       }),
     }),
   deleteNewsletterSubscriber: (id: number) =>
@@ -688,7 +896,17 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  sendNewsletter: (payload: { subject: string; content: string }) =>
+  generateNewsletter: (payload: { cadence: NewsletterCadence; guidance?: string | null }) =>
+    request<NewsletterGenerateResponse>("/admin/newsletter/generate", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  sendNewsletter: (payload: {
+    subject: string;
+    content: string;
+    cadence?: NewsletterCadence | null;
+    recipient_groups: NewsletterFrequency[];
+  }) =>
     request<{ success: boolean; message: string; sent_count: number }>(
       "/admin/newsletter/send",
       {
@@ -701,6 +919,7 @@ export const api = {
     last_name: string;
     email: string;
     phone_number?: string | null;
+    frequency?: NewsletterFrequency;
   }) =>
     request<NewsletterSubscriber>("/newsletter/subscribe", {
       method: "POST",

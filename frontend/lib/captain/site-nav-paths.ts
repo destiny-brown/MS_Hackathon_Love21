@@ -10,7 +10,7 @@ export const SITE_NAV_PATHS = [
   "/learn-play/short-videos",
   "/learn-play/resources",
   "/donate",
-  "/shop",
+  "/wishlist",
   "/stories-media",
   "/impact-dashboard",
   "/contact-us",

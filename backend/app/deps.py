@@ -12,6 +12,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    """Validate the bearer JWT, then load the user from the database (authoritative for role)."""
     subject = decode_access_token(token)
     if subject is None:
         raise HTTPException(

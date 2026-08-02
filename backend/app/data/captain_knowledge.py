@@ -110,7 +110,7 @@ CAPTAIN_KNOWLEDGE: tuple[KnowledgeChunk, ...] = (
         id="shop-wishlist",
         title="Wishlist Shop",
         text="Buy practical items that help members train, learn, and participate.",
-        href="/shop",
+        href="/wishlist",
         topics=("shop", "wishlist", "buy", "item", "equipment", "gift in kind"),
     ),
     KnowledgeChunk(

@@ -4,11 +4,7 @@ const nextConfig = {
   allowedDevOrigins: ["127.0.0.1", "localhost"],
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "love21foundation.com",
-        pathname: "/wp-content/uploads/**",
-      },
+      { protocol: "https", hostname: "love21foundation.com", pathname: "/wp-content/uploads/**" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "img.youtube.com" },
       { protocol: "https", hostname: "autisticandunapologetic.com" },
@@ -23,6 +19,11 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: "/shop",
+        destination: "/wishlist",
+        permanent: true,
+      },
       {
         source: "/learn-play/daily-myth-buster",
         destination: "/learn-play/21-moves",

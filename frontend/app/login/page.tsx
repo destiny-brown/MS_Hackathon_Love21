@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api, resolvePostLoginPath, Role, setToken } from "@/lib/api";
+import { api, resolvePostLoginPath, Role, setSessionTokens } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 type LoginRole = Role;
@@ -74,7 +74,7 @@ function LoginForm() {
     setError("");
     try {
       const response = await api.login(email, password);
-      setToken(response.access_token);
+      setSessionTokens(response.access_token, response.refresh_token);
       router.push(resolvePostLoginPath(response.user.role, nextPath));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

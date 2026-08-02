@@ -14,6 +14,7 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
     lastName: "",
     email: "",
     phoneNumber: "",
+    frequency: "monthly" as "weekly" | "monthly",
   });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -34,9 +35,10 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
         last_name: formData.lastName,
         email: formData.email,
         phone_number: formData.phoneNumber || null,
+        frequency: formData.frequency,
       });
       setSubmitted(true);
-      setFormData({ firstName: "", lastName: "", email: "", phoneNumber: "" });
+      setFormData({ firstName: "", lastName: "", email: "", phoneNumber: "", frequency: "monthly" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Subscription failed");
     } finally {
@@ -78,6 +80,21 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
       <div className="space-y-2">
         <Label htmlFor="phoneNumber" className={cn(dark && "text-brand-light")}>Phone Number</Label>
         <Input id="phoneNumber" value={formData.phoneNumber} onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })} placeholder="+852 9123 4567" className={cn(dark && "border-brand-light/30 bg-transparent text-brand-light placeholder:text-brand-light/45")} />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="frequency" className={cn(dark && "text-brand-light")}>How often would you like to hear from us?</Label>
+        <select
+          id="frequency"
+          value={formData.frequency}
+          onChange={(e) => setFormData({ ...formData, frequency: e.target.value as "weekly" | "monthly" })}
+          className={cn(
+            "w-full rounded-md border px-3 py-2 text-sm",
+            dark && "border-brand-light/30 bg-transparent text-brand-light",
+          )}
+        >
+          <option value="weekly">Weekly updates</option>
+          <option value="monthly">Monthly updates</option>
+        </select>
       </div>
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Subscribing..." : "Subscribe"}

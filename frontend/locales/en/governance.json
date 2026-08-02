@@ -89,5 +89,9 @@
     "contactMiddle": ") and Maggie (",
     "contactAfter": ").",
     "availability": "We accept applications year round, and our internship programme can be tailored to suit your schedule. Please let us know your availability in your application."
+  },
+  "sectionNav": {
+    "company": "Company",
+    "contact": "Contact"
   }
 }

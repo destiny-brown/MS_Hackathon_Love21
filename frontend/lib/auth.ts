@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { clearToken, getCurrentUserWithRole, landingPathForRole, resolvePostLoginPath, Role, User } from "@/lib/api";
+import { clearToken, getCurrentUserWithRole, landingPathForRole, resolvePostLoginPath, Role, User, api } from "@/lib/api";
 
 export type AuthState = {
   user: User | null;
@@ -64,6 +64,10 @@ export function useRequireRoles(...allowedRoles: Role[]): AuthState {
 }
 
 export function signOutToLogin() {
+  const refreshToken = typeof window !== "undefined" ? window.localStorage.getItem("hackkit_refresh_token") : null;
+  if (refreshToken) {
+    void api.logout(refreshToken).catch(() => undefined);
+  }
   clearToken();
   window.location.href = "/login";
 }

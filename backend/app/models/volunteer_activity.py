@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
 
@@ -26,3 +26,25 @@ class VolunteerActivity(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
     )
+
+    registrations: Mapped[list["VolunteerActivityRegistration"]] = relationship(
+        back_populates="activity", cascade="all, delete-orphan"
+    )
+
+
+class VolunteerActivityRegistration(Base):
+    __tablename__ = "volunteer_activity_registrations"
+    __table_args__ = (UniqueConstraint("user_id", "activity_id", name="uq_user_volunteer_activity_registration"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    activity_id: Mapped[int] = mapped_column(ForeignKey("volunteer_activities.id"), index=True, nullable=False)
+    activity_slug: Mapped[str] = mapped_column(String(120), nullable=False)
+    activity_name: Mapped[str] = mapped_column(String(200), nullable=False)
+    status: Mapped[str] = mapped_column(String(30), default="registered", nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+    user: Mapped["User"] = relationship(back_populates="volunteer_activity_registrations")
+    activity: Mapped[VolunteerActivity] = relationship(back_populates="registrations")

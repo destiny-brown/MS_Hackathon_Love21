@@ -206,19 +206,39 @@
     "gallery": {
       "label": "Life on shift",
       "items": {
-        "1": { "alt": "A volunteer coaching a football drill" },
-        "2": { "alt": "Volunteers helping run a cooking workshop" },
-        "3": { "alt": "A high-five between a volunteer and a member at swim class" },
-        "4": { "alt": "A corporate volunteer team on-site" }
+        "1": {
+          "alt": "A volunteer coaching a football drill"
+        },
+        "2": {
+          "alt": "Volunteers helping run a cooking workshop"
+        },
+        "3": {
+          "alt": "A high-five between a volunteer and a member at swim class"
+        },
+        "4": {
+          "alt": "A corporate volunteer team on-site"
+        }
       }
     },
     "social": {
       "eyebrow": "From our feed",
       "title": "As featured this week",
       "posts": {
-        "1": { "platform": "Instagram", "caption": "Saturday football squad putting in the work ⚽", "date": "2 days ago" },
-        "2": { "platform": "Instagram", "caption": "Dragon boat practice ahead of next month's race 🐉", "date": "5 days ago" },
-        "3": { "platform": "Facebook", "caption": "Thank you to this quarter's corporate volunteer team!", "date": "1 week ago" }
+        "1": {
+          "platform": "Instagram",
+          "caption": "Saturday football squad putting in the work ⚽",
+          "date": "2 days ago"
+        },
+        "2": {
+          "platform": "Instagram",
+          "caption": "Dragon boat practice ahead of next month's race 🐉",
+          "date": "5 days ago"
+        },
+        "3": {
+          "platform": "Facebook",
+          "caption": "Thank you to this quarter's corporate volunteer team!",
+          "date": "1 week ago"
+        }
       }
     },
     "stories": {
@@ -242,10 +262,22 @@
       "eyebrow": "Hours & recognition",
       "title": "Every hour counts, and it shows",
       "tiers": {
-        "1": { "title": "First cap", "body": "Your first logged shift. Welcome to the roster." },
-        "2": { "title": "Season regular", "body": "10 hours in — you've got a standing spot on the schedule." },
-        "3": { "title": "Community favourite", "body": "50 hours of showing up. Featured in our volunteer spotlight." },
-        "4": { "title": "Team captain", "body": "100+ hours. Invited to help lead new volunteer onboarding." }
+        "1": {
+          "title": "First cap",
+          "body": "Your first logged shift. Welcome to the roster."
+        },
+        "2": {
+          "title": "Season regular",
+          "body": "10 hours in — you've got a standing spot on the schedule."
+        },
+        "3": {
+          "title": "Community favourite",
+          "body": "50 hours of showing up. Featured in our volunteer spotlight."
+        },
+        "4": {
+          "title": "Team captain",
+          "body": "100+ hours. Invited to help lead new volunteer onboarding."
+        }
       },
       "hoursUnit": "hrs",
       "progressLabel": "18 hours to your Community Favourite ribbon"
@@ -318,5 +350,13 @@
       "footer": "Love 21 Foundation · San Po Kong, Kowloon · Generated from a volunteer's visit to love21.org.hk/our-volunteer",
       "print": "Print / Save as PDF"
     }
+  },
+  "sectionNav": {
+    "roles": "Roles",
+    "campaign": "Campaign",
+    "opportunities": "Opportunities",
+    "life": "Life",
+    "faq": "FAQ",
+    "match": "AI Match"
   }
 }

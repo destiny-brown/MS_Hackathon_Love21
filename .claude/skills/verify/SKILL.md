@@ -20,7 +20,7 @@ In another shell, drive the live API:
 - `POST /auth/login` with `demo@demo.com` / `demo1234`
 - `GET /auth/me` with the Bearer token
 - CRUD `/items` with the Bearer token
-- Probe `/items` with no token and `/ai/ask` with no `ANTHROPIC_API_KEY`
+- Probe `/items` with no token (expect 401)
 
 ## Frontend
 

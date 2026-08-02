@@ -17,6 +17,7 @@ import { Reveal } from "@/components/brand/Reveal";
 import { TriMark } from "@/components/brand/TriMark";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
 import { NewsletterForm } from "@/components/site/newsletter-form";
+import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
 import { WallOfGratitude } from "@/components/site/wall-of-gratitude";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,14 @@ import { useTranslatedProgrammes } from "@/lib/i18n/translated-data";
 import { storySpotlight } from "@/lib/site-data";
 
 const scrollViewport = { once: false, amount: 0.2 } as const;
+
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "home-hero", label: "Home", labelKey: "sectionNav.home" },
+  { id: "home-impact", label: "Impact", labelKey: "sectionNav.impact" },
+  { id: "home-categories", label: "Categories", labelKey: "sectionNav.categories" },
+  { id: "home-stories", label: "Stories", labelKey: "sectionNav.stories" },
+  { id: "home-gratitude", label: "Gratitude", labelKey: "sectionNav.gratitude" },
+];
 
 // The "21 Years in Hong Kong" marquee band from the Get Involved page,
 // placed here between the hero and the impact dashboard. Uses brand-red.
@@ -113,7 +122,8 @@ function ImpactDashboard() {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden border-y border-brand-slate/40 bg-brand-light px-4 py-14 sm:px-6 lg:px-8"
+      id="home-impact"
+      className="relative scroll-mt-24 overflow-hidden border-y border-brand-slate/40 bg-brand-light px-4 py-14 sm:px-6 lg:px-8"
     >
       <Blob className="-top-16 left-1/2 h-64 w-64 -translate-x-1/2 bg-white/50" />
       <div className="relative mx-auto max-w-6xl">
@@ -252,7 +262,8 @@ function HolisticModel() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-brand-slate/20 bg-white px-4 py-20 sm:px-6 lg:px-8"
+      id="home-categories"
+      className="relative scroll-mt-24 overflow-hidden border-t border-brand-slate/20 bg-white px-4 py-20 sm:px-6 lg:px-8"
     >
       <Blob className="-left-24 top-1/3 h-64 w-64 bg-brand-red/5" />
       <Blob className="-right-16 bottom-0 h-48 w-48 bg-brand-light" />
@@ -463,7 +474,8 @@ function StoryCarousel() {
   return (
     <section
       ref={sectionRef}
-      className="relative border-y border-brand-slate/30 bg-brand-light px-14 py-16 sm:px-16 lg:px-14"
+      id="home-stories"
+      className="relative scroll-mt-24 border-y border-brand-slate/30 bg-brand-light px-14 py-16 sm:px-16 lg:px-14"
     >
       <Blob className="-left-16 top-1/4 h-56 w-56 bg-brand-red/10" />
       <div className="relative mx-auto max-w-5xl">
@@ -636,9 +648,14 @@ export default function HomePage() {
         }
       `}</style>
 
+      {/* Sentinel for section-nav reveal — not a nav target. */}
+      <div id="home-nav-sentinel" className="h-px w-full" aria-hidden="true" />
+
       {/* Section 1: Hero — full-bleed looping video */}
-      <section className="relative left-1/2 right-1/2 w-screen -ml-[50vw] -mr-[50vw] min-h-[88vh] overflow-hidden">
-        <motion.div
+      <section
+        id="home-hero"
+        className="relative left-1/2 right-1/2 w-screen -ml-[50vw] -mr-[50vw] min-h-[88vh] scroll-mt-24 overflow-hidden"
+      >        <motion.div
           className="absolute inset-0"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -700,6 +717,8 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      <PageSectionNav items={sectionNavItems} ns="home" heroSelector="#home-nav-sentinel" />
 
       {/* Section 1.5: 21 Years in Hong Kong — marquee, between the hero and the
           dashboard. No wave shape between the two — the pink band ends and

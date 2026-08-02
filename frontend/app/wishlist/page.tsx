@@ -2,7 +2,7 @@ import { PageHero } from "@/components/site/page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { WishlistOpportunities } from "@/components/site/wishlist-opportunities";
 
-export default function ShopPage() {
+export default function WishlistPage() {
   return (
     <SiteLayout>
       <PageHero

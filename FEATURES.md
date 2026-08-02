@@ -40,13 +40,12 @@ This document enumerates the features implemented in the MS_Hackathon_Love21 rep
 - Function: Natural-language site assistant that returns short replies, suggested site links, and optional `tool_calls` (e.g., `navigate_to_page`, `set_site_language`). Backend builds system/user prompts and calls an LLM (Ollama) or falls back. Frontend shows messages, suggested link-cards, and can run tool actions.
 - Unique: Agent returns JSON with both reply text and structured tool calls. Tool-call validation restricts navigation and locale changes to allowed paths/locales. Voice input supported in the widget (browser SpeechRecognition) for demo usage.
 
-**AI features: Volunteer matching, Trail debrief, YouTube search, General ask**
+**AI features: Volunteer matching, Trail debrief**
 
-- Files: [backend/app/routers/volunteer_match.py](backend/app/routers/volunteer_match.py), [backend/app/routers/trail_debrief.py](backend/app/routers/trail_debrief.py), [backend/app/routers/ai.py](backend/app/routers/ai.py)
+- Files: [backend/app/routers/volunteer_match.py](backend/app/routers/volunteer_match.py), [backend/app/routers/trail_debrief.py](backend/app/routers/trail_debrief.py)
 - Function:
   - Volunteer matching: `/ai/volunteer/match` accepts interest/availability/commitment/group size and returns scored volunteer activity matches (AI-enhanced). Also `/ai/volunteer/activities` lists volunteer roles.
   - Trail debrief: `/ai/trail/debrief` crafts short encouragements, reply chips, and upgrade messages for learning/trail completion.
-  - YouTube search & ask endpoints: `/ai/youtube/search` returns safety-filtered short videos; `/ai/ask` proxies to Anthropic (if configured) with simple RAG stub.
 - Unique: Safety and trust heuristics for YouTube results (trusted channels, allowed terms, block terms). Many AI features gracefully fall back to non-AI rule-based responses when external API keys are missing.
 
 **Simple Resource API (Items)**

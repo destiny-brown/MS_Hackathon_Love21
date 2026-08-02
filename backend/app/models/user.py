@@ -42,9 +42,25 @@ class User(Base):
     items: Mapped[list["Item"]] = relationship(back_populates="owner", cascade="all, delete-orphan")
     donations: Mapped[list["Donation"]] = relationship(back_populates="supporter")
     activity_signups: Mapped[list["ActivitySignup"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")
+    volunteer_activity_registrations: Mapped[list["VolunteerActivityRegistration"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
     volunteer_hours: Mapped[list["VolunteerHour"]] = relationship(back_populates="supporter", cascade="all, delete-orphan")
     gratitude_entries: Mapped[list["GratitudeEntry"]] = relationship(
         back_populates="author",
         cascade="all, delete-orphan",
         foreign_keys="GratitudeEntry.author_id",
+    )
+    play_state: Mapped["UserPlayState | None"] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+    captain_greetings: Mapped[list["CaptainGreetingCache"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    refresh_tokens: Mapped[list["RefreshTokenRecord"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )

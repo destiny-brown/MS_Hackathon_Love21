@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Blob } from "@/components/brand/Blob";
 import { BrandCard } from "@/components/brand/BrandCard";
@@ -11,11 +11,20 @@ import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
 import { TriMark } from "@/components/brand/TriMark";
+import {
+  PageSectionNav,
+  type PageSectionNavItem,
+} from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
 import { LiveActivityBadge } from "@/components/volunteer/live-activity-badge";
 import { VolunteerFaqAccordion } from "@/components/volunteer/volunteer-faq-accordion";
 import { VolunteerStoryCarousel } from "@/components/volunteer/volunteer-story-carousel";
-import { api, type VolunteerActivity } from "@/lib/api";
+import {
+  api,
+  getCurrentUserWithRole,
+  type VolunteerActivity,
+  type User,
+} from "@/lib/api";
 import {
   availabilityOptions,
   categoryMeta,
@@ -31,22 +40,51 @@ import {
   type RosterItem,
 } from "@/lib/volunteer-roster";
 
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "our-volunteer-hero", label: "Roles" },
+  { id: "campaign", label: "Campaign" },
+  { id: "opportunities", label: "Opportunities" },
+  { id: "life-on-shift", label: "Life" },
+  { id: "faq", label: "FAQ" },
+  { id: "match", label: "AI Match" },
+];
+
 // ---------------------------------------------------------------------------
 // Page-local decorative helpers (WaveDivider / icons stay here).
 // ---------------------------------------------------------------------------
 
 function DashedRule({ className = "" }: { className?: string }) {
-  return <span aria-hidden="true" className={`mt-2 block h-px w-16 border-t border-dashed border-brand-red/40 ${className}`} />;
+  return (
+    <span
+      aria-hidden="true"
+      className={`mt-2 block h-px w-16 border-t border-dashed border-brand-red/40 ${className}`}
+    />
+  );
 }
 
-function WaveDivider({ color = "#FFFFFF", flip = false, className = "" }: { color?: string; flip?: boolean; className?: string }) {
+function WaveDivider({
+  color = "#FFFFFF",
+  flip = false,
+  className = "",
+}: {
+  color?: string;
+  flip?: boolean;
+  className?: string;
+}) {
   return (
     <div
       aria-hidden="true"
       className={`pointer-events-none relative h-14 w-full overflow-hidden sm:h-20 ${flip ? "rotate-180" : ""} ${className}`}
     >
-      <svg viewBox="0 0 1440 100" preserveAspectRatio="none" className="h-full w-full">
-        <path d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,50 L1440,100 L0,100 Z" fill={color} />
+      <svg
+        viewBox="0 0 1440 100"
+        preserveAspectRatio="none"
+        className="h-full w-full"
+      >
+        <path
+          d="M0,40 C240,90 480,0 720,30 C960,60 1200,10 1440,50 L1440,100 L0,100 Z"
+          fill={color}
+        />
       </svg>
     </div>
   );
@@ -54,14 +92,32 @@ function WaveDivider({ color = "#FFFFFF", flip = false, className = "" }: { colo
 
 function IconHeart({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M20 33S6 24 6 14.5C6 9.8 9.6 7 13.5 7c2.9 0 5.3 1.6 6.5 4 1.2-2.4 3.6-4 6.5-4C30.4 7 34 9.8 34 14.5 34 24 20 33 20 33Z" />
     </svg>
   );
 }
 function IconTrophy({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M13 8h14v8c0 4-3 8-7 8s-7-4-7-8V8Z" />
       <path d="M13 10H8c0 4 2 7 5 7" />
       <path d="M27 10h5c0 4-2 7-5 7" />
@@ -73,7 +129,16 @@ function IconTrophy({ className = "" }: { className?: string }) {
 }
 function IconSpark({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M20 5c1 6 3 8 9 9-6 1-8 3-9 9-1-6-3-8-9-9 6-1 8-3 9-9Z" />
       <path d="M31 27c.5 3 1.5 4 4.5 4.5-3 .5-4 1.5-4.5 4.5-.5-3-1.5-4-4.5-4.5 3-.5 4-1.5 4.5-4.5Z" />
     </svg>
@@ -81,7 +146,16 @@ function IconSpark({ className = "" }: { className?: string }) {
 }
 function IconFlag({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 40 40"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M11 6v28" />
       <path d="M11 8c4-3 8 2 12-1 3-2 6 0 6 0v12s-3-2-6 0c-4 3-8-2-12 1V8Z" />
     </svg>
@@ -89,7 +163,16 @@ function IconFlag({ className = "" }: { className?: string }) {
 }
 function IconSearch({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" />
     </svg>
@@ -113,24 +196,56 @@ function mapActivityToRosterItem(activity: VolunteerActivity): RosterItem {
     total: activity.total ?? undefined,
     note: activity.note ?? undefined,
     ctaLabel: activity.cta_label ?? "I'm interested",
+    signedUp: activity.signed_up,
   };
 }
 
 // Placeholder — wire up to Instagram/Facebook Graph API later.
 const socialPosts = [
-  { platform: "Instagram", caption: "Saturday football squad putting in the work ⚽", date: "2 days ago", href: "#" },
-  { platform: "Instagram", caption: "Dragon boat practice ahead of next month's race 🐉", date: "5 days ago", href: "#" },
-  { platform: "Facebook", caption: "Thank you to this quarter's corporate volunteer team!", date: "1 week ago", href: "#" },
+  {
+    platform: "Instagram",
+    caption: "Saturday football squad putting in the work ⚽",
+    date: "2 days ago",
+    href: "#",
+  },
+  {
+    platform: "Instagram",
+    caption: "Dragon boat practice ahead of next month's race 🐉",
+    date: "5 days ago",
+    href: "#",
+  },
+  {
+    platform: "Facebook",
+    caption: "Thank you to this quarter's corporate volunteer team!",
+    date: "1 week ago",
+    href: "#",
+  },
 ];
 
 // Replace with a real, consented volunteer story before this goes live.
 
 // Candid, in-the-field moments — placeholder paths.
 const galleryStrip = [
-  { src: "/images/get-involved/gallery-1.jpeg", alt: "A volunteer coaching a football drill", shape: "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]" },
-  { src: "/images/get-involved/gallery-2.jpeg", alt: "Volunteers helping run a cooking workshop", shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]" },
-  { src: "/images/get-involved/gallery-3.jpg", alt: "A high-five between a volunteer and a member at swim class", shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]" },
-  { src: "/images/get-involved/gallery-4.jpg", alt: "A corporate volunteer team on-site", shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]" },
+  {
+    src: "/images/get-involved/gallery-1.jpeg",
+    alt: "A volunteer coaching a football drill",
+    shape: "rounded-[42%_58%_65%_35%/45%_40%_60%_55%]",
+  },
+  {
+    src: "/images/get-involved/gallery-2.jpeg",
+    alt: "Volunteers helping run a cooking workshop",
+    shape: "rounded-[60%_40%_35%_65%/55%_60%_40%_45%]",
+  },
+  {
+    src: "/images/get-involved/gallery-3.jpg",
+    alt: "A high-five between a volunteer and a member at swim class",
+    shape: "rounded-[35%_65%_55%_45%/60%_35%_65%_40%]",
+  },
+  {
+    src: "/images/get-involved/gallery-4.jpg",
+    alt: "A corporate volunteer team on-site",
+    shape: "rounded-[55%_45%_40%_60%/40%_55%_45%_60%]",
+  },
 ];
 
 // ---- One-pager generator -------------------------------------------------
@@ -208,7 +323,7 @@ function AiVolunteerMatch({
   onSelectRole,
 }: {
   rosterItems: RosterItem[];
-  onSelectRole: (title: string) => void;
+  onSelectRole: (item: RosterItem) => void;
 }) {
   const [interest, setInterest] = useState<Interest | null>(null);
   const [availability, setAvailability] = useState<Availability | null>(null);
@@ -235,7 +350,10 @@ function AiVolunteerMatch({
         group_size: groupSize,
       });
       if (!response.enabled || response.matches.length === 0) {
-        setError(response.message || "AI matching is unavailable right now. Try again in a moment.");
+        setError(
+          response.message ||
+            "AI matching is unavailable right now. Try again in a moment.",
+        );
         return;
       }
 
@@ -249,7 +367,9 @@ function AiVolunteerMatch({
         .sort((a, b) => b.score - a.score);
 
       if (mapped.length === 0) {
-        setError("We couldn't map those matches to open roles. Please try again.");
+        setError(
+          "We couldn't map those matches to open roles. Please try again.",
+        );
         return;
       }
 
@@ -257,7 +377,11 @@ function AiVolunteerMatch({
       setAiEnhanced(response.ai_enhanced);
       setResultIndex(0);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Matching failed. Is the backend running on port 8000?");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Matching failed. Is the backend running on port 8000?",
+      );
     } finally {
       setThinking(false);
     }
@@ -283,49 +407,72 @@ function AiVolunteerMatch({
           <IconSpark className="h-4 w-4" />
           AI · Smart Matching
         </p>
-        {(interest || availability || commitment || groupSize || results || error) && !thinking && (
-          <button onClick={reset} className="text-xs font-semibold text-white/50 hover:text-white">
-            Start over
-          </button>
-        )}
+        {(interest ||
+          availability ||
+          commitment ||
+          groupSize ||
+          results ||
+          error) &&
+          !thinking && (
+            <button
+              onClick={reset}
+              className="text-xs font-semibold text-white/50 hover:text-white"
+            >
+              Start over
+            </button>
+          )}
       </div>
 
       <h3 className="mt-3 font-serif-display text-3xl text-white sm:text-4xl">
         Not sure where you fit? Let it find your shift.
       </h3>
       <p className="mt-3 max-w-xl text-sm text-white/65">
-        Four quick questions, and our local AI (Ollama) will read every open role to find the best fit for your interests, timing, commitment, and group size.
+        Four quick questions, and our local AI (Ollama) will read every open
+        role to find the best fit for your interests, timing, commitment, and
+        group size.
       </p>
 
       {!results && !thinking && (
         <div className="mt-8 space-y-7">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">1. What pulls you in?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">
+              1. What pulls you in?
+            </p>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
               {interestOptions.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setInterest(opt.key)}
                   className={`rounded-2xl border px-4 py-3 text-left transition ${
-                    interest === opt.key ? "border-brand-red bg-brand-red/10" : "border-white/15 hover:border-white/30"
+                    interest === opt.key
+                      ? "border-brand-red bg-brand-red/10"
+                      : "border-white/15 hover:border-white/30"
                   }`}
                 >
-                  <div className="text-sm font-semibold text-white">{opt.label}</div>
-                  <div className="mt-0.5 text-xs text-white/50">{opt.blurb}</div>
+                  <div className="text-sm font-semibold text-white">
+                    {opt.label}
+                  </div>
+                  <div className="mt-0.5 text-xs text-white/50">
+                    {opt.blurb}
+                  </div>
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">2. When are you usually free?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">
+              2. When are you usually free?
+            </p>
             <div className="mt-3 flex flex-wrap gap-2.5">
               {availabilityOptions.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setAvailability(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    availability === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    availability === opt.key
+                      ? "border-brand-red bg-brand-red/10 text-white"
+                      : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -337,14 +484,18 @@ function AiVolunteerMatch({
           {error && <p className="text-sm text-red-300">{error}</p>}
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">3. How often can you commit?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">
+              3. How often can you commit?
+            </p>
             <div className="mt-3 flex flex-wrap gap-2.5">
               {commitmentOptions.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setCommitment(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    commitment === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    commitment === opt.key
+                      ? "border-brand-red bg-brand-red/10 text-white"
+                      : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -354,14 +505,18 @@ function AiVolunteerMatch({
           </div>
 
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">4. Coming alone, or bringing others?</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/50">
+              4. Coming alone, or bringing others?
+            </p>
             <div className="mt-3 flex flex-wrap gap-2.5">
               {groupSizeOptions.map((opt) => (
                 <button
                   key={opt.key}
                   onClick={() => setGroupSize(opt.key)}
                   className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition ${
-                    groupSize === opt.key ? "border-brand-red bg-brand-red/10 text-white" : "border-white/15 text-white/70 hover:border-white/30"
+                    groupSize === opt.key
+                      ? "border-brand-red bg-brand-red/10 text-white"
+                      : "border-white/15 text-white/70 hover:border-white/30"
                   }`}
                 >
                   {opt.label}
@@ -394,10 +549,14 @@ function AiVolunteerMatch({
       {results && active && (
         <div className="mt-8">
           <div className="flex items-center justify-between gap-4">
-            <span className="text-xs font-semibold uppercase tracking-wide text-white/50">Your best match</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-white/50">
+              Your best match
+            </span>
             <div className="flex items-center gap-2">
               {aiEnhanced && (
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">AI matched</span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">
+                  AI matched
+                </span>
               )}
               <span className="rounded-full bg-brand-red/15 px-3 py-1 text-xs font-semibold text-brand-red">
                 {active.score}% match
@@ -406,7 +565,10 @@ function AiVolunteerMatch({
           </div>
 
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-            <div className="h-full rounded-full bg-brand-red transition-all duration-700" style={{ width: `${active.score}%` }} />
+            <div
+              className="h-full rounded-full bg-brand-red transition-all duration-700"
+              style={{ width: `${active.score}%` }}
+            />
           </div>
 
           <div className="mt-6 flex items-start gap-4">
@@ -414,7 +576,9 @@ function AiVolunteerMatch({
               {active.item.icon}
             </div>
             <div>
-              <h4 className="font-serif-display text-2xl text-white">{active.item.title}</h4>
+              <h4 className="font-serif-display text-2xl text-white">
+                {active.item.title}
+              </h4>
               <p className="mt-1 text-sm text-white/60">
                 {active.item.when} · {active.item.where}
               </p>
@@ -423,7 +587,10 @@ function AiVolunteerMatch({
 
           <ul className="mt-5 space-y-2">
             {active.reasons.map((reason) => (
-              <li key={reason} className="flex items-start gap-2.5 text-sm text-white/70">
+              <li
+                key={reason}
+                className="flex items-start gap-2.5 text-sm text-white/70"
+              >
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-red" />
                 {reason}
               </li>
@@ -432,14 +599,18 @@ function AiVolunteerMatch({
 
           <div className="mt-7 flex flex-wrap gap-3">
             <button
-              onClick={() => onSelectRole(active.item.title)}
+              onClick={() => onSelectRole(active.item)}
               className="rounded-full bg-brand-red px-6 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-black"
             >
-              Sign me up for this
+              {active.item.signedUp
+                ? "You're registered"
+                : "Sign me up for this"}
             </button>
             {results.length > 1 && (
               <button
-                onClick={() => setResultIndex((resultIndex + 1) % results.length)}
+                onClick={() =>
+                  setResultIndex((resultIndex + 1) % results.length)
+                }
                 className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-white/40"
               >
                 See another match
@@ -469,35 +640,51 @@ export default function VolunteerPage() {
 const ROLES_PREVIEW_COUNT = 4;
 
 function VolunteerContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const requestedCategory = searchParams.get("category");
-  const initialFilter: Category | "all" = requestedCategory && requestedCategory in categoryMeta ? (requestedCategory as Category) : "all";
+  const requestedSignup = searchParams.get("signup");
+  const initialFilter: Category | "all" =
+    requestedCategory && requestedCategory in categoryMeta
+      ? (requestedCategory as Category)
+      : "all";
 
-  const [rosterItems, setRosterItems] = useState<RosterItem[]>(fallbackRosterItems);
+  const [rosterItems, setRosterItems] =
+    useState<RosterItem[]>(fallbackRosterItems);
   const [filter, setFilter] = useState<Category | "all">(initialFilter);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllRoles, setShowAllRoles] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState<string>(fallbackRosterItems[0].title);
-  const [submitted, setSubmitted] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUserLoading, setCurrentUserLoading] = useState(true);
+  const [registrationMessage, setRegistrationMessage] = useState("");
+  const [registrationError, setRegistrationError] = useState("");
+  const [registeringSlug, setRegisteringSlug] = useState<string | null>(null);
+  const [handledRedirectSignup, setHandledRedirectSignup] = useState(false);
+
+  async function loadVolunteerActivities() {
+    try {
+      const activities = await api.listVolunteerActivities();
+      if (activities.length === 0) return;
+      const mapped = activities.map(mapActivityToRosterItem);
+      setRosterItems(mapped);
+    } catch {
+      // Keep local fallback roster if backend is unavailable.
+    }
+  }
 
   useEffect(() => {
-    api
-      .listVolunteerActivities()
-      .then((activities) => {
-        if (activities.length === 0) return;
-        const mapped = activities.map(mapActivityToRosterItem);
-        setRosterItems(mapped);
-        setSelectedOpportunity((current) =>
-          mapped.some((item) => item.title === current) ? current : mapped[0].title,
-        );
-      })
-      .catch(() => {
-        // Keep local fallback roster if backend is unavailable.
-      });
+    getCurrentUserWithRole()
+      .then(setCurrentUser)
+      .catch(() => setCurrentUser(null))
+      .finally(() => setCurrentUserLoading(false));
+    loadVolunteerActivities();
   }, []);
 
   const visibleItems = useMemo(() => {
-    let items = filter === "all" ? rosterItems : rosterItems.filter((item) => item.category === filter);
+    let items =
+      filter === "all"
+        ? rosterItems
+        : rosterItems.filter((item) => item.category === filter);
     const q = searchQuery.trim().toLowerCase();
     if (q) {
       items = items.filter(
@@ -515,28 +702,98 @@ function VolunteerContent() {
     setShowAllRoles(false);
   }, [filter, searchQuery]);
 
-  const displayedItems = showAllRoles ? visibleItems : visibleItems.slice(0, ROLES_PREVIEW_COUNT);
+  const displayedItems = showAllRoles
+    ? visibleItems
+    : visibleItems.slice(0, ROLES_PREVIEW_COUNT);
   const hiddenCount = visibleItems.length - ROLES_PREVIEW_COUNT;
 
   const urgentItems = useMemo(
     () =>
       rosterItems
-        .filter((item) => item.total && item.filled !== undefined && item.filled / item.total >= 0.6)
+        .filter(
+          (item) =>
+            item.total &&
+            item.filled !== undefined &&
+            item.filled / item.total >= 0.6,
+        )
         .sort((a, b) => b.filled! / b.total! - a.filled! / a.total!)
         .slice(0, 2),
     [rosterItems],
   );
 
-  function selectRoleAndScroll(title: string) {
-    setSelectedOpportunity(title);
-    document.getElementById("signup")?.scrollIntoView({ behavior: "smooth" });
+  async function registerForRole(item: RosterItem) {
+    setRegistrationMessage("");
+    setRegistrationError("");
+
+    if (!currentUser) {
+      router.push(
+        `/login?role=supporter&next=${encodeURIComponent(`/our-volunteer?signup=${item.id}`)}`,
+      );
+      return;
+    }
+
+    setRegisteringSlug(item.id);
+    try {
+      const registration = await api.signUpForVolunteerActivity(item.id);
+      setRosterItems((items) =>
+        items.map((role) =>
+          role.id === registration.activity_slug
+            ? { ...role, signedUp: true }
+            : role,
+        ),
+      );
+      setRegistrationMessage(
+        `You're registered for ${registration.activity_name}.`,
+      );
+      await loadVolunteerActivities();
+    } catch (err) {
+      setRegistrationError(
+        err instanceof Error
+          ? err.message
+          : "Could not register for this activity",
+      );
+    } finally {
+      setRegisteringSlug(null);
+    }
   }
+
+  useEffect(() => {
+    if (
+      handledRedirectSignup ||
+      currentUserLoading ||
+      !currentUser ||
+      !requestedSignup
+    )
+      return;
+    const item = rosterItems.find((role) => role.id === requestedSignup);
+    if (!item) return;
+    setHandledRedirectSignup(true);
+    registerForRole(item);
+    router.replace("/our-volunteer", { scroll: false });
+  }, [
+    currentUser,
+    currentUserLoading,
+    handledRedirectSignup,
+    requestedSignup,
+    rosterItems,
+    router,
+  ]);
 
   return (
     <>
+      {/* Sentinel for section-nav reveal — not a nav target. */}
+      <div
+        id="our-volunteer-nav-sentinel"
+        className="h-px w-full"
+        aria-hidden="true"
+      />
+
       {/* ---------- HERO ---------- */}
       <Reveal>
-        <section className="relative overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8">
+        <section
+          id="our-volunteer-hero"
+          className="relative scroll-mt-24 overflow-hidden bg-white px-4 pb-10 pt-14 sm:px-6 lg:px-8"
+        >
           <Blob className="-top-10 -right-16 h-72 w-72 bg-[#F8DCDA] opacity-40" />
           <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
@@ -615,10 +872,18 @@ function VolunteerContent() {
         </section>
       </Reveal>
 
+      <PageSectionNav
+        items={sectionNavItems}
+        heroSelector="#our-volunteer-nav-sentinel"
+      />
+
       {/* ---------- START YOUR OWN CAMPAIGN ---------- */}
       <Reveal>
-        <section className="border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8">
-          <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 rounded-2xl border border-dashed border-brand-red/40 bg-white p-6">
+        <section
+          id="campaign"
+          className="scroll-mt-24 border-y border-brand-light bg-brand-light px-4 py-8 sm:px-6 lg:px-8"
+        >
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 rounded-2xl border border-dashed border-brand-red/40 bg-white p-7">
             <div className="flex items-start gap-4">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-light">
                 <IconFlag className="h-5 w-5 text-brand-red" />
@@ -675,7 +940,7 @@ function VolunteerContent() {
       {/* ---------- OPPORTUNITIES BOARD ---------- */}
       <section
         id="opportunities"
-        className="bg-white px-4 py-16 sm:px-6 lg:px-8"
+        className="scroll-mt-24 bg-white px-4 py-16 sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-6xl">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
@@ -742,6 +1007,23 @@ function VolunteerContent() {
             </div>
 
             <div>
+              {registrationMessage ? (
+                <p
+                  className="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-800"
+                  role="status"
+                >
+                  {registrationMessage}
+                </p>
+              ) : null}
+              {registrationError ? (
+                <p
+                  className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-3 text-sm font-semibold text-red-700"
+                  role="alert"
+                >
+                  {registrationError}
+                </p>
+              ) : null}
+
               {displayedItems.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-brand-dark/20 p-10 text-center">
                   <p className="text-sm text-brand-dark/60">
@@ -815,10 +1097,17 @@ function VolunteerContent() {
                           )}
 
                           <button
-                            onClick={() => selectRoleAndScroll(item.title)}
-                            className="mt-5 w-full rounded-full bg-brand-light py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white"
+                            onClick={() => registerForRole(item)}
+                            disabled={
+                              registeringSlug === item.id || item.signedUp
+                            }
+                            className="mt-5 w-full rounded-full bg-brand-light py-3 text-sm font-semibold text-brand-dark hover:bg-brand-dark hover:text-white disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-brand-light disabled:hover:text-brand-dark"
                           >
-                            {item.ctaLabel}
+                            {item.signedUp
+                              ? "You're registered"
+                              : registeringSlug === item.id
+                                ? "Registering..."
+                                : item.ctaLabel}
                           </button>
 
                           {item.category === "csr" &&
@@ -863,7 +1152,10 @@ function VolunteerContent() {
       <WaveDivider color="#EDF2F4" />
 
       {/* ---------- GALLERY ---------- */}
-      <section className="bg-brand-light px-4 pb-20 sm:px-6 lg:px-8">
+      <section
+        id="life-on-shift"
+        className="scroll-mt-24 bg-brand-light px-4 pb-20 sm:px-6 lg:px-8"
+      >
         <div className="mx-auto max-w-6xl">
           <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-brand-dark/50">
             <IconHeart className="h-4 w-4" /> Life on shift
@@ -1005,7 +1297,10 @@ function VolunteerContent() {
 
       {/* ---------- FAQ ---------- */}
       <Reveal>
-        <section className="relative overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8">
+        <section
+          id="faq"
+          className="relative scroll-mt-24 overflow-hidden bg-brand-light px-4 py-20 sm:px-6 lg:px-8"
+        >
           <Blob className="right-0 top-0 h-48 w-48 translate-x-1/4 -translate-y-1/4 bg-[#FBE3E3] opacity-50" />
           <div className="relative mx-auto max-w-3xl">
             <Eyebrow>Before you sign up</Eyebrow>
@@ -1023,13 +1318,13 @@ function VolunteerContent() {
       <Reveal>
         <section
           id="match"
-          className="relative overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8"
+          className="relative scroll-mt-24 overflow-hidden bg-black px-4 py-24 sm:px-6 lg:px-8"
         >
           <Blob className="-left-20 top-0 h-72 w-72 bg-brand-red/15" />
           <Blob className="-right-16 bottom-0 h-64 w-64 bg-brand-red/10" />
           <AiVolunteerMatch
             rosterItems={rosterItems}
-            onSelectRole={selectRoleAndScroll}
+            onSelectRole={registerForRole}
           />
         </section>
       </Reveal>

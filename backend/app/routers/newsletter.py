@@ -21,6 +21,7 @@ def subscribe(payload: NewsletterSubscribeRequest, db: Session = Depends(get_db)
         subscriber.first_name = payload.first_name
         subscriber.last_name = payload.last_name
         subscriber.phone_number = payload.phone_number
+        subscriber.frequency = payload.frequency
         subscriber.status = "active"
     else:
         subscriber = NewsletterSubscriber(
@@ -28,6 +29,7 @@ def subscribe(payload: NewsletterSubscribeRequest, db: Session = Depends(get_db)
             last_name=payload.last_name,
             email=email,
             phone_number=payload.phone_number,
+            frequency=payload.frequency,
             status="active",
         )
         db.add(subscriber)

@@ -60,6 +60,9 @@ All demo users use password `demo1234`:
 
 Legacy `donor@love21.demo` and `volunteer@love21.demo` rows are converted to the `supporter` role if they already exist in a local database.
 
+For local overrides, set `BOOTSTRAP_ADMIN_EMAIL` and `BOOTSTRAP_ADMIN_PASSWORD` in `backend/.env`.
+If `BOOTSTRAP_ADMIN_EMAIL=admin@love21.demo`, that value replaces the default demo admin password on startup.
+
 You can also bootstrap an admin account at backend startup with:
 
 - `BOOTSTRAP_ADMIN_EMAIL`
@@ -125,6 +128,8 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `GET /health`
 - `POST /auth/register`
 - `POST /auth/login`
+- `POST /auth/refresh`
+- `POST /auth/logout`
 - `GET /auth/me`
 - `GET /admin/overview`
 - `GET /admin/activities`
@@ -160,7 +165,6 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `GET /support-opportunities/admin` — admin listing, including archived records
 - `POST /support-opportunities` — admin creation
 - `PATCH /support-opportunities/admin/{id}` — admin update or archive
-- `POST /ai/ask` — no-ops clearly when `ANTHROPIC_API_KEY` is missing
 - `GET /volunteer/activities`
 - `POST /volunteer/match`
 - `POST /captain/chat`
@@ -180,7 +184,6 @@ Backend (`backend/.env`):
 DATABASE_URL=sqlite:///./hackkit.db
 SECRET_KEY=change-me
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-ANTHROPIC_API_KEY=
 BOOTSTRAP_ADMIN_EMAIL=
 BOOTSTRAP_ADMIN_PASSWORD=
 MODEL_ENABLED=false
@@ -279,8 +282,7 @@ managed PostgreSQL database.
 	`https://your-app.vercel.app`.
 4. Set `MODEL_BASE_URL` to the Modal server URL plus `/v1`, and set
 	`MODEL_API_KEY` to the same token stored in the Modal `love21-model` secret.
-5. Set `ANTHROPIC_API_KEY` only when that integration is enabled. Render
-	generates `SECRET_KEY` and connects `DATABASE_URL`.
+5. Render generates `SECRET_KEY` and connects `DATABASE_URL`.
 
 The backend Dockerfile is also a fallback for any container host:
 
@@ -307,12 +309,14 @@ Then set `DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres:5432/hack
 
 ## Notes on auth storage
 
-The frontend stores the JWT in `localStorage` because it is the fastest hackathon path and simple to inspect/debug. Tradeoff: it is more exposed to XSS than an HttpOnly cookie. If your app handles sensitive data, switch to a cookie-based session before production.
+Login returns a short-lived JWT access token (default 60 minutes) plus a refresh token (default 7 days). Protected API calls send `Authorization: Bearer <access_token>`. On `401`, the frontend tries `/auth/refresh` once, then clears tokens and redirects to login.
+
+The frontend stores both tokens in `localStorage` for this hackathon build. Tradeoff: more exposed to XSS than HttpOnly cookies plus in-memory access tokens. Role checks remain authoritative on the server via `get_current_user` and `require_roles(...)`.
 
 ## Troubleshooting
 
 - `Unauthorized` in browser while local API login works:
-	- Clear `localStorage` token for `localhost:3000`.
+	- Clear `localStorage` keys `hackkit_token` and `hackkit_refresh_token` for `localhost:3000`.
 	- Restart both frontend and backend dev servers.
 	- Confirm frontend points to `NEXT_PUBLIC_API_URL=http://localhost:8000`.
 - Render deploy fails with `DuplicateTable` for `gratitude_entries`:

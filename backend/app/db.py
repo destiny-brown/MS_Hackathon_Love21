@@ -28,6 +28,52 @@ def create_db_and_tables() -> None:
             }
             if "image_url" not in support_columns:
                 connection.execute(text("ALTER TABLE support_opportunities ADD COLUMN image_url VARCHAR(500)"))
+            registration_columns = {
+                row[1]
+                for row in connection.execute(text("PRAGMA table_info(volunteer_activity_registrations)"))
+            }
+            if registration_columns and "activity_slug" not in registration_columns:
+                connection.execute(text("ALTER TABLE volunteer_activity_registrations ADD COLUMN activity_slug VARCHAR(120)"))
+                connection.execute(
+                    text(
+                        """
+                        UPDATE volunteer_activity_registrations
+                        SET activity_slug = (
+                            SELECT slug FROM volunteer_activities
+                            WHERE volunteer_activities.id = volunteer_activity_registrations.activity_id
+                        )
+                        WHERE activity_slug IS NULL
+                        """
+                    )
+                )
+            if registration_columns and "activity_name" not in registration_columns:
+                connection.execute(text("ALTER TABLE volunteer_activity_registrations ADD COLUMN activity_name VARCHAR(200)"))
+                connection.execute(
+                    text(
+                        """
+                        UPDATE volunteer_activity_registrations
+                        SET activity_name = (
+                            SELECT title FROM volunteer_activities
+                            WHERE volunteer_activities.id = volunteer_activity_registrations.activity_id
+                        )
+                        WHERE activity_name IS NULL
+                        """
+                    )
+                )
+            subscriber_columns = {
+                row[1] for row in connection.execute(text("PRAGMA table_info(newsletter_subscribers)"))
+            }
+            if subscriber_columns and "frequency" not in subscriber_columns:
+                connection.execute(
+                    text("ALTER TABLE newsletter_subscribers ADD COLUMN frequency VARCHAR(20) DEFAULT 'monthly' NOT NULL")
+                )
+            delivery_columns = {
+                row[1] for row in connection.execute(text("PRAGMA table_info(newsletter_deliveries)"))
+            }
+            if delivery_columns and "cadence" not in delivery_columns:
+                connection.execute(text("ALTER TABLE newsletter_deliveries ADD COLUMN cadence VARCHAR(20)"))
+            if delivery_columns and "recipient_groups" not in delivery_columns:
+                connection.execute(text("ALTER TABLE newsletter_deliveries ADD COLUMN recipient_groups VARCHAR(120)"))
             connection.execute(
                 text("UPDATE users SET role = :supporter WHERE role IN ('user', 'donor', 'volunteer', '') OR role IS NULL"),
                 {"supporter": "supporter"},

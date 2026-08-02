@@ -12,6 +12,7 @@ export type RosterItem = {
   total?: number;
   note?: string;
   ctaLabel: string;
+  signedUp?: boolean;
 };
 
 export type Interest = "hands-on" | "food" | "people" | "skills";

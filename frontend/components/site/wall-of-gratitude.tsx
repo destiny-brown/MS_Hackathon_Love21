@@ -15,8 +15,11 @@ export function WallOfGratitude() {
   }, []);
 
   return (
-    <section className="bg-brand-cream px-4 py-16 sm:px-6 lg:px-8" aria-labelledby="gratitude-wall-title">
-      <div className="mx-auto max-w-6xl space-y-8">
+    <section
+      id="home-gratitude"
+      className="scroll-mt-24 bg-brand-cream px-4 py-16 sm:px-6 lg:px-8"
+      aria-labelledby="gratitude-wall-title"
+    >      <div className="mx-auto max-w-6xl space-y-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-coral">Wall of Gratitude</p>
           <h2 id="gratitude-wall-title" className="mt-2 font-serif-display text-4xl text-brand-ink sm:text-5xl">

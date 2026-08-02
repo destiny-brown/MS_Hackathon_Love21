@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import get_settings
 from app.db import get_db
@@ -13,7 +13,7 @@ from app.models.activity import Activity, ActivitySignup
 from app.models.learn_content import LearnQuestion, LearnResource, LearnVideo
 from app.models.newsletter import NewsletterDelivery, NewsletterSubscriber
 from app.models.user import Role, User
-from app.models.volunteer_activity import VolunteerActivity
+from app.models.volunteer_activity import VolunteerActivity, VolunteerActivityRegistration
 from app.schemas.admin import (
     ActivityAdminCreate,
     ActivityAdminRead,
@@ -22,17 +22,22 @@ from app.schemas.admin import (
     VolunteerActivityAdminCreate,
     VolunteerActivityAdminRead,
     VolunteerActivityAdminUpdate,
+    VolunteerActivityRegistrationAdminRead,
 )
 from app.schemas.newsletter import (
     NewsletterDeliveryRead,
+    NewsletterGenerateRequest,
+    NewsletterGenerateResponse,
     NewsletterPreviewRequest,
     NewsletterPreviewResponse,
     NewsletterSendRequest,
+    NewsletterSourceSummary,
     NewsletterSubscriberCreate,
     NewsletterSubscriberRead,
     NewsletterSubscriberUpdate,
 )
 from app.services.email_service import send_email
+from app.services.newsletter_ai import generate_newsletter
 from app.services.newsletter_template import render_newsletter_html
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -40,6 +45,18 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 def serialize_activity(activity: Activity, registration_count: int) -> ActivityAdminRead:
     return ActivityAdminRead.model_validate({**activity.__dict__, "registration_count": registration_count})
+
+
+def serialize_volunteer_activity_registration(
+    registration: VolunteerActivityRegistration,
+) -> VolunteerActivityRegistrationAdminRead:
+    return VolunteerActivityRegistrationAdminRead.model_validate(
+        {
+            **registration.__dict__,
+            "user_email": registration.user.email,
+            "user_role": Role.canonical(registration.user.role).value,
+        }
+    )
 
 
 def registration_count(db: Session, activity_id: int) -> int:
@@ -124,6 +141,19 @@ def list_admin_volunteer_activities(
 ) -> list[VolunteerActivityAdminRead]:
     activities = db.scalars(select(VolunteerActivity).order_by(VolunteerActivity.display_order)).all()
     return [VolunteerActivityAdminRead.model_validate(activity) for activity in activities]
+
+
+@router.get("/volunteer-activity-registrations", response_model=list[VolunteerActivityRegistrationAdminRead])
+def list_admin_volunteer_activity_registrations(
+    _: User = Depends(require_roles(Role.ADMIN)),
+    db: Session = Depends(get_db),
+) -> list[VolunteerActivityRegistrationAdminRead]:
+    registrations = db.scalars(
+        select(VolunteerActivityRegistration)
+        .options(selectinload(VolunteerActivityRegistration.user), selectinload(VolunteerActivityRegistration.activity))
+        .order_by(VolunteerActivityRegistration.created_at.desc())
+    ).all()
+    return [serialize_volunteer_activity_registration(registration) for registration in registrations]
 
 
 @router.post("/volunteer-activities", response_model=VolunteerActivityAdminRead, status_code=status.HTTP_201_CREATED)
@@ -269,6 +299,27 @@ def preview_newsletter(
     )
 
 
+@router.post("/newsletter/generate", response_model=NewsletterGenerateResponse)
+def generate_newsletter_draft(
+    payload: NewsletterGenerateRequest,
+    _: User = Depends(require_roles(Role.ADMIN)),
+    db: Session = Depends(get_db),
+) -> NewsletterGenerateResponse:
+    subject, content, sources, notice = generate_newsletter(
+        db,
+        cadence=payload.cadence,
+        guidance=payload.guidance,
+    )
+    return NewsletterGenerateResponse(
+        enabled=notice is None,
+        subject=subject,
+        content=content,
+        cadence=payload.cadence,
+        sources=NewsletterSourceSummary.model_validate(sources),
+        notice=notice,
+    )
+
+
 @router.post("/newsletter/send")
 def send_newsletter(
     payload: NewsletterSendRequest,
@@ -276,11 +327,18 @@ def send_newsletter(
     db: Session = Depends(get_db),
 ) -> dict[str, int | str]:
     settings = get_settings()
+    groups = list(dict.fromkeys(payload.recipient_groups))
     subscribers = db.scalars(
-        select(NewsletterSubscriber).where(NewsletterSubscriber.status == "active")
+        select(NewsletterSubscriber).where(
+            NewsletterSubscriber.status == "active",
+            NewsletterSubscriber.frequency.in_(groups),
+        )
     ).all()
     if not subscribers:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No active subscribers")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No active subscribers match the selected recipient groups",
+        )
 
     sent_count = 0
     for subscriber in subscribers:
@@ -303,6 +361,8 @@ def send_newsletter(
             f"{settings.site_url.rstrip('/')}/newsletter/unsubscribe/example",
         ),
         recipient_count=sent_count,
+        cadence=payload.cadence,
+        recipient_groups=",".join(groups),
         sent_by_user_id=current_user.id,
         sent_at=datetime.now(timezone.utc),
     )

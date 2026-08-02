@@ -75,6 +75,18 @@ class ActivitySignupRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class VolunteerActivityRegistrationRead(BaseModel):
+    id: int
+    user_id: int
+    activity_id: int
+    activity_slug: str
+    activity_name: str
+    status: str
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class VolunteerHourCreate(BaseModel):
     activity_id: int | None = None
     hours: float = Field(gt=0, le=24)
@@ -108,3 +120,86 @@ class SupporterDashboardRead(BaseModel):
     signed_up_activities: list[ActivitySignupRead]
     volunteer_hours: list[VolunteerHourRead]
     total_volunteer_hours: float
+
+
+class UserPlayStateRead(BaseModel):
+    day_number: int
+    event_index: int
+    correct_count: int
+    total_answered: int
+    current_streak: int
+    best_streak: int
+    total_plays: int
+    location_id: str
+    location_label: str
+    events_total: int
+    events_remaining: int
+    last_played_at: datetime | None
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class UserPlayStateUpdate(BaseModel):
+    day_number: int = Field(ge=1, le=10_000)
+    event_index: int = Field(ge=0, le=100)
+    correct_count: int = Field(ge=0, le=1_000_000)
+    total_answered: int = Field(ge=0, le=1_000_000)
+    current_streak: int = Field(ge=0, le=10_000)
+    best_streak: int = Field(ge=0, le=10_000)
+    total_plays: int = Field(ge=0, le=10_000)
+
+
+class CaptainsCornerRead(BaseModel):
+    play_state: UserPlayStateRead
+    captain_message: str
+    ai_enhanced: bool
+
+
+class RecommendedEventRead(BaseModel):
+    id: int
+    title: str
+    starts_at: datetime
+    ends_at: datetime | None
+    location: str
+    description: str
+    score: int = Field(ge=0, le=100)
+    reasons: list[str]
+    signed_up: bool = False
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class RecommendedEventsResponse(BaseModel):
+    enabled: bool
+    ai_enhanced: bool
+    headline: str
+    matches: list[RecommendedEventRead]
+    message: str | None = None
+
+
+class RecommendedVolunteerRoleRead(BaseModel):
+    role_id: str
+    icon: str
+    title: str
+    desc: str
+    when: str
+    where: str
+    category: str
+    score: int = Field(ge=0, le=100)
+    reasons: list[str]
+    signed_up: bool = False
+
+
+class RecommendedVolunteerRolesResponse(BaseModel):
+    enabled: bool
+    ai_enhanced: bool
+    headline: str
+    matches: list[RecommendedVolunteerRoleRead]
+    message: str | None = None
+
+
+class MemberDashboardRead(BaseModel):
+    registered_activities: list[VolunteerActivityRegistrationRead]
+    total_registrations: int
+    upcoming_registrations: int

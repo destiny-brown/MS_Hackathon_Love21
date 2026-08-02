@@ -6,15 +6,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.db import create_db_and_tables, ensure_bootstrap_admin, ensure_demo_users, ensure_role_enum_compatibility
 from app.services.learn_seed import ensure_learn_content
+from app.services.support_opportunity_seed import ensure_support_opportunities
+from app.services.volunteer_activity_seed import ensure_volunteer_activity_demo_data
 from app.routers import (
     admin,
     admin_learn,
-    ai,
     auth,
     captain_chat,
     gratitude_entries,
     items,
     learn,
+    member,
     newsletter,
     role_examples,
     support_opportunities,
@@ -31,6 +33,8 @@ async def lifespan(app: FastAPI):
     ensure_demo_users()
     ensure_bootstrap_admin()
     ensure_learn_content()
+    ensure_support_opportunities()
+    ensure_volunteer_activity_demo_data()
     yield
 
 
@@ -53,12 +57,12 @@ def health() -> dict[str, str]:
 
 app.include_router(auth.router)
 app.include_router(items.router)
-app.include_router(ai.router)
 app.include_router(volunteer_match.router)
 app.include_router(captain_chat.router)
 app.include_router(trail_debrief.router)
 app.include_router(support_opportunities.router)
 app.include_router(supporter.router)
+app.include_router(member.router)
 app.include_router(gratitude_entries.router)
 app.include_router(learn.router)
 app.include_router(role_examples.router)

@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { api, AdminVolunteerActivity } from "@/lib/api";
+import { api, AdminVolunteerActivity, AdminVolunteerActivityRegistration } from "@/lib/api";
 
 type ProgramForm = {
   slug: string;
@@ -76,15 +76,21 @@ function toPayload(form: ProgramForm, displayOrder: number) {
 
 export default function AdminVolunteersPage() {
   const [programs, setPrograms] = useState<AdminVolunteerActivity[]>([]);
+  const [registrations, setRegistrations] = useState<AdminVolunteerActivityRegistration[]>([]);
   const [editingProgram, setEditingProgram] = useState<AdminVolunteerActivity | null>(null);
   const [formData, setFormData] = useState<ProgramForm>(defaultForm);
   const [error, setError] = useState("");
 
   async function loadPrograms() {
     try {
-      setPrograms(await api.listAdminVolunteerActivities());
+      const [programData, registrationData] = await Promise.all([
+        api.listAdminVolunteerActivities(),
+        api.listAdminVolunteerActivityRegistrations(),
+      ]);
+      setPrograms(programData);
+      setRegistrations(registrationData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load programs");
+      setError(err instanceof Error ? err.message : "Could not load volunteer programs");
     }
   }
 
@@ -130,6 +136,7 @@ export default function AdminVolunteersPage() {
 
   const totalFilled = programs.reduce((sum, pg) => sum + (pg.filled_count ?? 0), 0);
   const totalSlots = programs.reduce((sum, pg) => sum + (pg.total_spots ?? 0), 0);
+  const activeRegistrations = registrations.filter((registration) => registration.status !== "cancelled");
 
   return (
     <>
@@ -170,12 +177,66 @@ export default function AdminVolunteersPage() {
           <Card>
             <CardContent className="pt-6">
               <div>
-                <p className="text-sm text-muted-foreground">Active Programs</p>
-                <p className="text-2xl font-bold">{programs.filter((pg) => pg.status === "active").length}</p>
+                <p className="text-sm text-muted-foreground">Activity Registrations</p>
+                <p className="text-2xl font-bold">{activeRegistrations.length}</p>
               </div>
             </CardContent>
           </Card>
         </div>
+
+        <Card className="mb-8">
+          <CardHeader>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <CardTitle>Activity Registrations</CardTitle>
+                <CardDescription>People who clicked “I’m interested” on the public volunteering page.</CardDescription>
+              </div>
+              <Button type="button" variant="outline" onClick={loadPrograms}>Refresh</Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {registrations.length === 0 ? (
+              <p className="rounded-lg border border-dashed border-brand-sand p-6 text-sm text-muted-foreground">
+                No activity registrations yet.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead className="border-b text-xs uppercase tracking-wide text-muted-foreground">
+                    <tr>
+                      <th className="px-3 py-2 font-medium">Volunteer</th>
+                      <th className="px-3 py-2 font-medium">Activity</th>
+                      <th className="px-3 py-2 font-medium">Signed up</th>
+                      <th className="px-3 py-2 font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registrations.map((registration) => (
+                      <tr key={registration.id} className="border-b last:border-0">
+                        <td className="px-3 py-3">
+                          <div className="font-medium text-brand-ink">{registration.user_email}</div>
+                          <div className="text-xs capitalize text-muted-foreground">{registration.user_role}</div>
+                        </td>
+                        <td className="px-3 py-3">
+                          <div className="font-medium text-brand-ink">{registration.activity_name}</div>
+                          <div className="text-xs text-muted-foreground">{registration.activity_slug}</div>
+                        </td>
+                        <td className="px-3 py-3 text-muted-foreground">
+                          {new Date(registration.created_at).toLocaleString()}
+                        </td>
+                        <td className="px-3 py-3">
+                          <span className="rounded-full bg-brand-coral/10 px-2.5 py-1 text-xs font-semibold capitalize text-brand-coral">
+                            {registration.status.replace("_", " ")}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <Card className="mb-8">
           <CardHeader>
