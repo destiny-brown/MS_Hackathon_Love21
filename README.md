@@ -1,6 +1,8 @@
+<div align="center">
 
+<img src="frontend/public/images/love21_logo.png" alt="Love 21 Foundation" height="90" />
 
-
+</div>
 
 # Love 21 Foundation — Digital Platform
 
