@@ -55,6 +55,41 @@
     "causeEyebrow": "持续影响力",
     "causeTitle": "支持他们的潜能"
   },
+  "mockForm": {
+    "eyebrow": "模拟捐款流程",
+    "title": "在此完成模拟捐款",
+    "description": "此演示不会收取真实款项。成功的模拟付款会被记录，仪表板和进度条会更新。",
+    "amountLegend": "选择金额",
+    "customAmount": "金额（港元）",
+    "customAmountPlaceholder": "输入金额",
+    "frequencyLegend": "捐款频率",
+    "frequencyOneTime": "一次性",
+    "frequencyOneTimeDesc": "今日一次模拟付款。",
+    "frequencyMonthly": "每月",
+    "frequencyMonthlyDesc": "您的仪表板会显示持续支持状态。",
+    "supportAreaLabel": "您想支持哪一项？",
+    "kindLabels": {
+      "wishlist": "心愿清单项目",
+      "campaign": "活动",
+      "cause": "项目"
+    },
+    "wishlistSelectedHint": "您正为心愿清单项目捐款，请在下方选择金额。",
+    "campaignSelectedHint": "此捐款支持限时活动。",
+    "causeSelectedHint": "此捐款支持 Love 21 持续计划。",
+    "signedInAs": "已登录 {{email}}。此捐款会显示在您的支持者仪表板。",
+    "donorName": "姓名（选填）",
+    "donorEmail": "收据电邮",
+    "messageLabel": "给 Love 21 的留言（选填）",
+    "messagePlaceholder": "致意或备注",
+    "submitting": "正在记录模拟捐款…",
+    "submit": "完成模拟捐款",
+    "prioritiesEyebrow": "捐款连接之处",
+    "prioritiesTitle": "活动和项目",
+    "prioritiesWishlistNote": "心愿清单项目在上方表单「心愿清单项目」下选择，或从心愿清单页面按「捐款任何金额」。"
+  },
+  "formPage": {
+    "backToDonate": "返回捐款页"
+  },
   "wishlist": {
     "loading": "正在加载心愿清单…",
     "error": "无法加载心愿清单",

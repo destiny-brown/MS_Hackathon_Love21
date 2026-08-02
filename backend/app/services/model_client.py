@@ -61,10 +61,11 @@ def _chat_completion(
     )
     timeout = timeout_seconds if timeout_seconds is not None else settings.model_timeout_seconds
     endpoint = f"{settings.model_base_url.rstrip('/')}/chat/completions"
+    max_attempts = 8
 
-    # Modal + vLLM can return brief 503/502/504 windows while the GPU server cold-starts.
-    # Retry a few times so first user request doesn't immediately fall back to non-AI mode.
-    for attempt in range(4):
+    # Modal + vLLM can return 503/502/504 windows while the GPU server cold-starts.
+    # Retry with increasing backoff so the first user request has a better chance to succeed.
+    for attempt in range(max_attempts):
         try:
             with urlopen(request, timeout=timeout) as response:
                 body = json.loads(response.read().decode("utf-8"))
@@ -78,10 +79,10 @@ def _chat_completion(
                 attempt=attempt + 1,
                 status_code=exc.code,
                 reason=str(exc.reason),
-                retriable=exc.code in {502, 503, 504} and attempt < 3,
+                retriable=exc.code in {502, 503, 504} and attempt < max_attempts - 1,
             )
-            if exc.code in {502, 503, 504} and attempt < 3:
-                time.sleep(3 * (attempt + 1))
+            if exc.code in {502, 503, 504} and attempt < max_attempts - 1:
+                time.sleep(min(5 * (attempt + 1), 30))
                 continue
             return None
         except URLError as exc:
@@ -91,10 +92,10 @@ def _chat_completion(
                 model=settings.model_name,
                 attempt=attempt + 1,
                 reason=str(exc.reason),
-                retriable=attempt < 3,
+                retriable=attempt < max_attempts - 1,
             )
-            if attempt < 3:
-                time.sleep(3 * (attempt + 1))
+            if attempt < max_attempts - 1:
+                time.sleep(min(5 * (attempt + 1), 30))
                 continue
             return None
         except TimeoutError as exc:
@@ -131,7 +132,7 @@ def _chat_completion(
             "retry_exhausted",
             endpoint=endpoint,
             model=settings.model_name,
-            max_attempts=4,
+            max_attempts=max_attempts,
         )
         return None
 
@@ -198,3 +199,22 @@ def chat_text(
         temperature=0.35,
         json_mode=False,
     )
+
+
+def warmup_hosted_model() -> bool:
+    """Best-effort one-time warmup call for hosted model cold starts.
+
+    This intentionally uses a tiny token budget and short timeout so backend
+    startup is not blocked for long if the model is unavailable.
+    """
+    content = _chat_completion(
+        system="You are a warmup probe. Reply with OK.",
+        messages=[{"role": "user", "content": "warmup"}],
+        timeout_seconds=8,
+        max_tokens=8,
+        temperature=0.0,
+        json_mode=False,
+    )
+    success = bool(content)
+    _log_model_event("startup_warmup", success=success)
+    return success

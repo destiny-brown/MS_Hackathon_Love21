@@ -1,18 +1,12 @@
-import { redirect } from "next/navigation";
+import { DonationFormPageContent } from "@/app/donation-form/donation-form-page-content";
 
-import { donatePageUrl } from "@/lib/donation-form-anchor";
-
-export default async function DonationFormRedirectPage({
+export default async function DonationFormPage({
   searchParams,
 }: {
   searchParams: Promise<{ amount?: string; item?: string }>;
 }) {
   const { amount, item } = await searchParams;
+  const suggestedAmount = Number(amount) || undefined;
 
-  redirect(
-    donatePageUrl({
-      item: item || undefined,
-      amount: amount ? Number(amount) : undefined,
-    }),
-  );
+  return <DonationFormPageContent suggestedAmount={suggestedAmount} initialItemSlug={item} />;
 }

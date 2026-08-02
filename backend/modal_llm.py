@@ -48,7 +48,7 @@ async def model_auth_middleware(request, call_next):
     gpu="L4",
     port=VLLM_PORT,
     startup_timeout=10 * 60,
-    scaledown_window=5 * 60,
+    scaledown_window=30 * 60,
     target_concurrency=4,
     volumes={"/root/.cache/huggingface": model_cache},
     secrets=[modal.Secret.from_name("love21-model")],

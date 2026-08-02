@@ -9,7 +9,7 @@ import { ArrowUpRight, HeartHandshake } from "lucide-react";
 import { SupportProgress } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
-import { donatePageUrl } from "@/lib/donation-form-anchor";
+import { donationFormUrl } from "@/lib/donation-form-url";
 import { seededWishlistItems } from "@/lib/wishlist-seed";
 
 const DONATION_DELIVERY_MAP_URL =
@@ -128,7 +128,7 @@ export function WishlistOpportunities() {
                 </a>
               </Button>
               <Button asChild>
-                <Link href={donatePageUrl({ item: item.slug })}>
+                <Link href={donationFormUrl({ item: item.slug })}>
                   <HeartHandshake className="mr-2 h-4 w-4" aria-hidden="true" />
                   {t("wishlist.contribute")}
                 </Link>

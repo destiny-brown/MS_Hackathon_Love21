@@ -57,7 +57,7 @@
   },
   "mockForm": {
     "eyebrow": "Mock donation flow",
-    "title": "Give without leaving the page",
+    "title": "Complete your mock donation",
     "description": "No real payment is taken in this demo. A successful mock payment is recorded so the dashboard and progress bars update.",
     "amountLegend": "Choose an amount",
     "customAmount": "Amount (HKD)",
@@ -86,6 +86,9 @@
     "prioritiesEyebrow": "Where gifts connect",
     "prioritiesTitle": "Campaigns & causes",
     "prioritiesWishlistNote": "Wishlist items appear in the form above under “Wishlist items”. Contribute from the wishlist page or pick one in the dropdown."
+  },
+  "formPage": {
+    "backToDonate": "Back to Donate page"
   },
   "wishlist": {
     "loading": "Loading wishlist…",

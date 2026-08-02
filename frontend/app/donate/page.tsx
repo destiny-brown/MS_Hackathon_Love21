@@ -3,10 +3,10 @@ import { DonatePageContent } from "@/app/donate/donate-page-content";
 export default async function DonatePage({
   searchParams,
 }: {
-  searchParams: Promise<{ amount?: string; item?: string }>;
+  searchParams: Promise<{ amount?: string }>;
 }) {
-  const { amount, item } = await searchParams;
+  const { amount } = await searchParams;
   const suggestedAmount = Number(amount) || undefined;
 
-  return <DonatePageContent suggestedAmount={suggestedAmount} initialItemSlug={item} />;
+  return <DonatePageContent suggestedAmount={suggestedAmount} />;
 }
