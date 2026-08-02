@@ -3,17 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowUpRight, HeartHandshake } from "lucide-react";
 
 import { SupportProgress } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
+import { donatePageUrl } from "@/lib/donation-form-anchor";
 import { seededWishlistItems } from "@/lib/wishlist-seed";
 
 const DONATION_DELIVERY_MAP_URL =
   "https://www.google.com/maps/search/Love+21+Foundation+Hong+Kong";
 
 export function WishlistOpportunities() {
+  const { t } = useTranslation("donate");
   const [items, setItems] = useState<SupportOpportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -61,20 +64,24 @@ export function WishlistOpportunities() {
   }, []);
 
   if (loading) {
-    return <p className="text-brand-dark/70" role="status">Loading wishlist…</p>;
+    return (
+      <p className="text-brand-dark/70" role="status">
+        {t("wishlist.loading")}
+      </p>
+    );
   }
 
   if (error) {
     return (
       <div className="rounded-2xl border border-brand-light bg-white p-6">
-        <p className="font-semibold text-brand-dark">The wishlist is temporarily unavailable.</p>
+        <p className="font-semibold text-brand-dark">{t("wishlist.unavailableTitle")}</p>
         <p className="mt-2 text-sm text-brand-dark/70">{error}</p>
       </div>
     );
   }
 
   if (!items.length) {
-    return <p className="text-brand-dark/70">Love 21’s current needs will be shared here soon.</p>;
+    return <p className="text-brand-dark/70">{t("wishlist.emptySoon")}</p>;
   }
 
   return (
@@ -100,8 +107,10 @@ export function WishlistOpportunities() {
             <p className="mt-4 rounded-xl bg-brand-cream p-4 text-sm font-medium text-brand-ink">{item.impact_statement}</p>
             {item.quantity_needed !== null ? (
               <p className="mt-4 text-sm text-brand-ink/70">
-                <strong className="text-brand-ink">{item.quantity_secured ?? 0}</strong> of{" "}
-                <strong className="text-brand-ink">{item.quantity_needed}</strong> secured
+                {t("wishlist.securedOf", {
+                  secured: item.quantity_secured ?? 0,
+                  needed: item.quantity_needed,
+                })}
               </p>
             ) : null}
             <SupportProgress
@@ -114,14 +123,14 @@ export function WishlistOpportunities() {
             <div className="mt-auto flex flex-col gap-3 pt-6">
               <Button asChild variant="outline">
                 <a href={DONATION_DELIVERY_MAP_URL} target="_blank" rel="noreferrer">
-                  Donate this item
+                  {t("wishlist.buy")}
                   <ArrowUpRight className="ml-2 h-4 w-4" aria-hidden="true" />
                 </a>
               </Button>
               <Button asChild>
-                <Link href={`/donate?item=${encodeURIComponent(item.slug)}`}>
+                <Link href={donatePageUrl({ item: item.slug })}>
                   <HeartHandshake className="mr-2 h-4 w-4" aria-hidden="true" />
-                  Contribute toward this
+                  {t("wishlist.contribute")}
                 </Link>
               </Button>
             </div>

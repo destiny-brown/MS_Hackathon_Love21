@@ -1,6 +1,8 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-const TOKEN_KEY = "hackkit_token";
-const REFRESH_TOKEN_KEY = "hackkit_refresh_token";
+const TOKEN_KEY = "love21_token";
+const REFRESH_TOKEN_KEY = "love21_refresh_token";
+const LEGACY_TOKEN_KEY = "hackkit_token";
+const LEGACY_REFRESH_TOKEN_KEY = "hackkit_refresh_token";
 
 export type Role = "supporter" | "member" | "admin";
 export type User = {
@@ -506,27 +508,32 @@ export function getToken() {
   if (typeof window === "undefined") return null;
   // Access token in localStorage for this hackathon build.
   // Prefer HttpOnly cookies + in-memory access tokens for production hardening.
-  return window.localStorage.getItem(TOKEN_KEY);
+  return window.localStorage.getItem(TOKEN_KEY) ?? window.localStorage.getItem(LEGACY_TOKEN_KEY);
 }
 
 function getRefreshToken() {
   if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(REFRESH_TOKEN_KEY);
+  return window.localStorage.getItem(REFRESH_TOKEN_KEY) ?? window.localStorage.getItem(LEGACY_REFRESH_TOKEN_KEY);
 }
 
 export function setSessionTokens(accessToken: string, refreshToken: string) {
   window.localStorage.setItem(TOKEN_KEY, accessToken);
   window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  window.localStorage.removeItem(LEGACY_TOKEN_KEY);
+  window.localStorage.removeItem(LEGACY_REFRESH_TOKEN_KEY);
 }
 
 /** @deprecated Use setSessionTokens after login/register. */
 export function setToken(token: string) {
   window.localStorage.setItem(TOKEN_KEY, token);
+  window.localStorage.removeItem(LEGACY_TOKEN_KEY);
 }
 
 export function clearToken() {
   window.localStorage.removeItem(TOKEN_KEY);
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
+  window.localStorage.removeItem(LEGACY_TOKEN_KEY);
+  window.localStorage.removeItem(LEGACY_REFRESH_TOKEN_KEY);
 }
 
 let refreshPromise: Promise<boolean> | null = null;

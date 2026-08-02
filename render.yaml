@@ -28,8 +28,6 @@ services:
         value: "true"
       - key: RUN_DEMO_SEED
         value: "true"
-      - key: YOUTUBE_API_KEY
-        sync: false
       - key: MODEL_ENABLED
         value: "true"
       - key: MODEL_BASE_URL

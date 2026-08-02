@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CheckCircle2, HeartHandshake } from "lucide-react";
 
 import { useDonationAmount } from "@/components/site/donation-amount-context";
@@ -13,11 +14,7 @@ import { api, DonationFrequency, DonationReceipt, OpportunityKind, SupportOpport
 import { useCurrentUser } from "@/lib/auth";
 import { DONATION_TIERS } from "@/lib/donation-tiers";
 
-const SUPPORT_KIND_LABELS: Record<OpportunityKind, string> = {
-  wishlist: "Wishlist items",
-  campaign: "Campaigns",
-  cause: "Causes",
-};
+const KIND_ORDER: OpportunityKind[] = ["wishlist", "campaign", "cause"];
 
 export function MockDonationForm({
   opportunities,
@@ -26,14 +23,11 @@ export function MockDonationForm({
   opportunities: SupportOpportunity[];
   initialOpportunitySlug?: string | null;
 }) {
+  const { t } = useTranslation("donate");
   const { user } = useCurrentUser();
-  // Amount state is shared (via DonationAmountProvider, wrapping this form and
-  // the tier cards further up the page) so choosing a tier there and editing
-  // the amount here always reflect the same single source of truth.
   const { amountText, amount, selectTier, setAmountText, isTierSelected } = useDonationAmount();
   const [frequency, setFrequency] = useState<DonationFrequency>("one_time");
-  const initialOpportunity = opportunities.find((entry) => entry.slug === initialOpportunitySlug) ?? opportunities[0];
-  const [opportunityId, setOpportunityId] = useState<number | null>(initialOpportunity?.id ?? null);
+  const [opportunityId, setOpportunityId] = useState<number | null>(null);
   const [donorName, setDonorName] = useState("");
   const [donorEmail, setDonorEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -45,6 +39,7 @@ export function MockDonationForm({
     () => opportunities.find((entry) => entry.id === opportunityId) ?? opportunities[0] ?? null,
     [opportunities, opportunityId],
   );
+
   const groupedOpportunities = useMemo(() => {
     const groups: Record<OpportunityKind, SupportOpportunity[]> = {
       wishlist: [],
@@ -58,6 +53,28 @@ export function MockDonationForm({
 
     return groups;
   }, [opportunities]);
+
+  useEffect(() => {
+    if (!opportunities.length) {
+      setOpportunityId(null);
+      return;
+    }
+
+    const preferred = initialOpportunitySlug
+      ? opportunities.find((entry) => entry.slug === initialOpportunitySlug)
+      : null;
+
+    setOpportunityId(preferred?.id ?? opportunities[0]?.id ?? null);
+  }, [initialOpportunitySlug, opportunities]);
+
+  const kindHintKey = selectedOpportunity
+    ? selectedOpportunity.kind === "wishlist"
+      ? "mockForm.wishlistSelectedHint"
+      : selectedOpportunity.kind === "campaign"
+        ? "mockForm.campaignSelectedHint"
+        : "mockForm.causeSelectedHint"
+    : null;
+
   const supportsLine = selectedOpportunity
     ? `${formatHkd(amount || 0)} ${frequency === "monthly" ? "each month " : ""}helps fund ${selectedOpportunity.title.toLowerCase()}: ${selectedOpportunity.impact_statement}`
     : `${formatHkd(amount || 0)} helps Love 21 create more inclusive programmes.`;
@@ -86,25 +103,55 @@ export function MockDonationForm({
   }
 
   return (
-    <section id="donation-form" aria-labelledby="mock-donation-heading" className="scroll-mt-24 rounded-3xl border border-brand-sand bg-white p-6 shadow-sm sm:p-8">
+    <section aria-labelledby="mock-donation-heading" className="rounded-3xl border border-brand-sand bg-white p-6 shadow-sm sm:p-8">
       <div className="flex items-start gap-4">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-cream text-brand-coral">
           <HeartHandshake className="h-6 w-6" aria-hidden="true" />
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Mock donation flow</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{t("mockForm.eyebrow")}</p>
           <h2 id="mock-donation-heading" className="mt-1 font-serif-display text-4xl text-brand-ink">
-            Give without leaving the page
+            {t("mockForm.title")}
           </h2>
-          <p className="mt-2 text-sm text-brand-ink/75">
-            No real payment is taken in this demo. A successful mock payment is recorded so the dashboard and progress bars update.
-          </p>
+          <p className="mt-2 text-sm text-brand-ink/75">{t("mockForm.description")}</p>
         </div>
       </div>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-6">
+        {opportunities.length ? (
+          <div className="space-y-2">
+            <Label htmlFor="support-area">{t("mockForm.supportAreaLabel")}</Label>
+            <select
+              id="support-area"
+              value={opportunityId ?? ""}
+              onChange={(event) => setOpportunityId(Number(event.target.value))}
+              className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            >
+              {KIND_ORDER.map((kind) => {
+                const entries = groupedOpportunities[kind];
+                if (!entries.length) {
+                  return null;
+                }
+
+                return (
+                  <optgroup key={kind} label={t(`mockForm.kindLabels.${kind}`)}>
+                    {entries.map((entry) => (
+                      <option key={entry.id} value={entry.id}>
+                        {entry.title}
+                      </option>
+                    ))}
+                  </optgroup>
+                );
+              })}
+            </select>
+            {kindHintKey ? (
+              <p className="rounded-2xl bg-brand-cream/80 px-4 py-3 text-sm text-brand-ink/80">{t(kindHintKey)}</p>
+            ) : null}
+          </div>
+        ) : null}
+
         <fieldset>
-          <legend className="text-sm font-semibold text-brand-ink">Choose an amount</legend>
+          <legend className="text-sm font-semibold text-brand-ink">{t("mockForm.amountLegend")}</legend>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {DONATION_TIERS.map((tier) => (
               <label
@@ -124,7 +171,7 @@ export function MockDonationForm({
             ))}
           </div>
           <div className="mt-4 max-w-xs space-y-2">
-            <Label htmlFor="custom-amount">Amount (HKD)</Label>
+            <Label htmlFor="custom-amount">{t("mockForm.customAmount")}</Label>
             <Input
               id="custom-amount"
               type="number"
@@ -132,19 +179,22 @@ export function MockDonationForm({
               step={1}
               value={amountText}
               onChange={(event) => setAmountText(event.target.value)}
-              placeholder="Enter an amount"
+              placeholder={t("mockForm.customAmountPlaceholder")}
             />
           </div>
         </fieldset>
 
         <fieldset>
-          <legend className="text-sm font-semibold text-brand-ink">Gift frequency</legend>
+          <legend className="text-sm font-semibold text-brand-ink">{t("mockForm.frequencyLegend")}</legend>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {[
-              { value: "one_time" as const, label: "One-time", description: "A single mock payment today." },
-              { value: "monthly" as const, label: "Monthly", description: "A recurring status appears on your dashboard." },
+              { value: "one_time" as const, label: t("mockForm.frequencyOneTime"), description: t("mockForm.frequencyOneTimeDesc") },
+              { value: "monthly" as const, label: t("mockForm.frequencyMonthly"), description: t("mockForm.frequencyMonthlyDesc") },
             ].map((option) => (
-              <label key={option.value} className="cursor-pointer rounded-2xl border border-brand-sand p-4 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+              <label
+                key={option.value}
+                className="cursor-pointer rounded-2xl border border-brand-sand p-4 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
+              >
                 <input
                   type="radio"
                   name="frequency"
@@ -160,62 +210,54 @@ export function MockDonationForm({
           </div>
         </fieldset>
 
-        {opportunities.length ? (
-          <div className="space-y-2">
-            <Label htmlFor="support-area">What should this support?</Label>
-            <select
-              id="support-area"
-              value={opportunityId ?? ""}
-              onChange={(event) => setOpportunityId(Number(event.target.value))}
-              className="flex h-11 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            >
-              {(Object.keys(groupedOpportunities) as OpportunityKind[]).map((kind) => {
-                const entries = groupedOpportunities[kind];
-                if (!entries.length) {
-                  return null;
-                }
-
-                return (
-                  <optgroup key={kind} label={SUPPORT_KIND_LABELS[kind]}>
-                    {entries.map((entry) => (
-                      <option key={entry.id} value={entry.id}>{entry.title}</option>
-                    ))}
-                  </optgroup>
-                );
-              })}
-            </select>
-            <p className="rounded-2xl bg-brand-cream p-4 text-sm font-medium text-brand-ink" aria-live="polite">
-              {supportsLine}
-            </p>
-          </div>
+        {selectedOpportunity ? (
+          <p className="rounded-2xl bg-brand-cream p-4 text-sm font-medium text-brand-ink" aria-live="polite">
+            {supportsLine}
+          </p>
         ) : null}
 
         {user?.role === "supporter" ? (
           <p className="rounded-2xl bg-brand-cream p-4 text-sm text-brand-ink">
-            Signed in as <strong>{user.email}</strong>. This donation will appear in your supporter dashboard.
+            {t("mockForm.signedInAs", { email: user.email })}
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="donor-name">Name (optional)</Label>
+              <Label htmlFor="donor-name">{t("mockForm.donorName")}</Label>
               <Input id="donor-name" value={donorName} onChange={(event) => setDonorName(event.target.value)} autoComplete="name" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="donor-email">Email for receipt</Label>
-              <Input id="donor-email" type="email" value={donorEmail} onChange={(event) => setDonorEmail(event.target.value)} autoComplete="email" required />
+              <Label htmlFor="donor-email">{t("mockForm.donorEmail")}</Label>
+              <Input
+                id="donor-email"
+                type="email"
+                value={donorEmail}
+                onChange={(event) => setDonorEmail(event.target.value)}
+                autoComplete="email"
+                required
+              />
             </div>
           </div>
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="donation-message">Message to Love 21 (optional)</Label>
-          <Input id="donation-message" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Dedication or note" />
+          <Label htmlFor="donation-message">{t("mockForm.messageLabel")}</Label>
+          <Input
+            id="donation-message"
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+            placeholder={t("mockForm.messagePlaceholder")}
+          />
         </div>
 
-        {error ? <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">{error}</p> : null}
+        {error ? (
+          <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
+            {error}
+          </p>
+        ) : null}
 
         <Button type="submit" disabled={saving || !amount || amount < 1} className="w-full sm:w-auto">
-          {saving ? "Recording mock donation…" : "Complete mock donation"}
+          {saving ? t("mockForm.submitting") : t("mockForm.submit")}
         </Button>
       </form>
 

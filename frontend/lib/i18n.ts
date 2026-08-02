@@ -2,7 +2,7 @@ export type Locale = "en" | "es";
 
 const dictionaries = {
   en: {
-    appName: "hackkit",
+    appName: "Love 21",
     dashboard: "Dashboard",
     login: "Log in",
     register: "Register",
@@ -19,7 +19,7 @@ const dictionaries = {
     language: "Language",
   },
   es: {
-    appName: "hackkit",
+    appName: "Love 21",
     dashboard: "Panel",
     login: "Entrar",
     register: "Registro",

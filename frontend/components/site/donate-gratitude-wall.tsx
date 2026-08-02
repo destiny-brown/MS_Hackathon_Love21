@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { api, type GratitudeEntry } from "@/lib/api";
+import { donatePageUrl } from "@/lib/donation-form-anchor";
 
 type GratitudeWallCard = {
   id: string;
@@ -317,7 +318,7 @@ export function DonateGratitudeWall() {
             Every message on this wall started with a single decision to give.
           </p>
           <a
-            href="/donate#donation-form"
+            href={donatePageUrl()}
             className="inline-flex items-center justify-center rounded-full bg-brand-red px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-red/90"
           >
             Become a donor

@@ -6,7 +6,7 @@ services:
     env_file:
       - ./backend/.env.example
     environment:
-      DATABASE_URL: ${DATABASE_URL:-sqlite:///./hackkit.db}
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./love21.db}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
     volumes:
       - ./backend:/app
@@ -27,7 +27,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: hackkit
+      POSTGRES_DB: love21
     ports:
       - "5432:5432"
     volumes:

@@ -55,6 +55,38 @@
     "causeEyebrow": "Sustained impact",
     "causeTitle": "Champion Their Potential"
   },
+  "mockForm": {
+    "eyebrow": "Mock donation flow",
+    "title": "Give without leaving the page",
+    "description": "No real payment is taken in this demo. A successful mock payment is recorded so the dashboard and progress bars update.",
+    "amountLegend": "Choose an amount",
+    "customAmount": "Amount (HKD)",
+    "customAmountPlaceholder": "Enter an amount",
+    "frequencyLegend": "Gift frequency",
+    "frequencyOneTime": "One-time",
+    "frequencyOneTimeDesc": "A single mock payment today.",
+    "frequencyMonthly": "Monthly",
+    "frequencyMonthlyDesc": "A recurring status appears on your dashboard.",
+    "supportAreaLabel": "What should this support?",
+    "kindLabels": {
+      "wishlist": "Wishlist items",
+      "campaign": "Campaigns",
+      "cause": "Causes"
+    },
+    "wishlistSelectedHint": "You are contributing toward a wishlist item. Choose an amount below.",
+    "campaignSelectedHint": "This gift supports a time-bound campaign.",
+    "causeSelectedHint": "This gift supports ongoing Love 21 programmes.",
+    "signedInAs": "Signed in as {{email}}. This donation will appear on your supporter dashboard.",
+    "donorName": "Name (optional)",
+    "donorEmail": "Email for receipt",
+    "messageLabel": "Message to Love 21 (optional)",
+    "messagePlaceholder": "Dedication or note",
+    "submitting": "Recording mock donation…",
+    "submit": "Complete mock donation",
+    "prioritiesEyebrow": "Where gifts connect",
+    "prioritiesTitle": "Campaigns & causes",
+    "prioritiesWishlistNote": "Wishlist items appear in the form above under “Wishlist items”. Contribute from the wishlist page or pick one in the dropdown."
+  },
   "wishlist": {
     "loading": "Loading wishlist…",
     "error": "Could not load the wishlist",

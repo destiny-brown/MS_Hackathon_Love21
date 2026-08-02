@@ -4,6 +4,7 @@ import { BrandCard } from "@/components/brand/BrandCard";
 import { Reveal } from "@/components/brand/Reveal";
 import { useDonationAmount } from "@/components/site/donation-amount-context";
 import { DONATION_TIERS } from "@/lib/donation-tiers";
+import { scrollToDonationForm } from "@/lib/donation-form-anchor";
 import { cn } from "@/lib/utils";
 
 export function DonationTierGrid() {
@@ -11,7 +12,7 @@ export function DonationTierGrid() {
 
   function handleSelect(tierAmount: number) {
     selectTier(tierAmount);
-    document.getElementById("donation-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    scrollToDonationForm();
   }
 
   return (

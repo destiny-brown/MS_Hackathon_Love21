@@ -16,7 +16,6 @@ jobs:
         working-directory: backend
     env:
       DATABASE_URL: sqlite:///./ci.db
-      OLLAMA_ENABLED: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

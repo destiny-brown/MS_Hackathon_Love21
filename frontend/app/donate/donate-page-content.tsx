@@ -12,6 +12,7 @@ import { DonationTierGrid } from "@/components/site/donation-tier-grid";
 import { DonateGratitudeWall } from "@/components/site/donate-gratitude-wall";
 import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
+import { DONATION_FORM_ANCHOR_ID, donatePageUrl } from "@/lib/donation-form-anchor";
 import { useTranslation } from "react-i18next";
 
 export function DonatePageContent({
@@ -31,7 +32,7 @@ export function DonatePageContent({
         subtitleKey="hero.subtitle"
         actionNs="donate"
         primaryActionKey="hero.startDonation"
-        primaryActionHref="#donation-form"
+        primaryActionHref={`#${DONATION_FORM_ANCHOR_ID}`}
         secondaryActionKey="hero.seeWishlist"
         secondaryActionHref="/wishlist"
       />
@@ -45,7 +46,7 @@ export function DonatePageContent({
               </h2>
               <DonationTierGrid />
               <div className="mt-8">
-                <CtaButton href="/donate#donation-form">{t("transparency.cta")}</CtaButton>
+                <CtaButton href={donatePageUrl()}>{t("transparency.cta")}</CtaButton>
               </div>
             </div>
           </section>

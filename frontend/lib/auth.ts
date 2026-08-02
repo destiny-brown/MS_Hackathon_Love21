@@ -64,7 +64,10 @@ export function useRequireRoles(...allowedRoles: Role[]): AuthState {
 }
 
 export function signOutToLogin() {
-  const refreshToken = typeof window !== "undefined" ? window.localStorage.getItem("hackkit_refresh_token") : null;
+  const refreshToken =
+    typeof window !== "undefined"
+      ? window.localStorage.getItem("love21_refresh_token") ?? window.localStorage.getItem("hackkit_refresh_token")
+      : null;
   if (refreshToken) {
     void api.logout(refreshToken).catch(() => undefined);
   }

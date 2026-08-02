@@ -10,9 +10,9 @@ ENV_FILES = (BASE_DIR / ".env.local", BASE_DIR / ".env")
 
 
 class Settings(BaseSettings):
-    app_name: str = "hackkit"
+    app_name: str = "love21"
     environment: str = "local"
-    database_url: str = "sqlite:///./hackkit.db"
+    database_url: str = "sqlite:///./love21.db"
     secret_key: str = Field(default="change-this-before-deploying", validation_alias="SECRET_KEY")
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
