@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api, landingPathForRole, Role, setToken } from "@/lib/api";
+import { api, landingPathForRole, Role, setSessionTokens } from "@/lib/api";
 
 const registerableRoles: Array<{ value: Exclude<Role, "admin">; label: string; description: string }> = [
   { value: "supporter", label: "Supporter", description: "Track your giving, volunteering, activities, and impact in one place." },
@@ -29,7 +29,7 @@ export default function RegisterPage() {
     setError("");
     try {
       const response = await api.register(email, password, role);
-      setToken(response.access_token);
+      setSessionTokens(response.access_token, response.refresh_token);
       const currentUser = await api.me();
       router.push(landingPathForRole(currentUser.role));
     } catch (err) {

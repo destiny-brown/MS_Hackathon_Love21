@@ -4,6 +4,7 @@ from app.models.gratitude_entry import GratitudeEntry
 from app.models.item import Item
 from app.models.learn_content import LearnQuestion, LearnResource, LearnVideo
 from app.models.newsletter import NewsletterDelivery, NewsletterSubscriber
+from app.models.refresh_token import RefreshTokenRecord
 from app.models.support_opportunity import SupportOpportunity
 from app.models.user import User
 from app.models.user_play_state import CaptainGreetingCache, UserPlayState
@@ -20,6 +21,7 @@ __all__ = [
     "LearnVideo",
     "NewsletterDelivery",
     "NewsletterSubscriber",
+    "RefreshTokenRecord",
     "SupportOpportunity",
     "User",
     "UserPlayState",

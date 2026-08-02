@@ -15,7 +15,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./hackkit.db"
     secret_key: str = "change-this-before-deploying"
     algorithm: str = "HS256"
-    access_token_expire_minutes: int = 60 * 24 * 7
+    access_token_expire_minutes: int = 60
+    refresh_token_expire_days: int = 7
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     site_url: str = "http://localhost:3000"
     resend_api_key: str | None = None

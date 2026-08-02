@@ -1,12 +1,24 @@
 from fastapi.testclient import TestClient
+import pytest
+from sqlalchemy import delete
 
 from app.db import SessionLocal
 from app.main import app
+from app.models.newsletter import NewsletterDelivery
 from app.models.newsletter import NewsletterSubscriber
 from app.routers import admin
 from app.services import newsletter_ai
 
 client = TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def reset_newsletter_tables():
+    with SessionLocal() as db:
+        db.execute(delete(NewsletterDelivery))
+        db.execute(delete(NewsletterSubscriber))
+        db.commit()
+    yield
 
 
 def _login(client: TestClient, email: str) -> str:

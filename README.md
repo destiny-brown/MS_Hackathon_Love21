@@ -128,6 +128,8 @@ Keep the same owner scoping pattern unless the resource is intentionally shared.
 - `GET /health`
 - `POST /auth/register`
 - `POST /auth/login`
+- `POST /auth/refresh`
+- `POST /auth/logout`
 - `GET /auth/me`
 - `GET /admin/overview`
 - `GET /admin/activities`
@@ -307,12 +309,14 @@ Then set `DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres:5432/hack
 
 ## Notes on auth storage
 
-The frontend stores the JWT in `localStorage` because it is the fastest hackathon path and simple to inspect/debug. Tradeoff: it is more exposed to XSS than an HttpOnly cookie. If your app handles sensitive data, switch to a cookie-based session before production.
+Login returns a short-lived JWT access token (default 60 minutes) plus a refresh token (default 7 days). Protected API calls send `Authorization: Bearer <access_token>`. On `401`, the frontend tries `/auth/refresh` once, then clears tokens and redirects to login.
+
+The frontend stores both tokens in `localStorage` for this hackathon build. Tradeoff: more exposed to XSS than HttpOnly cookies plus in-memory access tokens. Role checks remain authoritative on the server via `get_current_user` and `require_roles(...)`.
 
 ## Troubleshooting
 
 - `Unauthorized` in browser while local API login works:
-	- Clear `localStorage` token for `localhost:3000`.
+	- Clear `localStorage` keys `hackkit_token` and `hackkit_refresh_token` for `localhost:3000`.
 	- Restart both frontend and backend dev servers.
 	- Confirm frontend points to `NEXT_PUBLIC_API_URL=http://localhost:8000`.
 - Render deploy fails with `DuplicateTable` for `gratitude_entries`:

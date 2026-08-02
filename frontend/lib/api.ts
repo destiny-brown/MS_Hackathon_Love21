@@ -1,5 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const TOKEN_KEY = "hackkit_token";
+const REFRESH_TOKEN_KEY = "hackkit_refresh_token";
 
 export type Role = "supporter" | "member" | "admin";
 export type User = {
@@ -17,6 +18,7 @@ export type Item = {
 };
 export type AuthResponse = {
   access_token: string;
+  refresh_token: string;
   token_type: "bearer";
   user: User;
 };
@@ -460,17 +462,58 @@ export type LearnVideoInput = {
 
 export function getToken() {
   if (typeof window === "undefined") return null;
-  // Fast hackathon path: localStorage is easy to wire and debug.
-  // Tradeoff: it is more exposed to XSS than an HttpOnly cookie.
+  // Access token in localStorage for this hackathon build.
+  // Prefer HttpOnly cookies + in-memory access tokens for production hardening.
   return window.localStorage.getItem(TOKEN_KEY);
 }
 
+function getRefreshToken() {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(REFRESH_TOKEN_KEY);
+}
+
+export function setSessionTokens(accessToken: string, refreshToken: string) {
+  window.localStorage.setItem(TOKEN_KEY, accessToken);
+  window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+}
+
+/** @deprecated Use setSessionTokens after login/register. */
 export function setToken(token: string) {
   window.localStorage.setItem(TOKEN_KEY, token);
 }
 
 export function clearToken() {
   window.localStorage.removeItem(TOKEN_KEY);
+  window.localStorage.removeItem(REFRESH_TOKEN_KEY);
+}
+
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshAccessToken(): Promise<boolean> {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return false;
+
+  if (!refreshPromise) {
+    refreshPromise = (async () => {
+      try {
+        const response = await fetch(`${API_URL}/auth/refresh`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        });
+        if (!response.ok) return false;
+        const data = (await response.json()) as AuthResponse;
+        setSessionTokens(data.access_token, data.refresh_token);
+        return true;
+      } catch {
+        return false;
+      } finally {
+        refreshPromise = null;
+      }
+    })();
+  }
+
+  return refreshPromise;
 }
 
 export function landingPathForRole(role: Role) {
@@ -497,7 +540,10 @@ export function resolvePostLoginPath(role: Role, nextPath: string | null) {
   return landingPathForRole(role);
 }
 
-type ApiRequestInit = RequestInit & { redirectOnUnauthorized?: boolean };
+type ApiRequestInit = RequestInit & {
+  redirectOnUnauthorized?: boolean;
+  _retried?: boolean;
+};
 
 function parseApiError(data: unknown, status: number): string {
   if (typeof data === "object" && data !== null && "detail" in data) {
@@ -521,12 +567,14 @@ async function request<T>(
   path: string,
   options: ApiRequestInit = {},
 ): Promise<T> {
-  const { redirectOnUnauthorized = true, ...requestOptions } = options;
+  const { redirectOnUnauthorized = true, _retried = false, ...requestOptions } = options;
   const token = getToken();
   const headers = new Headers(requestOptions.headers);
   headers.set("Content-Type", "application/json");
   const isPublicAuthRequest =
-    path === "/auth/login" || path === "/auth/register";
+    path === "/auth/login" ||
+    path === "/auth/register" ||
+    path === "/auth/refresh";
   if (token && !isPublicAuthRequest)
     headers.set("Authorization", `Bearer ${token}`);
 
@@ -538,6 +586,21 @@ async function request<T>(
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
     const message = parseApiError(data, response.status);
+
+    if (
+      response.status === 401 &&
+      typeof window !== "undefined" &&
+      !isPublicAuthRequest &&
+      !_retried
+    ) {
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        return request<T>(path, {
+          ...options,
+          _retried: true,
+        });
+      }
+    }
 
     if (response.status === 401 && typeof window !== "undefined") {
       clearToken();
@@ -574,6 +637,18 @@ export const api = {
     request<AuthResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
+      redirectOnUnauthorized: false,
+    }),
+  refreshSession: (refreshToken: string) =>
+    request<AuthResponse>("/auth/refresh", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
+      redirectOnUnauthorized: false,
+    }),
+  logout: (refreshToken: string) =>
+    request<void>("/auth/logout", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: refreshToken }),
       redirectOnUnauthorized: false,
     }),
   me: () => request<User>("/auth/me"),
