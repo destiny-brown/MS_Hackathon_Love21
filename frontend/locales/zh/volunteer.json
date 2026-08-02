@@ -320,6 +320,7 @@
       "step4": "4. 独自前来还是结伴？",
       "submit": "帮我配对 →",
       "thinking": "Captain 21 正在为你寻找最佳匹配…",
+      "slowMatch": "配对需要更多时间。Captain 21 可能仍在准备中，请稍后再试。",
       "bestMatch": "最佳配对",
       "aiMatched": "Captain 21 配对",
       "captainMatched": "为你配对",

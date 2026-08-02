@@ -91,7 +91,7 @@ def recommend_volunteer_roles_for_user(
         f"Open roles:\n{json.dumps(catalog, indent=2)}"
     )
 
-    parsed = chat_json(system=system, user=user_prompt, num_predict=650)
+    parsed = chat_json(system=system, user=user_prompt, num_predict=650, max_attempts=3)
     if not parsed:
         headline, matches = _fallback_matches(candidates, history, limit=limit)
         return headline, matches, False, None

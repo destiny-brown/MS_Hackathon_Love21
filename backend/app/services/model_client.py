@@ -24,6 +24,7 @@ def _chat_completion(
     max_tokens: int,
     temperature: float,
     json_mode: bool,
+    max_attempts: int = 8,
 ) -> str | None:
     settings = get_settings()
     if not (
@@ -61,7 +62,7 @@ def _chat_completion(
     )
     timeout = timeout_seconds if timeout_seconds is not None else settings.model_timeout_seconds
     endpoint = f"{settings.model_base_url.rstrip('/')}/chat/completions"
-    max_attempts = 8
+    max_attempts = max(1, max_attempts)
 
     # Modal + vLLM can return 503/502/504 windows while the GPU server cold-starts.
     # Retry with increasing backoff so the first user request has a better chance to succeed.
@@ -151,6 +152,7 @@ def chat_json(
     user: str,
     timeout_seconds: int | None = None,
     num_predict: int = 180,
+    max_attempts: int = 8,
 ) -> dict | None:
     """Call the hosted model and parse its JSON response."""
     content = _chat_completion(
@@ -160,6 +162,7 @@ def chat_json(
         max_tokens=num_predict,
         temperature=0.2,
         json_mode=True,
+        max_attempts=max_attempts,
     )
     if content is None:
         return None

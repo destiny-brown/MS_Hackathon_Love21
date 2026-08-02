@@ -134,7 +134,8 @@ def match_volunteer_with_ai(
         f"Open roles catalog:\n{json.dumps(catalog, indent=2)}"
     )
 
-    parsed = chat_json(system=system, user=user)
+    # Volunteer matching should fall back to rules quickly if Modal is cold or slow.
+    parsed = chat_json(system=system, user=user, max_attempts=3)
     if not parsed:
         return None, f"The hosted `{settings.model_name}` model is unavailable. Please try again shortly."
 

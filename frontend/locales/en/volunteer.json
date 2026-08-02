@@ -320,6 +320,7 @@
       "step4": "4. Coming alone, or bringing others?",
       "submit": "Find my match →",
       "thinking": "Captain 21 is finding your best match…",
+      "slowMatch": "This is taking longer than expected. Captain 21 may still be warming up — please try again in a moment.",
       "bestMatch": "Your best match",
       "aiMatched": "Captain 21 matched",
       "captainMatched": "Matched for you",

@@ -168,7 +168,7 @@ def recommend_events_for_supporter(
         f"Upcoming event catalog:\n{json.dumps(catalog, indent=2)}"
     )
 
-    parsed = chat_json(system=system, user=user_prompt, num_predict=700)
+    parsed = chat_json(system=system, user=user_prompt, num_predict=700, max_attempts=3)
     if not parsed:
         headline, matches = _fallback_matches(candidates, history, limit=limit)
         return headline, matches, False, None

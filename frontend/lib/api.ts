@@ -1,4 +1,7 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+/** Default fetch timeout; AI routes need longer while Modal/vLLM infers. */
+const DEFAULT_REQUEST_TIMEOUT_MS = 12_000;
+const AI_REQUEST_TIMEOUT_MS = 120_000;
 const TOKEN_KEY = "love21_token";
 const REFRESH_TOKEN_KEY = "love21_refresh_token";
 const LEGACY_TOKEN_KEY = "hackkit_token";
@@ -620,7 +623,7 @@ async function request<T>(
   const {
     redirectOnUnauthorized = true,
     _retried = false,
-    timeoutMs = 12_000,
+    timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS,
     signal: externalSignal,
     ...requestOptions
   } = options;
@@ -689,7 +692,14 @@ async function request<T>(
     return response.json() as Promise<T>;
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
-      throw new Error("Request timed out. Check that the backend is running and NEXT_PUBLIC_API_URL is correct.");
+      if (timeoutMs >= AI_REQUEST_TIMEOUT_MS) {
+        throw new Error(
+          "This is taking longer than expected. Captain 21 may still be warming up — please try again in a moment.",
+        );
+      }
+      throw new Error(
+        "Request timed out. Check that the backend is running and NEXT_PUBLIC_API_URL is correct.",
+      );
     }
     throw error;
   } finally {
@@ -756,9 +766,13 @@ export const api = {
   recurringDonation: () =>
     request<{ email: string; status: string }>("/supporter/recurring-donation"),
   getRecommendedEvents: () =>
-    request<RecommendedEventsResponse>("/supporter/recommended-events"),
+    request<RecommendedEventsResponse>("/supporter/recommended-events", {
+      timeoutMs: AI_REQUEST_TIMEOUT_MS,
+    }),
   getSupporterRecommendedRoles: () =>
-    request<RecommendedVolunteerRolesResponse>("/supporter/recommended-roles"),
+    request<RecommendedVolunteerRolesResponse>("/supporter/recommended-roles", {
+      timeoutMs: AI_REQUEST_TIMEOUT_MS,
+    }),
   getMemberCaptainsCorner: () => request<CaptainsCorner>("/member/captains-corner"),
   getMemberPlayState: () => request<UserPlayState>("/member/play-state"),
   saveMemberPlayState: (payload: UserPlayStateUpdate) =>
@@ -767,7 +781,9 @@ export const api = {
       body: JSON.stringify(payload),
     }),
   getMemberRecommendedRoles: () =>
-    request<RecommendedVolunteerRolesResponse>("/member/recommended-roles"),
+    request<RecommendedVolunteerRolesResponse>("/member/recommended-roles", {
+      timeoutMs: AI_REQUEST_TIMEOUT_MS,
+    }),
   memberDashboard: () => request<MemberDashboard>("/member/dashboard"),
   memberProfile: () =>
     request<{ email: string; profile_status: string }>("/member/profile"),
@@ -839,6 +855,7 @@ export const api = {
     request<VolunteerMatchResponse>("/ai/volunteer/match", {
       method: "POST",
       body: JSON.stringify(payload),
+      timeoutMs: AI_REQUEST_TIMEOUT_MS,
     }),
   listVolunteerActivities: () =>
     request<VolunteerActivity[]>("/ai/volunteer/activities"),
@@ -851,11 +868,13 @@ export const api = {
     request<TrailDebriefResponse>("/ai/trail/debrief", {
       method: "POST",
       body: JSON.stringify(payload),
+      timeoutMs: AI_REQUEST_TIMEOUT_MS,
     }),
   captainChat: (payload: CaptainChatRequest) =>
     request<CaptainChatResponse>("/ai/captain/chat", {
       method: "POST",
       body: JSON.stringify(payload),
+      timeoutMs: AI_REQUEST_TIMEOUT_MS,
     }),
   adminOverview: () => request<AdminOverview>("/admin/overview"),
   listAdminActivities: () => request<AdminActivity[]>("/admin/activities"),

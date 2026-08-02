@@ -266,7 +266,12 @@ function AiVolunteerMatch({
       setAiEnhanced(response.ai_enhanced);
       setResultIndex(0);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("page.matcher.backendError"));
+      const message = err instanceof Error ? err.message : t("page.matcher.backendError");
+      if (message.includes("warming up")) {
+        setError(t("page.matcher.slowMatch"));
+      } else {
+        setError(message);
+      }
     } finally {
       setThinking(false);
     }
