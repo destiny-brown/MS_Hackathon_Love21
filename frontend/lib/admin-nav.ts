@@ -16,103 +16,103 @@ import {
 
 export type AdminNavItem = {
   href: string;
-  label: string;
-  description: string;
+  labelKey: string;
+  descriptionKey: string;
   icon: LucideIcon;
   exact?: boolean;
 };
 
 export type AdminNavSection = {
-  title: string;
+  titleKey: string;
   items: AdminNavItem[];
 };
 
 export const adminNavSections: AdminNavSection[] = [
   {
-    title: "Home",
+    titleKey: "nav.sections.home",
     items: [
       {
         href: "/admin",
-        label: "Overview",
-        description: "Staff home and quick links",
+        labelKey: "nav.overview.label",
+        descriptionKey: "nav.overview.description",
         icon: Home,
         exact: true,
       },
     ],
   },
   {
-    title: "Operations",
+    titleKey: "nav.sections.operations",
     items: [
       {
         href: "/admin/analytics",
-        label: "Analytics",
-        description: "Traffic, engagement, and impact metrics",
+        labelKey: "nav.analytics.label",
+        descriptionKey: "nav.analytics.description",
         icon: BarChart3,
       },
       {
         href: "/admin/events",
-        label: "Events",
-        description: "Create events and track registrations",
+        labelKey: "nav.events.label",
+        descriptionKey: "nav.events.description",
         icon: Calendar,
       },
       {
         href: "/admin/volunteers",
-        label: "Volunteers",
-        description: "Manage volunteer programmes and sign-ups",
+        labelKey: "nav.volunteers.label",
+        descriptionKey: "nav.volunteers.description",
         icon: Heart,
       },
       {
         href: "/admin/donations",
-        label: "Donations & wishlist",
-        description: "Campaigns, causes, and wishlist needs",
+        labelKey: "nav.donations.label",
+        descriptionKey: "nav.donations.description",
         icon: Gift,
       },
       {
         href: "/admin/gratitude",
-        label: "Gratitude wall",
-        description: "Review and approve member submissions",
+        labelKey: "nav.gratitude.label",
+        descriptionKey: "nav.gratitude.description",
         icon: Sparkles,
       },
       {
         href: "/admin/stories",
-        label: "Member stories",
-        description: "Stories & Media carousel and story pages",
+        labelKey: "nav.stories.label",
+        descriptionKey: "nav.stories.description",
         icon: HeartHandshake,
       },
       {
         href: "/admin/newsletter",
-        label: "Newsletter",
-        description: "Subscribers, drafts, and send history",
+        labelKey: "nav.newsletter.label",
+        descriptionKey: "nav.newsletter.description",
         icon: Mail,
       },
     ],
   },
   {
-    title: "Learn content",
+    titleKey: "nav.sections.learnContent",
     items: [
       {
         href: "/admin/learn",
-        label: "Learn hub",
-        description: "Quiz, resources, and video library",
+        labelKey: "nav.learnHub.label",
+        descriptionKey: "nav.learnHub.description",
         icon: BookOpen,
         exact: true,
       },
       {
         href: "/admin/learn/questions",
-        label: "Questions",
-        description: "Myth vs fact quiz and daily myths",
+        labelKey: "nav.learnQuestions.label",
+        descriptionKey: "nav.learnQuestions.description",
         icon: HelpCircle,
       },
       {
         href: "/admin/learn/resources",
-        label: "Resources",
-        description: "Articles, press, and learning links",
+        labelKey: "nav.learnResources.label",
+        descriptionKey: "nav.learnResources.description",
         icon: FileText,
       },
       {
         href: "/admin/learn/videos",
-        label: "Short videos",
-        description: "Curated YouTube picks for Learn",
+        labelKey: "nav.learnVideos.label",
+        descriptionKey: "nav.learnVideos.description",
         icon: Video,
       },
     ],

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, ChevronRight, Search, Sparkles, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { ScrollPanel } from "@/components/account/scroll-panel";
 import { RecommendedVolunteerRoles } from "@/components/member/recommended-volunteer-roles";
@@ -12,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { api, MemberDashboard, VolunteerActivity } from "@/lib/api";
 import { signOutToLogin, useRequireRoles } from "@/lib/auth";
+import { intlLocaleForSite } from "@/lib/i18n/intl-locale";
 import { cn } from "@/lib/utils";
 
 type ActivityTab = "browse" | "joined";
@@ -30,19 +32,15 @@ function StatCard({ label, value, help }: { label: string; value: string; help: 
 
 function JoinedActivityCard({
   name,
-  createdAt,
-  status,
+  joinedOnText,
 }: {
   name: string;
-  createdAt: string;
-  status: string;
+  joinedOnText: string;
 }) {
   return (
     <article className="rounded-xl border border-brand-sand bg-white p-3 sm:p-4">
       <p className="font-semibold text-brand-ink">{name}</p>
-      <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-        Joined {new Date(createdAt).toLocaleDateString("en-HK")} · {status}
-      </p>
+      <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{joinedOnText}</p>
     </article>
   );
 }
@@ -51,10 +49,14 @@ function VolunteerRoleCard({
   activity,
   saving,
   onJoin,
+  joinedLabel,
+  joinLabel,
 }: {
   activity: VolunteerActivity;
   saving: boolean;
   onJoin: (slug: string) => void;
+  joinedLabel: string;
+  joinLabel: string;
 }) {
   return (
     <article className="rounded-xl border border-brand-sand bg-white p-3 sm:p-4">
@@ -73,7 +75,7 @@ function VolunteerRoleCard({
           {activity.signed_up ? (
             <span className="inline-flex w-full items-center justify-center rounded-full bg-brand-cream px-3 py-1.5 text-xs font-semibold text-brand-sea sm:w-auto">
               <Users className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
-              Joined
+              {joinedLabel}
             </span>
           ) : (
             <Button
@@ -84,7 +86,7 @@ function VolunteerRoleCard({
               disabled={saving}
               onClick={() => onJoin(activity.role_id)}
             >
-              Join
+              {joinLabel}
             </Button>
           )}
         </div>
@@ -94,6 +96,8 @@ function VolunteerRoleCard({
 }
 
 export default function MemberDashboardPage() {
+  const { t, i18n } = useTranslation("dashboard");
+  const intlLocale = intlLocaleForSite(i18n.language);
   const { user, loading, error: authError } = useRequireRoles("member");
   const [dashboard, setDashboard] = useState<MemberDashboard | null>(null);
   const [activities, setActivities] = useState<VolunteerActivity[]>([]);
@@ -114,8 +118,8 @@ export default function MemberDashboardPage() {
 
   useEffect(() => {
     if (user?.role !== "member") return;
-    loadMemberData().catch((err) => setError(err instanceof Error ? err.message : "Could not load member dashboard"));
-  }, [user]);
+    loadMemberData().catch((err) => setError(err instanceof Error ? err.message : t("member.loadError")));
+  }, [user, t]);
 
   const registeredActivities = useMemo(() => dashboard?.registered_activities ?? [], [dashboard]);
 
@@ -137,6 +141,8 @@ export default function MemberDashboardPage() {
     );
   }, [activities, availableActivities, search, showJoinedInBrowse]);
 
+  const joinedCount = activities.length - availableActivities.length;
+
   async function signUp(slug: string) {
     setSaving(true);
     setError("");
@@ -145,33 +151,35 @@ export default function MemberDashboardPage() {
       await loadMemberData();
       setActiveTab("joined");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not register for this activity");
+      setError(err instanceof Error ? err.message : t("member.registerError"));
     } finally {
       setSaving(false);
     }
   }
 
   const joinedPanel = (
-    <ScrollPanel label="Joined activities list">
+    <ScrollPanel label={t("member.joined.scrollLabel")}>
       <div className="space-y-2 sm:space-y-3">
         {registeredActivities.map((registration) => (
           <JoinedActivityCard
             key={registration.id}
             name={registration.activity_name}
-            createdAt={registration.created_at}
-            status={registration.status}
+            joinedOnText={t("member.joinedOn", {
+              date: new Date(registration.created_at).toLocaleDateString(intlLocale),
+              status: registration.status,
+            })}
           />
         ))}
         {!registeredActivities.length ? (
           <div className="rounded-xl border border-dashed border-brand-sand bg-white/70 p-4 text-center text-sm text-muted-foreground">
-            <p>No joined activities yet.</p>
+            <p>{t("member.joined.empty")}</p>
             <Button
               type="button"
-              variant="link"
+              variant="ghost"
               className="mt-1 h-auto p-0 text-brand-coral"
               onClick={() => setActiveTab("browse")}
             >
-              Browse open roles
+              {t("member.joined.browseLink")}
             </Button>
           </div>
         ) : null}
@@ -186,39 +194,49 @@ export default function MemberDashboardPage() {
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search roles…"
+          placeholder={t("member.browse.searchPlaceholder")}
           className="h-9 bg-white pl-9 text-sm"
-          aria-label="Search volunteer roles"
+          aria-label={t("member.browse.searchAria")}
         />
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
         <span>
-          {filteredBrowseActivities.length} role{filteredBrowseActivities.length === 1 ? "" : "s"}
-          {!showJoinedInBrowse ? " available" : ""}
+          {!showJoinedInBrowse
+            ? t("common.rolesAvailable", { count: filteredBrowseActivities.length })
+            : t("common.rolesCount", { count: filteredBrowseActivities.length })}
         </span>
         <button
           type="button"
           className="font-medium text-brand-coral hover:underline"
           onClick={() => setShowJoinedInBrowse((value) => !value)}
         >
-          {showJoinedInBrowse ? "Hide joined" : `Show joined (${activities.length - availableActivities.length})`}
+          {showJoinedInBrowse
+            ? t("member.browse.hideJoined")
+            : t("member.browse.showJoined", { count: joinedCount })}
         </button>
       </div>
-      <ScrollPanel label="Available volunteer roles">
+      <ScrollPanel label={t("member.browse.scrollLabel")}>
         <div className="space-y-2 sm:space-y-3">
           {filteredBrowseActivities.map((activity) => (
-            <VolunteerRoleCard key={activity.role_id} activity={activity} saving={saving} onJoin={signUp} />
+            <VolunteerRoleCard
+              key={activity.role_id}
+              activity={activity}
+              saving={saving}
+              onJoin={signUp}
+              joinedLabel={t("common.joined")}
+              joinLabel={t("common.join")}
+            />
           ))}
           {!filteredBrowseActivities.length ? (
             <p className="rounded-xl border border-dashed border-brand-sand bg-white/70 p-4 text-center text-sm text-muted-foreground">
-              {search ? "No roles match your search." : "No open roles right now."}
+              {search ? t("member.browse.noMatch") : t("member.browse.empty")}
             </p>
           ) : null}
         </div>
       </ScrollPanel>
       <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
         <Link href="/our-volunteer">
-          Full volunteer page
+          {t("member.browse.fullPage")}
           <ChevronRight className="ml-1 h-4 w-4" aria-hidden="true" />
         </Link>
       </Button>
@@ -229,7 +247,7 @@ export default function MemberDashboardPage() {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10">
         <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">
-          Checking member access…
+          {t("member.checkingAccess")}
         </p>
       </main>
     );
@@ -240,23 +258,23 @@ export default function MemberDashboardPage() {
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-8">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Member dashboard</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{t("member.eyebrow")}</p>
             <h1 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl lg:text-5xl">
-              Your Love 21 activities
+              {t("member.title")}
             </h1>
             <p className="mt-2 text-sm text-brand-ink/75">
-              Signed in as <span className="break-all">{user.email}</span>
+              {t("common.signedInAs", { email: user.email })}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="sm" className="flex-1 sm:flex-none">
-              <Link href="/member/profile">Profile</Link>
+              <Link href="/member/profile">{t("common.profile")}</Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="flex-1 sm:flex-none">
-              <Link href="/">Site</Link>
+              <Link href="/">{t("common.site")}</Link>
             </Button>
             <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={signOutToLogin}>
-              Log out
+              {t("common.logOut")}
             </Button>
           </div>
         </header>
@@ -278,31 +296,30 @@ export default function MemberDashboardPage() {
 
         {!dashboard ? (
           <p className="rounded-2xl border border-brand-sand bg-white p-5 text-sm text-muted-foreground" role="status">
-            Loading your dashboard…
+            {t("common.loadingDashboard")}
           </p>
         ) : (
           <>
-            <section className="grid gap-3 sm:grid-cols-3 sm:gap-4" aria-label="Member summary">
+            <section className="grid gap-3 sm:grid-cols-3 sm:gap-4" aria-label={t("member.summaryAria")}>
               <StatCard
-                label="Joined"
+                label={t("member.stats.joined")}
                 value={String(dashboard.total_registrations)}
-                help="Programmes on your account."
+                help={t("member.stats.joinedHelp")}
               />
               <StatCard
-                label="Active"
+                label={t("member.stats.active")}
                 value={String(dashboard.upcoming_registrations)}
-                help="Current registrations."
+                help={t("member.stats.activeHelp")}
               />
               <StatCard
-                label="Open roles"
+                label={t("member.stats.openRoles")}
                 value={String(availableActivities.length)}
-                help="You can still join these."
+                help={t("member.stats.openRolesHelp")}
               />
             </section>
 
-            {/* Mobile tabs */}
             <div className="lg:hidden">
-              <div className="flex rounded-xl border border-brand-sand bg-white p-1" role="tablist" aria-label="Activity sections">
+              <div className="flex rounded-xl border border-brand-sand bg-white p-1" role="tablist" aria-label={t("member.tabs.ariaLabel")}>
                 <button
                   type="button"
                   role="tab"
@@ -313,7 +330,7 @@ export default function MemberDashboardPage() {
                   )}
                   onClick={() => setActiveTab("browse")}
                 >
-                  Browse ({availableActivities.length})
+                  {t("member.tabs.browse", { count: availableActivities.length })}
                 </button>
                 <button
                   type="button"
@@ -325,7 +342,7 @@ export default function MemberDashboardPage() {
                   )}
                   onClick={() => setActiveTab("joined")}
                 >
-                  Joined ({registeredActivities.length})
+                  {t("member.tabs.joined", { count: registeredActivities.length })}
                 </button>
               </div>
 
@@ -335,17 +352,17 @@ export default function MemberDashboardPage() {
                     <>
                       <CardTitle className="flex items-center gap-2 text-lg">
                         <Sparkles className="h-5 w-5 text-brand-sea" aria-hidden="true" />
-                        Join an activity
+                        {t("member.browse.title")}
                       </CardTitle>
-                      <CardDescription>Scroll to browse open roles.</CardDescription>
+                      <CardDescription>{t("member.browse.description")}</CardDescription>
                     </>
                   ) : (
                     <>
                       <CardTitle className="flex items-center gap-2 text-lg">
                         <CalendarDays className="h-5 w-5 text-brand-coral" aria-hidden="true" />
-                        My joined activities
+                        {t("member.joined.title")}
                       </CardTitle>
-                      <CardDescription>Programmes linked to your account.</CardDescription>
+                      <CardDescription>{t("member.joined.description")}</CardDescription>
                     </>
                   )}
                 </CardHeader>
@@ -353,18 +370,17 @@ export default function MemberDashboardPage() {
               </Card>
             </div>
 
-            {/* Desktop two-column with scroll panels */}
             <section className="hidden gap-6 lg:grid lg:grid-cols-2">
               <Card className="flex flex-col">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2">
                     <CalendarDays className="h-5 w-5 text-brand-coral" aria-hidden="true" />
-                    My joined activities
+                    {t("member.joined.title")}
                     <span className="ml-auto text-sm font-normal text-muted-foreground">
                       {registeredActivities.length}
                     </span>
                   </CardTitle>
-                  <CardDescription>Programmes linked to your member account.</CardDescription>
+                  <CardDescription>{t("member.joined.descriptionDesktop")}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex min-h-0 flex-1 flex-col pt-0">{joinedPanel}</CardContent>
               </Card>
@@ -373,12 +389,12 @@ export default function MemberDashboardPage() {
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-brand-sea" aria-hidden="true" />
-                    Join an activity
+                    {t("member.browse.title")}
                     <span className="ml-auto text-sm font-normal text-muted-foreground">
-                      {availableActivities.length} open
+                      {t("common.openCount", { count: availableActivities.length })}
                     </span>
                   </CardTitle>
-                  <CardDescription>Browse open volunteer roles — scroll for more.</CardDescription>
+                  <CardDescription>{t("member.browse.descriptionDesktop")}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex min-h-0 flex-1 flex-col pt-0">{browsePanel}</CardContent>
               </Card>

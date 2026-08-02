@@ -44,6 +44,12 @@
     "skipToContent": "跳至主要内容",
     "languageGroup": "语言"
   },
+  "site": "网站",
+  "logOut": "登出",
+  "viewSite": "查看网站",
+  "refresh": "刷新",
+  "viewAll": "查看全部",
+  "loading": "加载中…",
   "actions": {
     "enter": "进入",
     "explore": "探索",

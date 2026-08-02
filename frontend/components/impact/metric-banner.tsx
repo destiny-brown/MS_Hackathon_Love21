@@ -1,16 +1,16 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { Trees } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
-  growingForestQuote,
   growthCategoryOrder,
-  growthData,
   type GrowthCategoryKey,
 } from "@/lib/impact-data";
+import { useTranslatedGrowthData } from "@/lib/i18n/translated-data";
 
 const viewport = { once: false, amount: 0.25 } as const;
 
@@ -28,6 +28,7 @@ function GrowthLineChart({
   categoryKey: GrowthCategoryKey;
   inView: boolean;
 }) {
+  const growthData = useTranslatedGrowthData();
   const category = growthData[categoryKey];
   const series = category.series;
   const maxValue = Math.max(...series.map((point) => point.value)) * 1.12;
@@ -180,6 +181,8 @@ function GrowthLineChart({
 }
 
 export function MetricBanner() {
+  const { t } = useTranslation("impact");
+  const growthData = useTranslatedGrowthData();
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, viewport);
   const [activeCategory, setActiveCategory] =
@@ -201,10 +204,10 @@ export function MetricBanner() {
           <div>
             <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand-red">
               <Trees className="h-4 w-4" />
-              The Growing Forest
+              {t("ui.growingForest")}
             </p>
             <h1 className="mt-4 font-serif-display text-4xl text-brand-dark sm:text-5xl">
-              Our Growth
+              {t("ui.ourGrowth")}
             </h1>
           </div>
           <p className="max-w-md text-sm leading-relaxed text-brand-dark/60 sm:text-right">
@@ -266,7 +269,7 @@ export function MetricBanner() {
           transition={{ duration: 0.55, delay: 0.35, ease: "easeOut" }}
           className="mt-20 max-w-3xl font-serif-display text-xl leading-snug text-brand-dark/80 sm:text-2xl"
         >
-          &ldquo;{growingForestQuote}&rdquo;
+          &ldquo;{t("quotes.growingForest")}&rdquo;
         </motion.blockquote>
       </div>
     </section>

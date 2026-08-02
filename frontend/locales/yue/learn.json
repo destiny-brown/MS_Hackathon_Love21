@@ -637,5 +637,22 @@
   "sectionNav": {
     "learn": "學習",
     "explore": "探索"
+  },
+  "hub": {
+    "eyebrow": "慶祝能力",
+    "subtitle": "透過共同經驗學習、聆聽社群聲音，並探索真實故事。",
+    "communityEyebrow": "來自社群",
+    "communityQuote": "唐氏綜合症及自閉症人士已準備好投身有意義的工作。",
+    "communityQuoteEmphasis": "已準備好投身有意義的工作",
+    "communitySource": "南華早報 · Love 21 Foundation",
+    "readFullStory": "閱讀完整故事 →",
+    "play21Moves": "玩今日 21 Moves",
+    "getInvolved": "參與我們 →",
+    "enter": "進入",
+    "cards": {
+      "moves": { "number": "01", "title": "21 Moves", "description": "打破今日迷思，練習真正的共融技巧，與 Captain 21 一起遊歷香港。", "badge": "每日" },
+      "videos": { "number": "02", "title": "短片", "description": "供家庭、義工及社區夥伴觀看的神經多樣性教育短片。", "badge": "影片" },
+      "resources": { "number": "03", "title": "資源", "description": "Love 21 檔案庫及延伸閱讀——真實故事及精選神經多樣性文章。", "badge": "故事" }
+    }
   }
 }

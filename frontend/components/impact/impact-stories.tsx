@@ -7,29 +7,30 @@ import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { impactStories } from "@/lib/impact-data";
+import { useTranslatedImpactStories } from "@/lib/i18n/translated-data";
 
 const viewport = { once: false, amount: 0.2 } as const;
 
 export function ImpactStories() {
+  const stories = useTranslatedImpactStories();
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, viewport);
   const [index, setIndex] = useState(0);
-  const story = impactStories[index];
+  const story = stories[index];
 
   useEffect(() => {
     if (!inView) return;
     const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % impactStories.length);
+      setIndex((current) => (current + 1) % stories.length);
     }, 7000);
     return () => window.clearInterval(timer);
-  }, [inView]);
+  }, [inView, stories.length]);
 
   const go = (direction: -1 | 1) => {
     setIndex((current) => {
       const next = current + direction;
-      if (next < 0) return impactStories.length - 1;
-      if (next >= impactStories.length) return 0;
+      if (next < 0) return stories.length - 1;
+      if (next >= stories.length) return 0;
       return next;
     });
   };
@@ -125,7 +126,7 @@ export function ImpactStories() {
         </div>
 
         <div className="mt-5 flex justify-center gap-2">
-          {impactStories.map((item, i) => (
+          {stories.map((item, i) => (
             <button
               key={item.name}
               type="button"

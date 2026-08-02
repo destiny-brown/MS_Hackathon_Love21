@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     app_name: str = "hackkit"
     environment: str = "local"
     database_url: str = "sqlite:///./hackkit.db"
-    secret_key: str = Field(default="", validation_alias="SECRET_KEY")
+    secret_key: str = Field(default="change-this-before-deploying", validation_alias="SECRET_KEY")
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     refresh_token_expire_days: int = 7

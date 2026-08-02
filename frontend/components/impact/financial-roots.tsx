@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { AnimatePresence, motion, useInView } from "framer-motion";
 import { ChevronDown, Download, Sprout } from "lucide-react";
@@ -8,13 +9,12 @@ import { ChevronDown, Download, Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   auditedReports,
-  financialBreakdown,
-  financialRootsQuote,
 } from "@/lib/impact-data";
+import { useTranslatedFinancialBreakdown } from "@/lib/i18n/translated-data";
 
 const viewport = { once: false, amount: 0.2 } as const;
 
-function DonutChart() {
+function DonutChart({ financialBreakdown }: { financialBreakdown: ReturnType<typeof useTranslatedFinancialBreakdown> }) {
   let cursor = 0;
   const segments = financialBreakdown.map((item) => {
     const start = cursor;
@@ -45,6 +45,8 @@ function DonutChart() {
 }
 
 export function FinancialRoots() {
+  const { t } = useTranslation("impact");
+  const financialBreakdown = useTranslatedFinancialBreakdown();
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, viewport);
   const [reportsOpen, setReportsOpen] = useState(false);
@@ -96,7 +98,7 @@ export function FinancialRoots() {
               </div>
 
               <div className="bg-brand-light/40 px-4 py-6 sm:px-6 sm:py-8">
-                <DonutChart />
+                <DonutChart financialBreakdown={financialBreakdown} />
                 <ul className="mt-6 space-y-2">
                   {financialBreakdown.map((item) => (
                     <li
@@ -127,7 +129,7 @@ export function FinancialRoots() {
             className="space-y-6"
           >
             <blockquote className="rounded-2xl border border-brand-light bg-brand-light p-6 font-serif-display text-xl leading-snug text-brand-dark">
-              &ldquo;{financialRootsQuote}&rdquo;
+              &ldquo;{t("quotes.financialRoots")}&rdquo;
             </blockquote>
 
             <div className="space-y-3 text-brand-dark/75">

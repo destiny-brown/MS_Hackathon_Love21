@@ -1,0 +1,179 @@
+{
+  "shell": {
+    "eyebrow": "Love 21 職員控制台",
+    "viewSite": "查看網站",
+    "logOut": "登出",
+    "navAria": "職員導航"
+  },
+  "nav": {
+    "sections": {
+      "home": "主頁",
+      "operations": "營運",
+      "learnContent": "學習內容"
+    },
+    "overview": {
+      "label": "概覽",
+      "description": "職員主頁及快速連結"
+    },
+    "analytics": {
+      "label": "分析",
+      "description": "流量、參與度及影響力指標"
+    },
+    "events": {
+      "label": "活動",
+      "description": "建立活動及追蹤報名"
+    },
+    "volunteers": {
+      "label": "義工",
+      "description": "管理義工計劃及報名"
+    },
+    "donations": {
+      "label": "捐款與心願清單",
+      "description": "活動、項目及心願清單需求"
+    },
+    "gratitude": {
+      "label": "感謝牆",
+      "description": "審閱及批准會員提交"
+    },
+    "stories": {
+      "label": "會員故事",
+      "description": "故事與媒體輪播及故事頁面"
+    },
+    "newsletter": {
+      "label": "通訊",
+      "description": "訂閱者、草稿及發送記錄"
+    },
+    "learnHub": {
+      "label": "學習中心",
+      "description": "測驗、資源及影片庫"
+    },
+    "learnQuestions": {
+      "label": "問題",
+      "description": "迷思 vs 事實測驗及每日迷思"
+    },
+    "learnResources": {
+      "label": "資源",
+      "description": "文章、新聞及學習連結"
+    },
+    "learnVideos": {
+      "label": "短片",
+      "description": "為學習區精選的 YouTube 影片"
+    }
+  },
+  "home": {
+    "title": "職員控制台",
+    "description": "選擇下方工作區以管理 Love 21 內容、活動及社區更新。",
+    "atAGlance": "一覽",
+    "events": "活動",
+    "volunteerProgrammes": "義工計劃",
+    "activeSubscribers": "活躍訂閱者",
+    "newsletterList": "通訊名單",
+    "learnQuestions": "學習問題",
+    "learnResources": "學習資源",
+    "registrationsTitle": "活動報名",
+    "registrationsDescription": "來自公開義工頁面的最近義工活動報名。",
+    "refresh": "重新整理",
+    "viewAll": "查看全部",
+    "noRegistrations": "尚未有活動報名。",
+    "who": "報名者",
+    "activity": "活動",
+    "when": "時間",
+    "workspaces": "工作區"
+  },
+  "events": {
+    "title": "活動",
+    "description": "建立及管理 Love 21 社區活動。",
+    "createTitle": "建立活動",
+    "editTitle": "編輯活動",
+    "allEvents": "所有活動",
+    "titleLabel": "標題",
+    "locationLabel": "地點",
+    "descriptionLabel": "描述",
+    "dateLabel": "日期",
+    "maxCapacityLabel": "最大人數",
+    "categoryLabel": "類別",
+    "statusLabel": "狀態",
+    "create": "建立活動",
+    "update": "更新活動",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "empty": "尚未有活動。",
+    "categories": {
+      "community": "社區",
+      "sport": "運動",
+      "nutrition": "營養",
+      "family": "家庭",
+      "fundraising": "籌款"
+    },
+    "statuses": {
+      "upcoming": "即將舉行",
+      "ongoing": "進行中",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    }
+  },
+  "volunteers": {
+    "title": "義工計劃",
+    "description": "管理義工職位及追蹤報名。",
+    "totalPrograms": "計劃總數",
+    "totalVolunteers": "義工總數",
+    "registrations": "最近報名",
+    "createProgram": "建立計劃",
+    "editProgram": "編輯計劃",
+    "empty": "尚未有義工計劃。"
+  },
+  "newsletter": {
+    "title": "通訊",
+    "description": "管理訂閱者、使用 Qwen 生成草稿及發送活動。",
+    "total": "訂閱者總數",
+    "active": "活躍",
+    "weekly": "每週",
+    "monthly": "每月",
+    "campaignsSent": "已發送活動",
+    "generatorTitle": "Qwen 通訊生成器",
+    "cadence": "發送頻率",
+    "guidance": "AI 指引",
+    "subject": "主旨",
+    "generate": "生成草稿",
+    "generating": "生成中…",
+    "send": "發送活動",
+    "sending": "發送中…",
+    "preview": "預覽",
+    "copy": "複製內容",
+    "history": "發送記錄",
+    "addSubscriber": "新增訂閱者",
+    "search": "搜尋訂閱者…",
+    "empty": "尚未有訂閱者。"
+  },
+  "learn": {
+    "hubTitle": "學習內容",
+    "hubDescription": "管理學習區的測驗問題、資源及短片。",
+    "questionsTitle": "學習問題",
+    "questionsDescription": "編輯迷思 vs 事實測驗問題及每日迷思。",
+    "resourcesTitle": "學習資源",
+    "resourcesDescription": "管理文章、新聞連結及延伸閱讀。",
+    "videosTitle": "學習短片",
+    "videosDescription": "為學習影片庫精選 YouTube 短片。",
+    "previewLearn": "預覽學習區"
+  },
+  "stories": {
+    "title": "會員故事",
+    "description": "管理故事與媒體輪播項目及會員故事頁面。"
+  },
+  "gratitude": {
+    "title": "感謝牆",
+    "description": "審閱及批准會員感謝提交。"
+  },
+  "donations": {
+    "title": "捐款與心願清單",
+    "description": "管理活動、項目及心願清單需求。"
+  },
+  "analytics": {
+    "title": "分析",
+    "description": "網站流量及參與度概覽。",
+    "trafficTitle": "網站流量概覽",
+    "aboutTitle": "關於此數據",
+    "aboutBody": "指標來自 Google Analytics 及 Looker Studio。數字可能滯後最多 24 小時。"
+  }
+}

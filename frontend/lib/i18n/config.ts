@@ -1,8 +1,10 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
+import enAdmin from "@/locales/en/admin.json";
 import enAuth from "@/locales/en/auth.json";
 import enCommon from "@/locales/en/common.json";
+import enDashboard from "@/locales/en/dashboard.json";
 import enDonate from "@/locales/en/donate.json";
 import enForms from "@/locales/en/forms.json";
 import enGetInvolved from "@/locales/en/getInvolved.json";
@@ -13,8 +15,10 @@ import enLearn from "@/locales/en/learn.json";
 import enMedia from "@/locales/en/media.json";
 import enPages from "@/locales/en/pages.json";
 import enVolunteer from "@/locales/en/volunteer.json";
+import yueAdmin from "@/locales/yue/admin.json";
 import yueAuth from "@/locales/yue/auth.json";
 import yueCommon from "@/locales/yue/common.json";
+import yueDashboard from "@/locales/yue/dashboard.json";
 import yueDonate from "@/locales/yue/donate.json";
 import yueForms from "@/locales/yue/forms.json";
 import yueGetInvolved from "@/locales/yue/getInvolved.json";
@@ -25,8 +29,10 @@ import yueLearn from "@/locales/yue/learn.json";
 import yueMedia from "@/locales/yue/media.json";
 import yuePages from "@/locales/yue/pages.json";
 import yueVolunteer from "@/locales/yue/volunteer.json";
+import zhAdmin from "@/locales/zh/admin.json";
 import zhAuth from "@/locales/zh/auth.json";
 import zhCommon from "@/locales/zh/common.json";
+import zhDashboard from "@/locales/zh/dashboard.json";
 import zhDonate from "@/locales/zh/donate.json";
 import zhForms from "@/locales/zh/forms.json";
 import zhGetInvolved from "@/locales/zh/getInvolved.json";
@@ -53,6 +59,8 @@ const resources = {
     learn: enLearn,
     volunteer: enVolunteer,
     getInvolved: enGetInvolved,
+    dashboard: enDashboard,
+    admin: enAdmin,
   },
   yue: {
     common: yueCommon,
@@ -67,6 +75,8 @@ const resources = {
     learn: yueLearn,
     volunteer: yueVolunteer,
     getInvolved: yueGetInvolved,
+    dashboard: yueDashboard,
+    admin: yueAdmin,
   },
   zh: {
     common: zhCommon,
@@ -81,6 +91,8 @@ const resources = {
     learn: zhLearn,
     volunteer: zhVolunteer,
     getInvolved: zhGetInvolved,
+    dashboard: zhDashboard,
+    admin: zhAdmin,
   },
 };
 

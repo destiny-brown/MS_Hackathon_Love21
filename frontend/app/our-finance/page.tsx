@@ -1,11 +1,11 @@
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { annualReports } from "@/lib/site-data";
 
 export default function OurFinancePage() {
   return (
     <SiteLayout>
-      <PageHero title="OUR REPORTS" />
+      <TranslatedPageHero ns="governance" titleKey="reportsPage.title" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl space-y-6 text-brand-dark/80">
           <p>

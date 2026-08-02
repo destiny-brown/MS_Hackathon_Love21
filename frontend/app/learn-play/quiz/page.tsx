@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { MythFactQuizCard, QuizResultBadge } from "@/components/learn/myth-fact-quiz-card";
 import { MythFactPlayMore } from "@/components/learn/myth-fact-play-more";
 import { RelatedStories } from "@/components/learn/related-stories";
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { Button } from "@/components/ui/button";
 import { fetchQuizQuestions } from "@/lib/learn-content";
@@ -92,10 +92,7 @@ export default function MythVsFactQuizPage() {
 
   return (
     <SiteLayout>
-      <PageHero
-        title="Myth vs Fact Quiz"
-        subtitle="Fact-check common claims about autism, Down syndrome, ADHD, and inclusive practices."
-      />
+      <TranslatedPageHero titleKey="learnPlay.quiz.title" subtitleKey="learnPlay.quiz.description" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <div className="mb-6">

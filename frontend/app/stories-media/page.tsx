@@ -1,11 +1,15 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Award, Briefcase, HandHeart, HeartHandshake, Medal, Newspaper, Share2, Trophy, Youtube } from "lucide-react";
 
 import { Reveal } from "@/components/brand/Reveal";
 import { ElfsightFeeds } from "@/components/media/elfsight-feeds";
 import { MediaStoryCard } from "@/components/learn/media-story-card";
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
@@ -23,59 +27,30 @@ const sectionNavItems: PageSectionNavItem[] = [
   { id: "youtube", label: "Youtube", labelKey: "sectionNav.youtube" },
 ];
 
-const abilityCards = [
-  {
-    id: "karate",
-    title: "Medals on the Asian Stage",
-    description:
-      "Love 21 athletes stood on the podium at the 22nd Asian Senior Karate Championship's Para-Karate division in Bali, medals around their necks after competing against the region's best.",
-    image: karateImage,
-    badge: "award" as const,
-  },
-  {
-    id: "job-ready",
-    title: "Job-Ready, Proven",
-    description:
-      "Featured by the South China Morning Post for a job-training programme built to show employers our members are ready for real, purposeful work.",
-    image: scmpImage,
-    badge: "briefcase" as const,
-  },
-  {
-    id: "badminton",
-    title: "Smashing It at Special Olympics",
-    description:
-      "Our badminton team swept the 50th Special Olympics Hong Kong Badminton Competition, bringing home 5 golds, 1 silver and 1 bronze.",
-    image: badmintonImage,
-    badge: "medal" as const,
-  },
+const abilityCardMeta = [
+  { id: "karate", image: karateImage, badge: "award" as const },
+  { id: "job-ready", image: scmpImage, badge: "briefcase" as const },
+  { id: "badminton", image: badmintonImage, badge: "medal" as const },
 ];
 
-const pressCards = [
+const pressCardMeta = [
   {
     id: "beyond-limits",
-    title: "Tables & Seats Now Open for Beyond Limits Banquet",
-    date: "May 2026",
     image: "/images/press/beyondlimits.png",
     link: "https://love21foundation.com/beyond-limits-banquet/",
   },
   {
     id: "raffle-2025",
-    title: "Love 21 Foundation Charity Raffle 2025",
-    date: "Nov 2025",
     image: "/images/press/rafflebanner.png",
     link: "https://love21foundation.com/raffle2025-2/",
   },
   {
     id: "dragon-boat",
-    title: "HK Yacht Club & Love 21 Team Up for Dragon Boating",
-    date: "Sep 2021",
     image: "/images/press/dragonboat.png",
     link: "https://love21foundation.com/hong-kong-yacht-club-and-charity-team-up-to-help-special-needs-teens-learn-dragon-boating/",
   },
   {
     id: "long-happy-life",
-    title: "Love 21's Open Secret to a Long, Happy Life",
-    date: "Nov 2021",
     image: "/images/press/longhappylife.png",
     link: "https://love21foundation.com/love-21s-open-secret-to-a-long-happy-life/",
   },
@@ -89,13 +64,38 @@ function BadgeIcon({ badge }: { badge: "award" | "briefcase" | "medal" }) {
 }
 
 export default function StoriesMediaPage() {
+  const { t } = useTranslation("media");
   const pressStories = mediaPosts.filter((post) => post.type === "press" || post.type === "interview");
   const communityStories = mediaPosts.filter((post) => post.type === "event");
+
+  const abilityCards = useMemo(
+    () =>
+      abilityCardMeta.map((card) => ({
+        ...card,
+        title: t(`abilityCards.${card.id}.title`),
+        description: t(`abilityCards.${card.id}.description`),
+      })),
+    [t],
+  );
+
+  const pressCards = useMemo(
+    () =>
+      pressCardMeta.map((card) => ({
+        ...card,
+        title: t(`pressCards.${card.id}.title`),
+        date: t(`pressCards.${card.id}.date`),
+      })),
+    [t],
+  );
 
   return (
     <SiteLayout>
       <Reveal>
-        <PageHero id="stories-media-hero" title="Stories & Media" className="border-b-0 pb-8" />
+        <TranslatedPageHero
+          id="stories-media-hero"
+          titleKey="storiesMedia.title"
+          className="border-b-0 pb-8"
+        />
       </Reveal>
 
       <PageSectionNav items={sectionNavItems} ns="media" heroSelector="#stories-media-hero" />
@@ -107,12 +107,10 @@ export default function StoriesMediaPage() {
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
                 <Trophy className="h-6 w-6" aria-hidden="true" />
               </div>
-              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">So Much Ability</h2>
+              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">{t("sections.soMuchAbility.title")}</h2>
               <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
             </div>
-            <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
-              An <span className="font-serif-display italic text-brand-red">opportunity</span> story
-            </p>
+            <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">{t("sections.soMuchAbility.introMedia")}</p>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {abilityCards.map((card) => (
@@ -144,15 +142,10 @@ export default function StoriesMediaPage() {
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
                 <HeartHandshake className="h-6 w-6" aria-hidden="true" />
               </div>
-              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Member Stories</h2>
+              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">{t("sections.memberStories.title")}</h2>
               <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
             </div>
-            <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">
-              Voices from{" "}
-              <span className="font-serif-display italic text-brand-red">families and members</span>
-              {" "}— the everyday moments that make Love 21 feel like{" "}
-              <span className="font-serif-display italic text-brand-red">home</span>.
-            </p>
+            <p className="mb-8 max-w-2xl text-brand-dark/75 sm:ml-16">{t("sections.memberStories.intro")}</p>
 
             <TestimonialCarousel />
           </div>
@@ -166,7 +159,7 @@ export default function StoriesMediaPage() {
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
                 <Newspaper className="h-6 w-6" aria-hidden="true" />
               </div>
-              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Press &amp; Moments</h2>
+              <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">{t("sections.pressMoments.title")}</h2>
               <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
             </div>
 
@@ -185,7 +178,7 @@ export default function StoriesMediaPage() {
                   <div className="flex flex-1 flex-col p-4 sm:p-5">
                     <span className="mb-1.5 text-xs font-bold uppercase tracking-wider text-brand-red/80">{card.date}</span>
                     <h3 className="mb-2 line-clamp-2 text-sm font-semibold text-brand-dark">{card.title}</h3>
-                    <span className="mt-auto text-xs font-semibold text-brand-red group-hover:underline">Read the story →</span>
+                    <span className="mt-auto text-xs font-semibold text-brand-red group-hover:underline">{t("sections.pressMoments.readStory")}</span>
                   </div>
                 </a>
               ))}
@@ -201,7 +194,7 @@ export default function StoriesMediaPage() {
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
               <Share2 className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Social Feed</h2>
+            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">{t("sections.socialFeed.title")}</h2>
             <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
           </div>
           <ElfsightFeeds platforms={["instagram"]} />
@@ -216,7 +209,7 @@ export default function StoriesMediaPage() {
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-red/15 text-brand-red">
               <Youtube className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">Youtube</h2>
+            <h2 className="font-serif-display text-2xl text-brand-dark sm:text-3xl">{t("sectionNav.youtube")}</h2>
             <div className="ml-4 h-px flex-1 bg-gradient-to-r from-brand-red/40 to-brand-light" />
           </div>
           <ElfsightFeeds platforms={["youtube"]} />
@@ -231,15 +224,13 @@ export default function StoriesMediaPage() {
               <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-brand-red/10" aria-hidden="true" />
               <div className="relative z-10">
                 <HandHeart className="mx-auto h-10 w-10 text-brand-red" aria-hidden="true" />
-                <h2 className="mt-4 font-serif-display text-2xl sm:text-3xl">Ready to Make a Difference?</h2>
-                <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-brand-dark/70">
-                  Volunteer, donate, or partner with us — there&apos;s a place for you.
-                </p>
+                <h2 className="mt-4 font-serif-display text-2xl sm:text-3xl">{t("cta.readyTitle")}</h2>
+                <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-brand-dark/70">{t("cta.readyBodyMedia")}</p>
                 <Link
                   href="/get-involved"
                   className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-red px-8 py-3 text-sm font-semibold text-white transition hover:bg-brand-dark"
                 >
-                  Get Involved →
+                  {t("cta.getInvolved")}
                 </Link>
               </div>
             </div>
@@ -250,14 +241,13 @@ export default function StoriesMediaPage() {
       <Reveal>
         <section className="bg-white px-4 pb-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-6xl">
-            <h2 className="font-serif-display text-2xl text-brand-dark">Learn through real experiences</h2>
+            <h2 className="font-serif-display text-2xl text-brand-dark">{t("sections.learnExperiences.title")}</h2>
             <p className="mt-2 text-brand-dark/75">
-              These stories come from Love 21&apos;s media archive — press coverage, interviews, and community events.
-              Pair them with our{" "}
+              {t("sections.learnExperiences.body")}{" "}
               <Link href="/learn-play" className="font-semibold text-brand-red hover:underline">
-                Learn section
+                {t("sections.learnExperiences.learnLink")}
               </Link>{" "}
-              to connect facts with lived experience.
+              {t("sections.learnExperiences.bodyEnd")}
             </p>
           </div>
         </section>
@@ -266,8 +256,8 @@ export default function StoriesMediaPage() {
       <Reveal>
         <section className="bg-white px-4 pb-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-6xl">
-            <h2 className="font-serif-display text-3xl text-brand-dark">Press &amp; Interviews</h2>
-            <p className="mt-1 text-sm text-brand-dark/65">Click any cover to read the original article.</p>
+            <h2 className="font-serif-display text-3xl text-brand-dark">{t("sections.pressInterviews.title")}</h2>
+            <p className="mt-1 text-sm text-brand-dark/65">{t("sections.pressInterviews.subtitle")}</p>
             <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {pressStories.map((post) => (
                 <MediaStoryCard key={post.slug} post={post} />
@@ -281,7 +271,7 @@ export default function StoriesMediaPage() {
         <section className="bg-white px-4 pb-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-6xl space-y-12">
             <div>
-              <h2 className="font-serif-display text-3xl text-brand-dark">Community Events</h2>
+              <h2 className="font-serif-display text-3xl text-brand-dark">{t("sections.communityEvents.title")}</h2>
               <div className="mt-5 grid gap-5 sm:grid-cols-2">
                 {communityStories.map((post) => (
                   <MediaStoryCard key={post.slug} post={post} />
@@ -291,7 +281,7 @@ export default function StoriesMediaPage() {
 
             <div className="flex flex-wrap items-center justify-between gap-4">
               <Link href="/learn-play/resources" className="text-sm font-semibold text-brand-red hover:underline">
-                Browse all stories in Learn →
+                {t("cta.browseStories")}
               </Link>
             </div>
           </div>

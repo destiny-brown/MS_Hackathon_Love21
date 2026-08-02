@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { ConfettiBurst } from "@/components/learn/trail-map/confetti-burst";
 import { DayMapStrip } from "@/components/learn/trail-map/day-map-strip";
@@ -9,6 +10,7 @@ import { DragonBoatStage } from "@/components/learn/trail-map/dragon-boat-stage"
 import { EventAnimationStage } from "@/components/learn/trail-map/event-animation-stage";
 import { SiteLayout } from "@/components/site/site-layout";
 import { getLocationForDayNumber, LOCATION_DAYS } from "@/lib/day-locations-data";
+import { useTranslatedTrailDays } from "@/lib/i18n/translated-data";
 import {
   DEFAULT_LOCAL_PROGRESS,
   DEFAULT_LOCAL_STREAK,
@@ -33,16 +35,9 @@ const LOCATION_ICONS: Record<string, string> = {
   festival: "🎉",
 };
 
-const LOCATION_LABELS: Record<string, string> = {
-  stadium: "The Stadium",
-  harbour: "The Harbour",
-  court: "The Court",
-  wall: "The Climbing Wall",
-  track: "The Cycling Track",
-  festival: "Finish Line Festival",
-};
-
 export default function TwentyOneMovesPage() {
+  const { t } = useTranslation("learn");
+  const translatedTrailDays = useTranslatedTrailDays();
   const [progress, setProgress] = useState<LocalProgress | null>(null);
   const [streak, setStreak] = useState<LocalStreak>(DEFAULT_LOCAL_STREAK);
   const [dayJustCompleted, setDayJustCompleted] = useState(false);
@@ -92,10 +87,12 @@ export default function TwentyOneMovesPage() {
     prevCorrectRef.current = progress.correctCount;
   }, [progress?.correctCount]);
 
-  const location = useMemo(
-    () => (progress ? getLocationForDayNumber(progress.dayNumber) : null),
-    [progress]
-  );
+  const location = useMemo(() => {
+    if (!progress) return null;
+    const raw = getLocationForDayNumber(progress.dayNumber);
+    const translated = translatedTrailDays.find((day) => day.theme === raw.theme);
+    return translated ?? raw;
+  }, [progress, translatedTrailDays]);
   const completedLoops = progress
     ? Math.floor((progress.dayNumber - 1) / LOCATION_DAYS.length)
     : 0;
@@ -135,7 +132,7 @@ export default function TwentyOneMovesPage() {
         <div className="flex min-h-[60vh] items-center justify-center bg-[#f5f3ee]">
           <div className="text-center">
             <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-[#e8e4de] border-t-[#991b1b]" />
-            <p className="text-sm font-medium text-[#666]">Loading your trail…</p>
+            <p className="text-sm font-medium text-[#666]">{t("ui.loading")}</p>
           </div>
         </div>
       </SiteLayout>
@@ -182,10 +179,10 @@ export default function TwentyOneMovesPage() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-6">
           <div>
             <h1 className="font-serif text-5xl font-medium tracking-tight text-[#0f172a] sm:text-6xl lg:text-7xl">
-              21 <em className="text-[#991b1b]">Moves</em>
+              {t("hub.cards.moves.title")}
             </h1>
             <p className="mt-3 max-w-md text-base leading-relaxed text-[#5a5a5a]">
-              Bust a myth, learn a fact, and make the right call — five moves a day with Captain 21.
+              {t("hub.cards.moves.description")}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -197,11 +194,11 @@ export default function TwentyOneMovesPage() {
               <span className="text-lg font-bold text-[#991b1b]">{progress.correctCount}</span>
               <span className="text-[#999]">/</span>
               <span>{progress.totalAnswered}</span>
-              <span className="ml-1 text-xs text-[#999]">correct</span>
+              <span className="ml-1 text-xs text-[#999]">{t("ui.correct").toLowerCase()}</span>
             </div>
             {completedLoops > 0 && (
               <div className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#991b1b] to-[#dc2626] px-5 py-2.5 text-sm font-bold text-white shadow-md">
-                🔥 Loop {completedLoops + 1}
+                🔥 {t("ui.loop", { n: completedLoops + 1 })}
               </div>
             )}
             <div
@@ -238,7 +235,7 @@ export default function TwentyOneMovesPage() {
           href="/learn-play"
           className="inline-flex items-center gap-1 text-sm font-semibold text-[#991b1b] transition-colors hover:text-[#7f1d1d]"
         >
-          ← Back to Learn
+          ← {t("ui.backToLearn")}
         </Link>
       </div>
 
@@ -248,10 +245,10 @@ export default function TwentyOneMovesPage() {
           <div className="overflow-hidden rounded-2xl border border-[#e8e4de] bg-white p-6 shadow-sm sm:p-8">
             <div className="mb-6 flex items-center justify-between">
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#999]">
-                The 21 Moves Trail
+                {t("ui.trailTitle")}
               </span>
               <span className="rounded-full bg-gradient-to-r from-[#991b1b] to-[#dc2626] px-4 py-1.5 text-[11px] font-bold text-white">
-                Day {progress.dayNumber}
+                {t("ui.day", { n: progress.dayNumber })}
               </span>
             </div>
 
@@ -290,7 +287,7 @@ export default function TwentyOneMovesPage() {
                         isActive ? "text-[#0f172a]" : "text-[#888]"
                       }`}
                     >
-                      {LOCATION_LABELS[loc.theme]}
+                      {t(`trail.locations.${loc.theme}.title`)}
                     </span>
                   </div>
                 );
@@ -305,7 +302,7 @@ export default function TwentyOneMovesPage() {
 
             <div className="relative z-10">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#fca5a5]">
-                Day {progress.dayNumber} · {location.title}
+                {t("ui.day", { n: progress.dayNumber })} · {location.title}
               </p>
               <h2 className="mt-2 font-serif text-3xl font-medium text-white sm:text-4xl">
                 {location.subtitle}

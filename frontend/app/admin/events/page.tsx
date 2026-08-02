@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Plus, Trash2, Edit, Calendar, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,7 @@ function toPayload(form: EventForm) {
 }
 
 export default function AdminEventsPage() {
+  const { t } = useTranslation("admin");
   const [events, setEvents] = useState<AdminActivity[]>([]);
   const [editingEvent, setEditingEvent] = useState<AdminActivity | null>(null);
   const [formData, setFormData] = useState<EventForm>(defaultForm);
@@ -116,8 +118,8 @@ export default function AdminEventsPage() {
   return (
     <>
       <AdminPageHeader
-        title="Events"
-        description="Create, edit, and track event registrations across the public site."
+        title={t("events.title")}
+        description={t("events.description")}
       />
 
       {error ? <p className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</p> : null}

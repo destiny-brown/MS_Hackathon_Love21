@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { ScrollPanel } from "@/components/account/scroll-panel";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +16,7 @@ type RecommendedVolunteerRolesProps = {
 };
 
 export function RecommendedVolunteerRoles({ onJoin, saving = false }: RecommendedVolunteerRolesProps) {
+  const { t } = useTranslation("dashboard");
   const [data, setData] = useState<RecommendedVolunteerRolesResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +42,7 @@ export function RecommendedVolunteerRoles({ onJoin, saving = false }: Recommende
     return (
       <Card className="border-brand-sea/20 bg-gradient-to-br from-brand-sea/5 via-white to-brand-cream/60">
         <CardContent className="py-6 text-sm text-muted-foreground" role="status">
-          Finding roles based on your activity…
+          {t("recommendedRoles.loading")}
         </CardContent>
       </Card>
     );
@@ -52,20 +54,20 @@ export function RecommendedVolunteerRoles({ onJoin, saving = false }: Recommende
     <Card className="border-brand-sea/25 bg-gradient-to-br from-brand-sea/8 via-white to-brand-cream/60">
       <CardHeader className="pb-3">
         <div className="flex flex-wrap items-center gap-2">
-          <CardTitle className="text-lg sm:text-xl">Roles picked for you</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">{t("recommendedRoles.title")}</CardTitle>
           {data.ai_enhanced ? (
             <Badge variant="secondary" className="gap-1">
               <Sparkles className="h-3 w-3" aria-hidden="true" />
-              AI match
+              {t("recommendedRoles.aiMatch")}
             </Badge>
           ) : (
-            <Badge variant="outline">Suggested</Badge>
+            <Badge variant="outline">{t("recommendedRoles.suggested")}</Badge>
           )}
         </div>
         <CardDescription>{data.headline}</CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
-        <ScrollPanel label="Recommended volunteer roles">
+        <ScrollPanel label={t("recommendedRoles.scrollLabel")}>
           <div className="space-y-2 sm:space-y-3">
             {data.matches.map((match) => (
               <article key={match.role_id} className="rounded-xl border border-brand-sand bg-white p-3 sm:p-4">
@@ -76,7 +78,7 @@ export function RecommendedVolunteerRoles({ onJoin, saving = false }: Recommende
                         {match.icon} {match.title}
                       </h3>
                       <span className="rounded-full bg-brand-cream px-2 py-0.5 text-xs font-semibold text-brand-sea">
-                        {match.score}% match
+                        {t("common.matchPercent", { score: match.score })}
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
@@ -97,7 +99,7 @@ export function RecommendedVolunteerRoles({ onJoin, saving = false }: Recommende
                     disabled={saving}
                     onClick={() => onJoin(match.role_id)}
                   >
-                    Join
+                    {t("common.join")}
                   </Button>
                 </div>
               </article>

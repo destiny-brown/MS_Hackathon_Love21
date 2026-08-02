@@ -1,7 +1,9 @@
 {
   "hero": {
     "title": "支持他們的潛能",
-    "subtitle": "選擇最能打動你的活動或項目，為每一份能力創造更多發光發熱的機會。"
+    "subtitle": "選擇最能打動你的活動或項目，為每一份能力創造更多發光發熱的機會。",
+    "startDonation": "開始捐款",
+    "seeWishlist": "查看心願清單"
   },
   "transparency": {
     "eyebrow": "捐款透明度",

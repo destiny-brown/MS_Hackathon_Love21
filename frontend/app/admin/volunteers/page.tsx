@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Plus, Trash2, Edit, Heart, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,7 @@ function toPayload(form: ProgramForm, displayOrder: number) {
 }
 
 export default function AdminVolunteersPage() {
+  const { t } = useTranslation("admin");
   const [programs, setPrograms] = useState<AdminVolunteerActivity[]>([]);
   const [registrations, setRegistrations] = useState<AdminVolunteerActivityRegistration[]>([]);
   const [editingProgram, setEditingProgram] = useState<AdminVolunteerActivity | null>(null);
@@ -141,8 +143,8 @@ export default function AdminVolunteersPage() {
   return (
     <>
       <AdminPageHeader
-        title="Volunteer programmes"
-        description="Create, edit, and track volunteer opportunities shown on the public site."
+        title={t("volunteers.title")}
+        description={t("volunteers.description")}
       />
 
       {error ? <p className="mb-4 rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</p> : null}

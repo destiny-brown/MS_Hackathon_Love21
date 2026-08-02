@@ -1,0 +1,191 @@
+{
+  "common": {
+    "site": "网站",
+    "logOut": "登出",
+    "profile": "个人资料",
+    "signedInAs": "已登录 {{email}}",
+    "loadingDashboard": "正在加载你的控制台…",
+    "joined": "已加入",
+    "join": "加入",
+    "signUp": "报名",
+    "signedUp": "已报名",
+    "refresh": "刷新",
+    "viewAll": "查看全部",
+    "noNotes": "没有备注",
+    "manualLog": "手动记录",
+    "monthly": "每月",
+    "oneTime": "一次性",
+    "generalSupport": "一般 Love 21 支持",
+    "connectedFunded": "已连结 {{amount}} · 已筹得 {{percent}}%",
+    "hoursCount": "{{count}} 小时",
+    "hoursUnit": "{{count}} 小时",
+    "openCount": "{{count}} 个开放",
+    "openEvents_one": "{{count}} 个开放活动",
+    "openEvents_other": "{{count}} 个开放活动",
+    "rolesCount_one": "{{count}} 个职位",
+    "rolesCount_other": "{{count}} 个职位",
+    "rolesAvailable": "{{count}} 个可报名",
+    "matchPercent": "匹配度 {{score}}%"
+  },
+  "captainsCorner": {
+    "title": "Captain 专区",
+    "loading": "正在加载 Captain 专区…",
+    "unavailable": "Captain 专区暂时无法使用。",
+    "loadError": "无法加载 Captain 专区",
+    "aiBadge": "Captain + AI",
+    "captainBadge": "Captain",
+    "captainLabel": "Captain 21",
+    "dayLocation": "第 {{day}} 天 · {{location}}",
+    "streak": "连续 {{count}} 天",
+    "movesLeft_one": "尚余 {{count}} 步",
+    "movesLeft_other": "尚余 {{count}} 步",
+    "continueMoves": "继续 21 Moves",
+    "exploreLearn": "探索学习"
+  },
+  "recommendedEvents": {
+    "title": "为你精选的活动",
+    "loading": "根据你的志愿服务寻找活动…",
+    "loadError": "无法加载推荐",
+    "aiMatch": "AI 匹配",
+    "suggested": "建议",
+    "scrollLabel": "推荐活动"
+  },
+  "recommendedRoles": {
+    "title": "为你精选的职位",
+    "loading": "根据你的计划寻找志愿者职位…",
+    "loadError": "无法加载推荐",
+    "aiMatch": "AI 匹配",
+    "suggested": "建议",
+    "scrollLabel": "推荐志愿者职位"
+  },
+  "supporter": {
+    "eyebrow": "支持者控制台",
+    "title": "你的 Love 21 影响力",
+    "signedInHint": "在<link>我们的志愿者</link>页面浏览职位。",
+    "checkingAccess": "正在检查支持者权限…",
+    "loadError": "无法加载支持者控制台",
+    "signUpError": "无法报名此活动",
+    "logHoursError": "无法记录志愿者时数",
+    "stats": {
+      "totalGiven": "捐款总额",
+      "totalGivenHelp": "此账户的捐款记录。",
+      "recurring": "定期捐款",
+      "recurringHelp": "每月支持状态。",
+      "volunteerHours": "志愿者时数",
+      "volunteerHoursHelp": "已记录时数总计。",
+      "activities": "活动",
+      "activitiesHelp": "已报名的活动。"
+    },
+    "tabs": {
+      "ariaLabel": "控制台分区",
+      "impact": "影响力",
+      "volunteer": "志愿者"
+    },
+    "giving": {
+      "title": "我的捐款",
+      "description": "捐款记录及定期捐款状态。",
+      "scrollLabel": "捐款记录",
+      "empty": "尚未有捐款记录。"
+    },
+    "impact": {
+      "title": "影响力",
+      "description": "你的捐款如何连结到优先项目。",
+      "scrollLabel": "影响力项目",
+      "empty": "进行指定捐款后，可在此查看影响力。"
+    },
+    "volunteering": {
+      "title": "我的志愿服务",
+      "description": "日历、时数及记录。",
+      "calendarLabel": "活动日历",
+      "calendarEmpty": "报名活动后，可在此查看。",
+      "logHoursTitle": "记录志愿者时数",
+      "activityOptional": "活动（选填）",
+      "manualOption": "手动记录／无活动",
+      "hours": "时数",
+      "notes": "备注",
+      "notesPlaceholder": "你帮助了什么？",
+      "addHours": "新增时数",
+      "hoursHistory": "时数记录",
+      "hoursHistoryLabel": "志愿者时数记录",
+      "hoursEmpty": "尚未记录时数。"
+    },
+    "events": {
+      "title": "活动报名",
+      "searchPlaceholder": "搜索活动…",
+      "searchAria": "搜索活动",
+      "scrollLabel": "即将举行的活动",
+      "noMatch": "没有符合搜索条件的活动。",
+      "empty": "目前没有开放活动。"
+    },
+    "summaryAria": "支持者摘要"
+  },
+  "member": {
+    "eyebrow": "会员控制台",
+    "title": "你的 Love 21 活动",
+    "checkingAccess": "正在检查会员权限…",
+    "loadError": "无法加载会员控制台",
+    "registerError": "无法报名此活动",
+    "joinedOn": "于 {{date}} 加入 · {{status}}",
+    "stats": {
+      "joined": "已加入",
+      "joinedHelp": "账户上的计划。",
+      "active": "进行中",
+      "activeHelp": "目前的报名。",
+      "openRoles": "开放职位",
+      "openRolesHelp": "你仍可加入这些职位。"
+    },
+    "tabs": {
+      "ariaLabel": "活动分区",
+      "browse": "浏览（{{count}}）",
+      "joined": "已加入（{{count}}）"
+    },
+    "joined": {
+      "title": "我已加入的活动",
+      "description": "与你的账户连结的计划。",
+      "descriptionDesktop": "与你的会员账户连结的计划。",
+      "scrollLabel": "已加入活动列表",
+      "empty": "尚未加入任何活动。",
+      "browseLink": "浏览开放职位"
+    },
+    "browse": {
+      "title": "加入活动",
+      "description": "滚动浏览开放职位。",
+      "descriptionDesktop": "浏览开放志愿者职位——滚动查看更多。",
+      "searchPlaceholder": "搜索职位…",
+      "searchAria": "搜索志愿者职位",
+      "scrollLabel": "可报名的志愿者职位",
+      "showJoined": "显示已加入（{{count}}）",
+      "hideJoined": "隐藏已加入",
+      "noMatch": "没有符合搜索条件的职位。",
+      "empty": "目前没有开放职位。",
+      "fullPage": "完整志愿者页面"
+    },
+    "summaryAria": "会员摘要"
+  },
+  "profile": {
+    "eyebrow": "会员专区",
+    "title": "会员资料",
+    "myDashboard": "我的控制台",
+    "gratitudeTitle": "感谢墙",
+    "gratitudeDescription": "分享简短感谢，供 Love 21 职员审阅。",
+    "profileTitle": "资料详情",
+    "profileDescription": "更新 Love 21 计划的联络资料。",
+    "displayName": "显示名称",
+    "displayNamePlaceholder": "你的名称",
+    "programmeInterest": "计划兴趣",
+    "programmeInterestPlaceholder": "告诉 Love 21 你想更新什么。",
+    "submit": "提交供职员审批",
+    "submitting": "提交中…",
+    "saved": "资料已保存，待审阅。",
+    "loadError": "无法加载会员资料"
+  },
+  "legacy": {
+    "checkingAccess": "正在检查控制台权限…",
+    "activeMembers": "活跃会员",
+    "recurringDonations": "定期捐款",
+    "openVolunteerRoles": "开放志愿者职位",
+    "accessibleLabels": "屏幕阅读器的无障碍标签",
+    "noDescription": "没有描述",
+    "noItems": "尚无项目。请创建一个。"
+  }
+}

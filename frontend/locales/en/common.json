@@ -44,6 +44,12 @@
     "skipToContent": "Skip to main content",
     "languageGroup": "Language"
   },
+  "site": "Site",
+  "logOut": "Log out",
+  "viewSite": "View site",
+  "refresh": "Refresh",
+  "viewAll": "View all",
+  "loading": "Loading…",
   "actions": {
     "enter": "Enter",
     "explore": "Explore",

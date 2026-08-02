@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
 import { MediaStoryCard } from "@/components/learn/media-story-card";
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 import { fetchLearnResourcesForAudience } from "@/lib/learn-content";
 import { getStoryLearnConnections } from "@/lib/learn-connections";
@@ -107,10 +107,7 @@ function ResourcesContent() {
 export default function LearnResourcesPage() {
   return (
     <SiteLayout>
-      <PageHero
-        title="Resources"
-        subtitle="Love 21 archive and further reading — learn through shared experiences."
-      />
+      <TranslatedPageHero titleKey="learnPlay.resources.title" subtitleKey="learnPlay.resources.description" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-6">

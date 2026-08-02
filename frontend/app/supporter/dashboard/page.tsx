@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { CalendarDays, Clock3, Gift, HeartHandshake, Plus, Search, Users } from "lucide-react";
+import { CalendarDays, Clock3, Gift, HeartHandshake, Plus, Search } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { ScrollPanel } from "@/components/account/scroll-panel";
 import { SupportProgress, formatHkd } from "@/components/site/support-progress";
@@ -14,23 +15,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api, Activity, SupporterDashboard } from "@/lib/api";
 import { signOutToLogin, useRequireRoles } from "@/lib/auth";
+import { intlLocaleForSite } from "@/lib/i18n/intl-locale";
 import { cn } from "@/lib/utils";
 
 type DashboardTab = "impact" | "volunteer";
-
-function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("en-HK", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(value));
-}
-
-function formatMonth(value: string) {
-  return new Intl.DateTimeFormat("en-HK", { month: "long", year: "numeric" }).format(new Date(value));
-}
 
 function StatCard({ icon: Icon, label, value, help }: { icon: typeof Gift; label: string; value: string; help: string }) {
   return (
@@ -49,7 +37,29 @@ function StatCard({ icon: Icon, label, value, help }: { icon: typeof Gift; label
   );
 }
 
-function ActivityCalendar({ activities }: { activities: Activity[] }) {
+function ActivityCalendar({
+  activities,
+  intlLocale,
+  emptyMessage,
+}: {
+  activities: Activity[];
+  intlLocale: string;
+  emptyMessage: string;
+}) {
+  function formatDateTime(value: string) {
+    return new Intl.DateTimeFormat(intlLocale, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(new Date(value));
+  }
+
+  function formatMonth(value: string) {
+    return new Intl.DateTimeFormat(intlLocale, { month: "long", year: "numeric" }).format(new Date(value));
+  }
+
   const grouped = activities.reduce<Record<string, Activity[]>>((acc, activity) => {
     const month = formatMonth(activity.starts_at);
     acc[month] = [...(acc[month] ?? []), activity];
@@ -72,12 +82,14 @@ function ActivityCalendar({ activities }: { activities: Activity[] }) {
           </ol>
         </section>
       ))}
-      {!activities.length ? <p className="text-sm text-muted-foreground">Sign up for an activity to see it here.</p> : null}
+      {!activities.length ? <p className="text-sm text-muted-foreground">{emptyMessage}</p> : null}
     </div>
   );
 }
 
 export default function SupporterDashboardPage() {
+  const { t, i18n } = useTranslation("dashboard");
+  const intlLocale = intlLocaleForSite(i18n.language);
   const { user, loading, error: authError } = useRequireRoles("supporter");
   const [dashboard, setDashboard] = useState<SupporterDashboard | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -89,6 +101,16 @@ export default function SupporterDashboardPage() {
   const [activeTab, setActiveTab] = useState<DashboardTab>("impact");
   const [eventSearch, setEventSearch] = useState("");
 
+  function formatDateTime(value: string) {
+    return new Intl.DateTimeFormat(intlLocale, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(new Date(value));
+  }
+
   async function loadSupporterData() {
     const [dashboardData, activityData] = await Promise.all([api.supporterDashboard(), api.listActivities()]);
     setDashboard(dashboardData);
@@ -97,8 +119,8 @@ export default function SupporterDashboardPage() {
 
   useEffect(() => {
     if (user?.role !== "supporter") return;
-    loadSupporterData().catch((err) => setError(err instanceof Error ? err.message : "Could not load supporter dashboard"));
-  }, [user]);
+    loadSupporterData().catch((err) => setError(err instanceof Error ? err.message : t("supporter.loadError")));
+  }, [user, t]);
 
   const signedUpActivities = useMemo(
     () =>
@@ -128,7 +150,7 @@ export default function SupporterDashboardPage() {
       await api.signUpForActivity(activityId);
       await loadSupporterData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not sign up for this activity");
+      setError(err instanceof Error ? err.message : t("supporter.signUpError"));
     } finally {
       setSaving(false);
     }
@@ -149,7 +171,7 @@ export default function SupporterDashboardPage() {
       setHoursActivityId("");
       await loadSupporterData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not log volunteer hours");
+      setError(err instanceof Error ? err.message : t("supporter.logHoursError"));
     } finally {
       setSaving(false);
     }
@@ -159,22 +181,23 @@ export default function SupporterDashboardPage() {
     <div className="grid gap-4 lg:grid-cols-2">
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">My giving</CardTitle>
-          <CardDescription>Donation history and recurring status.</CardDescription>
+          <CardTitle className="text-lg">{t("supporter.giving.title")}</CardTitle>
+          <CardDescription>{t("supporter.giving.description")}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <ScrollPanel label="Donation history">
+          <ScrollPanel label={t("supporter.giving.scrollLabel")}>
             <div className="space-y-2 sm:space-y-3">
               {dashboard.donations.map((donation) => (
                 <article key={donation.id} className="rounded-xl border p-3 sm:p-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <h3 className="text-sm font-semibold text-brand-ink sm:text-base">
-                        {formatHkd(donation.amount_hkd)} · {donation.frequency === "monthly" ? "Monthly" : "One-time"}
+                        {formatHkd(donation.amount_hkd)} ·{" "}
+                        {donation.frequency === "monthly" ? t("common.monthly") : t("common.oneTime")}
                       </h3>
                       <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
-                        {donation.support_opportunity?.title ?? "General Love 21 support"} ·{" "}
-                        {new Date(donation.created_at).toLocaleDateString("en-HK")}
+                        {donation.support_opportunity?.title ?? t("common.generalSupport")} ·{" "}
+                        {new Date(donation.created_at).toLocaleDateString(intlLocale)}
                       </p>
                     </div>
                     <span className="w-fit rounded-full bg-brand-cream px-3 py-1 text-xs font-semibold text-brand-sea">
@@ -193,7 +216,7 @@ export default function SupporterDashboardPage() {
                 </article>
               ))}
               {!dashboard.donations.length ? (
-                <p className="text-sm text-muted-foreground">No donations recorded yet.</p>
+                <p className="text-sm text-muted-foreground">{t("supporter.giving.empty")}</p>
               ) : null}
             </div>
           </ScrollPanel>
@@ -202,22 +225,25 @@ export default function SupporterDashboardPage() {
 
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Impact</CardTitle>
-          <CardDescription>How your giving connects to priorities.</CardDescription>
+          <CardTitle className="text-lg">{t("supporter.impact.title")}</CardTitle>
+          <CardDescription>{t("supporter.impact.description")}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <ScrollPanel label="Impact items">
+          <ScrollPanel label={t("supporter.impact.scrollLabel")}>
             <div className="space-y-2 sm:space-y-3">
               {dashboard.impact_items.map((item, index) => (
                 <article key={`${item.title}-${index}`} className="rounded-xl bg-brand-cream p-3 sm:p-4">
                   <p className="text-sm font-semibold text-brand-ink">{item.message}</p>
                   <p className="mt-1 text-xs text-brand-ink/70 sm:text-sm">
-                    {formatHkd(item.amount_hkd)} connected · {item.progress_percent}% funded
+                    {t("common.connectedFunded", {
+                      amount: formatHkd(item.amount_hkd),
+                      percent: item.progress_percent,
+                    })}
                   </p>
                 </article>
               ))}
               {!dashboard.impact_items.length ? (
-                <p className="text-sm text-muted-foreground">Make a designated gift to see impact here.</p>
+                <p className="text-sm text-muted-foreground">{t("supporter.impact.empty")}</p>
               ) : null}
             </div>
           </ScrollPanel>
@@ -230,25 +256,29 @@ export default function SupporterDashboardPage() {
     <div className="grid gap-4 lg:grid-cols-2">
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">My volunteering</CardTitle>
-          <CardDescription>Calendar, hours, and history.</CardDescription>
+          <CardTitle className="text-lg">{t("supporter.volunteering.title")}</CardTitle>
+          <CardDescription>{t("supporter.volunteering.description")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 pt-0">
-          <ScrollPanel label="Activity calendar">
-            <ActivityCalendar activities={signedUpActivities} />
+          <ScrollPanel label={t("supporter.volunteering.calendarLabel")}>
+            <ActivityCalendar
+              activities={signedUpActivities}
+              intlLocale={intlLocale}
+              emptyMessage={t("supporter.volunteering.calendarEmpty")}
+            />
           </ScrollPanel>
 
           <form onSubmit={logHours} className="space-y-3 rounded-xl border border-brand-sand p-3 sm:p-4">
-            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">Log volunteer hours</h3>
+            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">{t("supporter.volunteering.logHoursTitle")}</h3>
             <div className="space-y-2">
-              <Label htmlFor="hours-activity">Activity (optional)</Label>
+              <Label htmlFor="hours-activity">{t("supporter.volunteering.activityOptional")}</Label>
               <select
                 id="hours-activity"
                 value={hoursActivityId}
                 onChange={(event) => setHoursActivityId(event.target.value)}
                 className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               >
-                <option value="">Manual log / no activity</option>
+                <option value="">{t("supporter.volunteering.manualOption")}</option>
                 {signedUpActivities.map((activity) => (
                   <option key={activity.id} value={activity.id}>
                     {activity.title}
@@ -258,34 +288,34 @@ export default function SupporterDashboardPage() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="hours">Hours</Label>
+                <Label htmlFor="hours">{t("supporter.volunteering.hours")}</Label>
                 <Input id="hours" type="number" min={0.25} max={24} step={0.25} value={hours} onChange={(e) => setHours(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="hours-notes">Notes</Label>
-                <Input id="hours-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="What did you help with?" />
+                <Label htmlFor="hours-notes">{t("supporter.volunteering.notes")}</Label>
+                <Input id="hours-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t("supporter.volunteering.notesPlaceholder")} />
               </div>
             </div>
             <Button type="submit" size="sm" disabled={saving || !hours} className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" aria-hidden="true" />
-              Add hours
+              {t("supporter.volunteering.addHours")}
             </Button>
           </form>
 
           <div>
-            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">Hours history</h3>
-            <ScrollPanel label="Volunteer hours history" className="mt-2">
+            <h3 className="text-sm font-semibold text-brand-ink sm:text-base">{t("supporter.volunteering.hoursHistory")}</h3>
+            <ScrollPanel label={t("supporter.volunteering.hoursHistoryLabel")} className="mt-2">
               <div className="space-y-2">
                 {dashboard.volunteer_hours.map((entry) => (
                   <article key={entry.id} className="rounded-xl border p-3 text-sm">
                     <p className="font-semibold text-brand-ink">
-                      {entry.hours} hours · {entry.activity?.title ?? "Manual log"}
+                      {t("common.hoursCount", { count: entry.hours })} · {entry.activity?.title ?? t("common.manualLog")}
                     </p>
-                    <p className="mt-1 text-muted-foreground">{entry.notes ?? "No notes"}</p>
+                    <p className="mt-1 text-muted-foreground">{entry.notes ?? t("common.noNotes")}</p>
                   </article>
                 ))}
                 {!dashboard.volunteer_hours.length ? (
-                  <p className="text-sm text-muted-foreground">No hours logged yet.</p>
+                  <p className="text-sm text-muted-foreground">{t("supporter.volunteering.hoursEmpty")}</p>
                 ) : null}
               </div>
             </ScrollPanel>
@@ -295,10 +325,8 @@ export default function SupporterDashboardPage() {
 
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Activity sign-up</CardTitle>
-          <CardDescription>
-            {availableActivities.length} open event{availableActivities.length === 1 ? "" : "s"}
-          </CardDescription>
+          <CardTitle className="text-lg">{t("supporter.events.title")}</CardTitle>
+          <CardDescription>{t("supporter.events.openEvents", { count: availableActivities.length })}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 pt-0">
           <div className="relative">
@@ -306,12 +334,12 @@ export default function SupporterDashboardPage() {
             <Input
               value={eventSearch}
               onChange={(e) => setEventSearch(e.target.value)}
-              placeholder="Search events…"
+              placeholder={t("supporter.events.searchPlaceholder")}
               className="h-9 bg-white pl-9 text-sm"
-              aria-label="Search events"
+              aria-label={t("supporter.events.searchAria")}
             />
           </div>
-          <ScrollPanel label="Upcoming events">
+          <ScrollPanel label={t("supporter.events.scrollLabel")}>
             <div className="space-y-2 sm:space-y-3">
               {filteredActivities.map((activity) => (
                 <article key={activity.id} className="rounded-xl border p-3 sm:p-4">
@@ -324,14 +352,14 @@ export default function SupporterDashboardPage() {
                       <p className="mt-2 line-clamp-2 text-sm text-brand-ink/75">{activity.description}</p>
                     </div>
                     <Button type="button" variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => signUp(activity.id)} disabled={saving}>
-                      Sign up
+                      {t("common.signUp")}
                     </Button>
                   </div>
                 </article>
               ))}
               {!filteredActivities.length ? (
                 <p className="text-sm text-muted-foreground">
-                  {eventSearch ? "No events match your search." : "No open events right now."}
+                  {eventSearch ? t("supporter.events.noMatch") : t("supporter.events.empty")}
                 </p>
               ) : null}
             </div>
@@ -345,7 +373,7 @@ export default function SupporterDashboardPage() {
     return (
       <main className="flex min-h-screen items-center justify-center px-4 py-10">
         <p className="rounded-md border p-4 text-sm text-muted-foreground" role="status">
-          Checking supporter access…
+          {t("supporter.checkingAccess")}
         </p>
       </main>
     );
@@ -356,22 +384,25 @@ export default function SupporterDashboardPage() {
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-8">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">Supporter dashboard</p>
-            <h1 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl lg:text-5xl">Your Love 21 impact</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand-coral">{t("supporter.eyebrow")}</p>
+            <h1 className="mt-2 font-serif-display text-3xl text-brand-ink sm:text-4xl lg:text-5xl">{t("supporter.title")}</h1>
             <p className="mt-2 text-sm text-brand-ink/75">
-              Signed in as <span className="break-all">{user.email}</span>. Browse roles on{" "}
-              <Link href="/our-volunteer" className="text-brand-coral hover:underline">
-                Our Volunteer
-              </Link>
-              .
+              {t("common.signedInAs", { email: user.email })}{" "}
+              <Trans
+                i18nKey="supporter.signedInHint"
+                ns="dashboard"
+                components={{
+                  link: <Link href="/our-volunteer" className="text-brand-coral hover:underline" />,
+                }}
+              />
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="sm" className="flex-1 sm:flex-none">
-              <Link href="/">Site</Link>
+              <Link href="/">{t("common.site")}</Link>
             </Button>
             <Button variant="outline" size="sm" className="flex-1 sm:flex-none" onClick={signOutToLogin}>
-              Log out
+              {t("common.logOut")}
             </Button>
           </div>
         </header>
@@ -393,19 +424,19 @@ export default function SupporterDashboardPage() {
 
         {!dashboard ? (
           <p className="rounded-2xl border border-brand-sand bg-white p-5 text-sm text-muted-foreground" role="status">
-            Loading your dashboard…
+            {t("common.loadingDashboard")}
           </p>
         ) : (
           <>
-            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4" aria-label="Supporter summary">
-              <StatCard icon={Gift} label="Total given" value={formatHkd(dashboard.total_given_hkd)} help="Gifts on this account." />
-              <StatCard icon={HeartHandshake} label="Recurring" value={dashboard.recurring_status} help="Monthly support status." />
-              <StatCard icon={Clock3} label="Volunteer hours" value={`${dashboard.total_volunteer_hours} hrs`} help="Logged hours total." />
-              <StatCard icon={CalendarDays} label="Activities" value={String(dashboard.signed_up_activities.length)} help="Signed-up events." />
+            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4" aria-label={t("supporter.summaryAria")}>
+              <StatCard icon={Gift} label={t("supporter.stats.totalGiven")} value={formatHkd(dashboard.total_given_hkd)} help={t("supporter.stats.totalGivenHelp")} />
+              <StatCard icon={HeartHandshake} label={t("supporter.stats.recurring")} value={dashboard.recurring_status} help={t("supporter.stats.recurringHelp")} />
+              <StatCard icon={Clock3} label={t("supporter.stats.volunteerHours")} value={t("common.hoursUnit", { count: dashboard.total_volunteer_hours })} help={t("supporter.stats.volunteerHoursHelp")} />
+              <StatCard icon={CalendarDays} label={t("supporter.stats.activities")} value={String(dashboard.signed_up_activities.length)} help={t("supporter.stats.activitiesHelp")} />
             </section>
 
             <div className="lg:hidden">
-              <div className="flex rounded-xl border border-brand-sand bg-white p-1" role="tablist" aria-label="Dashboard sections">
+              <div className="flex rounded-xl border border-brand-sand bg-white p-1" role="tablist" aria-label={t("supporter.tabs.ariaLabel")}>
                 <button
                   type="button"
                   role="tab"
@@ -416,7 +447,7 @@ export default function SupporterDashboardPage() {
                   )}
                   onClick={() => setActiveTab("impact")}
                 >
-                  Impact
+                  {t("supporter.tabs.impact")}
                 </button>
                 <button
                   type="button"
@@ -428,7 +459,7 @@ export default function SupporterDashboardPage() {
                   )}
                   onClick={() => setActiveTab("volunteer")}
                 >
-                  Volunteer
+                  {t("supporter.tabs.volunteer")}
                 </button>
               </div>
               <div className="mt-4">{activeTab === "impact" ? impactPanel : volunteerPanel}</div>

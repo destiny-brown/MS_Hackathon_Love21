@@ -1,0 +1,179 @@
+{
+  "shell": {
+    "eyebrow": "Love 21 职员控制台",
+    "viewSite": "查看网站",
+    "logOut": "登出",
+    "navAria": "职员导航"
+  },
+  "nav": {
+    "sections": {
+      "home": "主页",
+      "operations": "运营",
+      "learnContent": "学习内容"
+    },
+    "overview": {
+      "label": "概览",
+      "description": "职员主页及快速链接"
+    },
+    "analytics": {
+      "label": "分析",
+      "description": "流量、参与度及影响力指标"
+    },
+    "events": {
+      "label": "活动",
+      "description": "创建活动及追踪报名"
+    },
+    "volunteers": {
+      "label": "志愿者",
+      "description": "管理志愿者计划及报名"
+    },
+    "donations": {
+      "label": "捐款与愿望清单",
+      "description": "活动、项目及愿望清单需求"
+    },
+    "gratitude": {
+      "label": "感谢墙",
+      "description": "审阅及批准会员提交"
+    },
+    "stories": {
+      "label": "会员故事",
+      "description": "故事与媒体轮播及故事页面"
+    },
+    "newsletter": {
+      "label": "通讯",
+      "description": "订阅者、草稿及发送记录"
+    },
+    "learnHub": {
+      "label": "学习中心",
+      "description": "测验、资源及视频库"
+    },
+    "learnQuestions": {
+      "label": "问题",
+      "description": "迷思 vs 事实测验及每日迷思"
+    },
+    "learnResources": {
+      "label": "资源",
+      "description": "文章、新闻及学习链接"
+    },
+    "learnVideos": {
+      "label": "短片",
+      "description": "为学习区精选的 YouTube 视频"
+    }
+  },
+  "home": {
+    "title": "职员控制台",
+    "description": "选择下方工作区以管理 Love 21 内容、活动及社区更新。",
+    "atAGlance": "一览",
+    "events": "活动",
+    "volunteerProgrammes": "志愿者计划",
+    "activeSubscribers": "活跃订阅者",
+    "newsletterList": "通讯名单",
+    "learnQuestions": "学习问题",
+    "learnResources": "学习资源",
+    "registrationsTitle": "活动报名",
+    "registrationsDescription": "来自公开志愿者页面的最近志愿者活动报名。",
+    "refresh": "刷新",
+    "viewAll": "查看全部",
+    "noRegistrations": "尚未有活动报名。",
+    "who": "报名者",
+    "activity": "活动",
+    "when": "时间",
+    "workspaces": "工作区"
+  },
+  "events": {
+    "title": "活动",
+    "description": "创建及管理 Love 21 社区活动。",
+    "createTitle": "创建活动",
+    "editTitle": "编辑活动",
+    "allEvents": "所有活动",
+    "titleLabel": "标题",
+    "locationLabel": "地点",
+    "descriptionLabel": "描述",
+    "dateLabel": "日期",
+    "maxCapacityLabel": "最大人数",
+    "categoryLabel": "类别",
+    "statusLabel": "状态",
+    "create": "创建活动",
+    "update": "更新活动",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "empty": "尚未有活动。",
+    "categories": {
+      "community": "社区",
+      "sport": "运动",
+      "nutrition": "营养",
+      "family": "家庭",
+      "fundraising": "筹款"
+    },
+    "statuses": {
+      "upcoming": "即将举行",
+      "ongoing": "进行中",
+      "completed": "已完成",
+      "cancelled": "已取消"
+    }
+  },
+  "volunteers": {
+    "title": "志愿者计划",
+    "description": "管理志愿者职位及追踪报名。",
+    "totalPrograms": "计划总数",
+    "totalVolunteers": "志愿者总数",
+    "registrations": "最近报名",
+    "createProgram": "创建计划",
+    "editProgram": "编辑计划",
+    "empty": "尚未有志愿者计划。"
+  },
+  "newsletter": {
+    "title": "通讯",
+    "description": "管理订阅者、使用 Qwen 生成草稿及发送活动。",
+    "total": "订阅者总数",
+    "active": "活跃",
+    "weekly": "每周",
+    "monthly": "每月",
+    "campaignsSent": "已发送活动",
+    "generatorTitle": "Qwen 通讯生成器",
+    "cadence": "发送频率",
+    "guidance": "AI 指引",
+    "subject": "主题",
+    "generate": "生成草稿",
+    "generating": "生成中…",
+    "send": "发送活动",
+    "sending": "发送中…",
+    "preview": "预览",
+    "copy": "复制内容",
+    "history": "发送记录",
+    "addSubscriber": "新增订阅者",
+    "search": "搜索订阅者…",
+    "empty": "尚未有订阅者。"
+  },
+  "learn": {
+    "hubTitle": "学习内容",
+    "hubDescription": "管理学习区的测验问题、资源及短片。",
+    "questionsTitle": "学习问题",
+    "questionsDescription": "编辑迷思 vs 事实测验问题及每日迷思。",
+    "resourcesTitle": "学习资源",
+    "resourcesDescription": "管理文章、新闻链接及延伸阅读。",
+    "videosTitle": "学习短片",
+    "videosDescription": "为学习视频库精选 YouTube 短片。",
+    "previewLearn": "预览学习区"
+  },
+  "stories": {
+    "title": "会员故事",
+    "description": "管理故事与媒体轮播项目及会员故事页面。"
+  },
+  "gratitude": {
+    "title": "感谢墙",
+    "description": "审阅及批准会员感谢提交。"
+  },
+  "donations": {
+    "title": "捐款与愿望清单",
+    "description": "管理活动、项目及愿望清单需求。"
+  },
+  "analytics": {
+    "title": "分析",
+    "description": "网站流量及参与度概览。",
+    "trafficTitle": "网站流量概览",
+    "aboutTitle": "关于此数据",
+    "aboutBody": "指标来自 Google Analytics 及 Looker Studio。数字可能滞后最多 24 小时。"
+  }
+}

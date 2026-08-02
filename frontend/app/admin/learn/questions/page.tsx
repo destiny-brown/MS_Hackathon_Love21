@@ -1,12 +1,18 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
+
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { LearnQuestionsAdminPanel } from "@/components/admin/learn-questions-admin-panel";
 
 export default function AdminLearnQuestionsPage() {
+  const { t } = useTranslation("admin");
+
   return (
     <>
       <AdminPageHeader
-        title="Learn questions"
-        description="Edit myth-vs-fact quiz and daily myth items. Use Qwen to draft new questions, then publish when ready."
+        title={t("learn.questionsTitle")}
+        description={t("learn.questionsDescription")}
       />
       <LearnQuestionsAdminPanel />
     </>

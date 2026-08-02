@@ -36,8 +36,15 @@
     "subtitle": "Your gift fuels nutrition, sport, and family support for Hong Kong's neurodiverse community."
   },
   "contact": {
-    "title": "Contact Us",
-    "subtitle": "Reach the Love 21 team for programmes, volunteering, partnerships, or general enquiries."
+    "title": "CONTACT US",
+    "subtitle": "If you'd like to join our programme, donate, volunteer or just find out more information, please get in touch. We'd love to hear from you!",
+    "memberRegistration": "For member registration, please <membersLink>fill out the form here</membersLink>. For volunteering, please check out the <volunteerLink>volunteer page</volunteerLink> for details and registration.",
+    "partnership": "For partnership, please contact Jeff (Founder/CEO): <email>jeff@love21foundation.com</email>",
+    "otherEnquiries": "For other enquiries, please fill out the form or contact us at <email>info@love21foundation.com</email>",
+    "spaceTitle": "Love 21 Space",
+    "spaceAddress": "2/F, Trium Lab, 21 Luk Hop Street, San Po Kong, Kowloon",
+    "officeTitle": "Love 21 Office (for correspondences)",
+    "officeAddress": "1102, 11/F, Trium Lab, 21 Luk Hop Street, San Po Kong, Kowloon"
   },
   "wishlist": {
     "title": "Wishlist",
@@ -45,19 +52,44 @@
   },
   "newsletter": {
     "title": "Newsletter",
-    "subtitle": "Stay updated on programmes, events, and stories from the Love 21 community."
+    "subtitle": "Stay updated on programmes, events, and stories from the Love 21 community.",
+    "signupTitle": "Sign up for Love 21 Foundation Newsletter",
+    "unsubscribe": {
+      "title": "Newsletter preferences",
+      "processing": "Processing…",
+      "returnHome": "Return to Love 21"
+    }
   },
-  "ourProgrammes": {
-    "title": "Our Programmes",
-    "subtitle": "Sport, nutrition, family, and CSR programmes designed for ability-first empowerment."
+  "traffic": {
+    "title": "Traffic & Analytics",
+    "subtitle": "Real-time website engagement and impact metrics",
+    "aboutTitle": "About This Data",
+    "aboutBody": "This dashboard pulls from Google Analytics via Looker Studio. Metrics may lag by up to 24 hours."
+  },
+  "shop": {
+    "title": "Wishlist",
+    "subtitle": "Help provide practical tools that Love 21 members need for training, learning, creativity, and everyday participation."
+  },
+  "storiesMedia": {
+    "title": "Stories & Media",
+    "soMuchAbility": "So Much Ability"
   },
   "joinUs": {
     "title": "Join Us",
-    "subtitle": "Become part of the Love 21 community as a member, volunteer, or partner."
+    "subtitle": "Internship Opportunities",
+    "subtitleLong": "Become part of the Love 21 community as a member, volunteer, or partner."
   },
   "members": {
     "title": "Members",
-    "subtitle": "Information and resources for Love 21 members and families."
+    "subtitle": "Information and resources for Love 21 members and families.",
+    "whatHappensNext": "What happens next",
+    "stepsTitle": "A simple first step",
+    "steps": [
+      "Tell us who you are and how to contact you.",
+      "Love 21 will follow up with the right programme information.",
+      "You can log in later if you already have a member account."
+    ],
+    "seeProgrammes": "See programmes first"
   },
   "events": {
     "title": "Events & Campaigns",

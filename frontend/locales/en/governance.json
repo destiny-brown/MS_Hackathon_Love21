@@ -93,5 +93,41 @@
   "sectionNav": {
     "company": "Company",
     "contact": "Contact"
+  },
+  "about": {
+    "eyebrow": "Governance & Transparency",
+    "title": "About Us",
+    "subtitle": "Our mission, leadership, and commitment to transparent, inclusive governance.",
+    "readyTitle": "Ready to connect?",
+    "readyBody": "Reach out for programmes, volunteering, partnerships, or general enquiries.",
+    "contactUs": "Contact Us",
+    "sections": {
+      "board": {
+        "title": "Board of Directors",
+        "description": "Meet the leaders guiding Love 21's strategy, stewardship, and governance."
+      },
+      "staff": {
+        "title": "Staff",
+        "description": "Learn about the team delivering programmes and community support."
+      },
+      "reports": {
+        "title": "Our Reports",
+        "description": "Financial transparency and annual reporting."
+      },
+      "programmes": {
+        "title": "Our Programmes",
+        "description": "Sport, nutrition, family, and CSR programmes designed for ability-first empowerment."
+      }
+    }
+  },
+  "boardPage": {
+    "title": "BOARD OF DIRECTORS",
+    "subtitle": "Meet the leaders guiding Love 21's strategy, stewardship, and governance."
+  },
+  "staffPage": {
+    "title": "STAFF"
+  },
+  "reportsPage": {
+    "title": "OUR REPORTS"
   }
 }

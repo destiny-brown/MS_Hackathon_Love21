@@ -93,5 +93,41 @@
   "sectionNav": {
     "company": "機構",
     "contact": "聯絡"
+  },
+  "about": {
+    "eyebrow": "管治與透明度",
+    "title": "關於我們",
+    "subtitle": "我們的使命、領導團隊，以及對透明共融管治的承諾。",
+    "readyTitle": "準備好聯絡我們？",
+    "readyBody": "如有計劃、義工、合作或一般查詢，歡迎與我們聯絡。",
+    "contactUs": "聯絡我們",
+    "sections": {
+      "board": {
+        "title": "董事會",
+        "description": "認識引領 Love 21 策略、管治及監督的領導團隊。"
+      },
+      "staff": {
+        "title": "職員",
+        "description": "了解負責推行計劃及社區支援的團隊。"
+      },
+      "reports": {
+        "title": "財務報告",
+        "description": "財務透明度及年度報告。"
+      },
+      "programmes": {
+        "title": "我們的計劃",
+        "description": "以能力為先的運動、營養、家庭及企業社會責任計劃。"
+      }
+    }
+  },
+  "boardPage": {
+    "title": "董事會",
+    "subtitle": "認識引領 Love 21 策略、管治及監督的領導團隊。"
+  },
+  "staffPage": {
+    "title": "職員"
+  },
+  "reportsPage": {
+    "title": "財務報告"
   }
 }

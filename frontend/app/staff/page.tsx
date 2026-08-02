@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-import { PageHero } from "@/components/site/page-hero";
+import { TranslatedPageHero } from "@/components/site/translated-page-hero";
 import { SiteLayout } from "@/components/site/site-layout";
 
 export default function StaffPage() {
   return (
     <SiteLayout>
-      <PageHero title="STAFF" />
+      <TranslatedPageHero ns="governance" titleKey="staffPage.title" />
       <section className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl space-y-10 text-brand-dark/80">
           <div className="space-y-4">
