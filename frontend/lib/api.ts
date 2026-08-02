@@ -625,6 +625,9 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+    request<UserPlayState>("/supporter/play-state", { method: "PUT", body: JSON.stringify(payload) }),
+  logVolunteerHours: (payload: { activity_id?: number | null; hours: number; notes?: string | null }) =>
+    request<VolunteerHour>("/supporter/hours", { method: "POST", body: JSON.stringify(payload) }),
   matchVolunteer: (payload: VolunteerMatchRequest) =>
     request<VolunteerMatchResponse>("/ai/volunteer/match", {
       method: "POST",

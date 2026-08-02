@@ -1,8 +1,12 @@
 import Link from "next/link";
 
-import { CommunityQuotesWall } from "@/components/learn/community-quotes-wall";
-import { PageHero } from "@/components/site/page-hero";
+import { PageSectionNav, type PageSectionNavItem } from "@/components/site/page-section-nav";
 import { SiteLayout } from "@/components/site/site-layout";
+
+const sectionNavItems: PageSectionNavItem[] = [
+  { id: "learn-hero", label: "Learn", labelKey: "sectionNav.learn" },
+  { id: "explore", label: "Explore", labelKey: "sectionNav.explore" },
+];
 
 // ---------------------------------------------------------------------------
 // Signature mark — same three-dot motif used across the site (Love 21 exists
@@ -75,9 +79,15 @@ const ACCENTS = {
 export default function LearnPlayPage() {
   return (
     <SiteLayout>
+      {/* Sentinel for section-nav reveal — not a nav target. */}
+      <div id="learn-nav-sentinel" className="h-px w-full" aria-hidden="true" />
+
       {/* Hero — warm cream background, ink serif heading, single red accent.
           Eyebrow no longer repeats the page title itself. */}
-      <section className="relative overflow-hidden bg-brand-cream px-4 pb-12 pt-16 sm:px-6 lg:px-8">
+      <section
+        id="learn-hero"
+        className="relative scroll-mt-24 overflow-hidden bg-brand-cream px-4 pb-12 pt-16 sm:px-6 lg:px-8"
+      >
         <Blob className="-right-16 -top-16 h-72 w-72 bg-[#EF233C] opacity-[0.06]" />
         <Blob className="-left-10 bottom-0 h-40 w-40 bg-black opacity-[0.04]" />
         <div className="relative mx-auto max-w-6xl">
@@ -86,17 +96,18 @@ export default function LearnPlayPage() {
             Celebrating Ability
           </p>
           <h1 className="mt-3 font-serif text-6xl font-medium tracking-tight text-brand-ink sm:text-7xl lg:text-8xl">
-            Learn &amp; <em className="text-[#EF233C]">Play</em>
+            Learn
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-brand-ink/70">
-            Educate through shared experiences — bust myths, hear from the
-            community, and go deeper with real stories.
+            Learn through shared experiences, hear from the community, and explore real stories.
           </p>
           <div className="mt-8 h-[3px] w-20 rounded-full bg-gradient-to-r from-[#EF233C] to-brand-ink" />
         </div>
       </section>
 
-      {/* Community — single featured quote in a soft cream card, matching
+      <PageSectionNav items={sectionNavItems} ns="learn" heroSelector="#learn-nav-sentinel" />
+
+     {/* Community — single featured quote in a soft cream card, matching
           the warmth of the rest of the page instead of standing apart as a
           dark/navy anchor block. */}
       <section className="bg-brand-cream px-4 pb-16 sm:px-6 lg:px-8">
@@ -113,10 +124,7 @@ export default function LearnPlayPage() {
 
               <blockquote className="mt-6 max-w-3xl font-serif text-3xl font-medium leading-snug text-brand-ink sm:text-4xl lg:text-[42px]">
                 &ldquo;Those with Down&apos;s syndrome and autism are{" "}
-                <em className="text-[#EF233C]">
-                  ready for purposeful employment
-                </em>
-                .&rdquo;
+                <em className="text-[#EF233C]">ready for purposeful employment</em>.&rdquo;
               </blockquote>
 
               <p className="mt-5 text-sm text-brand-ink/50">
@@ -124,22 +132,13 @@ export default function LearnPlayPage() {
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-6 text-sm font-semibold">
-                <Link
-                  href="https://www.scmp.com/news/hong-kong/society/article/3341192/hong-kong-charity-helping-neurodivergent-people-eat-better-exercise-more-and-belong"
-                  className="text-[#EF233C] transition-colors hover:text-brand-ink"
-                >
+                <Link href="#" className="text-[#EF233C] transition-colors hover:text-brand-ink">
                   Read the full story →
                 </Link>
-                <Link
-                  href=""
-                  className="text-brand-ink/50 transition-colors hover:text-brand-ink"
-                >
+                <Link href="#" className="text-brand-ink/50 transition-colors hover:text-brand-ink">
                   Play today&apos;s 21 Moves
                 </Link>
-                <Link
-                  href="/get-involved"
-                  className="text-brand-ink/50 transition-colors hover:text-brand-ink"
-                >
+                <Link href="#" className="text-brand-ink/50 transition-colors hover:text-brand-ink">
                   Get involved →
                 </Link>
               </div>
@@ -157,39 +156,12 @@ export default function LearnPlayPage() {
         </div>
       </section>
 
-      {/* CTA bar */}
-      {/* {<section className="bg-brand-cream px-4 py-10 text-center sm:px-6 lg:px-8">
-        <p className="mx-auto max-w-xl text-base leading-relaxed text-brand-ink/70">
-          Every myth we bust connects to a real Love 21 story — and a way to{" "}
-          <Link
-            href="/get-involved"
-            className="font-semibold text-[#EF233C] underline decoration-[#EF233C] underline-offset-4 transition-colors hover:text-black hover:decoration-black"
-          >
-            get involved
-          </Link>
-          .
-        </p>
-      </section>} */}
-
       {/* Explore More — rebuilt as numbered "door" cards in the spirit of the
           "Where will you begin?" module: a folded corner, a large faint
           serial number, and a clean ENTER-style link. No icons, no pastel
           noise-texture headers, no blue. */}
-      <section className="bg-brand-cream px-4 pb-24 sm:px-6 lg:px-8">
+      <section id="explore" className="scroll-mt-24 bg-brand-cream px-4 pb-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-12">
-            <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.15em] text-[#EF233C]">
-              <TriMark className="h-2 w-7" />
-              Three ways to go deeper
-            </p>
-            <h2 className="mt-2 font-serif text-4xl font-medium text-brand-ink sm:text-5xl">
-              Explore <em className="text-[#EF233C]">More</em>
-            </h2>
-            <p className="mt-2 text-brand-ink/60">
-              Three ways to learn, play, and grow with the Love 21 community.
-            </p>
-          </div>
-
           <div className="relative">
             {/* Faint connecting line — a quiet "journey" motif echoed across
                 the site, not a full path illustration. */}
@@ -219,33 +191,22 @@ export default function LearnPlayPage() {
                     />
 
                     <div className="flex items-start justify-between">
-                      <span
-                        className={`font-serif text-5xl font-semibold leading-none ${accent.number}`}
-                      >
+                      <span className={`font-serif text-5xl font-semibold leading-none ${accent.number}`}>
                         {r.number}
                       </span>
-                      <span
-                        className={`mt-1 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] ${accent.badge}`}
-                      >
+                      <span className={`mt-1 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] ${accent.badge}`}>
                         {r.badge}
                       </span>
                     </div>
 
-                    <h3 className="mt-5 font-serif text-2xl font-semibold text-brand-ink">
-                      {r.title}
-                    </h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-ink/70">
-                      {r.description}
-                    </p>
+                    <h3 className="mt-5 font-serif text-2xl font-semibold text-brand-ink">{r.title}</h3>
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-brand-ink/70">{r.description}</p>
 
                     <Link
                       href={r.href}
                       className={`mt-6 inline-flex items-center gap-1.5 border-t border-brand-ink/10 pt-5 text-xs font-bold uppercase tracking-[0.18em] transition-all group-hover:gap-2.5 ${accent.link}`}
                     >
-                      Enter{" "}
-                      <span className="transition-transform group-hover:translate-x-1">
-                        →
-                      </span>
+                      Enter <span className="transition-transform group-hover:translate-x-1">→</span>
                     </Link>
                   </article>
                 );

@@ -184,37 +184,49 @@ export type ImpactStory = {
   highlight: string;
   image: string;
   alt: string;
+  href?: string;
 };
 
+/** Member stories mirrored from /stories-media (same source as homepage Featured Stories). */
 export const impactStories: ImpactStory[] = [
   {
-    role: "Member Athlete",
-    name: "Alex",
+    role: "Yuk Lam's Story",
+    name: "Yuk Lam",
     quote:
-      "On the trampoline I found rhythm, courage, and a team that cheers every landing. Sport taught me I can lead — not just follow.",
-    highlight: "Special Olympics pathway · Team captain energy",
-    image:
-      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1000&q=80",
-    alt: "Member athlete training with focus and joy",
+      "I would use the word 'home' to describe Love 21,\" said Yuk Lam's mother, \"Every coach and staff member at Love 21 treats Yuk Lam like a sibling.",
+    highlight: "Sports · Fitness · Family Support",
+    image: "/images/yuklam.png",
+    alt: "Yuk Lam",
+    href: "/stories/yuk-lam",
   },
   {
-    role: "Parent / Caregiver",
-    name: "Helen",
+    role: "Siu Kei's Story (By Siu Kei's Mother)",
+    name: "Siu Kei",
     quote:
-      "Love 21 gave our whole household a sanctuary. While my child builds strength, I finally have peers who understand — and space to breathe.",
-    highlight: "Family Living Room · Caregiver wellness",
-    image:
-      "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1000&q=80",
-    alt: "Parent and caregiver finding community support",
+      "He took on assistant roles across multiple departments, which significantly enhanced his social interaction skills, sense of responsibility, and ability to adapt knowledge to real-world scenarios.",
+    highlight: "Employment Programs · Community and Education",
+    image: "/images/siukei.png",
+    alt: "Siu Kei",
+    href: "/stories/siu-kei",
   },
   {
-    role: "Assistant Coach",
-    name: "Chris",
+    role: "Brian Ngan's Story (By Brian's Father)",
+    name: "Brian Ngan",
     quote:
-      "From member to assistant coach — I now teach the skills that changed my life. Employment here means purpose, pay, and belonging.",
-    highlight: "Employment & Development Programme",
-    image:
-      "https://images.unsplash.com/photo-1556745757-8d76bdb6984b?auto=format&fit=crop&w=1000&q=80",
-    alt: "Assistant coach mentoring peers at Love 21",
+      "Since childhood Brian was quite protected and did not think he had any strengths and abilities. Fortunately after joining Love 21 we have quickly learnt how capable and talented he truly is.",
+    highlight: "Employment Programs · Family Support",
+    image: "/images/brianngan.png",
+    alt: "Brian Ngan",
+    href: "/stories/brian-ngan",
+  },
+  {
+    role: "Marissa's Story (By Marissa's Mom)",
+    name: "Marissa",
+    quote:
+      "Sports development programme. Staff offered invaluable guidance, specialised fitness training and bocce classes.",
+    highlight: "Sports · Fitness · Family Support",
+    image: "/images/marissa.png",
+    alt: "Marissa",
+    href: "/stories/marissa",
   },
 ];

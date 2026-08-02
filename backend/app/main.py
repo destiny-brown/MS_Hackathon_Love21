@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.db import create_db_and_tables, ensure_bootstrap_admin, ensure_demo_users, ensure_role_enum_compatibility
 from app.services.learn_seed import ensure_learn_content
+from app.services.support_opportunity_seed import ensure_support_opportunities
 from app.routers import (
     admin,
     admin_learn,
@@ -31,6 +32,7 @@ async def lifespan(app: FastAPI):
     ensure_demo_users()
     ensure_bootstrap_admin()
     ensure_learn_content()
+    ensure_support_opportunities()
     yield
 
 

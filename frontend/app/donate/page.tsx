@@ -4,7 +4,6 @@ import { BrandCard } from "@/components/brand/BrandCard";
 import { CtaButton } from "@/components/brand/CtaButton";
 import { Eyebrow } from "@/components/brand/Eyebrow";
 import { Reveal } from "@/components/brand/Reveal";
-import { DONATION_TIERS } from "@/lib/donation-tiers";
 import { DonationAmountProvider } from "@/components/site/donation-amount-context";
 import { DonationOpportunities } from "@/components/site/donation-opportunities";
 import { DonationTierGrid } from "@/components/site/donation-tier-grid";
@@ -19,21 +18,23 @@ import { SiteLayout } from "@/components/site/site-layout";
 export default async function DonatePage({
   searchParams,
 }: {
-  searchParams: Promise<{ item?: string }>;
+  searchParams: Promise<{ amount?: string; item?: string }>;
 }) {
-  const { item } = await searchParams;
+  const { amount, item } = await searchParams;
+  const suggestedAmount = Number(amount) || undefined;
+
   return (
     <SiteLayout>
       <PageHero
         title="Donate"
         subtitle="Choose one clear way to help. Your gift supports sports, nutrition, family programmes, and everyday care for Love 21 members."
         primaryAction={{ label: "Start donation", href: "#donation-form" }}
-        secondaryAction={{ label: "See wishlist", href: "/shop" }}
+        secondaryAction={{ label: "See wishlist", href: "/wishlist" }}
       />
       {/* Tier cards and the mock donation form share one DonationAmountProvider
           so clicking a tier above always drives the form below — single
           source of truth, no amount hardcoded in more than one place. */}
-      <DonationAmountProvider>
+      <DonationAmountProvider defaultAmount={suggestedAmount}>
         {/* ---------- WHERE YOUR GIFT GOES ---------- */}
         <Reveal>
           <section className="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8">

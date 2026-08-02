@@ -8,6 +8,7 @@ import { ArrowUpRight, HeartHandshake } from "lucide-react";
 import { SupportProgress } from "@/components/site/support-progress";
 import { Button } from "@/components/ui/button";
 import { api, SupportOpportunity } from "@/lib/api";
+import { seededWishlistItems } from "@/lib/wishlist-seed";
 
 export function WishlistOpportunities() {
   const [items, setItems] = useState<SupportOpportunity[]>([]);
@@ -35,11 +36,12 @@ export function WishlistOpportunities() {
         );
 
         if (!cancelled) {
-          setItems(inferredWishlistItems);
+          setItems(inferredWishlistItems.length > 0 ? inferredWishlistItems : seededWishlistItems);
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Could not load the wishlist");
+          setItems(seededWishlistItems);
+          setError("");
         }
       } finally {
         if (!cancelled) {
